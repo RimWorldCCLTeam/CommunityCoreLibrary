@@ -1,0 +1,2 @@
+C:\Utils\dev\Community Core Library\DLL_Project\bin\Release\Community Core Library.dll
+C:\Utils\dev\Community Core Library\DLL_Project\obj\Release\Community Core Library.dll

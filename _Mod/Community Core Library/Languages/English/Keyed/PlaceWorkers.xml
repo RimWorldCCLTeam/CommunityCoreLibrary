@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- PlaceWorkers -->
+	<MessagePlacementItemSurface>Must be placed on an item surface!</MessagePlacementItemSurface>
+	<MessagePlacementMustBeUnderRoof>Must be placed under a roof!</MessagePlacementMustBeUnderRoof>
+	<MessagePlacementAgainstSupport>Must place against a support!</MessagePlacementAgainstSupport>
+	
+</LanguageData>

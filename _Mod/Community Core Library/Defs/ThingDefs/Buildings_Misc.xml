@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Buildings>
+	<ThingDef Name="BuildingBase" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>AncientCryptosleepCasket</defName>
+		<label>ancient cryptosleep casket</label>
+		<thingClass>Building_AncientCryptosleepCasket</thingClass>
+		<graphicPath>Things/Building/Ship/ShipCryptosleepCasket</graphicPath>
+		<graphicClass>Graphic_Multi</graphicClass>
+		<altitudeLayer>BuildingTall</altitudeLayer>
+		<graphicOverdraw>true</graphicOverdraw>
+		<passability>PassThroughOnly</passability>
+		<pathCost>70</pathCost>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>0.5</fillPercent>
+		<statBases>
+			<MaxHitPoints>250</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>This cryptosleep casket looks like it has been here for a very long time. Who knows what it might contain?</description>
+		<size>(1,2)</size>
+		<hasInteractionCell>true</hasInteractionCell>
+		<interactionCellOffset>(1,0,0)</interactionCellOffset>
+		<costList>
+			<Steel>180</Steel>
+			<Uranium>5</Uranium>
+		</costList>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+			<Steel>25</Steel>
+			<Uranium>3</Uranium>
+		</killedLeavings>
+		<comps>
+			<li>
+				<compClass>CompExplosive</compClass>
+				<explosiveRadius>2.66</explosiveRadius>
+				<explosiveDamageType>Flame</explosiveDamageType>
+			</li>
+		</comps>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationCategory>Furniture</designationCategory>
+	</ThingDef>
+</Buildings>
