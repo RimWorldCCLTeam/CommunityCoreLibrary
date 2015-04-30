@@ -91,7 +91,9 @@
 			</defaultStorageSettings>
 		</building>
 		<comps>
-			<li Class="CommunityCoreLibrary.CompProperties_Hopper"/>
+			<li Class="CommunityCoreLibrary.CompProperties_Hopper">
+				<compClass>CommunityCoreLibrary.CompHopper</compClass>
+			</li>
 		</comps>
 		<inspectorTabs>
 			<li>ITab_Storage</li>
