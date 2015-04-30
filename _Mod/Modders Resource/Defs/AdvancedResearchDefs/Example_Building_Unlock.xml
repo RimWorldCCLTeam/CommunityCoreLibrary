@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AdvancedResearchDefs>
 	<AdvancedResearchDef>
-		<defName>MakeAncientCryptoSleep</defName>
+		<defName>BuildAncientCryptoSleep</defName>
 		<researchDefs>
 			<li>Stonecutting</li>
 			<li>CarpetMaking</li>

@@ -98,7 +98,7 @@ namespace CommunityCoreLibrary
 		private bool IsRecipeUnlock( AdvancedResearchDef Advanced )
 		{
 			// Determine if this def unlocks recipes or tables
-			return ( Advanced.recipeDefs != null ) && ( Advanced.recipeDefs.Count > 0 );
+			return ( Advanced.recipeDefs != null )&&( Advanced.recipeDefs.Count > 0 );
 		}
 
 		private void LockEverything()
@@ -171,7 +171,7 @@ namespace CommunityCoreLibrary
 						Advanced.originalBuildingDesignations.Add( buildingDesignationPair );
 
 						// Hide the building
-						Common.ChangeThingDefDesignationCategoryDefOfTo( building, "None" );
+						Common.ChangeThingDefDesignationCategoryOfTo( building, "None" );
 
 						// Flag for designation category def resolve
 						resolveDesignationCategoryDefs = true;
@@ -258,7 +258,7 @@ namespace CommunityCoreLibrary
 				for( int dIndex = 0, dCountTo = Advanced.originalBuildingDesignations.Count; dIndex < dCountTo; dIndex++ ){
 					// ThingDef designationCategory
 					BuildingDesignationPair buildingDesignationPair = Advanced.originalBuildingDesignations[ dIndex ];
-					Common.ChangeThingDefDesignationCategoryDefOfTo( buildingDesignationPair.building, buildingDesignationPair.designationCategory );
+					Common.ChangeThingDefDesignationCategoryOfTo( buildingDesignationPair.building, buildingDesignationPair.designationCategory );
 					// Flag for designation category def resolve
 					resolveDesignationCategoryDefs = true;
 				}

@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ThingDefs>
+	<ThingDef Name="BuildingBase" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
+		<tickerType>Normal</tickerType>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>RefrigeratedHopper</defName>
+		<label>refrigerated hopper</label>
+		<thingClass>Building_Storage</thingClass>
+		<graphicPath>Things/Building/Production/HopperRefrigerated</graphicPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.5</fillPercent>
+		<pathCost>70</pathCost>
+		<building>
+			<fixedStorageSettings>
+				<priority>Important</priority>
+				<allowances>
+					<categories>
+						<li>FoodRaw</li>
+					</categories>
+				</allowances>
+			</fixedStorageSettings>
+			<defaultStorageSettings>
+				<priority>Important</priority>
+				<allowances>
+					<categories>
+						<li>FoodRaw</li>
+					</categories>
+					<exceptedThingDefs>
+						<li>Human_Meat</li>
+					</exceptedThingDefs>
+				</allowances>
+			</defaultStorageSettings>
+		</building>
+		<comps>
+			<li>
+				<compClass>CommunityCoreLibrary.CompRefrigerated</compClass>
+			</li>
+			<li Class="CommunityCoreLibrary.CompProperties_Hopper">
+				<compClass>CommunityCoreLibrary.CompHopper</compClass>
+			</li>
+			<li>
+				<compClass>CompForbiddable</compClass>
+			</li>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>200</basePowerConsumption>
+			</li>
+		</comps>
+		<inspectorTabs>
+			<li>ITab_Storage</li>
+		</inspectorTabs>
+		<castEdgeShadows>true</castEdgeShadows>
+		<statBases>
+			<WorkToMake>450</WorkToMake>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+		</statBases>
+		<description>A refrigerated hopper for temperature critical storage of resources for use by production machines like nutrient paste dispensers.</description>
+		<costList>
+			<Steel>50</Steel>
+		</costList>
+		<tickerType>Normal</tickerType>
+		<rotatable>true</rotatable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<designationCategory>Production</designationCategory>
+		<staticSunShadowHeight>0.3</staticSunShadowHeight>
+		<itemSurface>true</itemSurface>
+		<placeWorkers>
+			<li>PlaceWorker_NextToHopperAccepter</li>
+		</placeWorkers>
+		<constructEffect>ConstructMetal</constructEffect>
+		<designationHotKey/>
+	</ThingDef>
+</ThingDefs>

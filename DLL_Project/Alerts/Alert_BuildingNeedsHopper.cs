@@ -35,7 +35,9 @@ namespace CommunityCoreLibrary
 						foreach( IntVec3 c in GenAdj.CellsAdjacentCardinal( building ) )
 						{
 							Building hopper = GridsUtility.GetEdifice( c );
-							if( ( hopper != null )&&( hopper.GetComp<CompHopper>() != null ) )
+							if( ( hopper != null )&&(
+								( hopper.def == ThingDefOf.Hopper )||
+								( hopper.def.GetCompProperties( typeof( CompProperties_Hopper ) ) != null ) ) )
 							{
 								//derp += building.def.defName + " - Has hopper\n" );
 								thisNeedsHopper = false;

@@ -43,6 +43,9 @@
 				<idlePowerFactor>0.25</idlePowerFactor>
 				<operationalMode>WhenNear</operationalMode>
 			</li>
+			<li>
+				<compClass>CommunityCoreLibrary.CompFoodSource</compClass>
+			</li>
 		</comps>
 		<size>(3,4)</size>
 		<costList>
@@ -55,6 +58,65 @@
 		<staticSunShadowHeight>0.75</staticSunShadowHeight>
 		<constructEffect>ConstructMetal</constructEffect>
 		<designationHotKey>N</designationHotKey>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Hopper</defName>
+		<label>hopper</label>
+		<thingClass>Building_Storage</thingClass>
+		<graphicPath>Things/Building/Production/Hopper</graphicPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.5</fillPercent>
+		<pathCost>70</pathCost>
+		<building>
+			<fixedStorageSettings>
+				<priority>Important</priority>
+				<allowances>
+					<categories>
+						<li>FoodRaw</li>
+					</categories>
+				</allowances>
+			</fixedStorageSettings>
+			<defaultStorageSettings>
+				<priority>Important</priority>
+				<allowances>
+					<categories>
+						<li>FoodRaw</li>
+					</categories>
+					<exceptedThingDefs>
+						<li>Human_Meat</li>
+					</exceptedThingDefs>
+				</allowances>
+			</defaultStorageSettings>
+		</building>
+		<comps>
+			<li Class="CommunityCoreLibrary.CompProperties_Hopper"/>
+		</comps>
+		<inspectorTabs>
+			<li>ITab_Storage</li>
+		</inspectorTabs>
+		<castEdgeShadows>true</castEdgeShadows>
+		<statBases>
+			<WorkToMake>450</WorkToMake>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+		</statBases>
+		<description>Holds resources for use by machines like nutrient paste dispensers.</description>
+		<costList>
+			<Steel>15</Steel>
+		</costList>
+		<tickerType>Never</tickerType>
+		<rotatable>true</rotatable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<designationCategory>Production</designationCategory>
+		<staticSunShadowHeight>0.3</staticSunShadowHeight>
+		<itemSurface>true</itemSurface>
+		<placeWorkers>
+			<li>PlaceWorker_NextToHopperAccepter</li>
+		</placeWorkers>
+		<constructEffect>ConstructMetal</constructEffect>
+		<designationHotKey>H</designationHotKey>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<DefName>TableTailor</DefName>
@@ -267,6 +329,9 @@
 				<compClass>CompGlower</compClass>
 				<glowRadius>3</glowRadius>
 				<glowColor>(217,112,33,0)</glowColor>
+			</li>
+			<li>
+				<compClass>CommunityCoreLibrary.CompFoodSource</compClass>
 			</li>
 		</comps>
 		<building>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<WorkGivers>
+	
+	<!-- These are to handle the new NPDs and other -->
+	<!-- (potential) new features to work related to food -->
+	
+	<WorkGiverDef>
+		<defName>DoctorFeed</defName>
+		<giverClass>CommunityCoreLibrary.WorkGiver_FeedIncapped</giverClass>
+		<workType>Doctor</workType>
+		<verb>feed</verb>
+		<gerund>feeding</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<priorityInType>50</priorityInType>
+	</WorkGiverDef>
+	
+	<WorkGiverDef>
+		<defName>Warden</defName>
+		<giverClass>WorkGiver_Warden</giverClass>
+		<workType>Warden</workType>
+		<verb>warden</verb>
+		<gerund>wardening</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+	
+	<WorkGiverDef>
+		<defName>CookFillHopper</defName>
+		<giverClass>CommunityCoreLibrary.WorkGiver_CookFillHopper</giverClass>
+		<workType>Cooking</workType>
+		<priorityInType>10</priorityInType>
+		<verb>fill</verb>
+		<gerund>filling</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+	
+</WorkGivers>

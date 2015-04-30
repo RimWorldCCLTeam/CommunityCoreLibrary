@@ -13,8 +13,11 @@ using Verse.Sound;
 namespace CommunityCoreLibrary
 {
 	
-	public class Building_NutrientPasteDispenser : RimWorld.Building_NutrientPasteDispenser
+	public class Building_NutrientPasteDispenser : Building
 	{
+		public static int				CollectDuration = 50;
+		public CompPowerTrader			powerComp;
+
 		private List<IntVec3>			cachedAdjCellsCardinal;
 		private List<Building>			cachedAdjHoppers;
 
@@ -28,7 +31,7 @@ namespace CommunityCoreLibrary
 			}
 		}
 
-		public new bool CanDispenseNow
+		public virtual bool CanDispenseNow
 		{
 			get
 			{
@@ -41,7 +44,7 @@ namespace CommunityCoreLibrary
 			}
 		}
 
-		private List<IntVec3> AdjCellsCardinal
+		public virtual List<IntVec3> AdjCellsCardinal
 		{
 			get
 			{
@@ -51,20 +54,20 @@ namespace CommunityCoreLibrary
 			}
 		}
 
-		public void FindAdjacentHoppers()
+		public virtual void FindAdjacentHoppers()
 		{
 			cachedAdjHoppers = new List<Building>();
 			foreach( IntVec3 c in AdjCellsCardinal )
 			{
 				Building hopper = GridsUtility.GetEdifice( c );
-				if( ( hopper != null )&&( hopper.GetComp<CompHopper>() != null ) )
+				if( ( hopper != null )&&( hopper.def.GetCompProperties( typeof( CompProperties_Hopper ) ) != null ) )
 				{
 					cachedAdjHoppers.Add( hopper );
 				}
 			}
 		}
 
-		public new Building AdjacentReachableHopper( Pawn reacher )
+		public virtual Building AdjacentReachableHopper( Pawn reacher )
 		{
 			FindAdjacentHoppers();
 			foreach( Building hopper in cachedAdjHoppers )
@@ -79,17 +82,17 @@ namespace CommunityCoreLibrary
 			return null;
 		}
 
-		public int foodDispenseCost
+		public virtual int foodDispenseCost
 		{
 			get
 			{
 				if( Find.ResearchManager.IsFinished( ResearchProjectDef.Named( "NutrientResynthesis" ) ) )
-					return --this.def.building.foodCostPerDispense;
+					return ( this.def.building.foodCostPerDispense - 1 );
 				return this.def.building.foodCostPerDispense;
 			}
 		}
 
-		public new Thing TryDispenseFood()
+		public virtual Thing TryDispenseFood()
 		{
 			if( CanDispenseNow )
 				return null;
@@ -122,7 +125,7 @@ namespace CommunityCoreLibrary
 			return (Thing) meal;
 		}
 
-		private Thing FindFoodInAnyHopper()
+		public virtual Thing FindFoodInAnyHopper()
 		{
 			foreach( Building hopper in cachedAdjHoppers )
 			{
@@ -136,7 +139,7 @@ namespace CommunityCoreLibrary
 			return null;
 		}
 
-		public new bool HasEnoughFoodInHoppers()
+		public virtual bool HasEnoughFoodInHoppers()
 		{
 			int ingredientCount = 0;
 			foreach( Building hopper in cachedAdjHoppers )

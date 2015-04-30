@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ThinkTrees>
+
+	<ThinkTreeDef>
+		<defName>HerbivoreStandard</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ThinkNode_Subtree">
+          <treeDef>BurningResponse</treeDef>
+        </li>
+        <li Class="ThinkNode_Subtree">
+          <treeDef>Berserk</treeDef>
+        </li>
+        <li Class="ThinkNode_Subtree">
+          <treeDef>SelfDefense</treeDef>
+        </li>
+
+        <!-- Animal under player control -->
+        <li Class="JobGiver_Orders" />
+
+        <!-- Insertion hook for modders -->
+        <li Class="ThinkNode_SubtreesByTag">
+          <insertTag>HerbivoreStandard_PreMain</insertTag>
+        </li>
+
+        <li Class="ThinkNode_Subtree">
+          <treeDef>LeaveIfWrongSeason</treeDef>
+        </li>
+        <li Class="ThinkNode_Subtree">
+          <treeDef>LeaveIfStarving</treeDef>
+        </li>
+
+        <li Class="ThinkNode_PrioritySorter">
+          <subNodes>
+            <li Class="CommunityCoreLibrary.JobGiver_GetFood"/>
+            <!--<li Class="JobGiver_GetRest"/>-->
+          </subNodes>
+        </li>
+
+        <!-- Insertion hook for modders -->
+        <li Class="ThinkNode_SubtreesByTag">
+          <insertTag>HerbivoreStandard_PreWander</insertTag>
+        </li>
+
+        <li Class="JobGiver_WanderCurrentRoom">
+          <maxDanger>Deadly</maxDanger>
+        </li>
+
+        <li Class="JobGiver_WanderAnywhere">
+          <maxDanger>Deadly</maxDanger>
+        </li>
+
+        <li Class="JobGiver_IdleError"/>
+      </subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+
+
+	<ThinkTreeDef>
+		<defName>HerbivoreHerd</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>BurningResponse</treeDef>
+				</li>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Berserk</treeDef>
+				</li>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>SelfDefense</treeDef>
+				</li>
+
+        <!-- Animal under player control -->
+        <li Class="JobGiver_Orders" />
+
+        <!-- Insertion hook for modders -->
+        <li Class="ThinkNode_SubtreesByTag">
+          <insertTag>HerbivoreHerd_PreMain</insertTag>
+        </li>
+
+        <li Class="ThinkNode_Subtree">
+          <treeDef>LeaveIfWrongSeason</treeDef>
+        </li>
+        <li Class="ThinkNode_Subtree">
+          <treeDef>LeaveIfStarving</treeDef>
+        </li>
+
+        <li Class="ThinkNode_PrioritySorter">
+          <subNodes>
+            <li Class="CommunityCoreLibrary.JobGiver_GetFood"/>
+            <!--<li Class="JobGiver_GetRest"/>-->
+          </subNodes>
+        </li>
+
+        <!-- Insertion hook for modders -->
+        <li Class="ThinkNode_SubtreesByTag">
+          <insertTag>HerbivoreHerd_PreWander</insertTag>
+        </li>
+
+        <li Class="JobGiver_WanderHerd">
+          <maxDanger>Deadly</maxDanger>
+        </li>
+
+        <li Class="JobGiver_WanderAnywhere">
+          <maxDanger>Deadly</maxDanger>
+        </li>
+
+        <li Class="JobGiver_WanderAnywhere">
+          <maxDanger>Deadly</maxDanger>
+        </li>
+        
+				<li Class="JobGiver_IdleError"/>
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+
+</ThinkTrees>
