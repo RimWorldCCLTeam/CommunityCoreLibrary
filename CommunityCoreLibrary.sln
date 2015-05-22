@@ -211,11 +211,10 @@ Global
 		$29.scope = text/x-csharp
 		$0.TextStylePolicy = $30
 		$30.FileWidth = 120
-		$30.TabsToSpaces = False
 		$30.inheritsSet = VisualStudio
 		$30.inheritsScope = text/plain
 		$30.scope = text/plain
-		description = RimWorld Alpha 10 CommunityCoreLibrary
+		description = RimWorld Alpha 10 Community Core Library
 		version = 0.10.0
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

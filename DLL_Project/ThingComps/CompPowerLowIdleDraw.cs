@@ -33,9 +33,10 @@ namespace CommunityCoreLibrary
 		{
 			get
 			{
-				return (CompProperties_LowIdleDraw)this.props;
+				return (CompProperties_LowIdleDraw)props;
 			}
 		}
+
 		private bool					isItOn
 		{
 			get

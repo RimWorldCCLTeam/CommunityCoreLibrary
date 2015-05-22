@@ -12,7 +12,7 @@ using Verse.Sound;
 namespace CommunityCoreLibrary
 {
 
-	public class ResearchCompletePair
+	public struct ResearchCompletePair
 	{
 		// Research projects and last completion flag
 		public ResearchProjectDef researchProject;
@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary
 
 	}
 
-	public class BuildingDesignationPair
+	public struct BuildingDesignationPair
 	{
 		// building designation pair for research unlock
 		public ThingDef building;
@@ -42,15 +42,16 @@ namespace CommunityCoreLibrary
 
 	public class AdvancedResearchDef : Def
 	{
-		// These are used in the xml def
+		// These are defined in xml
 		public List< RecipeDef > recipeDefs;
 		public List< ResearchProjectDef >	researchDefs;
 		public List< ThingDef > buildingDefs;
 
-		// This is used by the DLL for optimization
+
+        // These are used internally by the library, do not set them in xml!
 		public bool isEnabled = false;
 
-		// This is to allow buildings to be unlocked by multiple research
+		// This stores buildings designation categories for those that are unlocked by multiple trees
 		public List< BuildingDesignationPair >	originalBuildingDesignations = null;
 	}
 }

@@ -54,27 +54,17 @@
     <Compile Include="MapComponents\MapComponent_Research.cs" />
     <Compile Include="ThingComps\CompPowerLowIdleDraw.cs" />
     <Compile Include="CompProperties\CompProperties_LowIdleDraw.cs" />
-    <Compile Include="Buildings\Building_LightFixture.cs" />
     <Compile Include="Buildings\Building_SunLampUV.cs" />
     <Compile Include="Defs\AdvancedResearchDef.cs" />
     <Compile Include="Toils\Toils_Common.cs" />
     <Compile Include="ThingComps\CompRefrigerated.cs" />
-    <Compile Include="Alerts\Alert_BuildingNeedsHopper.cs" />
     <Compile Include="Alerts\Alert_NeedMealSourceCommon.cs" />
-    <Compile Include="CompProperties\CompProperties_Hopper.cs" />
     <Compile Include="ThingComps\CompFoodSource.cs" />
-    <Compile Include="JobGivers\JobGiver_GetFood.cs" />
-    <Compile Include="Buildings\Building_NutrientPasteDispenser.cs" />
-    <Compile Include="WorkGivers\WorkGiver_CookFillHopper.cs" />
-    <Compile Include="StaticClasses\LightColour.cs" />
-    <Compile Include="StaticClasses\NPDDefs.cs" />
-    <Compile Include="StaticClasses\HopperDefs.cs" />
     <Compile Include="StaticClasses\Icons.cs" />
     <Compile Include="StaticClasses\CommonFunctions.cs" />
-    <Compile Include="StaticClasses\FoodUtility.cs" />
-    <Compile Include="WorkGivers\WorkGiver_Warden.cs" />
-    <Compile Include="WorkGivers\WorkGiver_FeedIncapped.cs" />
-    <Compile Include="ThingComps\CompHopper.cs" />
+    <Compile Include="CompProperties\CompProperties_ColoredLight.cs" />
+    <Compile Include="StaticClasses\LightColor.cs" />
+    <Compile Include="ThingComps\CompColoredLight.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

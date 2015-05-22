@@ -34,6 +34,15 @@ namespace CommunityCoreLibrary
 
 		private bool					okToProcess = true;
 
+        public override void PostExposeData()
+        {
+
+            //Log.Message( parent.def.defName + " - PostExposeData()" );
+            base.PostExposeData();
+
+            Scribe_Collections.LookList< RefrigeratorContents >( ref contents, "contents", LookMode.DefReference, LookMode.Value );
+        }
+
 		public override void PostSpawnSetup()
 		{
 			//Log.Message( parent.def.defName + " - PostSpawnSetup()" );
@@ -60,7 +69,18 @@ namespace CommunityCoreLibrary
 		public override void CompTick()
 		{
 			base.CompTick();
-			if( !okToProcess ) return;
+            RefrigerateContents();
+        }
+
+        public override void CompTickRare()
+        {
+            base.CompTickRare();
+            RefrigerateContents();
+        }
+
+        private void RefrigerateContents()
+        {
+            if( !okToProcess ) return;
 
 			// Only refrigerate if it has power
 			if( compPower.PowerOn == false ){
