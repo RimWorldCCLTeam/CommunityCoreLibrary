@@ -214,8 +214,8 @@ Global
 		$30.inheritsSet = VisualStudio
 		$30.inheritsScope = text/plain
 		$30.scope = text/plain
-		description = RimWorld Alpha 10 Community Core Library
-		version = 0.10.0
+		description = RimWorld Alpha 11 Community Core Library
+		version = 0.11.0
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

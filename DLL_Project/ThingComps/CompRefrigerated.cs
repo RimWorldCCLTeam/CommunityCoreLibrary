@@ -10,48 +10,58 @@ using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
-	public class RefrigeratorContents
+    public class RefrigeratorContents : IExposable
 	{
 		// This is to handle the degredation of items in the refrigerator
 		// It is capable of handling multiple items in multiple cells
-		public ThingWithComps			thing;
+		public Thing        			thing;
 		public int						HitPoints;
-		public bool						stillHere;
+        public float                    rotProgress;
 
-		public RefrigeratorContents( ThingWithComps t )
+        public RefrigeratorContents()
+        {
+               // Default .ctor
+        }
+
+        public RefrigeratorContents( Thing t, CompRottable compRottable )
 		{
 			thing = t;
 			HitPoints = t.HitPoints;
-			stillHere = true;
+            rotProgress = compRottable.rotProgress;
 		}
+
+        public void ExposeData()
+        {
+            Scribe_References.LookReference( ref thing, "thing" );
+            Scribe_Values.LookValue( ref HitPoints, "HitPoints" );
+            Scribe_Values.LookValue( ref rotProgress, "rotProgress" );
+        }
+
 	}
 
-	public class CompRefrigerated : ThingComp
+    public class CompRefrigerated : ThingComp
 	{
 		private CompPowerTrader			compPower;
-		private Building				thisBuilding;
-		private List< RefrigeratorContents >	contents = new List< RefrigeratorContents >();
+		private Building_Storage		thisBuilding;
+        private List< RefrigeratorContents >	contents = new List< RefrigeratorContents >();
 
-		private bool					okToProcess = true;
+		private bool					okToProcess = false;
 
         public override void PostExposeData()
         {
-
-            //Log.Message( parent.def.defName + " - PostExposeData()" );
             base.PostExposeData();
 
-            Scribe_Collections.LookList< RefrigeratorContents >( ref contents, "contents", LookMode.DefReference, LookMode.Value );
+            Scribe_Collections.LookList<RefrigeratorContents>( ref contents, "contents", LookMode.Deep );
         }
 
 		public override void PostSpawnSetup()
 		{
-			//Log.Message( parent.def.defName + " - PostSpawnSetup()" );
 			base.PostSpawnSetup();
+            okToProcess = false;
 
 			// Get this building
-			thisBuilding = (Building)parent;
+            thisBuilding = (parent as Building_Storage);
 			if( thisBuilding == null ) {
-				okToProcess = false;
 				Log.Message( "Community Core Library :: CompRefrigerated :: Unable to cast '" + parent.def.defName + "' to Building" );
 				return;
 			}
@@ -60,21 +70,54 @@ namespace CommunityCoreLibrary
 			compPower = parent.GetComp<CompPowerTrader>();
 			if( compPower == null )
 			{
-				okToProcess = false;
 				Log.Message( "Community Core Library :: CompRefrigerated :: '" + parent.def.defName + "' needs compPowerTrader!" );
 				return;
 			}
+
+            // Everything seems ok
+            okToProcess = true;
+
 		}
 
-		public override void CompTick()
-		{
-			base.CompTick();
-            RefrigerateContents();
+        public void ScanForRottables()
+        {
+            // Check for things removed
+            bool restartScan;
+            do
+            {
+                restartScan = false;
+                foreach( RefrigeratorContents item in contents )
+                {
+                    if( ( item.thing.Destroyed )||
+                        ( item.thing.StoringBuilding() != thisBuilding ) )
+                    {
+                        // Modifing list, restart scan
+                        contents.Remove( item );
+                        restartScan = true;
+                        break;
+                    }
+                }
+            }while( restartScan == true );
+
+            // Add new things
+            foreach( Thing t in thisBuilding.slotGroup.HeldThings )
+            {
+                CompRottable compRottable = t.TryGetComp<CompRottable>();
+                if( ( compRottable != null )&&
+                    ( contents.Find( item => item.thing == t ) == null ) )
+                    contents.Add( new RefrigeratorContents( t, compRottable ) );
+            }
+
         }
 
-        public override void CompTickRare()
-        {
-            base.CompTickRare();
+        public override void CompTick()
+		{
+			base.CompTick();
+
+            // Only do it every 60 ticks to prevent lags
+            if( !Gen.IsHashIntervalTick( parent, 60 ) )
+                return;
+
             RefrigerateContents();
         }
 
@@ -83,72 +126,25 @@ namespace CommunityCoreLibrary
             if( !okToProcess ) return;
 
 			// Only refrigerate if it has power
-			if( compPower.PowerOn == false ){
-				// Don't remember the contents anymore
-				if( contents.Count > 0 ){
-					contents = new List< RefrigeratorContents >();
-				}
+			if( compPower.PowerOn == false )
+            {
+                // Clear it out
+                if( contents.Count > 0 )
+                    contents = new List<RefrigeratorContents>();
 				// Now leave
 				return;
 			}
 
-			// Assume it's been removed
-			foreach( RefrigeratorContents item in contents )
-			{
-				item.stillHere = false;
-			}
+            // Look for things
+            ScanForRottables();
 
-			foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( thisBuilding ) )
-			{
-				foreach( Thing thing in Find.ThingGrid.ThingsListAt( curPos ) )
-				{
-					if( thing.GetType() == typeof( ThingWithComps ) )
-					{
-						ThingWithComps curThing = (ThingWithComps)thing;
-						CompRottable compRottable = curThing.GetComp<CompRottable>();
-						if( compRottable != null )
-						{
-							Refrigerate( curThing, compRottable );
-						}
-					}
-				}
-			}
-
-			// Clean out junk
-			foreach( RefrigeratorContents item in contents )
-			{
-				if( !item.stillHere )
-				{
-					contents.Remove( item );
-				}
-			}
-		}
-
-		private void Refrigerate( ThingWithComps thing, CompRottable compRottable )
-		{
-			RefrigeratorContents bucket = null;
-
-			// Find an existing item in the refrigerator
-			foreach( RefrigeratorContents item in contents )
-			{
-				if( item.thing == thing )
-				{
-					bucket = item;
-					break;
-				}
-			}
-
-			// Create a new item in the refrigerator
-			if( bucket == null )
-			{
-				bucket = new RefrigeratorContents( thing );
-				contents.Add( bucket );
-			}
-
-			// Restore the item to when refrigeration started
-			thing.HitPoints = bucket.HitPoints;
-			compRottable.rotProgress = 0f;
-			bucket.stillHere = true;
+            // Refrigerate the items
+            foreach( RefrigeratorContents item in contents )
+            {
+                CompRottable compRottable = item.thing.TryGetComp<CompRottable>();
+                item.thing.HitPoints = item.HitPoints;
+                compRottable.rotProgress = item.rotProgress;
+            }
 		}
 	}
 }

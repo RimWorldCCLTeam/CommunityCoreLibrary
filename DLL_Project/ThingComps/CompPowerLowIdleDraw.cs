@@ -18,16 +18,15 @@ namespace CommunityCoreLibrary
 		private List<IntVec3>			scanPosition;
 		private Pawn					curUser;
 		private Job						curJob;
-		// minIdleDraw is to prevent idlePower from being 0.0f.  This
-		// is important so that the device stays connected to the power
-		// net without actually drawing off of it when not in use.
-		private const float				minIdleDraw = 0.01f;
+		// minIdleDraw is to prevent idlePower from being 0.0f
+		// This is important so that the device stays connected to the
+		// power net without actually drawing off of it when not in use.
+		private const float				minIdleDraw = -0.01f;
 		private float					idlePower;
-		private float					curPower = -1f;
+		private float					curPower = 1f;
 		private bool					onIfOn;
 
 		private int						keepOnTicks;
-		private int						keepOnTickCount;
 
 		private CompProperties_LowIdleDraw compProps
 		{
@@ -37,11 +36,11 @@ namespace CommunityCoreLibrary
 			}
 		}
 
-		private bool					isItOn
+		public bool					isItIdle
 		{
 			get
 			{
-				return ( -compPower.PowerOutput > idlePower );
+				return !( compPower.PowerOutput < idlePower );
 			}
 		}
 
@@ -51,8 +50,12 @@ namespace CommunityCoreLibrary
 			//Log.Message( parent.def.defName + " - PostExposeData()" );
 			base.PostExposeData();
 
-			Scribe_Values.LookValue<int>( ref keepOnTicks, "keepOnTicks", 0 );
-			Scribe_Values.LookValue<float>( ref curPower, "curPower", -1f );
+			Scribe_Values.LookValue<int>( ref keepOnTicks, "keepOnTicks", 30 );
+			Scribe_Values.LookValue<float>( ref curPower, "curPower", 1f );
+            Scribe_References.LookReference<Pawn>( ref curUser, "curUser" );
+            if( ( Scribe.mode == LoadSaveMode.LoadingVars )&&
+                ( curUser != null ) )
+                curJob = curUser.CurJob;
 
 		}
 
@@ -90,33 +93,31 @@ namespace CommunityCoreLibrary
 			BuildScanList();
 
 			// Calculate low-power mode consumption
-			idlePower = compProps.idlePowerFactor * compPower.props.basePowerConsumption;
-			if( idlePower < minIdleDraw )
+			idlePower = compProps.idlePowerFactor * -compPower.props.basePowerConsumption;
+			if( idlePower > minIdleDraw )
 				idlePower = minIdleDraw;
 			//Log.Message( parent.def.defName + " - " + idlePower + " - " + compPower.props.basePowerConsumption + " - " + compProps.idlePowerFactor );
 
 			// Initial state...
 
-			// ...No user...
-			curUser = null;
-			curJob = null;
-
-			if( curPower < idlePower ){
-				// ...Default full power...
-				curPower = compPower.props.basePowerConsumption;
-				keepOnTicks = keepOnTickCount;
+			if( curPower > idlePower ){
+				// ...Default off...
+				curPower = idlePower;
 			}
 
 			// Set power usage
-			compPower.PowerOutput = -curPower;
+			compPower.PowerOutput = curPower;
 		}
 
 		public override void CompTick()
 		{
 			base.CompTick();
 
-			// keepOnTicks--;
-			PowerLevelToggle( 1 );
+            if( !Gen.IsHashIntervalTick( parent, 30 ) )
+                return;
+            
+            // keepOnTicks -= 30;
+			PowerLevelToggle( 30 );
 		}
 
 		public override void CompTickRare()
@@ -153,61 +154,72 @@ namespace CommunityCoreLibrary
 
 			// Should it...?
 			if( !onIfOn ) {
-				//Log.Message( parent.def.defName + " - InteractionCell" );
-				// This building has an interaction cell, this means it has
-				// jobs associated with it.  Only go to full-power if the
-				// pawn standing there has a job using the building.
 
-				// Break out of a loop for optimization because for some
-				// reason using gotos is considered evil, even though
-				// having an machine language background I think people
-				// who think this way are just insisting a "potatoe"
-				// is a "potato"
-				while( true ){
+                switch( compProps.operationalMode ){
+                case LowIdleDrawMode.InUse :
+    				// This building has an interaction cell, this means it has
+    				// jobs associated with it.  Only go to full-power if the
+    				// pawn standing there has a job using the building.
 
-					// Quickly check the last user is still using...
-					if( ( curUser != null )&&( curUser.Position == scanPosition[0] ) ) {
-						// They're here...
-						if( ( curUser.CurJob != null )&&( curUser.CurJob == curJob ) ) {
-							// ...they're using!
-							//Log.Message( parent.def.defName + " - Same User" );
-							turnItOn = true;
-							break;
-						}
-					}
+    				// Break out of a loop for optimization because for some
+    				// reason using gotos is considered evil, even though
+    				// having an machine language background I think people
+    				// who think this way are just insisting a "potatoe"
+    				// is a "potato"
+    				while( true ){
 
-					// Look for a new user...
+    					// Quickly check the last user is still using...
+    					if( ( curUser != null )&&( curUser.Position == scanPosition[0] ) ) {
+    						// They're here...
+    						if( ( curUser.CurJob != null )&&( curUser.CurJob == curJob ) ) {
+    							// ...they're using!
+    							turnItOn = true;
+    							break;
+    						}
+    					}
 
-					Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[0] );
-					if( pUser != null ) {
-						// ...A pawn is here!...
+    					// Look for a new user...
 
-						if( pUser.CurJob != null ) {
-							// ...With a job!...
+    					Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[0] );
+    					if( pUser != null ) {
+    						// ...A pawn is here!...
 
-							// ...(checking targets)...
-							if      ( ( pUser.CurJob.targetA != null )&&( pUser.CurJob.targetA.Thing != null )&&( pUser.CurJob.targetA.Thing.def == thisBuilding.def ) ) {
-								turnItOn = true;
-							}else if( ( pUser.CurJob.targetB != null )&&( pUser.CurJob.targetB.Thing != null )&&( pUser.CurJob.targetB.Thing.def == thisBuilding.def ) ) {
-								turnItOn = true;
-							}else if( ( pUser.CurJob.targetC != null )&&( pUser.CurJob.targetC.Thing != null )&&( pUser.CurJob.targetC.Thing.def == thisBuilding.def ) ) {
-								turnItOn = true;
-							}
+    						if( pUser.CurJob != null ) {
+    							// ...With a job!...
 
-							if( turnItOn ){
-								// ..Using this building!...
-								//Log.Message( parent.def.defName + " - New User" );
-								curUser = pUser;
-								curJob = pUser.CurJob;
-							}
-						}
-					}
+    							// ...(checking targets)...
+    							if      ( ( pUser.CurJob.targetA != null )&&( pUser.CurJob.targetA.Thing != null )&&( pUser.CurJob.targetA.Thing.def == thisBuilding.def ) ) {
+    								turnItOn = true;
+    							}else if( ( pUser.CurJob.targetB != null )&&( pUser.CurJob.targetB.Thing != null )&&( pUser.CurJob.targetB.Thing.def == thisBuilding.def ) ) {
+    								turnItOn = true;
+    							}else if( ( pUser.CurJob.targetC != null )&&( pUser.CurJob.targetC.Thing != null )&&( pUser.CurJob.targetC.Thing.def == thisBuilding.def ) ) {
+    								turnItOn = true;
+    							}
 
-					// Exit loop
-					break;
-				}
+    							if( turnItOn ){
+    								// ..Using this building!...
+    								//Log.Message( parent.def.defName + " - New User" );
+    								curUser = pUser;
+    								curJob = pUser.CurJob;
+    							}
+    						}
+    					}
+
+    					// Exit loop
+    					break;
+    				}
+
+                    break;
+                case LowIdleDrawMode.Cycle :
+                    // Power cycler
+                    if( isItIdle )
+                    {
+                        // Going to full power cycle
+                        turnItOn = true;
+                    }
+                    break;
+                }
 			}else{
-				//Log.Message( parent.def.defName + " - onIfOn" );
 				// Full-power when any pawn is standing on any monitored cell...
 				foreach( IntVec3 curPos in scanPosition ) {
 					if( Find.ThingGrid.ThingAt<Pawn>( curPos ) != null ){
@@ -222,52 +234,47 @@ namespace CommunityCoreLibrary
 			// Do?...
 			if( turnItOn ){
 				// ...Turn on...
-				if( !isItOn ){
-					// ...because it is off
-					//Log.Message( parent.def.defName + " - turnItOn" );
+				if( isItIdle ){
+					// ...because it is idle
 					TogglePower();
 				}else{
-					// ..keep it on, actually
-					//Log.Message( parent.def.defName + " - keepItOn" );
-					keepOnTicks = keepOnTickCount;
+					// ..maintain the current state
+                    keepOnTicks = compProps.cycleHighTicks;
 				}
 			}
-			else if ( isItOn )	{
-				// ...Is on, turn off
-				//Log.Message( parent.def.defName + " - turnItOff" );
+			else if ( !isItIdle )	{
+				// ...Is not idle, go to idle mode
 				TogglePower();
 			}
-			if( ( !isItOn )&&( compGlower != null )&&( compGlower.Lit ) ){
-				// Glower on with on power???
+			if( ( isItIdle )&&( compGlower != null )&&( compGlower.Lit ) ){
+				// Glower on while idle???
 				ToggleGlower( false );
 			}
 		}
 
 		private void TogglePower()
 		{
-			if( isItOn )
-			{
-				// Is on, turn off
-				//Log.Message( parent.def.defName + " - Going low-power" );
-				curPower = idlePower;
-				compPower.PowerOutput = -curPower;
-				keepOnTicks = 0;
-				curUser = null;
-				curJob = null;
-			}
+			if( isItIdle )
+            {
+                // Is idle, power up
+                curPower = -compPower.props.basePowerConsumption;
+                compPower.PowerOutput = curPower;
+                keepOnTicks = compProps.cycleHighTicks;
+            }
 			else
-			{
-				// Is off, turn on
-				//Log.Message( parent.def.defName + " - Going full-power" );
-				curPower = compPower.props.basePowerConsumption;
-				compPower.PowerOutput = -curPower;
-				keepOnTicks = keepOnTickCount;
-			}
+            {
+                // Is not idle, power down
+                curPower = idlePower;
+                compPower.PowerOutput = curPower;
+                keepOnTicks = compProps.cycleLowTicks;
+                curUser = null;
+                curJob = null;
+            }
 
 			// Adjust glower...
 			if( compGlower != null ){
 				// ...if it exists
-				ToggleGlower( isItOn );
+				ToggleGlower( !isItIdle );
 			}
 		}
 
@@ -280,8 +287,8 @@ namespace CommunityCoreLibrary
 			// Toggle and update glow grid
 			compGlower.Lit = turnItOn;
 			Find.GlowGrid.MarkGlowGridDirty( thisBuilding.Position );
-			Find.MapDrawer.MapChanged( thisBuilding.Position, MapChangeType.GroundGlow );
-			Find.MapDrawer.MapChanged( thisBuilding.Position, MapChangeType.Things );
+            Find.MapDrawer.MapMeshDirty( thisBuilding.Position, MapMeshFlag.GroundGlow );
+			Find.MapDrawer.MapMeshDirty( thisBuilding.Position, MapMeshFlag.Things );
 		}
 
 		private void BuildScanList()
@@ -290,6 +297,19 @@ namespace CommunityCoreLibrary
 			// Default to interaction cell only, is also means that a pawn must
 			// be using the building so star-gazers aren't turning the stove on.
 			onIfOn = false;
+
+            // Power cyclers don't need to scan anything
+            if( compProps.operationalMode == LowIdleDrawMode.Cycle )
+            {
+                // Set default scan tick intervals
+                if( compProps.cycleLowTicks < 0 )
+                    compProps.cycleLowTicks = 1000;
+
+                if( compProps.cycleHighTicks < 0 )
+                    compProps.cycleLowTicks = 500;
+
+                return;
+            }
 
 			// List of cells to check
 			scanPosition = new List<IntVec3>();
@@ -313,6 +333,7 @@ namespace CommunityCoreLibrary
 				case LowIdleDrawMode.GroupUser :
 					// Group user adds cells "in front" of it
 					// Only really used by TVs
+                    // TODO:  Make this actually do something!
 					/*
 					 * if( ( parent.def == ThingDefOf.Television )
 						||( parent.def == ThingDefOf.TelevisionLED ) ){
@@ -326,9 +347,6 @@ namespace CommunityCoreLibrary
 					break;
 				}
 
-				// Give work tables more time so pawns have time to fetch ingredients
-				keepOnTickCount = 250;
-
 			}else{
 				// Pawn standing on building means we need the buildings occupancy
 				onIfOn = true;
@@ -340,12 +358,28 @@ namespace CommunityCoreLibrary
 
 				if (compProps.operationalMode == LowIdleDrawMode.WhenNear)
 					// And the adjacent cells too???
-					foreach (IntVec3 curPos in GenAdj.CellsAdjacent8Way( thisBuilding )) {
+					foreach (IntVec3 curPos in GenAdj.CellsAdjacent8Way( thisBuilding ))
 						AddScanPositionIfAllowed (curPos);
-					}
 
-				keepOnTickCount = 50;
 			}
+
+            // Set default scan tick intervals
+            if( compProps.cycleLowTicks < 0 )
+                compProps.cycleLowTicks = 30;
+            
+            if( compProps.cycleHighTicks < 0 )
+            {
+                if( ( thisBuilding as Building_Door ) != null )
+                {
+                    // Doors can be computed
+                    compProps.cycleHighTicks = ((Building_Door)thisBuilding).TicksToOpenNow * 3;
+                }
+                else
+                {
+                    // Give work tables more time so pawns have time to fetch ingredients
+                    compProps.cycleHighTicks = 500;
+                }
+            }
 		}
 
 		private void AddScanPositionIfAllowed( IntVec3 position )

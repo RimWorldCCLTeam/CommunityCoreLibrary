@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
 	public static class Icon
 	{
 		public static readonly Texture2D		GrowZone = ContentFinder<Texture2D>.Get( "UI/Designators/ZoneCreate_Growing", true);
-		public static readonly Texture2D		NextButton = ContentFinder<Texture2D>.Get( "Ui/Icons/Commands/NextButton", true);
+		public static readonly Texture2D		NextButton = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/NextButton", true);
 	}
 
 }

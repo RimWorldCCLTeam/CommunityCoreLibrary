@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+	
+	<ThingDef Name="BuildingBase" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<altitudeLayer>Waist</altitudeLayer>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
+	</ThingDef>
+	
+	<ThingDef ParentName="BuildingBase">
+		<defName>RefrigeratedMealShelf</defName>
+		<label>refrigerator</label>
+		<thingClass>Building_Storage</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Furniture/EquipmentRack</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,3)</drawSize>
+		</graphicData>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.4</fillPercent>
+		<castEdgeShadows>true</castEdgeShadows>
+		<stuffCategories>
+			<li>Metallic</li>
+			<li>Woody</li>
+			<li>Stony</li>
+		</stuffCategories>
+		<costStuffCount>30</costStuffCount>
+		<costList>
+			<Steel>25</Steel>
+		</costList>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<WorkToMake>700</WorkToMake>
+			<Flammability>1.0</Flammability>
+		</statBases>
+		<description>Haulers carry meals here for storage without rotting.</description>
+		<size>(2,1)</size>
+		<building>
+			<fixedStorageSettings>
+				<filter>
+					<categories>
+						<li>FoodMeals</li>
+					</categories>
+				</filter>
+			</fixedStorageSettings>
+			<defaultStorageSettings>
+				<priority>Important</priority>
+				<filter>
+					<categories>
+						<li>FoodMeals</li>
+					</categories>
+					<exceptedThingDefs>
+						<li>MealSurvivalPack</li>
+						<li>Beer</li>
+						<li>Chocolate</li>
+					</exceptedThingDefs>
+				</filter>
+			</defaultStorageSettings>
+		</building>
+		<inspectorTabs>
+			<li>ITab_Storage</li>
+		</inspectorTabs>
+		<comps>
+			<li>
+				<compClass>CommunityCoreLibrary.CompRefrigerated</compClass>
+			</li>
+			<li>
+				<compClass>CompForbiddable</compClass>
+			</li>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>200</basePowerConsumption>
+			</li>
+			<li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+				<compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+				<idlePowerFactor>0.25</idlePowerFactor>
+				<operationalMode>Cycle</operationalMode>
+				<cycleLowTicks>2500</cycleLowTicks>
+				<cycleHighTicks>1500</cycleHighTicks>
+			</li>
+		</comps>
+		<designationCategory>Furniture</designationCategory>
+		<staticSunShadowHeight>0.5</staticSunShadowHeight>
+		<surfaceType>Item</surfaceType>
+		<tickerType>Normal</tickerType>
+		<designationHotKey/>
+	</ThingDef>
+	
+</Defs>

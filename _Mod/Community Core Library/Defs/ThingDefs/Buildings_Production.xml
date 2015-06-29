@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ThingDefs>
+<Defs>
+	
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
 		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
@@ -11,12 +12,16 @@
 		<filthLeaving>BuildingRubble</filthLeaving>
 		<tickerType>Normal</tickerType>
 	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<defName>NutrientPasteDispenser</defName>
 		<label>nutrient paste dispenser</label>
 		<thingClass>Building_NutrientPasteDispenser</thingClass>
-		<graphicPath>Things/Building/Production/NutrientDispenser</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Production/NutrientDispenser</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,4)</drawSize>
+		</graphicData>
 		<altitudeLayer>BuildingTall</altitudeLayer>
 		<passability>Impassable</passability>
 		<castEdgeShadows>true</castEdgeShadows>
@@ -28,6 +33,7 @@
 		</statBases>
 		<description>Synthesizes nutrient paste from organic feedstocks. It consumes less ingredients and time than any other meal production method - but nobody likes eating nutrient paste.</description>
 		<building>
+			<isMealSource>true</isMealSource>
 			<wantsHopperAdjacent>true</wantsHopperAdjacent>
 			<foodCostPerDispense>6</foodCostPerDispense>
 			<soundDispense>DispensePaste</soundDispense>
@@ -43,9 +49,6 @@
 				<idlePowerFactor>0.25</idlePowerFactor>
 				<operationalMode>WhenNear</operationalMode>
 			</li>
-			<li>
-				<compClass>CommunityCoreLibrary.CompFoodSource</compClass>
-			</li>
 		</comps>
 		<size>(3,4)</size>
 		<costList>
@@ -59,74 +62,17 @@
 		<constructEffect>ConstructMetal</constructEffect>
 		<designationHotKey>N</designationHotKey>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>Hopper</defName>
-		<label>hopper</label>
-		<thingClass>Building_Storage</thingClass>
-		<graphicPath>Things/Building/Production/Hopper</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<fillPercent>0.5</fillPercent>
-		<pathCost>70</pathCost>
-		<building>
-			<fixedStorageSettings>
-				<priority>Important</priority>
-				<allowances>
-					<categories>
-						<li>FoodRaw</li>
-					</categories>
-				</allowances>
-			</fixedStorageSettings>
-			<defaultStorageSettings>
-				<priority>Important</priority>
-				<allowances>
-					<categories>
-						<li>FoodRaw</li>
-					</categories>
-					<exceptedThingDefs>
-						<li>Human_Meat</li>
-					</exceptedThingDefs>
-				</allowances>
-			</defaultStorageSettings>
-		</building>
-		<comps>
-			<li Class="CommunityCoreLibrary.CompProperties_Hopper">
-				<compClass>CommunityCoreLibrary.CompHopper</compClass>
-			</li>
-		</comps>
-		<inspectorTabs>
-			<li>ITab_Storage</li>
-		</inspectorTabs>
-		<castEdgeShadows>true</castEdgeShadows>
-		<statBases>
-			<WorkToMake>450</WorkToMake>
-			<MaxHitPoints>100</MaxHitPoints>
-			<Flammability>1.0</Flammability>
-		</statBases>
-		<description>Holds resources for use by machines like nutrient paste dispensers.</description>
-		<costList>
-			<Steel>15</Steel>
-		</costList>
-		<tickerType>Never</tickerType>
-		<rotatable>true</rotatable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<designationCategory>Production</designationCategory>
-		<staticSunShadowHeight>0.3</staticSunShadowHeight>
-		<itemSurface>true</itemSurface>
-		<placeWorkers>
-			<li>PlaceWorker_NextToHopperAccepter</li>
-		</placeWorkers>
-		<constructEffect>ConstructMetal</constructEffect>
-		<designationHotKey>H</designationHotKey>
-	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<DefName>TableTailor</DefName>
 		<label>tailor's workbench</label>
 		<ThingClass>Building_WorkTable</ThingClass>
 		<Description>A workbench equipped for cloth refinement and clothing production.</Description>
-		<graphicPath>Things/Building/Production/TableTailor</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Production/TableTailor</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,1)</drawSize>
+		</graphicData>
 		<costStuffCount>75</costStuffCount>
 		<CostList>
 			<Steel>50</Steel>
@@ -144,13 +90,12 @@
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<Size>(3,1)</Size>
-		<graphicOverdraw>False</graphicOverdraw>
 		<DesignationCategory>Production</DesignationCategory>
 		<Passability>PassThroughOnly</Passability>
 		<pathCost>70</pathCost>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<itemSurface>True</itemSurface>
+		<surfaceType>Item</surfaceType>
 		<inspectorTabs>
 			<li>ITab_Bills</li>
 		</inspectorTabs>
@@ -171,13 +116,17 @@
 		</comps>
 		<designationHotKey>P</designationHotKey>
 	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<DefName>TableSmithing</DefName>
 		<label>smithing bench</label>
 		<ThingClass>Building_WorkTable</ThingClass>
 		<Description>A workbench equipped for weapons and tools production.</Description>
-		<graphicPath>Things/Building/Production/TableSmithing</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Production/TableSmithing</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,1)</drawSize>
+		</graphicData>
 		<CostList>
 			<WoodLog>40</WoodLog>
 			<Steel>100</Steel>
@@ -192,13 +141,12 @@
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<Size>(3,1)</Size>
-		<graphicOverdraw>False</graphicOverdraw>
 		<DesignationCategory>Production</DesignationCategory>
 		<Passability>PassThroughOnly</Passability>
 		<pathCost>70</pathCost>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<itemSurface>True</itemSurface>
+		<surfaceType>Item</surfaceType>
 		<inspectorTabs>
 			<li>ITab_Bills</li>
 		</inspectorTabs>
@@ -224,13 +172,17 @@
 		</comps>
 		<designationHotKey>M</designationHotKey>
 	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<DefName>TableMachining</DefName>
 		<label>machining table</label>
 		<ThingClass>Building_WorkTable</ThingClass>
 		<Description>A table and tools for assembling and disassembling machine components like mechanoids bodies and ammunition.</Description>
-		<graphicPath>Things/Building/Production/TableMachining</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Production/TableMachining</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,1)</drawSize>
+		</graphicData>
 		<CostList>
 			<Steel>150</Steel>
 		</CostList>
@@ -243,13 +195,12 @@
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<Size>(3,1)</Size>
-		<graphicOverdraw>False</graphicOverdraw>
 		<DesignationCategory>Production</DesignationCategory>
 		<Passability>PassThroughOnly</Passability>
 		<pathCost>70</pathCost>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<itemSurface>True</itemSurface>
+		<surfaceType>Item</surfaceType>
 		<recipes>
 			<li>ButcherCorpseMechanoid</li>
 			<li>MakeArtilleryShell</li>
@@ -281,13 +232,17 @@
 		<researchPrerequisite>Machining</researchPrerequisite>
 		<designationHotKey>N</designationHotKey>
 	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<defName>CookStove</defName>
 		<label>cook stove</label>
 		<ThingClass>Building_WorkTable_HeatPush</ThingClass>
 		<Description>A simple stove and attached countertop for preparing meals.</Description>
-		<graphicPath>Things/Building/Production/TableCookStove</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Production/TableCookStove</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,1)</drawSize>
+		</graphicData>
 		<constructEffect>ConstructMetal</constructEffect>
 		<CostList>
 			<Steel>90</Steel>
@@ -301,13 +256,12 @@
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<Size>(3,1)</Size>
-		<graphicOverdraw>False</graphicOverdraw>
 		<DesignationCategory>Production</DesignationCategory>
 		<Passability>PassThroughOnly</Passability>
 		<pathCost>70</pathCost>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<itemSurface>True</itemSurface>
+		<surfaceType>Item</surfaceType>
 		<recipes>
 			<li>CookMealSimple</li>
 			<li>CookMealFine</li>
@@ -332,23 +286,25 @@
 				<glowRadius>3</glowRadius>
 				<glowColor>(217,112,33,0)</glowColor>
 			</li>
-			<li>
-				<compClass>CommunityCoreLibrary.CompFoodSource</compClass>
-			</li>
 		</comps>
 		<building>
+			<isMealSource>true</isMealSource>
 			<spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
 			<heatPerTickWhileWorking>0.25</heatPerTickWhileWorking>
 		</building>
 		<designationHotKey>O</designationHotKey>
 	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<DefName>ElectricSmelter</DefName>
 		<label>electric smelter</label>
 		<ThingClass>Building_WorkTable_HeatPush</ThingClass>
 		<Description>Extracts usable metal from slag chunks and other mixed metal items. Consumes a lot of power.</Description>
-		<graphicPath>Things/Building/Production/ElectricSmelter</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Production/ElectricSmelter</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,1)</drawSize>
+		</graphicData>
 		<constructEffect>ConstructMetal</constructEffect>
 		<CostList>
 			<Steel>170</Steel>
@@ -362,13 +318,12 @@
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<Size>(3,1)</Size>
-		<graphicOverdraw>False</graphicOverdraw>
 		<DesignationCategory>Production</DesignationCategory>
 		<Passability>PassThroughOnly</Passability>
 		<pathCost>70</pathCost>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<itemSurface>True</itemSurface>
+		<surfaceType>Item</surfaceType>
 		<recipes>
 			<li>ExtractMetalFromSlag</li>
 			<li>SmeltWeapon</li>
@@ -398,14 +353,18 @@
 		<researchPrerequisite>ElectricSmelting</researchPrerequisite>
 		<designationHotKey>L</designationHotKey>
 	</ThingDef>
+	
 	<ThingDef ParentName="BuildingBase">
 		<DefName>Crematorium</DefName>
 		<label>crematorium</label>
 		<ThingClass>Building_WorkTable_HeatPush</ThingClass>
 		<Description>Cremates corpses.</Description>
-		<graphicPath>Things/Building/Production/Crematorium</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
-		<graphicShaderType>CutoutComplex</graphicShaderType>
+		<graphicData>
+			<texPath>Things/Building/Production/Crematorium</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(3,2)</drawSize>
+		</graphicData>
 		<stuffCategories>
 			<li>Stony</li>
 		</stuffCategories>
@@ -421,13 +380,12 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<Size>(3,2)</Size>
-		<graphicOverdraw>False</graphicOverdraw>
 		<DesignationCategory>Production</DesignationCategory>
 		<fillPercent>1</fillPercent>
 		<Passability>Impassable</Passability>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<itemSurface>True</itemSurface>
+		<surfaceType>Item</surfaceType>
 		<recipes>
 			<li>CremateCorpse</li>
 			<li>BurnApparel</li>
@@ -451,6 +409,11 @@
 				<glowRadius>6</glowRadius>
 				<glowColor>(217,112,33,0)</glowColor>
 			</li>
+			<li>
+				<compClass>CommunityCoreLibrary.CompHeatPusherPowered</compClass>
+				<heatPerSecond>15</heatPerSecond>
+				<heatPushMaxTemperature>1000</heatPushMaxTemperature>
+			</li>
 		</comps>
 		<building>
 			<spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
@@ -459,4 +422,5 @@
 		<researchPrerequisite>Cremation</researchPrerequisite>
 		<designationHotKey>R</designationHotKey>
 	</ThingDef>
-</ThingDefs>
+	
+</Defs>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<AdvancedResearchDef>
+		<defName>BuildAncientCryptoSleep</defName>
+		<researchDefs>
+			<li>Cryptosleep</li>
+			<li>AncientTechnology</li>
+		</researchDefs>
+		<buildingDefs>
+			<li>AncientCryptosleepCasket</li>
+		</buildingDefs>
+	</AdvancedResearchDef>
+	
+</Defs>

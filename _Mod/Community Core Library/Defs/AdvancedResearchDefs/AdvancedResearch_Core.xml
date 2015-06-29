@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<AdvancedResearchDef>
+		<defName>MakeArtilleryShells</defName>
+		<recipeDefs>
+			<li>MakeArtilleryShell</li>
+		</recipeDefs>
+		<researchDefs>
+			<li>Mortars</li>
+			<li>Machining</li>
+		</researchDefs>
+		<buildingDefs>
+			<li>TableMachining</li>
+		</buildingDefs>
+	</AdvancedResearchDef>
+	
+</Defs>

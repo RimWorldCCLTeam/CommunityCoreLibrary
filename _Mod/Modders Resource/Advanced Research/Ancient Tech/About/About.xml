@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Ancient Tech</name>
+	<author>1000101</author>
+	<url>n/a</url>
+	<targetVersion>Community Core Library v0.11.0</targetVersion>
+	<description>
+	This is an example of ancient technology.
+	
+	Demonstrates:
+	Advanced Research to unlock buildings with multiple research requirements
+	</description>
+</ModMetaData>

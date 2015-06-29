@@ -14,12 +14,15 @@ namespace CommunityCoreLibrary
 	{
 		InUse = 0,
 		WhenNear,
-		GroupUser
+		GroupUser,
+        Cycle
 	}
 	public class CompProperties_LowIdleDraw : CompProperties
 	{
 		public float					idlePowerFactor = 0.0f;
 		public LowIdleDrawMode			operationalMode = LowIdleDrawMode.InUse;
+        public int                      cycleLowTicks = 30;
+        public int                      cycleHighTicks = -1;
 
 		public CompProperties_LowIdleDraw ()
 		{

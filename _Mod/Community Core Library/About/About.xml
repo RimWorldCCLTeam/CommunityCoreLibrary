@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>Community Core Library Alpha 10</name>
-  <author>RimWorld Modders</author>
-  <url>TBA</url>
-  <targetVersion>RimWorld Alpha 10</targetVersion>
-  <description>Provides a common core set of library functions for modders as
-   well as making the necessary core compatibility changes.
-  </description>
+	<name>Community Core Library v0.11.0</name>
+	<author>1000101</author>
+	<url>TBA</url>
+	<targetVersion>RimWorld Alpha 11</targetVersion>
+	<description>Provides a common core set of library functions for modders as well as making the necessary core compatibility changes.</description>
 </ModMetaData>

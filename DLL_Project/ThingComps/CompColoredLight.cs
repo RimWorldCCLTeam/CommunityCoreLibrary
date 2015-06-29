@@ -149,8 +149,8 @@ namespace CommunityCoreLibrary
             // Update glow grid
             compGlower.Lit = false;
             Find.GlowGrid.MarkGlowGridDirty( parent.Position );
-            Find.MapDrawer.MapChanged( parent.Position, MapChangeType.GroundGlow );
-            Find.MapDrawer.MapChanged( parent.Position, MapChangeType.Things );
+            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
+            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
 
             if( ( wasLit )&&( compPower.PowerOn ) )
             {

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Buildings>
+<Defs>
+	
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
 		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
@@ -10,12 +11,14 @@
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<filthLeaving>BuildingRubble</filthLeaving>
 	</ThingDef>
-	<!--========================= Doors =============================-->
+	
 	<ThingDef ParentName="BuildingBase" Name="DoorBase" Abstract="True">
 		<thingClass>Building_Door</thingClass>
 		<blueprintClass>Blueprint_Door</blueprintClass>
 		<category>Building</category>
-		<blueprintgraphicPath>Things/Building/Door/Door_Blueprint</blueprintgraphicPath>
+		<blueprintGraphicData>
+			<texPath>Things/Building/Door/Door_Blueprint</texPath>
+		</blueprintGraphicData>
 		<altitudeLayer>DoorMoveable</altitudeLayer>
 		<fillPercent>1</fillPercent>
 		<useHitPoints>true</useHitPoints>
@@ -25,13 +28,12 @@
 			<li>Stony</li>
 		</stuffCategories>
 		<statBases>
-			<MaxHitPoints>150</MaxHitPoints>
+			<MaxHitPoints>250</MaxHitPoints>
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
 		<tickerType>Normal</tickerType>
-		<size>(1,1)</size>
 		<rotatable>false</rotatable>
 		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
@@ -49,6 +51,7 @@
 			<canPlaceOverWall>true</canPlaceOverWall>
 		</building>
 	</ThingDef>
+	
 	<ThingDef ParentName="DoorBase">
 		<defName>Door</defName>
 		<label>door</label>
@@ -56,12 +59,15 @@
 		<statBases>
 			<WorkToMake>850</WorkToMake>
 		</statBases>
-		<graphicPath>Things/Building/Door/DoorSimple_Mover</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Door/DoorSimple_Mover</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
 		<uiIconPath>Things/Building/Door/DoorSimple_MenuIcon</uiIconPath>
 		<costStuffCount>25</costStuffCount>
 		<designationHotKey>P</designationHotKey>
 	</ThingDef>
+	
 	<ThingDef ParentName="DoorBase">
 		<defName>Autodoor</defName>
 		<label>autodoor</label>
@@ -69,8 +75,10 @@
 		<statBases>
 			<WorkToMake>1100</WorkToMake>
 		</statBases>
-		<graphicPath>Things/Building/Door/Autodoor_Mover</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/Door/Autodoor_Mover</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
 		<uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
 		<costList>
 			<Steel>40</Steel>
@@ -80,7 +88,6 @@
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>100</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
 				<compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
@@ -90,4 +97,5 @@
 		</comps>
 		<designationHotKey>O</designationHotKey>
 	</ThingDef>
-</Buildings>
+	
+</Defs>
