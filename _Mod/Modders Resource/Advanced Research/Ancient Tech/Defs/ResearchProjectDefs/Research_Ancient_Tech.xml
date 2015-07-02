@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	
-	<ResearchProjectDef>
-		<defName>AncientTechnology</defName>
-		<label>Ancient Technology</label>
-		<description>This will unlock the secrets of ancient technologies which have been lost though time.</description>
-		<descriptionDiscovered>"What has been will be again, what has been done will be done again; there is nothing new under the sun." Ecclesiastes 1:9</descriptionDiscovered>
-		<totalCost>1500</totalCost>
-		<prerequisites/>
-	</ResearchProjectDef>
-	
+
+    <ResearchProjectDef>
+        <defName>AncientTechnology</defName>
+        <label>Ancient Technology</label>
+        <description>This will unlock the secrets of ancient technologies which have been lost though time.</description>
+        <descriptionDiscovered>"What has been will be again, what has been done will be done again; there is nothing new under the sun." Ecclesiastes 1:9</descriptionDiscovered>
+        <totalCost>1500</totalCost>
+        <prerequisites/>
+    </ResearchProjectDef>
+
 </Defs>

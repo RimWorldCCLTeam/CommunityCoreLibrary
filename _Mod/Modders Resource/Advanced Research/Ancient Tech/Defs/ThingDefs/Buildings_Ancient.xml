@@ -1,60 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	
-	<ThingDef Name="BuildingBase" Abstract="True">
-		<category>Building</category>
-		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
-		<selectable>true</selectable>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<repairEffect>Repair</repairEffect>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<filthLeaving>BuildingRubble</filthLeaving>
-	</ThingDef>
-	
-	<ThingDef ParentName="BuildingBase">
-		<defName>AncientCryptosleepCasket</defName>
-		<label>ancient cryptosleep casket</label>
-		<thingClass>Building_AncientCryptosleepCasket</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/ShipCryptosleepCasket</texPath>
-			<graphicClass>Graphic_Multi</graphicClass>
-			<drawSize>(3,4)</drawSize>
-		</graphicData>
-		<altitudeLayer>BuildingTall</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<pathCost>70</pathCost>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>0.5</fillPercent>
-		<statBases>
-			<MaxHitPoints>250</MaxHitPoints>
-			<Flammability>1.0</Flammability>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<description>This cryptosleep casket looks like it has been here for a very long time. Who knows what it might contain?</description>
-		<size>(1,2)</size>
-		<hasInteractionCell>true</hasInteractionCell>
-		<interactionCellOffset>(1,0,0)</interactionCellOffset>
-		<costList>
-			<Steel>180</Steel>
-			<Uranium>5</Uranium>
-		</costList>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-			<Steel>25</Steel>
-			<Uranium>3</Uranium>
-		</killedLeavings>
-		<comps>
-			<li>
-				<compClass>CompExplosive</compClass>
-				<explosiveRadius>2.66</explosiveRadius>
-				<explosiveDamageType>Flame</explosiveDamageType>
-			</li>
-		</comps>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<designationCategory>Misc</designationCategory>
-	</ThingDef>
-	
+
+    <ThingDef Name="BuildingBase" Abstract="True">
+        <category>Building</category>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <selectable>true</selectable>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <repairEffect>Repair</repairEffect>
+        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <filthLeaving>BuildingRubble</filthLeaving>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>AncientCryptosleepCasket</defName>
+        <label>ancient cryptosleep casket</label>
+        <thingClass>Building_AncientCryptosleepCasket</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Ship/ShipCryptosleepCasket</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3,4)</drawSize>
+        </graphicData>
+        <altitudeLayer>BuildingTall</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>70</pathCost>
+        <castEdgeShadows>true</castEdgeShadows>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>250</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <tickerType>Normal</tickerType>
+        <description>This cryptosleep casket looks like it has been here for a very long time. Who knows what it might contain?</description>
+        <size>(1,2)</size>
+        <hasInteractionCell>true</hasInteractionCell>
+        <interactionCellOffset>(1,0,0)</interactionCellOffset>
+        <costList>
+            <Steel>180</Steel>
+            <Uranium>5</Uranium>
+        </costList>
+        <killedLeavings>
+            <ChunkSlagSteel>1</ChunkSlagSteel>
+            <Steel>25</Steel>
+            <Uranium>3</Uranium>
+        </killedLeavings>
+        <comps>
+            <li>
+                <compClass>CompExplosive</compClass>
+                <explosiveRadius>2.66</explosiveRadius>
+                <explosiveDamageType>Flame</explosiveDamageType>
+            </li>
+        </comps>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <staticSunShadowHeight>1.0</staticSunShadowHeight>
+        <!--
+            Need to set the designationCategory to where we want it to show up
+            after research is complete
+        -->
+        <designationCategory>Misc</designationCategory>
+    </ThingDef>
+
 </Defs>

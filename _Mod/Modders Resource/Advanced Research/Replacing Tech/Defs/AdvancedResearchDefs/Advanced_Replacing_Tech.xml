@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+        <defName>string</defName>       [required] SomeUniqueIdentifierInClass
+        <Priority>int</Priority>        [required] Lower values is happen first
+        
+        <researchDefs>                  [required] All the research listed must be complete for anything to happen
+            <li>ResearchProjectDef</li>
+        </researchDefs>
+        
+        <HideDefs>bool</HideDefs>       [optional: false] Set to true to hide recipes or buildings
+        
+        <recipeDefs>                    [optional: null] Recipes to toggle, requires buildings
+            <li>RecipeDef</li>                   
+        </recipeDef>
+        
+        <buildingsDefs>                 [optional: null] The buildings to toggle recipes or architect menu visibility
+            <li>ThingDef</li>
+        </buildDefs>
+        
+        <researchMods>                  [optional: null] Mod callback Actions, these will happen after everything else has been processed
+            <li>Action</li>
+        </researchMods>
+    -->
+
+    <AdvancedResearchDef>
+        <!--
+            This def will add the level 1 recipe to the bulb
+        -->
+        
+        <defName>AdvancedTechLevelOneAdd</defName>
+        <Priority>0</Priority>
+        
+        <researchDefs>
+            <li>TechLevelOne</li>
+        </researchDefs>
+        
+        <recipeDefs>
+            <li>TechRecipeOne</li>
+        </recipeDefs>
+        
+        <buildingDefs>
+            <li>ReplaceRecipeTest</li>
+        </buildingDefs>
+        
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will remove the level 1 recipe to the bulb after level 2 is researched
+        -->
+        
+        <defName>AdvancedTechLevelOneRemove</defName>
+        <Priority>1</Priority>
+        
+        <researchDefs>
+            <li>TechLevelTwo</li>
+        </researchDefs>
+        
+        <HideDefs>true</HideDefs>
+        
+        <recipeDefs>
+            <li>TechRecipeOne</li>
+        </recipeDefs>
+        
+        <buildingDefs>
+            <li>ReplaceRecipeTest</li>
+        </buildingDefs>
+        
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            And now, add the level 2 recipe to the table
+        -->
+        
+        <defName>AdvancedTechLevelTwoAdd</defName>
+        <Priority>2</Priority>
+        
+        <researchDefs>
+            <li>TechLevelTwo</li>
+        </researchDefs>
+        
+        <recipeDefs>
+            <li>TechRecipeTwo</li>
+        </recipeDefs>
+        
+        <buildingDefs>
+            <li>ReplaceRecipeTest</li>
+        </buildingDefs>
+        
+    </AdvancedResearchDef>
+
+</Defs>

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Refigerated Meal Shelf</name>
-	<author>1000101</author>
-	<url>n/a</url>
-	<targetVersion>Community Core Library v0.11.0</targetVersion>
-	<description>
+    <name>Refigerated Meal Shelf</name>
+    <author>1000101</author>
+    <url>n/a</url>
+    <targetVersion>Community Core Library v0.11.0</targetVersion>
+    <description>
 	This is an example of a simple refrigerated meal shelf.
-	
+
 	Demonstrates:
-		CompRefrigerated
-		CompPowerLowIdleDraw (Cycle)
-	</description>
+	CompRefrigerated
+	CompPowerLowIdleDraw (Cycle)
+    </description>
 </ModMetaData>

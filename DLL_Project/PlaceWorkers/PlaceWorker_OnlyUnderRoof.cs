@@ -10,21 +10,21 @@ using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
-	public class PlaceWorker_OnlyUnderRoof : PlaceWorker
-	{
-		public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
-		{
-			AcceptanceReport result;
-			if( Find.RoofGrid.Roofed( loc ) )
-			{
-				result = true;
-			}
-			else
-			{
-				result = "MessagePlacementMustBeUnderRoof".Translate();
-			}
-			return result;
-		}
-	}
+    public class PlaceWorker_OnlyUnderRoof : PlaceWorker
+    {
+        public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        {
+            AcceptanceReport result;
+            if( Find.RoofGrid.Roofed( loc ) )
+            {
+                result = true;
+            }
+            else
+            {
+                result = "MessagePlacementMustBeUnderRoof".Translate();
+            }
+            return result;
+        }
+    }
 }
 

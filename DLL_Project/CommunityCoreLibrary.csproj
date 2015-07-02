@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.11.0</ReleaseVersion>
+    <ReleaseVersion>0.11.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +65,11 @@
     <Compile Include="ThingComps\CompHeatPusherPowered.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyOnSurface.cs" />
     <Compile Include="Buildings\Building_SunLampHeatController.cs" />
+    <Compile Include="CompProperties\RestrictedPlacement_Properties.cs" />
+    <Compile Include="ThingComps\RestrictedPlacement_Comp.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_RestrictedCount.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_NotOnTerrain.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_OnlyOnTerrain.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

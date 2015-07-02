@@ -10,21 +10,21 @@ using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
-	public class PlaceWorker_WallAttachment : PlaceWorker
-	{
-		public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
-		{
-			IntVec3 c = loc + rot.FacingCell * -1;
-			if( !c.InBounds() )
-			{
-				return false;
-			}
-			if( c.GetEdifice() == null )
-			{
-				return "MessagePlacementAgainstSupport".Translate();
-			}
-			return true;
-		}
-	}
+    public class PlaceWorker_WallAttachment : PlaceWorker
+    {
+        public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        {
+            IntVec3 c = loc + rot.FacingCell * -1;
+            if( !c.InBounds() )
+            {
+                return false;
+            }
+            if( c.GetEdifice() == null )
+            {
+                return "MessagePlacementAgainstSupport".Translate();
+            }
+            return true;
+        }
+    }
 }
 

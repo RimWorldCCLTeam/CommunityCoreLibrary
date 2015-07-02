@@ -15,7 +15,13 @@ namespace CommunityCoreLibrary
 
     public static class Research
     {
-        public static readonly ResearchProjectDef Locker = ResearchProjectDef.Named( "CommunityCoreLibraryResearchLocker" );
+        public static ResearchProjectDef Locker
+        {
+            get{
+                return DefDatabase<ResearchProjectDef>.GetNamed( "CommunityCoreLibraryResearchLocker" );
+            }
+        }
+        public const ResearchProjectDef Unlocker = null;
     }
 
 }

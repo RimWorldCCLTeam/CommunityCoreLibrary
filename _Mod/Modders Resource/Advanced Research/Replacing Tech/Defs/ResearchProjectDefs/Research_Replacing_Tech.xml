@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ResearchProjectDef>
+        <defName>TechLevelOne</defName>
+        <label>Tech Level 1</label>
+        <description>This unlocks the first recipe on our table.</description>
+        <totalCost>1</totalCost>
+        <prerequisites/>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>TechLevelTwo</defName>
+        <label>Tech Level 2</label>
+        <description>This unlocks the second recipe on our table and locks the first.</description>
+        <totalCost>1</totalCost>
+        <prerequisites>
+            <li>TechLevelOne</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+</Defs>

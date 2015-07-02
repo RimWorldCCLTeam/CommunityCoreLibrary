@@ -10,31 +10,31 @@ using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
-	public class PlaceWorker_OnlyOnSurface : PlaceWorker
-	{
-		public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
-		{
-			bool placementOk = false;
-			List<Thing> allThings = Find.ThingGrid.ThingsListAt( loc );
-			foreach( Thing curThing in allThings )
-			{
+    public class PlaceWorker_OnlyOnSurface : PlaceWorker
+    {
+        public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        {
+            bool placementOk = false;
+            List<Thing> allThings = Find.ThingGrid.ThingsListAt( loc );
+            foreach( Thing curThing in allThings )
+            {
                 if( curThing.def.surfaceType != SurfaceType.None )
-				{
-					placementOk = true;
-					break;
-				}
-			}
-			AcceptanceReport result;
-			if( placementOk )
-			{
-				result = true;
-			}
-			else
-			{
-				result = "MessagePlacementItemSurface".Translate();
-			}
-			return result;
-		}
-	}
+                {
+                    placementOk = true;
+                    break;
+                }
+            }
+            AcceptanceReport result;
+            if( placementOk )
+            {
+                result = true;
+            }
+            else
+            {
+                result = "MessagePlacementItemSurface".Translate();
+            }
+            return result;
+        }
+    }
 }
 

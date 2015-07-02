@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <RecipeDef>
+        <defName>TechRecipeOne</defName>
+        <label>tech recipe 1</label>
+        <description>Makes one steel</description>
+        <jobString>Making one steel.</jobString>
+        <workSpeedStat>SmithingSpeed</workSpeedStat>
+        <effectWorking>Cook</effectWorking>
+        <soundWorking>Recipe_Machining</soundWorking>
+        <allowMixingIngredients>true</allowMixingIngredients>
+        <workAmount>800</workAmount>
+        <targetCountAdjustment>5</targetCountAdjustment>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>Steel</li>
+                    </thingDefs>
+                </filter>
+                <count>1</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>Steel</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <Steel>1</Steel>
+        </products>
+        <workSkill>Crafting</workSkill>
+    </RecipeDef>
+
+    <RecipeDef>
+        <defName>TechRecipeTwo</defName>
+        <label>tech recipe 2</label>
+        <description>Makes ten steel</description>
+        <jobString>Making ten steel.</jobString>
+        <workSpeedStat>SmithingSpeed</workSpeedStat>
+        <effectWorking>Cook</effectWorking>
+        <soundWorking>Recipe_Machining</soundWorking>
+        <allowMixingIngredients>true</allowMixingIngredients>
+        <workAmount>800</workAmount>
+        <targetCountAdjustment>5</targetCountAdjustment>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>Steel</li>
+                    </thingDefs>
+                </filter>
+                <count>10</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>Steel</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <Steel>10</Steel>
+        </products>
+        <workSkill>Crafting</workSkill>
+    </RecipeDef>
+
+</Defs>

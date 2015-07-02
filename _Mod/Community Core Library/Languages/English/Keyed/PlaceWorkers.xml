@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-	<!-- PlaceWorkers -->
-	<MessagePlacementItemSurface>Must be placed on an item surface!</MessagePlacementItemSurface>
-	<MessagePlacementMustBeUnderRoof>Must be placed under a roof!</MessagePlacementMustBeUnderRoof>
-	<MessagePlacementAgainstSupport>Must place against a supporting structure!</MessagePlacementAgainstSupport>
-	
+    <!-- PlaceWorkers -->
+    <MessagePlacementItemSurface>Must be placed on an item surface!</MessagePlacementItemSurface>
+    <MessagePlacementMustBeUnderRoof>Must be placed under a roof!</MessagePlacementMustBeUnderRoof>
+    <MessagePlacementAgainstSupport>Must place against a supporting structure!</MessagePlacementAgainstSupport>
+    <MessagePlacementCountRestricted>Can not have more than: </MessagePlacementCountRestricted>
+    <MessagePlacementNotOnTerrain>You can not place that on </MessagePlacementNotOnTerrain>
+
 </LanguageData>

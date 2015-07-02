@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>PlaceWorker_Restrictions</name>
+    <author>1000101</author>
+    <url>n/a</url>
+    <targetVersion>Community Core Library v0.11.1</targetVersion>
+    <description>
+	This is an example of how to use certain PlaceWorkers.
+
+	Demonstrates:
+	PlaceWorker_RestrictedCount
+	PlaceWorker_NotOnTerrain
+	PlaceWorker_OnlyOnTerrain
+	RestrictedPlacement_Comp
+	RestrictedPlacement_Properties
+    </description>
+</ModMetaData>

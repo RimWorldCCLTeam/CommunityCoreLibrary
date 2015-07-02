@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>Replacing Tech</name>
+    <author>1000101</author>
+    <url>n/a</url>
+    <targetVersion>Community Core Library v0.11.1</targetVersion>
+    <description>
+	This is an example of how to hide recipes as new research is complete.
+
+	Demonstrates:
+	AdvancedResearchDef to lock and unlock recipes
+    </description>
+</ModMetaData>

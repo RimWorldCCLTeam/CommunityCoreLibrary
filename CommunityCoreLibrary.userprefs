@@ -1,10 +1,6 @@
 ﻿<Properties StartupItem="CommunityCoreLibrary.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="CompProperties\CompProperties_ColoredLight.cs">
-    <Files>
-      <File FileName="CompProperties\CompProperties_ColoredLight.cs" Line="1" Column="1" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
