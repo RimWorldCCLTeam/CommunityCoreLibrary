@@ -50,6 +50,11 @@
             <ignoreNeedsPower>true</ignoreNeedsPower>
             <canPlaceOverWall>true</canPlaceOverWall>
         </building>
+        <comps>
+            <li>
+                <compClass>CompForbiddable</compClass>
+            </li>
+        </comps>
     </ThingDef>
 
     <ThingDef ParentName="DoorBase">

@@ -7,17 +7,62 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using CommunityCoreLibrary.Commands;
 
 namespace CommunityCoreLibrary
 {
 
     public class CompColoredLight : ThingComp
     {
-        private CompGlower              compGlower;
-        private CompGlower              oldGlower;
-        private CompPowerTrader         compPower;
-        private int                     ColorIndex = -1;
-        private float                   lightRadius;
+        #region Private vars
+
+        private CompGlower                  compGlower;
+        private CompGlower                  oldGlower;
+        private CompPowerTrader             compPower;
+        private int                         ColorIndex = -1;
+        private float                       lightRadius;
+
+        #endregion
+
+        #region Gizmos
+
+        private CommandChangeColor            _GizmoChangeColor;
+        private CommandChangeColor            GizmoChangeColor {
+            get{
+                if( _GizmoChangeColor == null )
+                    _GizmoChangeColor = new CommandChangeColor( this );
+                return _GizmoChangeColor;
+            }
+        }
+
+        private CommandGroupOfTouchingThingsByLinker  _GizmoGroupOfThingsByLinker;
+        private CommandGroupOfTouchingThingsByLinker  GizmoGroupOfThingsByLinker {
+            get {
+                if( _GizmoGroupOfThingsByLinker == null )
+                    _GizmoGroupOfThingsByLinker = new CommandGroupOfTouchingThingsByLinker( this.parent, GroupColorChange, GroupColorChange );
+                return _GizmoGroupOfThingsByLinker;
+            }
+        }
+
+        private CommandGroupOfDefOrThingCompInRoom  _GizmoChangeRoommateColor;
+        private CommandGroupOfDefOrThingCompInRoom  GizmoChangeRoommateColor {
+            get {
+                if( _GizmoChangeRoommateColor == null )
+                {
+                    _GizmoChangeRoommateColor = new CommandGroupOfDefOrThingCompInRoom( this.parent, this.GetType(), "CommandChangeRoommateColorLabel".Translate() );
+                    _GizmoChangeRoommateColor.ByDefLabel = Translator.Translate( "CommandChangeRoommateColorLClick", this.parent.def.label );
+                    _GizmoChangeRoommateColor.ByDefAction = GroupColorChange;
+                    _GizmoChangeRoommateColor.ByThingCompLabel = "CommandChangeRoommateColorRClick".Translate();
+                    _GizmoChangeRoommateColor.ByThingCompAction = GroupColorChange;
+                    _GizmoChangeRoommateColor.defaultDesc = _GizmoChangeRoommateColor.Desc;
+                }
+                return _GizmoChangeRoommateColor;
+            }
+        }
+
+        #endregion
+
+        #region Color properties
 
         private CompProperties_ColoredLight compProps
         {
@@ -26,6 +71,10 @@ namespace CommunityCoreLibrary
                 return (CompProperties_ColoredLight)props;
             }
         }
+
+        #endregion
+
+        #region Base ThingComp overrides
 
         public override void PostExposeData()
         {
@@ -75,11 +124,108 @@ namespace CommunityCoreLibrary
             lightRadius = oldGlower.props.glowRadius;
 
             // Set the light colour
-            changeColor( compProps.color[ ColorIndex ].value );
+            changeColor( ColorIndex );
         }
 
-        public void changeColor( ColorInt colour )
+        public override string CompInspectStringExtra()
         {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append( "CompColorLightInspect".Translate() + compProps.color[ ColorIndex ].name );
+            return stringBuilder.ToString();
+        }
+
+        public override IEnumerable<Command> CompGetGizmosExtra()
+        {
+            // Color change gizmo (only if research is complete)
+            if( DefDatabase< ResearchProjectDef >.GetNamed( compProps.requiredResearch ).IsFinished )
+                yield return GizmoChangeColor;
+
+            // In room
+            if( parent.Position.IsInRoom() )
+                // In room by def or comp
+                if( parent.HasRoommateByThingComp( GetType() ) )
+                    yield return GizmoChangeRoommateColor;
+            
+            // Has a link flag
+            if( parent.Graphic.data.linkFlags != LinkFlags.None ){
+                // Touching things by link
+                if( parent.HasTouchingByLinker() )
+                    yield return GizmoGroupOfThingsByLinker;
+            }
+
+            // No more gizmos
+            yield break;
+        }
+
+        #endregion
+
+        #region Public functions
+
+        public void DecrementColorIndex()
+        {
+            int index = ( ColorIndex + compProps.color.Count - 1 ) % compProps.color.Count;
+            changeColor( index );
+        }
+        public void IncrementColorIndex()
+        {
+            int index = ( ColorIndex + 1 ) % compProps.color.Count;
+            changeColor( index );
+        }
+
+        public int GetColorByName( string name )
+        {
+            for( int i = 0, count = compProps.color.Count; i < count; i++ ){
+                var cv = compProps.color[ i ];
+                if( cv.name == name )
+                    return i;
+            }
+            return -1;
+        }
+
+        public string PrevColorName()
+        {
+            int index = ( ColorIndex + compProps.color.Count - 1 ) % compProps.color.Count;
+            return compProps.color[ index ].name;
+        }
+
+        public string NextColorName()
+        {
+            int index = ( ColorIndex + 1 ) % compProps.color.Count;
+            return compProps.color[ index ].name;
+        }
+
+        #endregion
+
+        #region Gizmo callbacks
+        // The list of things are all the lights we want to change
+        private void GroupColorChange( List< Thing > things )
+        {
+            // Now set their color (if *their* research is complete)
+            foreach( Thing l in things )
+            {
+                // Get it's colored light comp
+                var otherComp = l.TryGetComp<CompColoredLight>();
+                if( otherComp != null )
+                {
+                    // Do they even have this color?
+                    int otherColor = otherComp.GetColorByName( compProps.color[ ColorIndex ].name );
+
+                    // If it does, check it's research
+                    if( ( otherColor > -1 )&&
+                        ( DefDatabase<ResearchProjectDef>.GetNamed( otherComp.compProps.requiredResearch ).IsFinished ) )
+                    {    // Change it's color
+                        otherComp.changeColor( otherColor );
+                    }
+                }
+            }
+        }
+
+        public void changeColor( int index )
+        {
+            ColorInt colour = compProps.color[ index ].value;
+            ColorIndex = index;
+            GizmoChangeColor.defaultDesc = GizmoChangeColor.Desc;
+
             // Current lit state from base compGlower
             bool wasLit = oldGlower.Lit;
 
@@ -159,56 +305,6 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override string CompInspectStringExtra()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append( "inspectColor".Translate() + compProps.color[ ColorIndex ].name );
-            return stringBuilder.ToString();
-        }
-
-        public override IEnumerable<Command> CompGetGizmosExtra()
-        {
-            // Color change gizmo (only if research is complete)
-            if( DefDatabase< ResearchProjectDef >.GetNamed( compProps.requiredResearch ).IsFinished )
-            {
-                Command_Action command_Action = new Command_Action();
-                if( command_Action != null )
-                {
-                    command_Action.icon = Icon.NextButton;
-                    command_Action.defaultLabel = "buttonChangeColor".Translate();
-                    command_Action.defaultDesc = NextColorName( ColorIndex );
-                    command_Action.activateSound = SoundDef.Named( "Click" );
-                    command_Action.action = new Action( IncrementColorIndex );
-                    if( command_Action.action != null )
-                    {
-                        yield return command_Action;
-                    }
-                }
-            }
-            // No more gizmos
-            yield break;
-        }
-
-        private void IncrementColorIndex()
-        {
-            ColorIndex += 1;
-            if( ColorIndex >= compProps.color.Count )
-            {
-                ColorIndex = 0;
-            }
-            changeColor( compProps.color[ ColorIndex ].value );
-        }
-        
-        private string NextColorName( int index )
-        {
-            int nextIndex = index + 1;
-            if( nextIndex >= compProps.color.Count )
-            {
-                nextIndex = 0;
-            }
-            return compProps.color[ nextIndex ].name;
-        }
-
-    }
+        #endregion
+   }
 }
-

@@ -17,7 +17,6 @@
         <defName>RestrictedCountTest</defName>
         <label>restricted count test</label>
         <thingClass>Building</thingClass>
-        <category>Building</category>
         <graphicData>
             <texPath>Things/Building/Furniture/LampStanding</texPath>
             <graphicClass>Graphic_Single</graphicClass>
@@ -60,7 +59,6 @@
         <defName>NotOnTerrainTest</defName>
         <label>not on terrain test</label>
         <thingClass>Building</thingClass>
-        <category>Building</category>
         <graphicData>
             <texPath>Things/Building/Furniture/LampStanding</texPath>
             <graphicClass>Graphic_Single</graphicClass>
@@ -107,7 +105,6 @@
         <defName>OnlyOnTerrainTest</defName>
         <label>only on terrain test</label>
         <thingClass>Building</thingClass>
-        <category>Building</category>
         <graphicData>
             <texPath>Things/Building/Furniture/LampStanding</texPath>
             <graphicClass>Graphic_Single</graphicClass>
@@ -144,6 +141,108 @@
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <placeWorkers>
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
+        </placeWorkers>
+        <designationCategory>Furniture</designationCategory>
+        <rotatable>false</rotatable>
+        <designationHotKey/>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>NotOnThingTest</defName>
+        <label>not on thing test</label>
+        <thingClass>Building</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Furniture/LampStanding</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowInfo>
+                <basewidth>0.3</basewidth>
+                <baseHeight>0.3</baseHeight>
+                <tallness>0.6</tallness>
+                <offset>(0,0,-0.1)</offset>
+            </shadowInfo>
+        </graphicData>
+        <altitudeLayer>Waist</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <statBases>
+            <MaxHitPoints>50</MaxHitPoints>
+            <WorkToMake>115</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <selectable>true</selectable>
+        <description>Restrictions:\nSteam Geyser\nrock chunks\nslag</description>
+        <costList>
+            <Steel>1</Steel>
+        </costList>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <RestrictedThing>
+                    <li>SteamGeyser</li>
+                    <li>ChunkGranite</li>
+                    <li>ChunkSandstone</li>
+                    <li>ChunkLimestone</li>
+                    <li>ChunkSlate</li>
+                    <li>ChunkMarble</li>
+                    <li>ChunkSlagSteel</li>
+                </RestrictedThing>
+            </li>
+        </comps>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_NotOnThing</li>
+        </placeWorkers>
+        <designationCategory>Furniture</designationCategory>
+        <rotatable>false</rotatable>
+        <designationHotKey/>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>OnlyOnThingTest</defName>
+        <label>only on thing test</label>
+        <thingClass>Building</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Furniture/LampStanding</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowInfo>
+                <basewidth>0.3</basewidth>
+                <baseHeight>0.3</baseHeight>
+                <tallness>0.6</tallness>
+                <offset>(0,0,-0.1)</offset>
+            </shadowInfo>
+        </graphicData>
+        <altitudeLayer>Waist</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <statBases>
+            <MaxHitPoints>50</MaxHitPoints>
+            <WorkToMake>115</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <selectable>true</selectable>
+        <description>Allowance:\nSteam Geyser\nrock chunks\nslag</description>
+        <costList>
+            <Steel>1</Steel>
+        </costList>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <RestrictedThing>
+                    <li>SteamGeyser</li>
+                    <li>ChunkGranite</li>
+                    <li>ChunkSandstone</li>
+                    <li>ChunkLimestone</li>
+                    <li>ChunkSlate</li>
+                    <li>ChunkMarble</li>
+                    <li>ChunkSlagSteel</li>
+                </RestrictedThing>
+            </li>
+        </comps>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnThing</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>
         <rotatable>false</rotatable>

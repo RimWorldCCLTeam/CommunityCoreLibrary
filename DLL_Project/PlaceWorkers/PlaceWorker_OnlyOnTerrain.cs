@@ -28,7 +28,7 @@ namespace CommunityCoreLibrary
                 if( Restrictions.RestrictedTerrain[ i ] == terrainDef )
                     return true;
 
-            return "MessagePlacementNotOnTerrain".Translate() + terrainDef.label;
+            return "MessagePlacementNotOn".Translate() + terrainDef.label;
         }
     }
 }

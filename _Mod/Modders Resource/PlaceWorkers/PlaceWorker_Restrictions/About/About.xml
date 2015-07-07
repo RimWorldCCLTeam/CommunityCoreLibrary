@@ -3,7 +3,7 @@
     <name>PlaceWorker_Restrictions</name>
     <author>1000101</author>
     <url>n/a</url>
-    <targetVersion>Community Core Library v0.11.1</targetVersion>
+    <targetVersion>Community Core Library v0.11.2</targetVersion>
     <description>
 	This is an example of how to use certain PlaceWorkers.
 
@@ -11,6 +11,8 @@
 	PlaceWorker_RestrictedCount
 	PlaceWorker_NotOnTerrain
 	PlaceWorker_OnlyOnTerrain
+	PlaceWorker_NotOnThing
+	PlaceWorker_OnlyOnThing
 	RestrictedPlacement_Comp
 	RestrictedPlacement_Properties
     </description>

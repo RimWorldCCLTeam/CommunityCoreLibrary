@@ -3,11 +3,11 @@
     <name>Ancient Tech</name>
     <author>1000101</author>
     <url>n/a</url>
-    <targetVersion>Community Core Library v0.11.0</targetVersion>
+    <targetVersion>Community Core Library v0.11.2</targetVersion>
     <description>
-	This is an example of ancient technology.
-
+	This is an example of how to lock and unlock buildings as new research is complete.
+    
 	Demonstrates:
-	AdvancedResearchDef to unlock buildings
+	AdvancedResearchDef to lock and unlock buildings
     </description>
 </ModMetaData>

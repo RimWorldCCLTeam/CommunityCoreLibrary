@@ -1,6 +1,16 @@
 ﻿<Properties StartupItem="CommunityCoreLibrary.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ThingComps\CompNeighbourlyGrower.cs">
+    <Files>
+      <File FileName="ThingComps\CompColoredLight.cs" Line="310" Column="2" />
+      <File FileName="StaticClasses\ThingGroup.cs" Line="19" Column="38" />
+      <File FileName="GizmoCommands\CommandGroupOfTouchingThingsByLinker.cs" Line="22" Column="1" />
+      <File FileName="GizmoCommands\CommandGroupOfTouchingThingsByDef.cs" Line="26" Column="75" />
+      <File FileName="GizmoCommands\CommandGroupOfTouchingThingsByThingComp.cs" Line="14" Column="18" />
+      <File FileName="GizmoCommands\CommandGroupOfDefOrThingCompInRoom.cs" Line="48" Column="24" />
+      <File FileName="ThingComps\CompNeighbourlyGrower.cs" Line="23" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

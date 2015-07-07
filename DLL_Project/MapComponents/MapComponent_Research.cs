@@ -36,6 +36,20 @@ namespace CommunityCoreLibrary
 
     }
 
+    public struct ThingResearchPair
+    {
+        // Maintains the original buildings research prerequisite
+        public ThingDef thingDef;
+        public ResearchProjectDef researchProject;
+
+        public ThingResearchPair( ThingDef t, ResearchProjectDef r )
+        {
+            thingDef = t;
+            researchProject = r;
+        }
+
+    }
+
     public class ResearchControl : MapComponent
     {
 
@@ -51,6 +65,7 @@ namespace CommunityCoreLibrary
         // These are used to optimize the process so the same table isn't constantly
         // recached and the designation category defs are resolved multiple times
         private List< ResearchCompletePair > researchComplete = new List< ResearchCompletePair >();
+        private List< ThingResearchPair >   thingDefResearch = new List< ThingResearchPair >();
         private List< ThingDef >            buildingRecipeRecache = new List< ThingDef >();
         private List< ResearchMod >         actionCache = new List< ResearchMod >();
 
@@ -160,11 +175,12 @@ namespace CommunityCoreLibrary
         }
 
         private void LockEverything( bool sanityChecks = false )
-        {
+        {   // Lock everything by breaking the links and do sanity checks of all the defs
+            
             // Until all sanity checks are done...
             okToProcess = false;
 
-            // Lock everything by breaking the links and do sanity checks of all the defs
+            // Prepare (clear) the processing caches
             PrepareCache();
 
             // Get each advanced research def
@@ -218,19 +234,24 @@ namespace CommunityCoreLibrary
 
                     }
                     if( Advanced.toggleBuildings ){
-                        // Only deal with defs which unlock
-                        if( !Advanced.HideDefs )
-                        {
+                        // Make sure to know how this building was originally set
+                        if( thingDefResearch.FindIndex( pair => ( pair.thingDef == building ) ) < 0 )
+                            thingDefResearch.Add( new ThingResearchPair( building, building.researchPrerequisite ) );
+
+                        if( Advanced.HideDefs )
+                        {   // Reset building to original research
+                            building.researchPrerequisite = thingDefResearch.Find( pair => ( pair.thingDef == building ) ).researchProject;
+                        } else {
                             // Hide the building
                             building.researchPrerequisite = Research.Locker;
                         }
                     }
                 }
                 // Validate callbacks
-                if( Advanced.doCallbacks )
+                if( ( sanityChecks )&&
+                    ( Advanced.doCallbacks ) )
                     for( int mIndex = 0, mCountTo = Advanced.researchMods.Count; mIndex < mCountTo; mIndex++ )
-                        if( ( sanityChecks )&&
-                            ( Advanced.researchMods[ mIndex ] == null ) ){
+                        if( Advanced.researchMods[ mIndex ] == null ){
                             // Sanity check
                             Log.Message( "Community Core Library :: Advanced Research :: researchMods( index = " + mIndex + " ) resolved to null in AdvancedResearchDef( " + Advanced.defName + " )" );
                             return;
@@ -287,28 +308,13 @@ namespace CommunityCoreLibrary
                 AdvancedResearchDef Advanced = advancedResearch[ aIndex ];
                 // Is it done?
                 if( ( Advanced.isEnabled == false )&&
-                    ( ResearchGroupComplete( Advanced.researchDefs ) ) ){
+                    ( Advanced.ResearchGroupComplete() ) ){
                     // If all the research is done, process the def
                     ProcessResearch( Advanced );
                 }
             }
 
             ProcessCache();
-        }
-
-        public static bool ResearchGroupComplete( List<ResearchProjectDef> projects )
-        {
-            // God mode, allow it
-            if( Game.GodMode == true )
-                return true;
-
-            // No god mode, check it
-            for( int rIndex = 0, rCountTo = projects.Count; rIndex < rCountTo; rIndex++ )
-                if( !projects[ rIndex ].IsFinished )
-                    return false;
-
-            // All done
-            return true;
         }
 
         private void ProcessResearch( AdvancedResearchDef Advanced )

@@ -46,7 +46,7 @@
             <li>
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>150</basePowerConsumption>
-                <shortCircuitInRain>true</shortCircuitInRain>
+                <shortCircuitInRain>false</shortCircuitInRain>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
                 <soundPowerOff>PowerOffSmall</soundPowerOff>
             </li>
@@ -108,7 +108,7 @@
         </comps>
         <designationCategory>None</designationCategory>
         <rotatable>false</rotatable>
-        <researchPrerequisite>ColoredLights</researchPrerequisite>
+        <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -155,7 +155,7 @@
         </comps>
         <designationCategory>None</designationCategory>
         <rotatable>false</rotatable>
-        <researchPrerequisite>ColoredLights</researchPrerequisite>
+        <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -202,7 +202,7 @@
         </comps>
         <designationCategory>None</designationCategory>
         <rotatable>false</rotatable>
-        <researchPrerequisite>ColoredLights</researchPrerequisite>
+        <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
     </ThingDef>
 
 </Defs>

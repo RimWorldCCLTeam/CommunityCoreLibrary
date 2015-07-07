@@ -16,6 +16,7 @@ namespace CommunityCoreLibrary
         // These may be defined in xml or left as the default
         public int                  MaxCount = -1;
         public List< TerrainDef >   RestrictedTerrain = null;
+        public List< ThingDef >     RestrictedThing = null;
 
         public RestrictedPlacement_Properties()
         {

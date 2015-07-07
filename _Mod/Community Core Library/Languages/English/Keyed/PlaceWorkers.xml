@@ -6,6 +6,7 @@
     <MessagePlacementMustBeUnderRoof>Must be placed under a roof!</MessagePlacementMustBeUnderRoof>
     <MessagePlacementAgainstSupport>Must place against a supporting structure!</MessagePlacementAgainstSupport>
     <MessagePlacementCountRestricted>Can not have more than: </MessagePlacementCountRestricted>
-    <MessagePlacementNotOnTerrain>You can not place that on </MessagePlacementNotOnTerrain>
+    <MessagePlacementNotOn>You can not place that on </MessagePlacementNotOn>
+    <MessagePlacementNotHere>You can not place that here!</MessagePlacementNotHere>
 
 </LanguageData>

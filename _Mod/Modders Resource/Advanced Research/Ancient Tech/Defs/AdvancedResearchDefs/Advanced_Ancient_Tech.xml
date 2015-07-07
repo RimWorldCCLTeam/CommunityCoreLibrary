@@ -27,8 +27,26 @@
 
     <AdvancedResearchDef>
         
-        <defName>BuildAncientCryptoSleep</defName>
+        <defName>HideCryptoSleep</defName>
         <Priority>0</Priority>
+        
+        <researchDefs>
+            <li>Cryptosleep</li>
+            <li>AncientTechnology</li>
+        </researchDefs>
+        
+        <HideDefs>true</HideDefs>
+        
+        <buildingDefs>
+            <li>CryptosleepCasket</li>
+        </buildingDefs>
+        
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        
+        <defName>BuildAncientCryptoSleep</defName>
+        <Priority>1</Priority>
         
         <researchDefs>
             <li>Cryptosleep</li>

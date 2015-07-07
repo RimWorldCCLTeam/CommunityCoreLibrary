@@ -88,5 +88,6 @@ namespace CommunityCoreLibrary
                 Find.DesignationManager.RemoveDesignation( designation );
             }
         }
+
     }
 }

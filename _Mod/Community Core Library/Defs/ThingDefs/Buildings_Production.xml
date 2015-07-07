@@ -10,7 +10,6 @@
         <repairEffect>Repair</repairEffect>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <filthLeaving>BuildingRubble</filthLeaving>
-        <tickerType>Normal</tickerType>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -38,6 +37,7 @@
             <foodCostPerDispense>6</foodCostPerDispense>
             <soundDispense>DispensePaste</soundDispense>
         </building>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -54,6 +54,7 @@
         <costList>
             <Steel>90</Steel>
         </costList>
+        <socialPropernessMatters>true</socialPropernessMatters>
         <interactionCellOffset>(0,0,3)</interactionCellOffset>
         <hasInteractionCell>true</hasInteractionCell>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -102,6 +103,7 @@
         <building>
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
         </building>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -153,6 +155,7 @@
         <building>
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
         </building>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -228,9 +231,10 @@
         <building>
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
         </building>
+        <tickerType>Normal</tickerType>
         <constructEffect>ConstructMetal</constructEffect>
         <researchPrerequisite>Machining</researchPrerequisite>
-        <designationHotKey>N</designationHotKey>
+        <designationHotKey>I</designationHotKey>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -292,6 +296,7 @@
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
             <heatPerTickWhileWorking>0.25</heatPerTickWhileWorking>
         </building>
+        <tickerType>Normal</tickerType>
         <designationHotKey>O</designationHotKey>
     </ThingDef>
 
@@ -345,11 +350,17 @@
                 <glowRadius>6</glowRadius>
                 <glowColor>(217,112,33,0)</glowColor>
             </li>
+            <li>
+                <compClass>CommunityCoreLibrary.CompHeatPusherPowered</compClass>
+                <heatPerSecond>12</heatPerSecond>
+                <heatPushMaxTemperature>1500</heatPushMaxTemperature>
+            </li>
         </comps>
         <building>
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
             <heatPerTickWhileWorking>0.5</heatPerTickWhileWorking>
         </building>
+        <tickerType>Normal</tickerType>
         <researchPrerequisite>ElectricSmelting</researchPrerequisite>
         <designationHotKey>L</designationHotKey>
     </ThingDef>
@@ -419,8 +430,71 @@
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
             <heatPerTickWhileWorking>0.6</heatPerTickWhileWorking>
         </building>
+        <tickerType>Normal</tickerType>
         <researchPrerequisite>Cremation</researchPrerequisite>
-        <designationHotKey>R</designationHotKey>
+        <designationHotKey>K</designationHotKey>
+    </ThingDef>
+
+    <!-- ========== Hydroponics ==============-->
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>HydroponicsBasin</defName>
+        <label>hydroponics basin</label>
+        <thingClass>CommunityCoreLibrary.Building_Hydroponic</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Production/HydroponicsBasin</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <drawSize>(1,4)</drawSize>
+        </graphicData>
+        <altitudeLayer>FloorEmplacement</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>60</pathCost>
+        <castEdgeShadows>true</castEdgeShadows>
+        <constructEffect>ConstructMetal</constructEffect>
+        <statBases>
+            <WorkToMake>2800</WorkToMake>
+            <MaxHitPoints>180</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <description>For growing food. Hydroponics basins grow a few plants quickly. The basin requires power to work, and plants will die if power is cut.</description>
+        <size>(1,4)</size>
+        <costList>
+            <Steel>100</Steel>
+        </costList>
+        <inspectorTabs>
+            <li>ITab_Growing</li>
+        </inspectorTabs>
+        <fertility>1.7</fertility>
+        <building>
+            <defaultPlantToGrow>PlantPotato</defaultPlantToGrow>
+            <plantsDestroyWithMe>true</plantsDestroyWithMe>
+            <sowTag>Hydroponic</sowTag>
+        </building>
+        <tickerType>Rare</tickerType>
+        <comps>
+            <li>
+                <compClass>CompForbiddable</compClass>
+            </li>
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                <basePowerConsumption>100</basePowerConsumption>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                <idlePowerFactor>0.50</idlePowerFactor>
+                <operationalMode>Cycle</operationalMode>
+                <cycleLowTicks>5000</cycleLowTicks>
+                <cycleHighTicks>2500</cycleHighTicks>
+            </li>
+            <li>
+                <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
+            </li>
+        </comps>
+        <researchPrerequisite>Hydroponics</researchPrerequisite>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <designationCategory>Production</designationCategory>
+        <!--<staticSunShadowHeight>0.03</staticSunShadowHeight>-->
+        <designationHotKey>Y</designationHotKey>
     </ThingDef>
 
 </Defs>

@@ -28,20 +28,12 @@ namespace CommunityCoreLibrary
 
         private int                     keepOnTicks;
 
-        private CompProperties_LowIdleDraw compProps
-        {
-            get
-            {
-                return (CompProperties_LowIdleDraw)props;
-            }
+        private CompProperties_LowIdleDraw IdleProps {
+            get { return (CompProperties_LowIdleDraw)props; }
         }
 
-        public bool                 isItIdle
-        {
-            get
-            {
-                return !( compPower.PowerOutput < idlePower );
-            }
+        public bool                     isItIdle {
+            get { return !( compPower.PowerOutput < idlePower ); }
         }
 
         public override void PostExposeData()
@@ -80,7 +72,7 @@ namespace CommunityCoreLibrary
             }
 
             // Get the idle properties
-            if( compProps == null )
+            if( IdleProps == null )
             {
                 Log.Message( "Community Core Library :: CompPowerLowIdleDraw :: '" + parent.def.defName + "' unable to get properties of CompProperties_LowIdleDraw!" );
                 return;
@@ -93,10 +85,10 @@ namespace CommunityCoreLibrary
             BuildScanList();
 
             // Calculate low-power mode consumption
-            idlePower = compProps.idlePowerFactor * -compPower.props.basePowerConsumption;
+            idlePower = IdleProps.idlePowerFactor * -compPower.props.basePowerConsumption;
             if( idlePower > minIdleDraw )
                 idlePower = minIdleDraw;
-            //Log.Message( parent.def.defName + " - " + idlePower + " - " + compPower.props.basePowerConsumption + " - " + compProps.idlePowerFactor );
+            //Log.Message( parent.def.defName + " - " + idlePower + " - " + compPower.props.basePowerConsumption + " - " + IdleProps.idlePowerFactor );
 
             // Initial state...
 
@@ -111,6 +103,7 @@ namespace CommunityCoreLibrary
 
         public override void CompTick()
         {
+            //Log.Message( parent.def.defName + " :: CompTick" );
             base.CompTick();
 
             if( !Gen.IsHashIntervalTick( parent, 30 ) )
@@ -122,6 +115,7 @@ namespace CommunityCoreLibrary
 
         public override void CompTickRare()
         {
+            //Log.Message( parent.def.defName + " :: CompTickRare" );
             base.CompTickRare();
 
             // keepOnTicks -= 250;
@@ -140,10 +134,9 @@ namespace CommunityCoreLibrary
         private void PowerLevelToggle( int thisTickCount )
         {
             // If it's on, don't recheck until it times out
-            if( keepOnTicks > 0 ) {
-                keepOnTicks -= thisTickCount;
-                if( keepOnTicks > 0 ) return;
-            }
+            keepOnTicks -= thisTickCount;
+            if( keepOnTicks > 0 ) return;
+
             //Log.Message( parent.def.defName + " - PowerLevelToggle" );
 
             // Basic decision, turn on if someone is on it, only if it turns
@@ -155,7 +148,7 @@ namespace CommunityCoreLibrary
             // Should it...?
             if( !onIfOn ) {
 
-                switch( compProps.operationalMode ){
+                switch( IdleProps.operationalMode ){
                 case LowIdleDrawMode.InUse :
                     // This building has an interaction cell, this means it has
                     // jobs associated with it.  Only go to full-power if the
@@ -212,6 +205,8 @@ namespace CommunityCoreLibrary
                     break;
                 case LowIdleDrawMode.Cycle :
                     // Power cycler
+                   // Log.Message( parent.def.defName + " is power cycling" );
+
                     if( isItIdle )
                     {
                         // Going to full power cycle
@@ -239,10 +234,10 @@ namespace CommunityCoreLibrary
                     TogglePower();
                 }else{
                     // ..maintain the current state
-                    keepOnTicks = compProps.cycleHighTicks;
+                    keepOnTicks = IdleProps.cycleHighTicks;
                 }
             }
-            else if ( !isItIdle )   {
+            else if ( !isItIdle ) {
                 // ...Is not idle, go to idle mode
                 TogglePower();
             }
@@ -259,14 +254,14 @@ namespace CommunityCoreLibrary
                 // Is idle, power up
                 curPower = -compPower.props.basePowerConsumption;
                 compPower.PowerOutput = curPower;
-                keepOnTicks = compProps.cycleHighTicks;
+                keepOnTicks = IdleProps.cycleHighTicks;
             }
             else
             {
                 // Is not idle, power down
                 curPower = idlePower;
                 compPower.PowerOutput = curPower;
-                keepOnTicks = compProps.cycleLowTicks;
+                keepOnTicks = IdleProps.cycleLowTicks;
                 curUser = null;
                 curJob = null;
             }
@@ -299,14 +294,16 @@ namespace CommunityCoreLibrary
             onIfOn = false;
 
             // Power cyclers don't need to scan anything
-            if( compProps.operationalMode == LowIdleDrawMode.Cycle )
+            if( IdleProps.operationalMode == LowIdleDrawMode.Cycle )
             {
                 // Set default scan tick intervals
-                if( compProps.cycleLowTicks < 0 )
-                    compProps.cycleLowTicks = 1000;
+                if( IdleProps.cycleLowTicks < 0 )
+                    IdleProps.cycleLowTicks = 1000;
 
-                if( compProps.cycleHighTicks < 0 )
-                    compProps.cycleLowTicks = 500;
+                if( IdleProps.cycleHighTicks < 0 )
+                    IdleProps.cycleLowTicks = 500;
+
+                //Log.Message( parent.def.defName + " is power cycler " + IdleProps.cycleLowTicks + ":" + IdleProps.cycleHighTicks );
 
                 return;
             }
@@ -320,7 +317,7 @@ namespace CommunityCoreLibrary
                 //Log.Message( parent.def.defName + " - Force-add InteractionCell" );
                 scanPosition.Add( thisBuilding.InteractionCell );
 
-                switch( compProps.operationalMode ){
+                switch( IdleProps.operationalMode ){
                 case LowIdleDrawMode.WhenNear :
                     // And the adjacent cells too???
                     // Only really used by NPDs as they "need time to prepare"
@@ -356,7 +353,7 @@ namespace CommunityCoreLibrary
                     AddScanPositionIfAllowed( curPos );
                 }
 
-                if (compProps.operationalMode == LowIdleDrawMode.WhenNear)
+                if (IdleProps.operationalMode == LowIdleDrawMode.WhenNear)
                     // And the adjacent cells too???
                     foreach (IntVec3 curPos in GenAdj.CellsAdjacent8Way( thisBuilding ))
                         AddScanPositionIfAllowed (curPos);
@@ -364,20 +361,20 @@ namespace CommunityCoreLibrary
             }
 
             // Set default scan tick intervals
-            if( compProps.cycleLowTicks < 0 )
-                compProps.cycleLowTicks = 30;
+            if( IdleProps.cycleLowTicks < 0 )
+                IdleProps.cycleLowTicks = 30;
             
-            if( compProps.cycleHighTicks < 0 )
+            if( IdleProps.cycleHighTicks < 0 )
             {
                 if( ( thisBuilding as Building_Door ) != null )
                 {
                     // Doors can be computed
-                    compProps.cycleHighTicks = ((Building_Door)thisBuilding).TicksToOpenNow * 3;
+                    IdleProps.cycleHighTicks = ((Building_Door)thisBuilding).TicksToOpenNow * 3;
                 }
                 else
                 {
                     // Give work tables more time so pawns have time to fetch ingredients
-                    compProps.cycleHighTicks = 500;
+                    IdleProps.cycleHighTicks = 500;
                 }
             }
         }

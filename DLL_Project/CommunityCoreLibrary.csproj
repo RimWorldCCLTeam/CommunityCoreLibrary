@@ -70,6 +70,19 @@
     <Compile Include="PlaceWorkers\PlaceWorker_RestrictedCount.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_NotOnTerrain.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyOnTerrain.cs" />
+    <Compile Include="ThingComps\CompLifespanPowered.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_NotOnThing.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_OnlyOnThing.cs" />
+    <Compile Include="Buildings\Building_Hydroponic.cs" />
+    <Compile Include="StaticClasses\ThingGroup.cs" />
+    <Compile Include="ThingComps\CompNeighbourlyGrower.cs" />
+    <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Commands\CommandChangeColor.cs" />
+    <Compile Include="Commands\CommandGroupOfDefOrThingCompInRoom.cs" />
+    <Compile Include="Commands\CommandGroupOfTouchingThingsByDef.cs" />
+    <Compile Include="Commands\CommandGroupOfTouchingThingsByLinker.cs" />
+    <Compile Include="Commands\CommandGroupOfTouchingThingsByThingComp.cs" />
+    <Compile Include="Defs\AdvancedResearchDefExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -88,5 +101,6 @@
     <Folder Include="Buildings\" />
     <Folder Include="Defs\" />
     <Folder Include="StaticClasses\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
 </Project>
