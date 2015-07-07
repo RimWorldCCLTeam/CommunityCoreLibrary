@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- UI Elements -->
+
+    <!-- Comp_ColoredLight -->
+    <inspectColor>Couleur: </inspectColor>
+    <buttonChangeColor>Changer couleur</buttonChangeColor>
+
+</LanguageData>
