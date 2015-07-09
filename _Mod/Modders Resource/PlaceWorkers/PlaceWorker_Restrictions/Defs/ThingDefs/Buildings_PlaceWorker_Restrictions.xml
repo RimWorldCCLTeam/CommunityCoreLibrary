@@ -14,6 +14,48 @@
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
+        <defName>RestrictedUnderRoof</defName>
+        <label>restricted under roof test</label>
+        <thingClass>Building</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Furniture/LampStanding</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowInfo>
+                <basewidth>0.3</basewidth>
+                <baseHeight>0.3</baseHeight>
+                <tallness>0.6</tallness>
+                <offset>(0,0,-0.1)</offset>
+            </shadowInfo>
+        </graphicData>
+        <altitudeLayer>Waist</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <statBases>
+            <MaxHitPoints>50</MaxHitPoints>
+            <WorkToMake>115</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <selectable>true</selectable>
+        <description>Restricted to being under a roof</description>
+        <costList>
+            <Steel>1</Steel>
+        </costList>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            </li>
+        </comps>
+        <placeWorkers>
+            <!-- This restriction needs a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyUnderRoof</li>
+        </placeWorkers>
+        <designationCategory>Furniture</designationCategory>
+        <rotatable>false</rotatable>
+        <designationHotKey/>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
         <defName>RestrictedCountTest</defName>
         <label>restricted count test</label>
         <thingClass>Building</thingClass>
@@ -48,6 +90,7 @@
             </li>
         </comps>
         <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_RestrictedCount</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>
@@ -94,6 +137,7 @@
         </comps>
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_NotOnTerrain</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>
@@ -140,6 +184,7 @@
         </comps>
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>
@@ -191,6 +236,7 @@
         </comps>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_NotOnThing</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>
@@ -241,7 +287,9 @@
             </li>
         </comps>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <tickerType>Rare</tickerType>
         <placeWorkers>
+            <!-- This restriction needs a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnThing</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>

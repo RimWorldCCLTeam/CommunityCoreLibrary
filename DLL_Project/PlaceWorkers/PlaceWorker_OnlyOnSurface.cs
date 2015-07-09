@@ -15,8 +15,7 @@ namespace CommunityCoreLibrary
         public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
             bool placementOk = false;
-            List<Thing> allThings = Find.ThingGrid.ThingsListAt( loc );
-            foreach( Thing curThing in allThings )
+            foreach( Thing curThing in loc.GetThingList() )
             {
                 if( curThing.def.surfaceType != SurfaceType.None )
                 {

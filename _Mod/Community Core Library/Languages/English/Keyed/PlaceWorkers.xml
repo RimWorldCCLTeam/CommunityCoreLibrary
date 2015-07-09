@@ -8,5 +8,7 @@
     <MessagePlacementCountRestricted>Can not have more than: </MessagePlacementCountRestricted>
     <MessagePlacementNotOn>You can not place that on </MessagePlacementNotOn>
     <MessagePlacementNotHere>You can not place that here!</MessagePlacementNotHere>
-
+    <AlertPlaceWorkerRestrictionSupportRemovedLabel>A support was removed!</AlertPlaceWorkerRestrictionSupportRemovedLabel>
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Something has been destroyed because it's support has been removed or destroyed!\n\nThe following things have been destroyed because their supports are missing:</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+    
 </LanguageData>

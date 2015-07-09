@@ -1,14 +1,13 @@
 ﻿<Properties StartupItem="CommunityCoreLibrary.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ThingComps\CompNeighbourlyGrower.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Properties\AssemblyInfo.cs">
     <Files>
-      <File FileName="ThingComps\CompColoredLight.cs" Line="310" Column="2" />
-      <File FileName="StaticClasses\ThingGroup.cs" Line="19" Column="38" />
-      <File FileName="GizmoCommands\CommandGroupOfTouchingThingsByLinker.cs" Line="22" Column="1" />
-      <File FileName="GizmoCommands\CommandGroupOfTouchingThingsByDef.cs" Line="26" Column="75" />
-      <File FileName="GizmoCommands\CommandGroupOfTouchingThingsByThingComp.cs" Line="14" Column="18" />
-      <File FileName="GizmoCommands\CommandGroupOfDefOrThingCompInRoom.cs" Line="48" Column="24" />
-      <File FileName="ThingComps\CompNeighbourlyGrower.cs" Line="23" Column="1" />
+      <File FileName="Defs\AdvancedResearchDef.cs" Line="11" Column="1" />
+      <File FileName="Alerts\Alert_PlaceWorker_Restriction.cs" Line="45" Column="42" />
+      <File FileName="ThingComps\RestrictedPlacement_Comp.cs" Line="55" Column="10" />
+      <File FileName="PlaceWorkers\PlaceWorker_OnlyOnThing.cs" Line="37" Column="1" />
+      <File FileName="PlaceWorkers\PlaceWorker_OnlyOnSurface.cs" Line="33" Column="68" />
+      <File FileName="Properties\AssemblyInfo.cs" Line="8" Column="38" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.11.1</ReleaseVersion>
+    <ReleaseVersion>0.11.3</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -83,6 +83,7 @@
     <Compile Include="Commands\CommandGroupOfTouchingThingsByLinker.cs" />
     <Compile Include="Commands\CommandGroupOfTouchingThingsByThingComp.cs" />
     <Compile Include="Defs\AdvancedResearchDefExtensions.cs" />
+    <Compile Include="Alerts\Alert_PlaceWorker_Restriction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -102,5 +103,6 @@
     <Folder Include="Defs\" />
     <Folder Include="StaticClasses\" />
     <Folder Include="Commands\" />
+    <Folder Include="Alerts\" />
   </ItemGroup>
 </Project>

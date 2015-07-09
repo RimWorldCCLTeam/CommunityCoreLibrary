@@ -19,7 +19,9 @@ namespace CommunityCoreLibrary
             {
                 return false;
             }
-            if( c.GetEdifice() == null )
+            Building support = c.GetEdifice();
+            if( ( support == null )||
+                ( ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) == 0 ) )
             {
                 return "MessagePlacementAgainstSupport".Translate();
             }
