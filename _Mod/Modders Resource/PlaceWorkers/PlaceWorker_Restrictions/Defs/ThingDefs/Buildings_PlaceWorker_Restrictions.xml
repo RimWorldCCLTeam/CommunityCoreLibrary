@@ -46,6 +46,7 @@
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
             </li>
         </comps>
+        <tickerType>Rare</tickerType>
         <placeWorkers>
             <!-- This restriction needs a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_OnlyUnderRoof</li>
