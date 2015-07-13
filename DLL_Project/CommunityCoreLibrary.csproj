@@ -84,6 +84,7 @@
     <Compile Include="Commands\CommandGroupOfTouchingThingsByThingComp.cs" />
     <Compile Include="Defs\AdvancedResearchDefExtensions.cs" />
     <Compile Include="Alerts\Alert_PlaceWorker_Restriction.cs" />
+    <Compile Include="Alerts\Alert_NeedBatteries.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
