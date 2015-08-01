@@ -1,11 +1,12 @@
 ﻿<Properties StartupItem="CommunityCoreLibrary.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Alerts\Alert_NeedBatteries.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Buildings\Building_Hydroponic.cs">
     <Files>
-      <File FileName="PlaceWorkers\PlaceWorker_OnlyOnSurface.cs" Line="1" Column="1" />
-      <File FileName="Alerts\Alert_NeedBatteries.cs" Line="45" Column="13" />
-      <File FileName="ThingComps\CompPowerLowIdleDraw.cs" Line="101" Column="33" />
-      <File FileName="ThingComps\CompHeatPusherPowered.cs" Line="25" Column="36" />
+      <File FileName="ThingComps\CompRefrigerated.cs" Line="60" Column="41" />
+      <File FileName="StaticClasses\ThingGroup.cs" Line="336" Column="1" />
+      <File FileName="Properties\AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Defs\AdvancedResearchDefExtensions.cs" Line="1" Column="1" />
+      <File FileName="Buildings\Building_Hydroponic.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

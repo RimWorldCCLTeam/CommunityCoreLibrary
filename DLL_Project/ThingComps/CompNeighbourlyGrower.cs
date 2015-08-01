@@ -59,12 +59,12 @@ namespace CommunityCoreLibrary
             // In room
             if( parent.Position.IsInRoom() )
                 // In room by def or comp
-                if( parent.HasRoommateByThingComp( GetType() ) )
+                if( parent.HasRoommateByThingComp( this.GetType() ) )
                     yield return GizmoChangeRoommatePlant;
 
             // Has a link flag
-            if( parent.Graphic.data.linkFlags != LinkFlags.None ){
-                // Touching things by link
+            if( parent.def.graphicData.linkFlags != LinkFlags.None ){
+                        // Touching things by link
                 if( parent.HasTouchingByLinker() )
                     yield return GizmoGroupOfThingsByLinker;
             }

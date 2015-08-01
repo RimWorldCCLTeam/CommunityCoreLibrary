@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Community Core Library")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("RimWorldCCLTeam")]
 [assembly: AssemblyProduct("Community Core Library")]
 [assembly: AssemblyCopyright("The Unlicense")]
 [assembly: AssemblyTrademark("")]
@@ -30,5 +30,5 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.11.3.0")]
-[assembly: AssemblyFileVersion("0.11.3.0")]
+[assembly: AssemblyVersion("0.11.4.0")]
+[assembly: AssemblyFileVersion("0.11.4.0")]

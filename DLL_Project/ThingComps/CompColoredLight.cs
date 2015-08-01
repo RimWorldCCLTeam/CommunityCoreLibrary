@@ -147,7 +147,7 @@ namespace CommunityCoreLibrary
                     yield return GizmoChangeRoommateColor;
             
             // Has a link flag
-            if( parent.Graphic.data.linkFlags != LinkFlags.None ){
+            if( parent.def.graphicData.linkFlags != LinkFlags.None ){
                 // Touching things by link
                 if( parent.HasTouchingByLinker() )
                     yield return GizmoGroupOfThingsByLinker;
