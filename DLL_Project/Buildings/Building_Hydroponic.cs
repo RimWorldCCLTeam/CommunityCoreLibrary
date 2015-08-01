@@ -13,14 +13,11 @@ namespace CommunityCoreLibrary
 
     public class Building_Hydroponic : Building_PlantGrower
     {
-        private CompPowerTrader compPower;
-        private List<ThingComp> comps;
-
-        public override void SpawnSetup()
-        {
-            base.SpawnSetup();
-            this.compPower = this.GetComp<CompPowerTrader>();
-            comps = this.AllComps;
+        private CompPowerTrader compPower{
+            get { return this.TryGetComp<CompPowerTrader>(); }
+        }
+        private List<ThingComp> comps{
+            get { return this.AllComps; }
         }
 
         public override void TickRare()

@@ -17,10 +17,12 @@ namespace CommunityCoreLibrary
         public Thing                    thing;
         public int                      HitPoints;
         public float                    rotProgress;
+        public string                   thingID;
 
         public RefrigeratorContents()
         {
-               // Default .ctor
+            // Default .ctor
+            // Needed for Scribing
         }
 
         public RefrigeratorContents( Thing t, CompRottable compRottable )
@@ -32,82 +34,42 @@ namespace CommunityCoreLibrary
 
         public void ExposeData()
         {
-            Scribe_References.LookReference( ref thing, "thing" );
-            Scribe_Values.LookValue( ref HitPoints, "HitPoints" );
-            Scribe_Values.LookValue( ref rotProgress, "rotProgress" );
+            //Log.Message( "\tRefrigeratorContents::ExposeData() {\n\t\tScribeMode: " + Scribe.mode );
+            if( ( Scribe.mode == LoadSaveMode.Saving )&&
+                ( thingID == null ) ){
+                thingID = thing.ThingID;
+            }
+
+            Scribe_Values.LookValue( ref this.thingID, "rotThing" );
+            Scribe_Values.LookValue( ref this.HitPoints, "HitPoints", forceSave: true );
+            Scribe_Values.LookValue( ref this.rotProgress, "rotProgress", forceSave: true );
+
+            //Log.Message( "\t} // RefrigeratorContents" );
         }
 
     }
 
     public class CompRefrigerated : ThingComp
     {
-        private CompPowerTrader         compPower;
-        private Building_Storage        thisBuilding;
         private List< RefrigeratorContents >    contents = new List< RefrigeratorContents >();
 
-        private bool                    okToProcess = false;
+        private CompPowerTrader         compPower{
+            get{ return parent.TryGetComp<CompPowerTrader>(); }
+        }
+
+        private Building_Storage        thisBuilding{
+            get{ return (parent as Building_Storage); }
+        }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
 
-            Scribe_Collections.LookList<RefrigeratorContents>( ref contents, "contents", LookMode.Deep );
-        }
+            //Log.Message( thisBuilding.ThingID + "::PostExposeData() {\n\tScribeMode: " + Scribe.mode );
 
-        public override void PostSpawnSetup()
-        {
-            base.PostSpawnSetup();
-            okToProcess = false;
+            Scribe_Collections.LookList<RefrigeratorContents>( ref this.contents, "contents", LookMode.Deep );
 
-            // Get this building
-            thisBuilding = (parent as Building_Storage);
-            if( thisBuilding == null ) {
-                Log.Message( "Community Core Library :: CompRefrigerated :: Unable to cast '" + parent.def.defName + "' to Building" );
-                return;
-            }
-
-            // Get the power comp
-            compPower = parent.GetComp<CompPowerTrader>();
-            if( compPower == null )
-            {
-                Log.Message( "Community Core Library :: CompRefrigerated :: '" + parent.def.defName + "' needs compPowerTrader!" );
-                return;
-            }
-
-            // Everything seems ok
-            okToProcess = true;
-
-        }
-
-        public void ScanForRottables()
-        {
-            // Check for things removed
-            bool restartScan;
-            do
-            {
-                restartScan = false;
-                foreach( RefrigeratorContents item in contents )
-                {
-                    if( ( item.thing.Destroyed )||
-                        ( item.thing.StoringBuilding() != thisBuilding ) )
-                    {
-                        // Modifing list, restart scan
-                        contents.Remove( item );
-                        restartScan = true;
-                        break;
-                    }
-                }
-            }while( restartScan == true );
-
-            // Add new things
-            foreach( Thing t in thisBuilding.slotGroup.HeldThings )
-            {
-                CompRottable compRottable = t.TryGetComp<CompRottable>();
-                if( ( compRottable != null )&&
-                    ( contents.Find( item => item.thing == t ) == null ) )
-                    contents.Add( new RefrigeratorContents( t, compRottable ) );
-            }
-
+            //Log.Message( "} // " + thisBuilding.ThingID + "::PostExposeData()" );
         }
 
         public override void CompTick()
@@ -123,9 +85,8 @@ namespace CommunityCoreLibrary
 
         private void RefrigerateContents()
         {
-            if( !okToProcess ) return;
-
             // Only refrigerate if it has power
+            // Don't worry about idle power though
             if( compPower.PowerOn == false )
             {
                 // Clear it out
@@ -146,5 +107,38 @@ namespace CommunityCoreLibrary
                 compRottable.rotProgress = item.rotProgress;
             }
         }
+
+        public void ScanForRottables()
+        {
+            // Check for things removed
+            for( int i = 0; i < contents.Count; ++i )
+            {
+                var item = contents[ i ];
+                if( ( item.thing == null )&&
+                    ( item.thingID != null ) ){
+                    //Log.Message( "thingID.resolve:  '" + item.thingID + "'" );
+                    item.thing = Find.ListerThings.AllThings.Find( t => t.ThingID == item.thingID );
+                    //Log.Message( "thing.resolved:   '" + item.thing + "'" );
+                }
+
+                if( ( item.thing.Destroyed )||
+                    ( item.thing.StoringBuilding() != thisBuilding ) )
+                {
+                    // Modifing list, continue scan
+                    contents.Remove( item );
+                    continue;
+                }
+            }
+            // Add new things
+            foreach( Thing t in thisBuilding.slotGroup.HeldThings )
+            {
+                CompRottable compRottable = t.TryGetComp<CompRottable>();
+                if( ( compRottable != null )&&
+                    ( contents.Find( item => item.thing == t ) == null ) )
+                    contents.Add( new RefrigeratorContents( t, compRottable ) );
+            }
+
+        }
+
     }
 }
