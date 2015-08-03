@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+        <defName>string</defName>       [required] SomeUniqueIdentifierInClass
+        
+        <ModName>string</ModName>       [required] Name of associated mod
+        
+        <label>string</label>           [required] Title of help section within mod
+        
+    -->
+
+    <HelpCategoryDef>
+        <defName>CCLGizmoHelp</defName>
+        <ModName>Community Core Library</ModName>
+        <label>Gizmos</label>
+    </HelpCategoryDef>
+
+</Defs>
