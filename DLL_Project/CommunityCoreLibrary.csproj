@@ -98,12 +98,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-<<<<<<< HEAD
   <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "C:\Users\ACER\Desktop\RimWorld857Win\Mods\Community Core Library\Assemblies"</PostBuildEvent>
   </PropertyGroup>
-=======
+
   <ItemGroup>
     <Folder Include="PlaceWorkers\" />
     <Folder Include="MapComponents\" />
@@ -119,5 +118,5 @@
     <Folder Include="ITabs\" />
     <Folder Include="MonoBehaviour\" />
   </ItemGroup>
->>>>>>> origin/development
+
 </Project>
