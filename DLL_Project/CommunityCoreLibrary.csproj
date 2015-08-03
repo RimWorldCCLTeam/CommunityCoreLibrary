@@ -88,6 +88,9 @@
     <Compile Include="Defs\HelpCategoryDef.cs" />
     <Compile Include="Defs\HelpDef.cs" />
     <Compile Include="OTabs\OTab_ModHelp.cs" />
+    <Compile Include="Defs\CCLVersionDef.cs" />
+    <Compile Include="ITabs\ModInit.cs" />
+    <Compile Include="MonoBehaviour\Controller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -109,5 +112,7 @@
     <Folder Include="Commands\" />
     <Folder Include="Alerts\" />
     <Folder Include="OTabs\" />
+    <Folder Include="ITabs\" />
+    <Folder Include="MonoBehaviour\" />
   </ItemGroup>
 </Project>
