@@ -4,7 +4,9 @@
 # User-specific files
 *.suo
 *.user
+*.userprefs
 *.sln.docstates
+DLL_Project/Source-DLLs/*.dll
 
 # Build results
 [Dd]ebug/
