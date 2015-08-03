@@ -86,6 +86,9 @@
     <Compile Include="Defs\HelpCategoryDef.cs" />
     <Compile Include="Defs\HelpDef.cs" />
     <Compile Include="OTabs\OTab_ModHelp.cs" />
+    <Compile Include="Defs\CCLVersionDef.cs" />
+    <Compile Include="ITabs\ModInit.cs" />
+    <Compile Include="MonoBehaviour\Controller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -95,8 +98,26 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+<<<<<<< HEAD
   <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "C:\Users\ACER\Desktop\RimWorld857Win\Mods\Community Core Library\Assemblies"</PostBuildEvent>
   </PropertyGroup>
+=======
+  <ItemGroup>
+    <Folder Include="PlaceWorkers\" />
+    <Folder Include="MapComponents\" />
+    <Folder Include="ThingComps\" />
+    <Folder Include="CompProperties\" />
+    <Folder Include="Toils\" />
+    <Folder Include="Buildings\" />
+    <Folder Include="Defs\" />
+    <Folder Include="StaticClasses\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Alerts\" />
+    <Folder Include="OTabs\" />
+    <Folder Include="ITabs\" />
+    <Folder Include="MonoBehaviour\" />
+  </ItemGroup>
+>>>>>>> origin/development
 </Project>
