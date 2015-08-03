@@ -14,7 +14,7 @@ namespace CommunityCoreLibrary
         protected static HelpDef SelectedHelpDef = null;
 
         public const float Margin = 18f;
-        public const float EntryHeight = 30f;
+        public const float EntryHeight = 40f;
         public const float EntryIndent = 50f;
 
         protected static Rect SelectionRect;
@@ -231,9 +231,7 @@ namespace CommunityCoreLibrary
                 Rect labelRect = new Rect(imageRect.xMax + Margin, 0f, modRect.width - ArrowImageSize.x - Margin * 2, EntryHeight);
                 Text.Anchor = TextAnchor.MiddleLeft;
                 GUI.color = Color.yellow;
-                Text.Font = GameFont.Medium;
                 Widgets.Label(labelRect, mod.ModName);
-                Text.Font = GameFont.Small;
                 GUI.color = Color.white;
                 Text.Anchor = TextAnchor.UpperLeft;
 
