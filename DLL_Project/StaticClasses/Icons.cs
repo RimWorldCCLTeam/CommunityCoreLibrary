@@ -20,6 +20,10 @@ namespace CommunityCoreLibrary
         public static readonly Texture2D        RoomButton = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/RoomButton", true);
         public static readonly Texture2D        LinkedButton = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/LinkedButton", true);
         public static readonly Texture2D        GroupButton = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/GroupButton", true);
+
+        public static readonly Texture2D        ArrowUp = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowDown", true );
+        public static readonly Texture2D        ArrowDown = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowUp", true );
+
     }
 
 }

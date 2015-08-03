@@ -13,9 +13,6 @@ namespace CommunityCoreLibrary
         protected static List<ModCategory> _cachedHelpCategories;
         protected static HelpDef SelectedHelpDef = null;
 
-        protected static Texture2D ArrowUpTex = ContentFinder<Texture2D>.Get("UI/HelpMenu/ArrowDown");
-        protected static Texture2D ArrowDownTex = ContentFinder<Texture2D>.Get("UI/HelpMenu/ArrowUp");
-
         public const float Margin = 18f;
         public const float EntryHeight = 30f;
         public const float EntryIndent = 50f;
@@ -228,7 +225,7 @@ namespace CommunityCoreLibrary
                     Widgets.DrawHighlight(modRect);
 
                 Rect imageRect = new Rect(Margin, modRect.height / 2f - ArrowImageSize.y / 2f, ArrowImageSize.x, ArrowImageSize.y);
-                Texture2D texture = mod.Expanded ? ArrowUpTex : ArrowDownTex;
+                Texture2D texture = mod.Expanded ? Icon.ArrowUp : Icon.ArrowDown;
                 GUI.DrawTexture(imageRect, texture);
 
                 Rect labelRect = new Rect(imageRect.xMax + Margin, 0f, modRect.width - ArrowImageSize.x - Margin * 2, EntryHeight);
@@ -291,7 +288,7 @@ namespace CommunityCoreLibrary
                     Widgets.DrawHighlight(catRect);
 
                 Rect imageRect = new Rect(Margin * 2, catRect.height / 2f - ArrowImageSize.y / 2f, ArrowImageSize.x, ArrowImageSize.y);
-                Texture2D texture = cat.Expanded ? ArrowUpTex : ArrowDownTex;
+                Texture2D texture = cat.Expanded ? Icon.ArrowUp : Icon.ArrowDown;
                 GUI.DrawTexture(imageRect, texture);
 
                 Rect labelRect = new Rect(imageRect.xMax + Margin, 0f, catRect.width - imageRect.width - Margin * 3, catRect.height);

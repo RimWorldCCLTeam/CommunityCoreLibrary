@@ -1,14 +1,11 @@
 ﻿<Properties StartupItem="CommunityCoreLibrary.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MapComponents\MapComponent_Research.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="OTabs\OTab_ModHelp.cs">
     <Files>
-      <File FileName="ThingComps\CompRefrigerated.cs" Line="1" Column="1" />
-      <File FileName="StaticClasses\ThingGroup.cs" Line="1" Column="1" />
-      <File FileName="Properties\AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="Defs\AdvancedResearchDefExtensions.cs" Line="1" Column="1" />
-      <File FileName="Buildings\Building_Hydroponic.cs" Line="1" Column="1" />
-      <File FileName="Defs\AdvancedResearchDef.cs" Line="1" Column="1" />
-      <File FileName="MapComponents\MapComponent_Research.cs" Line="115" Column="9" />
+      <File FileName="Defs\HelpCategoryDef.cs" Line="1" Column="1" />
+      <File FileName="Defs\HelpDef.cs" Line="1" Column="1" />
+      <File FileName="OTabs\OTab_ModHelp.cs" Line="291" Column="81" />
+      <File FileName="StaticClasses\Icons.cs" Line="26" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

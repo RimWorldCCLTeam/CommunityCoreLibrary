@@ -215,7 +215,7 @@ Global
 		$30.inheritsScope = text/plain
 		$30.scope = text/plain
 		description = RimWorld Alpha 11 Community Core Library
-		version = 0.11.4
+		version = 0.11.5
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
