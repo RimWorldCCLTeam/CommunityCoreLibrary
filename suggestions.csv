@@ -1,6 +1,6 @@
 "Suggestion","Implemented As","Person","Forum Link"
 ,,,
-"On smoothed floor","Use vanilla TerrainAffordance.SmoothableStone","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146383#msg146383"
+"On smoothed floor","","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146383#msg146383"
 "On terrain","PlaceWorler_OnlyOnTerrain/NotOnTerrain","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146402#msg146402"
 "Restricted Count","PlaceWorker_RestrictedCount","mipen","https://ludeon.com/forums/index.php?topic=14172.msg146866#msg146866"
 "AR Hide buildings/recipes/research","AdvancedResearchDef.HideDefs","mrofa","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=45"
@@ -10,6 +10,6 @@
 "Copy bills between work tables",,"mrofa","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=45"
 "Restrict to neighbouring building",,"mrofa","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=60"
 "Event logger",,"mrofa","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=60"
-"A ìliteî version of the mod with minimal vanilla edits",,"mrofa","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=60"
+"A ‚Äúlite‚Äù version of the mod with minimal vanilla edits",,"mrofa","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=60"
 "Restrict proximity, in row/column",,"skyarkhangel","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=75"
 "Designator rclick for different building types",,"jacob814","https://ludeon.com/forums/index.php?action=pm;f=inbox;sort=date;start=75"
