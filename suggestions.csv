@@ -6,7 +6,7 @@
 "AR Hide buildings/recipes/research","AdvancedResearchDef.HideDefs","mrofa","via pm"
 "AR callbacks","AdvancedResearchDef.researchMods","mrofa","via pm"
 "CompLifespanPowered","CompLifespanPowered","Vas","https://ludeon.com/forums/index.php?topic=14249.0"
-"Linking growers to share info","Building_Hydroponic & Gizmos","mrofa","via pm"
+"Linking growers to share info","Building_Hydroponic & CompNeighbourlyGrower","mrofa","via pm"
 "Copy bills between work tables",,"mrofa","via pm"
 "Restrict to neighbouring building",,"mrofa","via pm"
 "Event logger",,"mrofa","via pm"
