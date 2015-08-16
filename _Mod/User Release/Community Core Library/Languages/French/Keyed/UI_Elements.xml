@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- UI Elements -->
+
+    <CompColorLightInspect>Couleur: </CompColorLightInspect>
+
+    <CommandChangeColorLabel>Changer couleur</CommandChangeColorLabel>
+    <CommandChangeColorDesc>ClicGauche - {0};\nClicDroit - {1}</CommandChangeColorDesc>
+
+    <CommandChangeRoommateColorLabel>Synchoniser les lampes colorées de la pièce</CommandChangeRoommateColorLabel>
+    <CommandChangeRoommateColorLClick>ClicG - Seulement {0}</CommandChangeRoommateColorLClick>
+    <CommandChangeRoommateColorRClick>ClicD - Toutes les lampes</CommandChangeRoommateColorRClick>
+
+    <CommandChangeTouchingPlantLabel>Synchroniser tous les bassins adjacents</CommandChangeTouchingPlantLabel>
+    <CommandChangeRoommatePlantLabel>Synchroniser tous les bassins dans la pièce</CommandChangeRoommatePlantLabel>
+    <CommandChangeRoommatePlantLClick>ClicG - Seulement {0}</CommandChangeRoommatePlantLClick>
+    <CommandChangeRoommatePlantRClick>ClicD - Tous les bassins</CommandChangeRoommatePlantRClick>
+    
+    <CommandGroupOfThingsLClick>ClicG - Dans la pièce</CommandGroupOfThingsLClick>
+    <CommandGroupOfThingsRClick>ClicD - Sur la carte</CommandGroupOfThingsRClick>
+
+    <CommandGroupOfThingsByDefLabel>Synchroniser tous les {0} adjacents</CommandGroupOfThingsByDefLabel>
+    <CommandGroupOfThingsByLinkerLabel>Synchroniser tous les {0}</CommandGroupOfThingsByLinkerLabel>
+
+    <CommandGroupOfThingsByDefInRoomLabel>Synchroniser tous les {0} de la pièce</CommandGroupOfThingsByDefInRoomLabel>
+    <CommandGroupOfThingsByLinkerInRoomLabel>Synchroniser tous les {0} liés de la pièce</CommandGroupOfThingsByLinkerInRoomLabel>
+
+</LanguageData>

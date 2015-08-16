@@ -15,6 +15,7 @@ namespace CommunityCoreLibrary
             {
                 gameObject = new GameObject( "CCLController" );
                 gameObject.AddComponent< Controller >();
+                Object.DontDestroyOnLoad( gameObject );
             }
         }
 

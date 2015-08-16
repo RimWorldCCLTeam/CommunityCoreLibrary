@@ -12,16 +12,16 @@ namespace CommunityCoreLibrary
     {
 
         const int                           TicksPerSecond = 60;
-        const int                           UpdatedPerSecond = 2;
-        const int                           UpdateTicks = TicksPerSecond / UpdatedPerSecond;
+        const int                           UpdatesPerSecond = 2;
+        const int                           BaseUpdateTicks = TicksPerSecond / UpdatesPerSecond;
+        int                                 UpdateTicks;
 
         List< AdvancedResearchDef >         advancedResearch;
-        int                                 tickCount;
 
-        bool                                okToProcess;
         bool                                wasGodMode;
 
         bool                                firstRun = true;
+        bool                                okToProcess;
 
         // These are used to optimize the process so the same data
         // isn't constantly reprocessed with every itteration.
@@ -41,26 +41,13 @@ namespace CommunityCoreLibrary
             firstRun = false;
             okToProcess = false;
 
-            // Make sure the hidden research exists
-            if( Research.Locker == null )
-            {
-                Log.Error( "Community Core Library :: Advanced Research :: Missing Research.Locker!" );
-                return;
-            }
-
             // Get the [advanced] research defs
             advancedResearch = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
 
             if( ( advancedResearch == null )||
-                ( advancedResearch.Count < 1 ) )
+                ( advancedResearch.Count == 0 ) )
             {
                 Log.Message( "Community Core Library :: Advanced Research :: No advanced research defined, hybernating..." );
-                return;
-            }
-
-            // Do sanity checks
-            if( !SanityChecks() )
-            {
                 return;
             }
 
@@ -75,74 +62,12 @@ namespace CommunityCoreLibrary
             SetInitialState();
 
             // Set for an immediate research check
-            tickCount = 0;
-
-            Log.Message( "Community Core Library :: Advanced Research :: Initialized" );
+            UpdateTicks = 0;
+            okToProcess = true;
         }
 
-        bool                                SanityChecks()
-        {   
-            // Perform sanity checks of all the defs
-            bool enableProcessing = true;
-
-#if DEBUG
-            // Validate each advanced research def
-            foreach( var Advanced in advancedResearch )
-            {
-                // Validate recipes
-                if( Advanced.IsRecipeToggle() )
-                {
-                    // Make sure thingDefs are of the appropriate type (has ITab_Bills)
-                    foreach( var buildingDef in Advanced.thingDefs )
-                    {
-                        if( !buildingDef.inspectorTabs.Contains( typeof( ITab_Bills ) ) )
-                        {
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + buildingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + Advanced.defName + " ) - Must contain <inspectorTabs> \"ITab_Bills\"" );
-                            enableProcessing = false;
-                        }
-                    }
-
-                }
-
-                // Validate plant sowTags
-                if( Advanced.IsPlantToggle() )
-                {
-                    // Make sure things are of the appropriate class (Plant)
-                    foreach( var plantDef in Advanced.thingDefs )
-                    {
-                        if( plantDef.thingClass != typeof( Plant ) )
-                        {
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + plantDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + Advanced.defName + " ) - Must be <thingClass> \"Plant\"" );
-                            enableProcessing = false;
-                        }
-                    }
-
-                    // Make sure sowTags are valid (!null or empty)
-                    for( int i = 0; i < Advanced.sowTags.Count; i++ )
-                    {
-                        var sowTag = Advanced.sowTags[ i ];
-                        if( string.IsNullOrEmpty( sowTag ) )
-                        {
-                            Log.Error( "Community Core Library :: Advanced Research :: sowTags( index = " + i + " ) resolved to null in AdvancedResearchDef( " + Advanced.defName + " )" );
-                            enableProcessing = false;
-                        }
-                    }
-                }
-
-            }
-#endif
-
-            // Set the processing flag
-            okToProcess = enableProcessing;
-
-            // Return pass/fail
-            return enableProcessing;
-        }
-
-        public override void                MapComponentTick()
+        void                                UpdateComponent()
         {
-            base.MapComponentTick();
-
             if( firstRun )
             {
                 InitComponent();
@@ -153,17 +78,29 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            tickCount--;
-            if( tickCount > 0 )
+            UpdateTicks--;
+            if( UpdateTicks > 0 )
             {
                 return;
             }
 
-            tickCount = UpdateTicks;
+            UpdateTicks = BaseUpdateTicks;
 
             wasGodMode |= Game.GodMode;
-            
+
             CheckAdvancedResearch();
+        }
+
+        public override void                MapComponentOnGUI()
+        {
+            base.MapComponentOnGUI();
+            UpdateComponent();
+        }
+
+        public override void                MapComponentTick()
+        {
+            base.MapComponentTick();
+            UpdateComponent();
         }
 
         #endregion
@@ -204,26 +141,24 @@ namespace CommunityCoreLibrary
             // Set the initial state of the advanced research
             PrepareCaches();
 
-            // Get each advanced research def
-            foreach( var Advanced in advancedResearch )
+            // Process each advanced research def in reverse order
+            for( int i = advancedResearch.Count - 1; i >= 0; i-- )
             {
-                if( Advanced.IsRecipeToggle() )
-                {
+                var Advanced = advancedResearch[ i ];
+
+                if( Advanced.IsRecipeToggle() ){
                     // Recipe toggle
                     Advanced.ToggleRecipes( buildingCache, true );
                 }
-                if( Advanced.IsPlantToggle() )
-                {
+                if( Advanced.IsPlantToggle() ){
                     // Plant toggle
                     Advanced.TogglePlants( true );
                 }
-                if( Advanced.IsBuildingToggle() )
-                {
+                if( Advanced.IsBuildingToggle() ){
                     // Building toggle
                     Advanced.ToggleBuildings( true );
                 }
-                if( Advanced.IsResearchToggle() )
-                {
+                if( Advanced.IsResearchToggle() ){
                     // Research toggle
                     Advanced.ToggleResearch( true );
                 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary
@@ -62,40 +63,47 @@ namespace CommunityCoreLibrary
         public bool                         IsRecipeToggle()
         {
             // Determine if this def toggles recipes
-            return
-                ( recipeDefs != null )&&( recipeDefs.Count > 0 )&&
-                ( sowTags == null )||( sowTags.Count == 0 )&&
-                ( thingDefs != null )&&( thingDefs.Count > 0 );
+            return (
+                ( ( recipeDefs != null )&&( recipeDefs.Count > 0 ) )&&
+                ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
+                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+            );
         }
 
         public bool                         IsPlantToggle()
         {
             // Determine if this def toggles plant sow tags
-            return
-                ( recipeDefs == null )||( recipeDefs.Count == 0 )&&
-                ( sowTags != null )&&( sowTags.Count > 0 )&&
-                ( thingDefs != null )&&( thingDefs.Count > 0 );
+            return (
+                ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
+                ( ( sowTags != null )&&( sowTags.Count > 0 ) )&&
+                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+            );
         }
 
         public bool                         IsBuildingToggle()
         {
             // Determine if this def toggles buildings
-            return
-                ( recipeDefs == null )||( recipeDefs.Count == 0 )&&
-                ( sowTags == null )||( sowTags.Count == 0 )&&
-                ( thingDefs != null )&&( thingDefs.Count > 0 );
+            return (
+                ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
+                ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
+                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+            );
         }
 
         public bool                         HasCallbacks()
         {
             // Determine if this def has callbacks
-            return ( researchMods != null )&&( researchMods.Count > 0 );
+            return (
+                ( ( researchMods != null )&&( researchMods.Count > 0 ) )
+            );
         }
 
         public bool                         IsResearchToggle()
         {
             // Determine if this def toggles research
-            return ( effectedResearchDefs != null )&&( effectedResearchDefs.Count > 0 );
+            return (
+                ( ( effectedResearchDefs != null )&&( effectedResearchDefs.Count > 0 ) )
+            );
         }
 
         #endregion
@@ -111,37 +119,53 @@ namespace CommunityCoreLibrary
             {
 
                 // Go through each recipe
-                foreach( var recipe in recipeDefs )
+                foreach( var recipeDef in recipeDefs )
                 {
+
+                    // Make sure recipe has user list
+                    if( recipeDef.recipeUsers == null )
+                    {
+                        recipeDef.recipeUsers = new List<ThingDef>();
+                    }
 
                     if( Hide )
                     {
                         // Hide recipe
 
                         // Remove building from recipe
-                        if( ( recipe.recipeUsers != null )&&
-                            ( recipe.recipeUsers.IndexOf( buildingDef ) >= 0 ) )
+                        if( recipeDef.recipeUsers.IndexOf( buildingDef ) >= 0 )
                         {
-                            recipe.recipeUsers.Remove( buildingDef );
+                            recipeDef.recipeUsers.Remove( buildingDef );
                         }
 
                         // Remove recipe from building
                         if( ( buildingDef.recipes != null )&&
-                            ( buildingDef.recipes.IndexOf( recipe ) >= 0 ) )
+                            ( buildingDef.recipes.IndexOf( recipeDef ) >= 0 ) )
                         {
-                            buildingDef.recipes.Remove( recipe );
+                            buildingDef.recipes.Remove( recipeDef );
                         }
+
+                        // Remove bill on any table of this def using this recipe
+                        var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( buildingDef );
+                        foreach( var building in buildings )
+                        {
+                            var BillGiver = building as IBillGiver;
+                            for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
+                            {
+                                var bill = BillGiver.BillStack[ i ];
+                                if( bill.recipe == recipeDef )
+                                {
+                                    BillGiver.BillStack.Delete( bill );
+                                    continue;
+                                }
+                            }
+                        }
+
                     }
                     else
                     {
-                        // Make sure recipe has user list
-                        if( recipe.recipeUsers == null )
-                        {
-                            recipe.recipeUsers = new List<ThingDef>();
-                        }
-
                         // Add building to recipe
-                        recipe.recipeUsers.Add( buildingDef );
+                        recipeDef.recipeUsers.Add( buildingDef );
                     }
                 }
 

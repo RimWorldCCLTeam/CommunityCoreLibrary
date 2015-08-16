@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- Colors -->
+    <colorWhite>blanc</colorWhite>
+    <colorRed>rouge</colorRed>
+    <colorGreen>vert</colorGreen>
+    <colorBlue>bleu</colorBlue>
+    <colorYellow>jaune</colorYellow>
+    <colorOrange>orange</colorOrange>
+    <colorPurple>mauve</colorPurple>
+
+</LanguageData>

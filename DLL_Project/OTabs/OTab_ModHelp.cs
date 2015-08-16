@@ -96,28 +96,19 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Small;
 
             Rect inRect = rect.ContractedBy( Margin );
-            try
-            {
-                GUI.BeginGroup( inRect );
+            
+            GUI.BeginGroup( inRect );
 
-                SelectionRect = new Rect( 0f, 0f, 300f, inRect.height );
-                DisplayRect = new Rect(
-                    SelectionRect.width + Margin, 0f,
-                    inRect.width - SelectionRect.width - Margin, inRect.height );
+            SelectionRect = new Rect( 0f, 0f, 300f, inRect.height );
+            DisplayRect = new Rect(
+                SelectionRect.width + Margin, 0f,
+                inRect.width - SelectionRect.width - Margin, inRect.height );
 
-                DrawSelectionArea( SelectionRect );
-                DrawDisplayArea( DisplayRect );
-                Widgets.DrawLineVertical( SelectionRect.xMax + Margin / 2f, 0f, inRect.height );
+            DrawSelectionArea( SelectionRect );
+            DrawDisplayArea( DisplayRect );
+            Widgets.DrawLineVertical( SelectionRect.xMax + Margin / 2f, 0f, inRect.height );
 
-            }
-            catch( Exception e )
-            {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in OTabOnGUI:\n\t" + e );
-            }
-            finally
-            {
-                GUI.EndGroup();
-            }
+            GUI.EndGroup();
         }
 
         void                                DrawDisplayArea( Rect rect )
@@ -129,238 +120,181 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            try
-            {
-                GUI.BeginGroup( rect );
+            GUI.BeginGroup( rect );
 
-                var titleRect = new Rect( 0f, 0f, rect.width, 60f );
-                Text.Font = GameFont.Medium;
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
-                Text.Font = GameFont.Small;
-                Text.Anchor = TextAnchor.UpperLeft;
+            var titleRect = new Rect( 0f, 0f, rect.width, 60f );
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
 
-                Widgets.DrawLineHorizontal( 0f, titleRect.yMax, rect.width );
+            Widgets.DrawLineHorizontal( 0f, titleRect.yMax, rect.width );
 
-                var outRect = new Rect(
-                    Margin, titleRect.yMax + Margin,
-                    rect.width - Margin, rect.height - titleRect.yMax - Margin );
+            var outRect = new Rect(
+                Margin, titleRect.yMax + Margin,
+                rect.width - Margin, rect.height - titleRect.yMax - Margin );
 
-                float height = Text.CalcHeight( SelectedHelpDef.description, outRect.width - 16f );
+            float height = Text.CalcHeight( SelectedHelpDef.description, outRect.width - 16f );
 
-                var viewRect = new Rect(
-                    outRect.x, outRect.y,
-                    outRect.width - 16f, height );
+            var viewRect = new Rect(
+                outRect.x, outRect.y,
+                outRect.width - 16f, height );
 
-                Widgets.BeginScrollView( outRect, ref displayScrollPos, viewRect );
-                Widgets.Label( viewRect, SelectedHelpDef.description );
-                Widgets.EndScrollView();
-            }
-            catch( Exception e )
-            {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in DrawDisplayArea:\n\t" + e );
-            }
-            finally
-            {
-                GUI.EndGroup();
-            }
+            Widgets.BeginScrollView( outRect, ref displayScrollPos, viewRect );
+            Widgets.Label( viewRect, SelectedHelpDef.description );
+            Widgets.EndScrollView();
+
+            GUI.EndGroup();
         }
 
         void                                DrawSelectionArea( Rect rect )
         {
-            try
+            Widgets.DrawMenuSection( rect );
+            GUI.BeginGroup( rect );
+
+            Rect outRect = rect.AtZero();
+            float height = _cachedHelpCategories.Sum( c => c.DrawHeight );
+            var viewRect = new Rect( 0f, 0f, outRect.width - 16f, height );
+            float curY = outRect.y;
+
+            Widgets.BeginScrollView( outRect, ref selectionScrollPos, viewRect );
+            if( _cachedHelpCategories.Count < 1 )
             {
-                Widgets.DrawMenuSection( rect );
-                GUI.BeginGroup( rect );
-
-                Rect outRect = rect.AtZero();
-                float height = _cachedHelpCategories.Sum( c => c.DrawHeight );
-                var viewRect = new Rect( 0f, 0f, outRect.width - 16f, height );
-                float curY = outRect.y;
-
-                Widgets.BeginScrollView( outRect, ref selectionScrollPos, viewRect );
-                if( _cachedHelpCategories.Count < 1 )
+                Rect messageRect = outRect.AtZero();
+                Widgets.Label( messageRect, "NoHelpDefs".Translate() );
+            }
+            else
+            {
+                foreach( var m in _cachedHelpCategories )
                 {
-                    Rect messageRect = outRect.AtZero();
-                    Widgets.Label( messageRect, "NoHelpDefs".Translate() );
+                    var entryRect = new Rect( 0f, curY, viewRect.width, m.DrawHeight );
+                    DrawModCategory( entryRect, m );
+                    curY += m.DrawHeight;
                 }
-                else
-                {
-                    foreach( var m in _cachedHelpCategories )
-                    {
-                        var entryRect = new Rect( 0f, curY, viewRect.width, m.DrawHeight );
-                        DrawModCategory( entryRect, m );
-                        curY += m.DrawHeight;
-                    }
-                }
+            }
 
-            }
-            catch( Exception e )
-            {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in DrawSelectionArea:\n\t" + e );
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-                GUI.EndGroup();
-            }
+            Widgets.EndScrollView();
+            GUI.EndGroup();
         }
 
         void                                DrawModCategory( Rect entryRect, ModCategory m )
         {
-            try
-            {
-                GUI.BeginGroup( entryRect );
+            GUI.BeginGroup( entryRect );
 
-                float curY = 0f;
-                var modRect = new Rect( 0f, 0f, entryRect.width, EntryHeight );
-                DrawModRow( modRect, m );
-                curY += EntryHeight;
-                if( m.Expanded )
+            float curY = 0f;
+            var modRect = new Rect( 0f, 0f, entryRect.width, EntryHeight );
+            DrawModRow( modRect, m );
+            curY += EntryHeight;
+            if( m.Expanded )
+            {
+                foreach( var cat in m.HelpCategories )
                 {
-                    foreach( var cat in m.HelpCategories )
-                    {
-                        var catRect = new Rect( 0f, curY, entryRect.width, cat.DrawHeight );
-                        DrawHelpCategory( catRect, cat );
-                        curY += cat.DrawHeight;
-                    }
+                    var catRect = new Rect( 0f, curY, entryRect.width, cat.DrawHeight );
+                    DrawHelpCategory( catRect, cat );
+                    curY += cat.DrawHeight;
                 }
             }
-            catch( Exception e )
-            {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in DrawModCategory:\n\t" + e );
-            }
-            finally
-            {
-                GUI.EndGroup();
-            }
+            GUI.EndGroup();
         }
 
         void                                DrawModRow( Rect modRect, ModCategory mod )
         {
-            try
+            GUI.BeginGroup( modRect );
+
+            if( modRect.Contains( Event.current.mousePosition ) )
             {
-                GUI.BeginGroup( modRect );
-
-                if( modRect.Contains( Event.current.mousePosition ) )
-                {
-                    Widgets.DrawHighlight( modRect );
-                }
-
-                var imageRect = new Rect(
-                    Margin, modRect.height / 2f - ArrowImageSize.y / 2f,
-                    ArrowImageSize.x, ArrowImageSize.y );
-
-                Texture2D texture = mod.Expanded ? Icon.HelpMenuArrowUp : Icon.HelpMenuArrowDown;
-                GUI.DrawTexture(imageRect, texture);
-
-                var labelRect = new Rect(
-                    imageRect.xMax + Margin, 0f,
-                    modRect.width - ArrowImageSize.x - Margin * 2, EntryHeight );
-                
-                Text.Anchor = TextAnchor.MiddleLeft;
-                GUI.color = Color.yellow;
-                Widgets.Label( labelRect, mod.ModName );
-                GUI.color = Color.white;
-                Text.Anchor = TextAnchor.UpperLeft;
-
-                if( Widgets.InvisibleButton( modRect ) )
-                {
-                    mod.Expanded = !mod.Expanded;
-                }
+                Widgets.DrawHighlight( modRect );
             }
-            catch( Exception e )
+
+            var imageRect = new Rect(
+                Margin, modRect.height / 2f - ArrowImageSize.y / 2f,
+                ArrowImageSize.x, ArrowImageSize.y );
+
+            Texture2D texture = mod.Expanded ? Icon.HelpMenuArrowUp : Icon.HelpMenuArrowDown;
+            GUI.DrawTexture(imageRect, texture);
+
+            var labelRect = new Rect(
+                imageRect.xMax + Margin, 0f,
+                modRect.width - ArrowImageSize.x - Margin * 2, EntryHeight );
+            
+            Text.Anchor = TextAnchor.MiddleLeft;
+            GUI.color = Color.yellow;
+            Widgets.Label( labelRect, mod.ModName );
+            GUI.color = Color.white;
+            Text.Anchor = TextAnchor.UpperLeft;
+
+            if( Widgets.InvisibleButton( modRect ) )
             {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in DrawModRow:\n\t" + e );
+                mod.Expanded = !mod.Expanded;
             }
-            finally
-            {
-                GUI.EndGroup();
-            }
+            GUI.EndGroup();
         }
 
         void                                DrawHelpCategory( Rect catRect, HelpCategoryDef cat )
         {
-            try
+            GUI.BeginGroup( catRect );
+
+            var catRowRect = new Rect( 0f, 0f, catRect.width, EntryHeight );
+            DrawHelpCategoryRow( catRowRect, cat );
+
+            if( cat.Expanded )
             {
-                GUI.BeginGroup( catRect );
-
-                var catRowRect = new Rect( 0f, 0f, catRect.width, EntryHeight );
-                DrawHelpCategoryRow( catRowRect, cat );
-
-                if( cat.Expanded )
+                float curY = EntryHeight;
+                foreach( var helpDef in cat.HelpDefs )
                 {
-                    float curY = EntryHeight;
-                    foreach( var helpDef in cat.HelpDefs )
-                    {
-                        var helpRect = new Rect(
-                            EntryIndent, curY,
-                            catRect.width, EntryHeight );
-                        
-                        DrawHelpRow( helpRect, helpDef );
-                        GUI.color = Color.gray;
-                        Widgets.DrawLineHorizontal( 0f, curY, catRect.width );
-                        GUI.color = Color.white;
+                    var helpRect = new Rect(
+                        EntryIndent, curY,
+                        catRect.width, EntryHeight );
+                    
+                    DrawHelpRow( helpRect, helpDef );
+                    GUI.color = Color.gray;
+                    Widgets.DrawLineHorizontal( 0f, curY, catRect.width );
+                    GUI.color = Color.white;
 
-                        curY += EntryHeight;
-                    }
+                    curY += EntryHeight;
                 }
             }
-            catch( Exception e )
-            {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in DrawHelpCategory:\n\t" + e );
-            }
-            finally
-            {
-                Text.Anchor = TextAnchor.UpperLeft;
-                GUI.EndGroup();
-            }
+
+            Text.Anchor = TextAnchor.UpperLeft;
+            GUI.EndGroup();
         }
 
         void                                DrawHelpCategoryRow( Rect catRect, HelpCategoryDef cat )
         {
-            try
+            GUI.BeginGroup( catRect );
+
+            if( catRect.Contains( Event.current.mousePosition ) )
             {
-                GUI.BeginGroup( catRect );
-
-                if( catRect.Contains( Event.current.mousePosition ) )
-                {
-                    Widgets.DrawHighlight( catRect );
-                }
-
-                var imageRect = new Rect(
-                    Margin * 2, catRect.height / 2f - ArrowImageSize.y / 2f,
-                    ArrowImageSize.x, ArrowImageSize.y );
-                
-                Texture2D texture = cat.Expanded ? Icon.HelpMenuArrowUp : Icon.HelpMenuArrowDown;
-                GUI.DrawTexture( imageRect, texture );
-
-                var labelRect = new Rect(
-                    imageRect.xMax + Margin, 0f,
-                    catRect.width - imageRect.width - Margin * 3, catRect.height );
-
-                Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label( labelRect, cat.LabelCap );
-                Text.Anchor = TextAnchor.UpperLeft;
-
-                GUI.color = Color.gray;
-                Widgets.DrawLineHorizontal( 0f, 0f, catRect.width );
-                GUI.color = Color.white;
-
-                if( Widgets.InvisibleButton( catRect ) )
-                {
-                    cat.Expanded = !cat.Expanded;
-                }
+                Widgets.DrawHighlight( catRect );
             }
-            catch( Exception e )
+
+            var imageRect = new Rect(
+                Margin * 2, catRect.height / 2f - ArrowImageSize.y / 2f,
+                ArrowImageSize.x, ArrowImageSize.y );
+            
+            Texture2D texture = cat.Expanded ? Icon.HelpMenuArrowUp : Icon.HelpMenuArrowDown;
+            GUI.DrawTexture( imageRect, texture );
+
+            var labelRect = new Rect(
+                imageRect.xMax + Margin, 0f,
+                catRect.width - imageRect.width - Margin * 3, catRect.height );
+
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label( labelRect, cat.LabelCap );
+            Text.Anchor = TextAnchor.UpperLeft;
+
+            GUI.color = Color.gray;
+            Widgets.DrawLineHorizontal( 0f, 0f, catRect.width );
+            GUI.color = Color.white;
+
+            if( Widgets.InvisibleButton( catRect ) )
             {
-                Log.Error( "Community Core Library :: Help Tab :: UI render exception in DrawHelpCategoryRow:\n\t" + e );
+                cat.Expanded = !cat.Expanded;
             }
-            finally
-            {
-                Text.Anchor = TextAnchor.UpperLeft;
-                GUI.EndGroup();
-            }
+
+            Text.Anchor = TextAnchor.UpperLeft;
+            GUI.EndGroup();
         }
 
         void                                DrawHelpRow( Rect hRect, HelpDef hCat )

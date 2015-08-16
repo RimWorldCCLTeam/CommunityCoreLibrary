@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- PlaceWorkers -->
+    <MessagePlacementItemSurface>Doit être placé en surface!</MessagePlacementItemSurface>
+    <MessagePlacementMustBeUnderRoof>Doit être placé sous un toit!</MessagePlacementMustBeUnderRoof>
+    <MessagePlacementAgainstSupport>Doit être placé contre une structure portante!</MessagePlacementAgainstSupport>
+    <MessagePlacementCountRestricted>Impossible d'en avoir plus de: </MessagePlacementCountRestricted>
+    <MessagePlacementNotOn>Impossible de placer par dessus </MessagePlacementNotOn>
+    <MessagePlacementNotHere>Impossible à placer ici</MessagePlacementNotHere>
+    <AlertPlaceWorkerRestrictionSupportRemovedLabel>Un support a été enlevé!</AlertPlaceWorkerRestrictionSupportRemovedLabel>
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Quelque chose a été cassé car son support a été enlevé ou detruit!\n\nLes objets suivant ont été détruit à cause d'un support manquant:</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+    
+</LanguageData>

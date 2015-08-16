@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+    <ThingDef Name="BuildingBase" Abstract="True">
+        <category>Building</category>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <selectable>true</selectable>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <repairEffect>Repair</repairEffect>
+        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <filthLeaving>BuildingRubble</filthLeaving>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase" Name="DoorBase" Abstract="True">
+        <thingClass>Building_Door</thingClass>
+        <blueprintClass>Blueprint_Door</blueprintClass>
+        <category>Building</category>
+        <blueprintGraphicData>
+            <texPath>Things/Building/Door/Door_Blueprint</texPath>
+        </blueprintGraphicData>
+        <altitudeLayer>DoorMoveable</altitudeLayer>
+        <fillPercent>1</fillPercent>
+        <useHitPoints>true</useHitPoints>
+        <stuffCategories>
+            <li>Metallic</li>
+            <li>Woody</li>
+            <li>Stony</li>
+        </stuffCategories>
+        <statBases>
+            <MaxHitPoints>250</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <selectable>true</selectable>
+        <tickerType>Normal</tickerType>
+        <rotatable>false</rotatable>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <designationCategory>Structure</designationCategory>
+        <holdsRoof>true</holdsRoof>
+        <staticSunShadowHeight>1.0</staticSunShadowHeight>
+        <blockLight>true</blockLight>
+        <drawerType>RealtimeOnly</drawerType>
+        <building>
+            <soundDoorOpenPowered>DoorOpenPowered</soundDoorOpenPowered>
+            <soundDoorClosePowered>DoorClosePowered</soundDoorClosePowered>
+            <soundDoorOpenManual>DoorOpenManual</soundDoorOpenManual>
+            <soundDoorCloseManual>DoorCloseManual</soundDoorCloseManual>
+            <ignoreNeedsPower>true</ignoreNeedsPower>
+            <canPlaceOverWall>true</canPlaceOverWall>
+        </building>
+        <comps>
+            <li>
+                <compClass>CompForbiddable</compClass>
+            </li>
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="DoorBase">
+        <defName>Door</defName>
+        <label>door</label>
+        <description>Divides rooms. Must be manually opened and closed, which slows people down.</description>
+        <statBases>
+            <WorkToMake>850</WorkToMake>
+        </statBases>
+        <graphicData>
+            <texPath>Things/Building/Door/DoorSimple_Mover</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <uiIconPath>Things/Building/Door/DoorSimple_MenuIcon</uiIconPath>
+        <costStuffCount>25</costStuffCount>
+        <designationHotKey>P</designationHotKey>
+    </ThingDef>
+
+    <ThingDef ParentName="DoorBase">
+        <defName>Autodoor</defName>
+        <label>autodoor</label>
+        <description>Divides rooms. Powered operation allows people to move through the door without slowing down.</description>
+        <statBases>
+            <WorkToMake>1100</WorkToMake>
+        </statBases>
+        <graphicData>
+            <texPath>Things/Building/Door/Autodoor_Mover</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
+        <costList>
+            <Steel>40</Steel>
+        </costList>
+        <costStuffCount>25</costStuffCount>
+        <comps>
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                <basePowerConsumption>100</basePowerConsumption>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                <idlePowerFactor>0.1</idlePowerFactor>
+                <operationalMode>WhenNear</operationalMode>
+            </li>
+        </comps>
+        <designationHotKey>O</designationHotKey>
+    </ThingDef>
+
+</Defs>
