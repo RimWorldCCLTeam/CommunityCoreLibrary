@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 
 using RimWorld;
-using UnityEngine;
 using Verse;
-using Verse.AI;
 using CommunityCoreLibrary.Commands;
 
 namespace CommunityCoreLibrary
@@ -16,59 +12,63 @@ namespace CommunityCoreLibrary
     {
         #region Private vars
 
-        private CompGlower                  compGlower;
-        private CompGlower                  oldGlower;
-        private CompPowerTrader             compPower;
-        private int                         ColorIndex = -1;
-        private float                       lightRadius;
+        int                                 ColorIndex = -1;
+        float                               lightRadius;
+
+        CompPowerTrader                     PowerTrader;
+        CompProperties_ColoredLight         ColorProps;
+
+        CompPowerTrader                     CompPowerTrader
+        {
+            get
+            {
+                return parent.TryGetComp< CompPowerTrader >();
+            }
+        }
+
+        CompGlower                          CompGlower
+        {
+            get
+            {
+                return parent.TryGetComp< CompGlower >();
+            }
+        }
 
         #endregion
 
         #region Gizmos
 
-        private CommandChangeColor            _GizmoChangeColor;
-        private CommandChangeColor            GizmoChangeColor {
+        ChangeColor                 _GizmoChangeColor;
+        ChangeColor                 GizmoChangeColor {
             get{
                 if( _GizmoChangeColor == null )
-                    _GizmoChangeColor = new CommandChangeColor( this );
+                    _GizmoChangeColor = new ChangeColor( this );
                 return _GizmoChangeColor;
             }
         }
 
-        private CommandGroupOfTouchingThingsByLinker  _GizmoGroupOfThingsByLinker;
-        private CommandGroupOfTouchingThingsByLinker  GizmoGroupOfThingsByLinker {
+        TouchingByLinker            _GizmoTouchingByLinker;
+        TouchingByLinker            GizmoTouchingByLinker {
             get {
-                if( _GizmoGroupOfThingsByLinker == null )
-                    _GizmoGroupOfThingsByLinker = new CommandGroupOfTouchingThingsByLinker( this.parent, GroupColorChange, GroupColorChange );
-                return _GizmoGroupOfThingsByLinker;
+                if( _GizmoTouchingByLinker == null )
+                    _GizmoTouchingByLinker = new TouchingByLinker( parent, GroupColorChange, GroupColorChange );
+                return _GizmoTouchingByLinker;
             }
         }
 
-        private CommandGroupOfDefOrThingCompInRoom  _GizmoChangeRoommateColor;
-        private CommandGroupOfDefOrThingCompInRoom  GizmoChangeRoommateColor {
+        DefOrThingCompInRoom        _GizmoDefOrThingCompInRoom;
+        DefOrThingCompInRoom        GizmoDefOrThingCompInRoom {
             get {
-                if( _GizmoChangeRoommateColor == null )
+                if( _GizmoDefOrThingCompInRoom == null )
                 {
-                    _GizmoChangeRoommateColor = new CommandGroupOfDefOrThingCompInRoom( this.parent, this.GetType(), "CommandChangeRoommateColorLabel".Translate() );
-                    _GizmoChangeRoommateColor.ByDefLabel = Translator.Translate( "CommandChangeRoommateColorLClick", this.parent.def.label );
-                    _GizmoChangeRoommateColor.ByDefAction = GroupColorChange;
-                    _GizmoChangeRoommateColor.ByThingCompLabel = "CommandChangeRoommateColorRClick".Translate();
-                    _GizmoChangeRoommateColor.ByThingCompAction = GroupColorChange;
-                    _GizmoChangeRoommateColor.defaultDesc = _GizmoChangeRoommateColor.Desc;
+                    _GizmoDefOrThingCompInRoom = new DefOrThingCompInRoom( parent, GetType(), "CommandChangeRoommateColorLabel".Translate() );
+                    _GizmoDefOrThingCompInRoom.LabelByDef = Translator.Translate( "CommandChangeRoommateColorLClick", parent.def.label );
+                    _GizmoDefOrThingCompInRoom.ClickByDef = GroupColorChange;
+                    _GizmoDefOrThingCompInRoom.LabelByThingComp = "CommandChangeRoommateColorRClick".Translate();
+                    _GizmoDefOrThingCompInRoom.ClickByThingComp = GroupColorChange;
+                    _GizmoDefOrThingCompInRoom.defaultDesc = _GizmoDefOrThingCompInRoom.Desc;
                 }
-                return _GizmoChangeRoommateColor;
-            }
-        }
-
-        #endregion
-
-        #region Color properties
-
-        private CompProperties_ColoredLight compProps
-        {
-            get
-            {
-                return (CompProperties_ColoredLight)props;
+                return _GizmoDefOrThingCompInRoom;
             }
         }
 
@@ -76,7 +76,7 @@ namespace CommunityCoreLibrary
 
         #region Base ThingComp overrides
 
-        public override void PostExposeData()
+        public override void                PostExposeData()
         {
             //Log.Message( def.defName + " - ExposeData()" );
             base.PostExposeData();
@@ -84,73 +84,93 @@ namespace CommunityCoreLibrary
             Scribe_Values.LookValue<int>( ref ColorIndex, "ColorIndex", -1 );
         }
 
-        public override void PostSpawnSetup()
+        public override void                PostSpawnSetup()
         {
             //Log.Message( def.defName + " - SpawnSetup()" );
             base.PostSpawnSetup();
 
             // Get power comp
-            compPower = parent.GetComp<CompPowerTrader>();
-            if( compPower == null ){
-                Log.Message( parent.def.defName + " - Needs compPowerTrader!" );
+            PowerTrader = CompPowerTrader;
+#if DEBUG
+            if( PowerTrader == null )
+            {
+                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompPowerTrader!" );
                 return;
             }
+#endif
 
             // Get the default glower
-            oldGlower = parent.GetComp<CompGlower>();
-            if( oldGlower == null )
+#if DEBUG
+            if( CompGlower == null )
             {
-                Log.Message( parent.def.defName + " - Needs compGlower!" );
+                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompGlower!" );
                 return;
             }
+#endif
 
-            // Get the colour palette
-            if( compProps == null )
+            // Get the color properties
+            ColorProps = this.CompProperties_ColoredLight();
+#if DEBUG
+            if( ColorProps == null )
             {
-                Log.Message( parent.def.defName + " - Needs CompProperties_ColoredLight!" );
+                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompProperties_ColoredLight!" );
                 return;
             }
+#endif
 
             // Set default palette if none is specified
-            if( compProps.color == null )
-                compProps.color = Light.Color;
+            if( ColorProps.color == null )
+            {
+                ColorProps.color = Light.Color;
+            }
 
             // Set default
             if( ( ColorIndex < 0 )||
-                ( ColorIndex >= compProps.color.Count ) )
-                ColorIndex = compProps.Default;
+                ( ColorIndex >= ColorProps.color.Count ) )
+            {
+                ColorIndex = ColorProps.Default;
+            }
 
             // Get the glow radius
-            lightRadius = oldGlower.props.glowRadius;
+            lightRadius = CompGlower.props.glowRadius;
 
             // Set the light colour
-            changeColor( ColorIndex );
+            ChangeColor( ColorIndex );
         }
 
-        public override string CompInspectStringExtra()
+        public override string              CompInspectStringExtra()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append( "CompColorLightInspect".Translate() + compProps.color[ ColorIndex ].name );
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append( "CompColorLightInspect".Translate() + ColorProps.color[ ColorIndex ].name );
             return stringBuilder.ToString();
         }
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
             // Color change gizmo (only if research is complete)
-            if( DefDatabase< ResearchProjectDef >.GetNamed( compProps.requiredResearch ).IsFinished )
+            if( DefDatabase< ResearchProjectDef >.GetNamed( ColorProps.requiredResearch ).IsFinished )
+            {
                 yield return GizmoChangeColor;
+            }
 
             // In room
             if( parent.Position.IsInRoom() )
+            {
                 // In room by def or comp
-                if( parent.HasRoommateByThingComp( GetType() ) )
-                    yield return GizmoChangeRoommateColor;
+                if( parent.IsSameThingCompInRoom( GetType() ) )
+                {
+                    yield return GizmoDefOrThingCompInRoom;
+                }
+            }
             
             // Has a link flag
-            if( parent.def.graphicData.linkFlags != LinkFlags.None ){
+            if( parent.def.graphicData.linkFlags != LinkFlags.None )
+            {
                 // Touching things by link
-                if( parent.HasTouchingByLinker() )
-                    yield return GizmoGroupOfThingsByLinker;
+                if( parent.IsSameGraphicLinkerTouching() )
+                {
+                    yield return GizmoTouchingByLinker;
+                }
             }
 
             // No more gizmos
@@ -161,101 +181,98 @@ namespace CommunityCoreLibrary
 
         #region Public functions
 
-        public void DecrementColorIndex()
+        public void                         DecrementColorIndex()
         {
-            int index = ( ColorIndex + compProps.color.Count - 1 ) % compProps.color.Count;
-            changeColor( index );
-        }
-        public void IncrementColorIndex()
-        {
-            int index = ( ColorIndex + 1 ) % compProps.color.Count;
-            changeColor( index );
+            int index = ( ColorIndex + ColorProps.color.Count - 1 ) % ColorProps.color.Count;
+            ChangeColor( index );
         }
 
-        public int GetColorByName( string name )
+        public void                         IncrementColorIndex()
         {
-            for( int i = 0, count = compProps.color.Count; i < count; i++ ){
-                var cv = compProps.color[ i ];
+            int index = ( ColorIndex + 1 ) % ColorProps.color.Count;
+            ChangeColor( index );
+        }
+
+        public int                          GetColorByName( string name )
+        {
+            for( int i = 0, count = ColorProps.color.Count; i < count; i++ )
+            {
+                var cv = ColorProps.color[ i ];
                 if( cv.name == name )
+                {
                     return i;
+                }
             }
             return -1;
         }
 
-        public string PrevColorName()
+        public string                       PrevColorName()
         {
-            int index = ( ColorIndex + compProps.color.Count - 1 ) % compProps.color.Count;
-            return compProps.color[ index ].name;
+            int index = ( ColorIndex + ColorProps.color.Count - 1 ) % ColorProps.color.Count;
+            return ColorProps.color[ index ].name;
         }
 
-        public string NextColorName()
+        public string                       NextColorName()
         {
-            int index = ( ColorIndex + 1 ) % compProps.color.Count;
-            return compProps.color[ index ].name;
+            int index = ( ColorIndex + 1 ) % ColorProps.color.Count;
+            return ColorProps.color[ index ].name;
         }
 
         #endregion
 
         #region Gizmo callbacks
+
         // The list of things are all the lights we want to change
-        private void GroupColorChange( List< Thing > things )
+        void                        GroupColorChange( List< Thing > things )
         {
             // Now set their color (if *their* research is complete)
             foreach( Thing l in things )
             {
                 // Get it's colored light comp
-                var otherComp = l.TryGetComp<CompColoredLight>();
-                if( otherComp != null )
+                var otherLight = l.TryGetComp< CompColoredLight >();
+                if( otherLight != null )
                 {
                     // Do they even have this color?
-                    int otherColor = otherComp.GetColorByName( compProps.color[ ColorIndex ].name );
+                    int otherColor = otherLight.GetColorByName( ColorProps.color[ ColorIndex ].name );
 
                     // If it does, check it's research
                     if( ( otherColor > -1 )&&
-                        ( DefDatabase<ResearchProjectDef>.GetNamed( otherComp.compProps.requiredResearch ).IsFinished ) )
+                        ( DefDatabase< ResearchProjectDef >.GetNamed( otherLight.ColorProps.requiredResearch ).IsFinished ) )
                     {    // Change it's color
-                        otherComp.changeColor( otherColor );
+                        otherLight.ChangeColor( otherColor );
                     }
                 }
             }
         }
 
-        public void changeColor( int index )
+        public void                         ChangeColor( int index )
         {
-            ColorInt colour = compProps.color[ index ].value;
+            ColorInt colour = ColorProps.color[ index ].value;
             ColorIndex = index;
             GizmoChangeColor.defaultDesc = GizmoChangeColor.Desc;
 
-            // Current lit state from base compGlower
-            bool wasLit = oldGlower.Lit;
+            var currentGlower = CompGlower;
 
-            // Turn off old glower
-            oldGlower.Lit = false;
+            // Current lit state from existing glower
+            bool wasLit = currentGlower.Lit;
 
-            // Turn off replaced glower
-            if( compGlower != null )
-            {
-                // Current lit state from base replacement compGlower
-                wasLit = compGlower.Lit;
-
-                // Turn off replacement compGlower
-                compGlower.Lit = false;
-            }
+            // Turn off glower
+            currentGlower.Lit = false;
 
             // New glower
-            CompGlower newGlower = new CompGlower();
+            var newGlower = new CompGlower();
             if( newGlower == null )
             {
-                Log.Message( parent.def.defName + " - Unable to create new compGlower!" );
+                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to create new CompGlower!" );
                 return;
             }
             newGlower.parent = parent;
 
             // Glower properties
-            CompProperties newProps = new CompProperties();
+            var newProps = new CompProperties();
             if( newProps == null )
             {
-                Log.Message( parent.def.defName + " - Unable to create new compProperties!" );
+                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to create new CompProperties!" );
                 return;
             }
             newProps.compClass = typeof( CompGlower );
@@ -265,46 +282,35 @@ namespace CommunityCoreLibrary
             // Add properties to glower
             newGlower.Initialize( newProps );
 
-
             // Fetch the comps list
-            List<ThingComp> allComps = typeof( ThingWithComps ).GetField( "comps", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance ).GetValue( parent ) as List<ThingComp>;
+            var allComps = parent.GetComps();
             if( allComps == null )
             {
-                Log.Message( parent.def.defName + " - Could not get list of comps!" );
+                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to get list of comps!" );
                 return;
             }
 
-
-            // Remove default glower
-            allComps.Remove( oldGlower );
-
-            // Remove current glower
-            if( compGlower != null )
-            {
-                allComps.Remove( compGlower );
-            }
+            // Remove existing glower
+            allComps.Remove( currentGlower );
 
             // Add new glower
             allComps.Add( newGlower );
-            compGlower = newGlower;
 
             // Store comps list
-            typeof( ThingWithComps ).GetField( "comps", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance ).SetValue( parent, allComps );
+            parent.SetComps( allComps );
 
 
             // Update glow grid
-            compGlower.Lit = false;
+            newGlower.Lit = false;
             Find.GlowGrid.MarkGlowGridDirty( parent.Position );
             Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
             Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
 
-            if( ( wasLit )&&( compPower.PowerOn ) )
-            {
-                // Turn it on if it the old glower was on
-                compGlower.Lit = true;
-            }
+            // Turn light on if appropriate
+            newGlower.Lit |= ( wasLit ) && ( PowerTrader.PowerOn );
         }
 
         #endregion
    }
+
 }

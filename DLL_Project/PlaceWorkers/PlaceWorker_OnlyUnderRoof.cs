@@ -1,30 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using RimWorld;
-using UnityEngine;
-using Verse;
-using Verse.AI;
+﻿using Verse;
 
 namespace CommunityCoreLibrary
 {
+    
     public class PlaceWorker_OnlyUnderRoof : PlaceWorker
     {
-        public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        
+        public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
-            AcceptanceReport result;
-            if( Find.RoofGrid.Roofed( loc ) )
-            {
-                result = true;
-            }
-            else
-            {
-                result = "MessagePlacementMustBeUnderRoof".Translate();
-            }
-            return result;
+            return Find.RoofGrid.Roofed( loc )
+                ? AcceptanceReport.WasAccepted
+                : ( AcceptanceReport )"MessagePlacementMustBeUnderRoof".Translate();
         }
-    }
-}
 
+    }
+
+}

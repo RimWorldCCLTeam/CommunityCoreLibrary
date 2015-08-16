@@ -1,40 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using RimWorld;
-using UnityEngine;
-using Verse;
-using Verse.AI;
+﻿using Verse;
 
 namespace CommunityCoreLibrary
 {
 
     public class PlaceWorker_RestrictedCount : PlaceWorker
     {
-        public override AcceptanceReport AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        
+        public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
-            ThingDef def = checkingDef as ThingDef;
-
-            var Restrictions = def.GetCompProperties( typeof( RestrictedPlacement_Comp ) ) as RestrictedPlacement_Properties;
-            if( Restrictions == null ){
-                Log.Error( "Could not get restrictions!" );
-                return false;
+            var thingDef = checkingDef as ThingDef;
+#if DEBUG
+            if( thingDef == null ){
+                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to cast BuildableDef to ThingDef!" );
+                return AcceptanceReport.WasRejected;
             }
+#endif
+
+            var Restrictions = thingDef.RestrictedPlacement_Properties();
+#if DEBUG
+            if( Restrictions == null ){
+                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to get properties!" );
+                return AcceptanceReport.WasRejected;
+            }
+#endif
 
             // Get the current count of instances and blueprints of
-            int count = Enumerable.Count<Building>(
-                Enumerable.Where<Building>(
-                    (IEnumerable<Building>) Find.ListerBuildings.allBuildingsColonist, 
-                    (Func<Building, bool>) (b => b.def == def) ) )
-                + Find.ListerThings.ThingsOfDef( def.blueprintDef ).Count;
+            int count = Find.ListerThings.ThingsOfDef( thingDef ).Count
+                + Find.ListerThings.ThingsOfDef( thingDef.blueprintDef ).Count;
 
-            if( count < Restrictions.MaxCount )
-                return true;
+            return count < Restrictions.MaxCount
+                ? AcceptanceReport.WasAccepted
+                : ( AcceptanceReport )( "MessagePlacementCountRestricted".Translate() + Restrictions.MaxCount );
 
-            return "MessagePlacementCountRestricted".Translate() + Restrictions.MaxCount;
         }
-    }
-}
 
+    }
+
+}

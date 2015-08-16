@@ -1,43 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Verse.AI;
-using Verse.Sound;
 
 namespace CommunityCoreLibrary
 {
-    internal class Building_SunLampHeatController : Building
+    
+    public class Building_SunLampHeatController : Building
     {
-        public CompTempControl compTempControl;
-        public CompPowerTrader compPowerTrader;
 
-        public override void SpawnSetup()
-        {
-            base.SpawnSetup();
-            this.compTempControl = base.GetComp<CompTempControl>();
-            this.compPowerTrader = base.GetComp<CompPowerTrader>();
-        }
-
-        public IEnumerable<IntVec3> GrowableCells
+        CompPowerTrader                     CompPowerTrader
         {
             get
             {
-                return GenRadial.RadialCellsAround( base.Position, this.def.specialDisplayRadius, true );
+                return this.TryGetComp< CompPowerTrader >();
             }
         }
 
-        public override IEnumerable<Gizmo> GetGizmos()
+        CompTempControl                     CompTempControl
+        {
+            get
+            {
+                return this.TryGetComp< CompTempControl >();
+            }
+        }
+
+#if DEBUG
+        public override void                SpawnSetup()
+        {
+            base.SpawnSetup();
+
+            // Validate power trade
+            if( CompPowerTrader == null )
+            {
+                Log.Error( "Community Core Library :: Building_SunLampHeatController :: " + def.defName + " requires CompPowerTrader!" );
+                return;
+            }
+
+            // Validate temp control
+            if( CompTempControl == null )
+            {
+                Log.Error( "Community Core Library :: Building_SunLampHeatController :: " + def.defName + " requires CompTempControl!" );
+                return;
+            }
+        }
+#endif
+
+        public IEnumerable<IntVec3>         GrowableCells
+        {
+            get
+            {
+                return GenRadial.RadialCellsAround( Position, def.specialDisplayRadius, true );
+            }
+        }
+
+        public override IEnumerable<Gizmo>  GetGizmos()
         {
             // Default gizmos
-            foreach( Gizmo curGizmo in base.GetGizmos() ) yield return curGizmo;
+            foreach( Gizmo curGizmo in base.GetGizmos() )
+                yield return curGizmo;
 
             // Grow zone gizmo
-            Command_Action comActGrowZone = new Command_Action();
+            var comActGrowZone = new Command_Action();
             if( comActGrowZone != null )
             {
                 comActGrowZone.icon = Icon.GrowZone;
@@ -55,20 +82,23 @@ namespace CommunityCoreLibrary
             yield break;
         }
 
-        private void MakeMatchingGrowZone()
+        void                                MakeMatchingGrowZone()
         {
-            Designator_ZoneAdd_Growing designator = new Designator_ZoneAdd_Growing();
+            var designator = new Designator_ZoneAdd_Growing();
             designator.DesignateMultiCell(
-                from tempCell in this.GrowableCells
+                from tempCell in GrowableCells
                 where designator.CanDesignateCell( tempCell ).Accepted
                 select tempCell );
         }
 
-        public override void TickRare()
+        public override void                TickRare()
         {
-            if( this.compPowerTrader.PowerOn )
+            var PowerTrader = CompPowerTrader;
+            if( PowerTrader.PowerOn )
             {
-                float temperature = base.Position.GetTemperature();
+                var TempControl = CompTempControl;
+
+                float temperature = Position.GetTemperature();
                 float num;
                 if( temperature < 20f )
                 {
@@ -82,20 +112,22 @@ namespace CommunityCoreLibrary
                 {
                     num = Mathf.InverseLerp( 120f, 20f, temperature );
                 }
-                float energyLimit = this.compTempControl.props.energyPerSecond * num * 4.16666651f;
-                float num2 = GenTemperature.ControlTemperatureTempChange( base.Position, energyLimit, this.compTempControl.targetTemperature );
+                float energyLimit = TempControl.props.energyPerSecond * num * 4.16666651f;
+                float num2 = GenTemperature.ControlTemperatureTempChange( Position, energyLimit, TempControl.targetTemperature );
                 bool flag = !Mathf.Approximately( num2, 0f );
                 if( flag )
                 {
-                    base.Position.GetRoom().Temperature += num2;
-                    this.compPowerTrader.PowerOutput = -this.compPowerTrader.props.basePowerConsumption;
+                    Position.GetRoom().Temperature += num2;
+                    PowerTrader.PowerOutput = -PowerTrader.props.basePowerConsumption;
                 }
                 else
                 {
-                    this.compPowerTrader.PowerOutput = -this.compPowerTrader.props.basePowerConsumption * this.compTempControl.props.lowPowerConsumptionFactor;
+                    PowerTrader.PowerOutput = -PowerTrader.props.basePowerConsumption * PowerTrader.props.lowPowerConsumptionFactor;
                 }
-                this.compTempControl.operatingAtHighPower = flag;
+                TempControl.operatingAtHighPower = flag;
             }
         }
+
     }
+
 }

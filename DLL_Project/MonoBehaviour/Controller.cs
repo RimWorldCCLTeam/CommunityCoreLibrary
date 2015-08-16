@@ -1,57 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-using RimWorld;
 using UnityEngine;
 using Verse;
-using Verse.AI;
-using Verse.Sound;
 
 namespace CommunityCoreLibrary
 {
 
     public class Controller : MonoBehaviour
     {
-        public static readonly string   GameObjectName = "Community Core Library";
-        public Version                  version;
+        
+        public readonly string              GameObjectName = "Community Core Library";
+        Version                             version;
 
-        List< CCLVersionDef >           cclModVersion = new List< CCLVersionDef >();
+        List< CCLVersionDef >               CCLMods = new List< CCLVersionDef >();
 
-        public virtual void Start()
+        public virtual void                 Start()
         {
-            this.enabled = true;
+            enabled = true;
 
-            // Check versions of mods and throw errors to the user is the
+            // Check versions of mods and throw error to the user if the
             // mod version requirement is higher than the installed version
 
-            GetCCLVersion();
-            GetModVersionRequirements();
+            CCLMods = DefDatabase< CCLVersionDef >.AllDefs.ToList();
 
-            this.enabled = false;
+            GetCCLVersion();
+            CheckModVersionRequirements();
+
+            enabled = false;
         }
 
-        private void GetCCLVersion ()
+        void                                GetCCLVersion ()
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             version = assembly.GetName().Version;
             Log.Message( "Community Core Library v" + version );
         }
 
-        private void GetModVersionRequirements()
+        void                                CheckModVersionRequirements()
         {
-            cclModVersion = DefDatabase< CCLVersionDef >.AllDefs.ToList();
-            if( ( cclModVersion == null )||
-                ( cclModVersion.Count < 1 ) )
+            if( ( CCLMods == null )||
+                ( CCLMods.Count < 1 ) )
                 return;
 
-            foreach( var mv in cclModVersion ){
-                var modVersion = new Version( mv.version );
-                if( modVersion > version )
-                    Log.Error( "Mod " + mv.ModName + " requires CCL version " + modVersion );
+            var throwError = false;
+            var errors = "Community Core Library dependency error:";
+
+            foreach( var CCLMod in CCLMods )
+            {
+                var modVersion = new Version( CCLMod.version );
+                if( modVersion > version ){
+                    errors += "\n\t" + CCLMod.ModName + " requires v" + modVersion;
+                    throwError = true;
+                }
             }
 
+            if( throwError )
+                Log.Error( errors );
+
         }
+
     }
+
 }
