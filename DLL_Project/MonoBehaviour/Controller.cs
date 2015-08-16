@@ -12,7 +12,7 @@ namespace CommunityCoreLibrary
     {
         
         public readonly string              GameObjectName = "Community Core Library";
-        Version                             version;
+        Version                             CCLVersion;
 
         List< CCLVersionDef >               CCLMods = new List< CCLVersionDef >();
 
@@ -34,8 +34,8 @@ namespace CommunityCoreLibrary
         void                                GetCCLVersion ()
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            version = assembly.GetName().Version;
-            Log.Message( "Community Core Library v" + version );
+            CCLVersion = assembly.GetName().Version;
+            Log.Message( "Community Core Library v" + CCLVersion );
         }
 
         void                                CheckModVersionRequirements()
@@ -50,14 +50,16 @@ namespace CommunityCoreLibrary
             foreach( var CCLMod in CCLMods )
             {
                 var modVersion = new Version( CCLMod.version );
-                if( modVersion > version ){
+                if( modVersion > CCLVersion ){
                     errors += "\n\t" + CCLMod.ModName + " requires v" + modVersion;
                     throwError = true;
                 }
             }
 
             if( throwError )
+            {
                 Log.Error( errors );
+            }
 
         }
 

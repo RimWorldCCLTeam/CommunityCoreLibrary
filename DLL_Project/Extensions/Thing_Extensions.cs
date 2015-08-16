@@ -62,7 +62,7 @@ namespace CommunityCoreLibrary
                 ).ToList< Thing >();
         }
 
-        // Returns a list of thing in the cell with the same graphic linker
+        // Returns a list of things in the cell with the same graphic linker
         public static List< Thing >         ListSameGraphicLinkerInCell( this Thing thing, IntVec3 cell )
         {
             return Find.ThingGrid.ThingsAt( cell )
@@ -74,7 +74,7 @@ namespace CommunityCoreLibrary
                 ).ToList< Thing >();
         }
 
-        // Returns true if there is another thing in the cell with the same thing comp
+        // Returns a list of things in the cell with the same thing comp
         public static List< Thing >         ListSameThingCompInCell( this Thing thing, IntVec3 cell, Type MatchingComp )
         {
             return Find.ThingGrid.ThingsAt( cell )
@@ -299,7 +299,7 @@ namespace CommunityCoreLibrary
 
         #region Touching Listers
 
-        // Get's a group of touching things with the same def
+        // Returns a list of touching things with the same def
         // optionally room bounds
         public static List< Thing >         ListSameThingDefTouching( this Thing thing, bool RoomBound = false, List< Thing > cache = null )
         {
@@ -314,6 +314,9 @@ namespace CommunityCoreLibrary
                 // Already in list
                 return cache;
             }
+
+            // Add it to the list
+            cache.Add( thing );
 
             List< IntVec3 > cells;
             if( RoomBound )
@@ -340,8 +343,6 @@ namespace CommunityCoreLibrary
                 if( ( things != null )&&
                     ( things.Count > 0 ) )
                 {
-                    // Add things
-                    cache.AddRange( things );
                     // Scan things
                     foreach( Thing match in things )
                     {
@@ -352,7 +353,7 @@ namespace CommunityCoreLibrary
             return cache;
         }
 
-        // Get's a group of touching things with the same graphic linker
+        // Returns a list of touching things with the same graphic linker
         // optionally room bounds
         public static List< Thing >         ListSameGraphicLinkerTouching( this Thing thing, bool RoomBound = false, List< Thing > cache = null )
         {
@@ -367,6 +368,9 @@ namespace CommunityCoreLibrary
                 // Already in list
                 return cache;
             }
+
+            // Add it to the list
+            cache.Add( thing );
 
             List< IntVec3 > cells;
             if( RoomBound )
@@ -393,8 +397,6 @@ namespace CommunityCoreLibrary
                 if( ( things != null )&&
                     ( things.Count > 0 ) )
                 {
-                    // Add things
-                    cache.AddRange( things );
                     // Scan things
                     foreach( Thing match in things )
                     {
@@ -405,7 +407,7 @@ namespace CommunityCoreLibrary
             return cache;
         }
 
-        // Get's a group of touching things by thing comp
+        // Returns a list of touching things by thing comp
         // optionally room bounds
         public static List< Thing >         ListSameThingCompTouching( this Thing thing, Type MatchingComp, bool RoomBound = false, List< Thing > cache = null )
         {
@@ -420,6 +422,9 @@ namespace CommunityCoreLibrary
                 // Already in list
                 return cache;
             }
+
+            // Add it to the list
+            cache.Add( thing );
 
             List< IntVec3 > cells;
             if( RoomBound )
@@ -446,8 +451,6 @@ namespace CommunityCoreLibrary
                 if( ( things != null )&&
                     ( things.Count > 0 ) )
                 {
-                    // Add things
-                    cache.AddRange( things );
                     // Scan things
                     foreach( Thing match in things )
                     {

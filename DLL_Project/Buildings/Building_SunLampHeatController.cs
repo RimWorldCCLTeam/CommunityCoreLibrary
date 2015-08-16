@@ -61,7 +61,9 @@ namespace CommunityCoreLibrary
         {
             // Default gizmos
             foreach( Gizmo curGizmo in base.GetGizmos() )
+            {
                 yield return curGizmo;
+            }
 
             // Grow zone gizmo
             var comActGrowZone = new Command_Action();
