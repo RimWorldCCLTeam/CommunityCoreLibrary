@@ -1,43 +1,82 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using RimWorld;
-using UnityEngine;
+﻿using RimWorld;
 using Verse;
-using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
+    
     public class CompHeatPusherPowered : ThingComp
     {
-        public override void CompTick()
+        
+        CompPowerTrader                     CompPowerTrader
+        {
+            get
+            {
+                return parent.TryGetComp< CompPowerTrader >();
+            }
+        }
+
+        CompPowerLowIdleDraw                CompPowerLowIdleDraw
+        {
+            get
+            {
+                return parent.TryGetComp< CompPowerLowIdleDraw >();
+            }
+        }
+
+#if DEBUG
+        public override void                PostSpawnSetup()
+        {
+            //Log.Message( def.defName + " - SpawnSetup()" );
+            base.PostSpawnSetup();
+
+            // Check power comp
+            if( CompPowerTrader == null )
+            {
+                Log.Error( "Community Core Library :: CompHeatPusherLowPowered :: " + parent.def.defName + " requires CompPowerTrader!" );
+                return;
+            }
+
+            // Check idle power comp
+            if( CompPowerLowIdleDraw == null )
+            {
+                Log.Error( "Community Core Library :: CompHeatPusherLowPowered :: " + parent.def.defName + " requires CompPowerLowIdleDraw!" );
+                return;
+            }
+
+        }
+#endif
+        
+        public override void                CompTick()
         {
             base.CompTick();
 
-            if( !Gen.IsHashIntervalTick( parent, 60 ) )
+            if( !parent.IsHashIntervalTick( 60 ) )
+            {
                 return;
+            }
 
-            // If it has a comp power (which it should) and it's off, abort
-            CompPowerTrader compPowerTrader = (parent as Building).PowerComp as CompPowerTrader;
-            if( ( compPowerTrader == null )||
-                ( !compPowerTrader.PowerOn ) )
+            // If power is off, abort
+            if( !CompPowerTrader.PowerOn )
+            {
                 return;
+            }
             
-            // If it has a comp power idle (which it should) and it's idle, abort
-            CompPowerLowIdleDraw compPowerLowIdleDraw = (parent as Building).TryGetComp<CompPowerLowIdleDraw>();
-            if( ( compPowerLowIdleDraw == null )||
-                ( compPowerLowIdleDraw.isItIdle == true ) )
+            // If it's in low power mode, abort
+            if( CompPowerLowIdleDraw.LowPowerMode )
+            {
                 return;
+            }
 
             // If the local temp is higher than the max heat pushed, abort
-            if( GridsUtility.GetTemperature( parent.Position ) >= props.heatPushMaxTemperature )
+            if( parent.Position.GetTemperature() >= props.heatPushMaxTemperature )
+            {
                 return;
+            }
 
             // Push some heat
-            GenTemperature.PushHeat(this.parent.Position, this.props.heatPerSecond);
+            GenTemperature.PushHeat( parent.Position, props.heatPerSecond );
         }
-    }
-}
 
+    }
+
+}

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+        <defName>string</defName>       [required] Some unique identifier in class
+        <Priority>int</Priority>        [required] Lower values is happen first
+        
+        <researchDefs>                  [required] All the research listed must be complete for anything to happen
+            <li>ResearchProjectDef</li>
+        </researchDefs>
+        
+        <HideDefs>bool</HideDefs>       [optional: false] Set to true to disable (hide) or false to enable
+        
+        <recipeDefs>                    [optional: null] Recipes to toggle on buildings, requires <thingDefs>
+            <li>RecipeDef</li>          with <thingClass> implementing "IBillGiver"
+        </recipeDef>
+        
+        <sowTags>                       [optional: null] Plant sowTags to toggle, requires <thingDefs> with
+            <li>string</li>             <thingClass> "Plant"
+        </sowTags>
+        
+        <thingsDefs>                    [optional: null] The things to effect depending on other tags,
+            <li>ThingDef</li>           If no other dependant tags exist, toggles buildings in the architect tabs
+        </thingDefs>                    with a valid <designationCategory> (must not be null or "None")
+        
+        <effectedResearchDefs>          [optional: null] Research projects to unlock or lock, can be used to
+            <li>ResearchProjectDef</li> create exclusive branches of research
+        </effectedResearchDefs>
+        
+        <researchMods>                  [optional: null] Mod callback Actions, these will happen after everything else has been processed
+            <li>Action</li>
+        </researchMods>
+    -->
+
+    <AdvancedResearchDef>
+
+        <defName>MakeArtilleryShells</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>Mortars</li>
+            <li>Machining</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>MakeArtilleryShell</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>TableMachining</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>PlantHops</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>Brewing</li>
+        </researchDefs>
+
+        <sowTags>
+            <li>Ground</li>
+            <li>Hydroponic</li>
+        </sowTags>
+
+        <thingDefs>
+            <li>PlantHops</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>PlantXerigium</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>HospitalBed</li>
+        </researchDefs>
+
+        <sowTags>
+            <li>Ground</li>
+            <li>Hydroponic</li>
+        </sowTags>
+
+        <thingDefs>
+            <li>PlantXerigium</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+</Defs>

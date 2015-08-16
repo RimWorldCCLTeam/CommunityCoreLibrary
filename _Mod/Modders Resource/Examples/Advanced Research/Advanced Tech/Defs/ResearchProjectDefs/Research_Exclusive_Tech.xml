@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ResearchProjectDef>
+        <defName>ExclusiveTechOne</defName>
+        <label>Exclusive Tree One Level 1</label>
+        <description>Researching this will prevent access to Exclusive Tree Two.</description>
+        <totalCost>1</totalCost>
+        <prerequisites/>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>ExclusiveTechOneTwo</defName>
+        <label>Exclusive Tree One Level 2</label>
+        <description>Exclusive Tree Two is now inaccessible.  Research this to enable the inclusive tech.</description>
+        <totalCost>1</totalCost>
+        <prerequisites>
+            <li>ExclusiveTechOne</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>ExclusiveTechTwo</defName>
+        <label>Exclusive Tree Two Level 1</label>
+        <description>Researching this will prevent access to Exclusive Tree One.</description>
+        <totalCost>1</totalCost>
+        <prerequisites/>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>ExclusiveTechTwoTwo</defName>
+        <label>Exclusive Tree Two Level 2</label>
+        <description>Exclusive Tree One is now inaccessible.  Research this to enable the inclusive tech.</description>
+        <totalCost>1</totalCost>
+        <prerequisites>
+            <li>ExclusiveTechTwo</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+</Defs>

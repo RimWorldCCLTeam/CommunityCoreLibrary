@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using RimWorld;
-using UnityEngine;
-using Verse;
+﻿using Verse;
 using Verse.AI;
-using Verse.Sound;
 
 namespace CommunityCoreLibrary
 {
     public static class Toils_Common
     {
-        public static Toil SpawnThingDefOfCountAt( ThingDef of, int count, IntVec3 at )
+        
+        public static Toil                  SpawnThingDefOfCountAt( ThingDef of, int count, IntVec3 at )
         {
             return new Toil
             {
@@ -24,7 +17,7 @@ namespace CommunityCoreLibrary
             };
         }
 
-        public static Toil ReplaceThingWithThingDefOfCount( Thing oldThing, ThingDef of, int count )
+        public static Toil                  ReplaceThingWithThingDefOfCount( Thing oldThing, ThingDef of, int count )
         {
             return new Toil
             {
@@ -35,7 +28,7 @@ namespace CommunityCoreLibrary
             };
         }
 
-        public static Toil RemoveDesignationDefOfAt( DesignationDef of, IntVec3 at )
+        public static Toil                  RemoveDesignationDefOfAt( DesignationDef of, IntVec3 at )
         {
             return new Toil
             {
@@ -46,7 +39,7 @@ namespace CommunityCoreLibrary
             };
         }
 
-        public static Toil RemoveDesignationDefOfOn( DesignationDef of, Thing on )
+        public static Toil                  RemoveDesignationDefOfOn( DesignationDef of, Thing on )
         {
             return new Toil
             {
@@ -56,5 +49,7 @@ namespace CommunityCoreLibrary
                 }
             };
         }
+
     }
+
 }

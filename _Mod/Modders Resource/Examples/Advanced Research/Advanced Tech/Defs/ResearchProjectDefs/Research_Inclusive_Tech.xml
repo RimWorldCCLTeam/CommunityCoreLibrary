@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ResearchProjectDef>
+        <defName>InclusiveTech</defName>
+        <label>Inclusive Tree Level 1</label>
+        <description>Either one of the Exclusive Trees are complete.</description>
+        <totalCost>1</totalCost>
+        <prerequisites>
+            <li>CommunityCoreLibraryResearchLocker</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>InclusiveTechOne</defName>
+        <label>Inclusive Tree Level 2</label>
+        <description>Inclusive Tree has been accessed.</description>
+        <totalCost>1</totalCost>
+        <prerequisites>
+            <li>InclusiveTech</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+</Defs>

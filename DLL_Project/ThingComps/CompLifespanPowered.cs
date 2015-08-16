@@ -1,74 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using RimWorld;
-using UnityEngine;
+﻿using RimWorld;
 using Verse;
-using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
 
     public class CompLifespanPowered : ThingComp
     {
-        public int          remainingTicks = -1;
-
-        public CompPowerTrader CompPower
+        
+        CompPowerTrader                     CompPowerTrader
         {
-            get{
-                return parent.TryGetComp<CompPowerTrader>();
+            get
+            {
+                return parent.TryGetComp< CompPowerTrader >();
             }
         }
 
-        public override void PostSpawnSetup()
+        public int                          remainingTicks = -1;
+
+        public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
+
+            // Check power comp
+#if DEBUG
+            if( CompPowerTrader == null )
+            {
+                Log.Error( "Community Core Library :: CompHeatPusherPowered :: " + parent.def.defName + " requires CompPowerTrader!" );
+                return;
+            }
+#endif
+
             if( remainingTicks < 0 )
-                remainingTicks = this.props.lifespanTicks;
+            {
+                remainingTicks = props.lifespanTicks;
+            }
         }
 
-        public override void PostExposeData()
+        public override void                PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.LookValue<int>(ref remainingTicks, "remainingTicks", this.props.lifespanTicks, true);
+            Scribe_Values.LookValue<int>( ref remainingTicks, "remainingTicks", props.lifespanTicks, true );
         }
 
-        public override void CompTick()
+        public override void                CompTick()
         {
             base.CompTick();
             TickDown( 1 );
         }
 
-        public override void CompTickRare()
+        public override void                CompTickRare()
         {
             base.CompTickRare();
             TickDown( 250 );
         }
 
-        public void TickDown( int down )
+        public void                         TickDown( int down )
         {
-            if( !CompPower.PowerOn )
+            if( !CompPowerTrader.PowerOn )
+            {
                 return;
+            }
             
             remainingTicks -= down;
             if( remainingTicks > 0 )
+            {
                 return;
+            }
 
-            this.parent.Destroy(DestroyMode.Vanish);
+            parent.Destroy();
         }
 
-        public override string CompInspectStringExtra()
+        public override string              CompInspectStringExtra()
         {
-            if (remainingTicks > 0)
+            if( remainingTicks > 0 )
             {
-                return Translator.Translate("LifespanExpiry") + " " +
-                    GenTime.TickstoDaysAndHoursString(remainingTicks) + "\n" +
+                return "LifespanExpiry".Translate() + " " +
+                    remainingTicks.TickstoDaysAndHoursString() + "\n" +
                     base.CompInspectStringExtra();
             }
             return base.CompInspectStringExtra();
         }
-    }
-}
 
+    }
+
+}

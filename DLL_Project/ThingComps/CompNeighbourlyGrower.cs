@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using RimWorld;
-using UnityEngine;
 using Verse;
-using Verse.AI;
 using CommunityCoreLibrary.Commands;
 
 namespace CommunityCoreLibrary
@@ -14,39 +9,75 @@ namespace CommunityCoreLibrary
 
     public class CompNeighbourlyGrower : ThingComp
     {
+
+        Building_PlantGrower                Building_PlantGrower
+        {
+            get
+            {
+                return parent as Building_PlantGrower;
+            }
+        }
+
         #region Gizmos
 
-        private CommandGroupOfTouchingThingsByThingComp _GizmoGroupOfThingsByThingComp;
-        private CommandGroupOfTouchingThingsByThingComp GizmoGroupOfThingsByThingComp {
-            get {
-                if( _GizmoGroupOfThingsByThingComp == null )
-                    _GizmoGroupOfThingsByThingComp = new CommandGroupOfTouchingThingsByThingComp( this.parent, this.GetType(), "CommandChangeTouchingPlantLabel".Translate(), GroupPlantChange, GroupPlantChange );
-                return _GizmoGroupOfThingsByThingComp;
-            }
-        }
-
-        private CommandGroupOfTouchingThingsByLinker    _GizmoGroupOfThingsByLinker;
-        private CommandGroupOfTouchingThingsByLinker    GizmoGroupOfThingsByLinker {
-            get {
-                if( _GizmoGroupOfThingsByLinker == null )
-                    _GizmoGroupOfThingsByLinker = new CommandGroupOfTouchingThingsByLinker( this.parent, GroupPlantChange, GroupPlantChange );
-                return _GizmoGroupOfThingsByLinker;
-            }
-        }
-
-        private CommandGroupOfDefOrThingCompInRoom  _GizmoChangeRoommatePlant;
-        private CommandGroupOfDefOrThingCompInRoom  GizmoChangeRoommatePlant {
-            get {
-                if( _GizmoChangeRoommatePlant == null )
+        TouchingByThingComp                 _GizmoTouchingByThingComp;
+        TouchingByThingComp                 GizmoTouchingByThingComp
+        {
+            get
+            {
+                if( _GizmoTouchingByThingComp == null )
                 {
-                    _GizmoChangeRoommatePlant = new CommandGroupOfDefOrThingCompInRoom( this.parent, this.GetType(), "CommandChangeRoommatePlantLabel".Translate() );
-                    _GizmoChangeRoommatePlant.ByDefLabel = Translator.Translate( "CommandChangeRoommatePlantLClick", this.parent.def.label );
-                    _GizmoChangeRoommatePlant.ByDefAction = GroupPlantChange;
-                    _GizmoChangeRoommatePlant.ByThingCompLabel = "CommandChangeRoommatePlantRClick".Translate();
-                    _GizmoChangeRoommatePlant.ByThingCompAction = GroupPlantChange;
-                    _GizmoChangeRoommatePlant.defaultDesc = _GizmoChangeRoommatePlant.Desc;
+                    _GizmoTouchingByThingComp =
+                        new TouchingByThingComp(
+                            parent,
+                            GetType(),
+                            "CommandChangeTouchingPlantLabel".Translate(),
+                            GroupPlantChange,
+                            GroupPlantChange
+                        );
                 }
-                return _GizmoChangeRoommatePlant;
+                return _GizmoTouchingByThingComp;
+            }
+        }
+
+        TouchingByLinker                    _GizmoTouchingByLinker;
+        TouchingByLinker                    GizmoTouchingByLinker
+        {
+            get
+            {
+                if( _GizmoTouchingByLinker == null )
+                {
+                    _GizmoTouchingByLinker =
+                        new TouchingByLinker(
+                            parent,
+                            GroupPlantChange,
+                            GroupPlantChange
+                        );
+                }
+                return _GizmoTouchingByLinker;
+            }
+        }
+
+        DefOrThingCompInRoom                _GizmoDefOrThingCompInRoom;
+        DefOrThingCompInRoom                GizmoDefOrThingCompInRoom
+        {
+            get
+            {
+                if( _GizmoDefOrThingCompInRoom == null )
+                {
+                    _GizmoDefOrThingCompInRoom =
+                        new DefOrThingCompInRoom(
+                            parent,
+                            GetType(),
+                            "CommandChangeRoommatePlantLabel".Translate()
+                        );
+                    _GizmoDefOrThingCompInRoom.LabelByDef = "CommandChangeRoommatePlantLClick".Translate( parent.def.label );
+                    _GizmoDefOrThingCompInRoom.ClickByDef = GroupPlantChange;
+                    _GizmoDefOrThingCompInRoom.LabelByThingComp = "CommandChangeRoommatePlantRClick".Translate();
+                    _GizmoDefOrThingCompInRoom.ClickByThingComp = GroupPlantChange;
+                    _GizmoDefOrThingCompInRoom.defaultDesc = _GizmoDefOrThingCompInRoom.Desc;
+                }
+                return _GizmoDefOrThingCompInRoom;
             }
         }
 
@@ -56,23 +87,26 @@ namespace CommunityCoreLibrary
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
-            // In room
-            if( parent.Position.IsInRoom() )
+            if( ( parent.Position.IsInRoom() )&&
+                ( parent.IsSameThingCompInRoom( GetType() ) ) )
+            {
                 // In room by def or comp
-                if( parent.HasRoommateByThingComp( this.GetType() ) )
-                    yield return GizmoChangeRoommatePlant;
+                yield return GizmoDefOrThingCompInRoom;
+            }
 
             // Has a link flag
-            if( parent.def.graphicData.linkFlags != LinkFlags.None ){
-                        // Touching things by link
-                if( parent.HasTouchingByLinker() )
-                    yield return GizmoGroupOfThingsByLinker;
+            if( ( parent.def.graphicData.linkFlags != LinkFlags.None )&&
+                ( parent.IsSameGraphicLinkerTouching() ) )
+            {
+                // Touching things by link
+                yield return GizmoTouchingByLinker;
             }
 
             // In group of touching comps
-            if( parent.HasTouchingByThingComp( GetType() ) )
-                yield return GizmoGroupOfThingsByThingComp;
-
+            if( parent.IsSameThingCompTouching( GetType() ) )
+            {
+                yield return GizmoTouchingByThingComp;
+            }
 
             // No more gizmos
             yield break;
@@ -83,22 +117,35 @@ namespace CommunityCoreLibrary
         #region Gizmo callbacks
 
         // The list of things are all the growers we want to change
-        private void GroupPlantChange( List< Thing > things )
+        void                                GroupPlantChange( List< Thing > things )
         {
-            var thisGrower = this.parent as Building_PlantGrower;
+            var thisGrower = Building_PlantGrower;
+#if DEBUG
             if( thisGrower == null )
+            {
+                Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + parent.def.defName + " unable to resolve to Building_PlantGrower!" );
                 return;
+            }
+#endif
             
             // Now set their plant
             foreach( Thing g in things )
             {
                 // Should be a Building_PlantGrower
                 var grower = g as Building_PlantGrower;
-                if( grower != null )
-                    grower.SetPlantDefToGrow( thisGrower.GetPlantDefToGrow() );
+#if DEBUG
+                if( grower == null )
+                {
+                    Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + g.def.defName + " unable to resolve to Building_PlantGrower!" );
+                    return;
+                }
+#endif
+                grower.SetPlantDefToGrow( thisGrower.GetPlantDefToGrow() );
             }
         }
 
         #endregion
+
     }
+
 }
