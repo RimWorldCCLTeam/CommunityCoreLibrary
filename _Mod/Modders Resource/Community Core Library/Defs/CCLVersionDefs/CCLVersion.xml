@@ -14,9 +14,9 @@
     -->
 
     <CCLVersionDef>
-        <defName>CCLVersion</defName>
+        <defName>CommunityCoreLibrary</defName>
         
-        <ModName>Advanced Research</ModName>
+        <ModName>Community Core Library</ModName>
         
         <version>0.11.5</version>
         
