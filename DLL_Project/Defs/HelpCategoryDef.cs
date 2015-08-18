@@ -80,7 +80,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        void                                Recache()
+        public void                         Recache()
         {
             _cachedHelpDefs.Clear();
             foreach( var def in (

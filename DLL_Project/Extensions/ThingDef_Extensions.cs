@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using System.Collections.Generic;
 
+using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary
@@ -10,10 +12,35 @@ namespace CommunityCoreLibrary
 
         #region Recipe Cache
 
-        public static void                  RecacheRecipes( this ThingDef thingDef )
+        public static void                  RecacheRecipes( this ThingDef thingDef, bool validateBills )
         {
             //Log.Message( building.LabelCap + " - Recaching" );
             typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic ).SetValue( thingDef, null );
+
+            if( !validateBills )
+            {
+                return;
+            }
+
+            // Get the recached recipes
+            var recipes = thingDef.AllRecipes;
+
+            // Remove bill on any table of this def using invalid recipes
+            var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( thingDef );
+            foreach( var building in buildings )
+            {
+                var BillGiver = building as IBillGiver;
+                for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
+                {
+                    var bill = BillGiver.BillStack[ i ];
+                    if( !recipes.Exists( r => bill.recipe == r ) )
+                    {
+                        BillGiver.BillStack.Delete( bill );
+                        continue;
+                    }
+                }
+            }
+
         }
 
         #endregion

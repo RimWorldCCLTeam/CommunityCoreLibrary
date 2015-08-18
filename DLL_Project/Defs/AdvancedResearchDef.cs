@@ -21,6 +21,7 @@ namespace CommunityCoreLibrary
         // Research requirement
         public List< ResearchProjectDef >   researchDefs;
 
+
         // These are optionally defined in xml
         public List< RecipeDef >            recipeDefs;
         public List< string >               sowTags;
@@ -51,13 +52,13 @@ namespace CommunityCoreLibrary
                 if( IsRecipeToggle )
                 {
                     // Make sure thingDefs are of the appropriate type (has ITab_Bills)
-                    foreach( var buildingDef in thingDefs )
+                    foreach( var thingDef in thingDefs )
                     {
-                        if( buildingDef.thingClass.GetInterface( "IBillGiver" ) == null )
+                        if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
                         {
                             // Invalid project
                             isValid = false;
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + buildingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must implement \"IBillGiver\"" );
+                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must implement \"IBillGiver\"" );
                         }
                     }
 
@@ -67,13 +68,13 @@ namespace CommunityCoreLibrary
                 if( IsPlantToggle )
                 {
                     // Make sure things are of the appropriate class (Plant)
-                    foreach( var plantDef in thingDefs )
+                    foreach( var thingDef in thingDefs )
                     {
-                        if( plantDef.thingClass != typeof( Plant ) )
+                        if( thingDef.thingClass != typeof( Plant ) )
                         {
                             // Invalid project
                             isValid = false;
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + plantDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must be <thingClass> \"Plant\"" );
+                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must be <thingClass> \"Plant\"" );
                         }
                     }
 
@@ -92,14 +93,14 @@ namespace CommunityCoreLibrary
                 if( IsBuildingToggle )
                 {
                     // Make sure thingDefs are of the appropriate type (has proper designationCategory)
-                    foreach( var buildingDef in thingDefs )
+                    foreach( var thingDef in thingDefs )
                     {
-                        if( ( string.IsNullOrEmpty( buildingDef.designationCategory ) )||
-                            ( buildingDef.designationCategory.ToLower() == "none" ) )
+                        if( ( string.IsNullOrEmpty( thingDef.designationCategory ) )||
+                            ( thingDef.designationCategory.ToLower() == "none" ) )
                         {
                             // Invalid project
                             isValid = false;
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + buildingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - <designationCategory> must not be null or \"None\"" );
+                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - <designationCategory> must not be null or \"None\"" );
                         }
                     }
                 }
@@ -311,22 +312,6 @@ namespace CommunityCoreLibrary
                             ( buildingDef.recipes.IndexOf( recipeDef ) >= 0 ) )
                         {
                             buildingDef.recipes.Remove( recipeDef );
-                        }
-
-                        // Remove bill on any table of this def using this recipe
-                        var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( buildingDef );
-                        foreach( var building in buildings )
-                        {
-                            var BillGiver = building as IBillGiver;
-                            for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
-                            {
-                                var bill = BillGiver.BillStack[ i ];
-                                if( bill.recipe == recipeDef )
-                                {
-                                    BillGiver.BillStack.Delete( bill );
-                                    continue;
-                                }
-                            }
                         }
 
                     }

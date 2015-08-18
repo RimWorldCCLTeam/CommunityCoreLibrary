@@ -13,7 +13,6 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <ReleaseVersion>0.11.5</ReleaseVersion>
-    <BaseDirectory>..</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -128,6 +127,5 @@
     <Folder Include="Enumerations\" />
     <Folder Include="Structures\" />
     <Folder Include="Extensions\" />
-    <Folder Include="..\_Mod\" />
   </ItemGroup>
 </Project>

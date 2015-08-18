@@ -11,7 +11,9 @@ namespace CommunityCoreLibrary
     
     public class OTab_ModHelp : OTab
     {
-        
+
+        #region Instance Data
+
         protected static List<ModCategory>  _cachedHelpCategories;
         protected static HelpDef            SelectedHelpDef;
 
@@ -26,12 +28,20 @@ namespace CommunityCoreLibrary
         protected Vector2                   selectionScrollPos = default( Vector2 );
         protected Vector2                   displayScrollPos = default( Vector2 );
 
+        #endregion
+
+        #region OTab Constructor
+
         public                              OTab_ModHelp()
         {
             title = "HelpOTabTitle".Translate();
             orderPriority = 998;
             Reinit();
         }
+
+        #endregion
+
+        #region Category Cache Object
 
         protected class                     ModCategory
         {
@@ -72,7 +82,11 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         Reinit()
+        #endregion
+
+        #region Category Cache Control
+
+        static void                         Reinit()
         {
             _cachedHelpCategories = new List< ModCategory >();
             foreach( var cat in DefDatabase< HelpCategoryDef >.AllDefs )
@@ -90,6 +104,10 @@ namespace CommunityCoreLibrary
                 }
             }
         }
+
+        #endregion
+
+        #region OTab Rendering
 
         public override void                OTabOnGUI( Rect rect )
         {
@@ -317,6 +335,8 @@ namespace CommunityCoreLibrary
                 OTab_ModHelp.SelectedHelpDef = hCat;
             }
         }
+
+        #endregion
 
     }
 

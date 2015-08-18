@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>RecipeExample</defName>
+
+        <ModName>Recipe Example</ModName>
+
+        <version>0.11.5</version>
+
+    </ModHelperDef>
+
+</Defs>

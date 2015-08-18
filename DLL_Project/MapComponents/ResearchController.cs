@@ -133,7 +133,7 @@ namespace CommunityCoreLibrary
             // Recache the buildings recipes
             foreach( var building in buildingCache )
             {
-                building.RecacheRecipes();
+                building.RecacheRecipes( !setInitialState );
             }
 
             // Apply all the research mods

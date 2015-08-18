@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>CommunityCoreLibrary</defName>
+
+        <ModName>Community Core Library</ModName>
+
+        <version>0.11.5</version>
+
+        <MapComponents>
+            <li>CommunityCoreLibrary.ResearchController</li>
+        </MapComponents>
+
+    </ModHelperDef>
+
+</Defs>
