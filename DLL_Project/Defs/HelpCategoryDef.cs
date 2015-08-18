@@ -15,8 +15,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Instance Data
         [Unsaved]
+
+        #region Instance Data
 
         readonly List<HelpDef>              _cachedHelpDefs = new List<HelpDef>();
 

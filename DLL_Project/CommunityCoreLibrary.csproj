@@ -79,7 +79,6 @@
     <Compile Include="OTabs\OTab_ModHelp.cs" />
     <Compile Include="Defs\CCLVersionDef.cs" />
     <Compile Include="ITabs\ModInit.cs" />
-    <Compile Include="MonoBehaviour\Controller.cs" />
     <Compile Include="Commands\ChangeColor.cs" />
     <Compile Include="Commands\DefOrThingCompInRoom.cs" />
     <Compile Include="Commands\TouchingByThingComp.cs" />
@@ -89,7 +88,6 @@
     <Compile Include="Enumerations\LowIdleDrawMode.cs" />
     <Compile Include="Structures\ColorName.cs" />
     <Compile Include="Structures\ResearchCompletePair.cs" />
-    <Compile Include="MapComponents\ResearchControl.cs" />
     <Compile Include="Extensions\Thing_Extensions.cs" />
     <Compile Include="Extensions\ThingComp_Extensions.cs" />
     <Compile Include="Extensions\ThingDef_Extensions.cs" />
@@ -98,6 +96,8 @@
     <Compile Include="CompProperties\RestrictedPlacement_Properties.cs" />
     <Compile Include="ThingComps\RestrictedPlacement_Comp.cs" />
     <Compile Include="ThingComps\CompHeatPusherPowered.cs" />
+    <Compile Include="MonoBehaviour\ModController.cs" />
+    <Compile Include="MapComponents\ResearchController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

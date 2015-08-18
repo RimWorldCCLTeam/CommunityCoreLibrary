@@ -14,6 +14,8 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        //[Unsaved]
+
         #region Process State
 
         public override void                ResolveReferences()

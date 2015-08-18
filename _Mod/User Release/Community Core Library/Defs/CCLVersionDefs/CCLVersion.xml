@@ -7,12 +7,23 @@
         <ModName>string</ModName>       [required] Name of your mod
         
         <version>version</version>      [required] Minimum version of CCL required
+        
+        <MapComponents>                 [optional] Class names of MapComponents to inject into save games
+            <li>MapComponent</li>
+        </MapComponents>
     -->
 
     <CCLVersionDef>
         <defName>CCLVersion</defName>
-        <ModName>Community Core Library</ModName>
+        
+        <ModName>Advanced Research</ModName>
+        
         <version>0.11.5</version>
+        
+        <MapComponents>
+            <li>CommunityCoreLibrary.ResearchController</li>
+        </MapComponents>
+        
     </CCLVersionDef>
 
 </Defs>
