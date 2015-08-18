@@ -7,7 +7,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public class CCLVersionDef : Def
+    public class ModHelperDef : Def
     {
 
         #region XML Data

@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
         public static List< AdvancedResearchDef > AdvancedResearch;
 
         public static Version               CCLVersion;
-        List< CCLVersionDef >               CCLMods;
+        List< ModHelperDef >                ModHelperDefs;
 
         public void                         Start()
         {
@@ -27,10 +27,10 @@ namespace CommunityCoreLibrary
             // mod version requirement is higher than the installed version
             GetCCLVersion();
 
-            CCLMods = DefDatabase< CCLVersionDef >.AllDefs.ToList();
+            ModHelperDefs = DefDatabase< ModHelperDef >.AllDefs.ToList();
 
-            if( ( CCLMods != null )&&
-                ( CCLMods.Count > 0 ) )
+            if( ( ModHelperDefs != null )&&
+                ( ModHelperDefs.Count > 0 ) )
             {
                 ValidateMods();
             }
@@ -68,12 +68,12 @@ namespace CommunityCoreLibrary
 
         void                                ValidateMods()
         {
-            for( int i = 0; i < CCLMods.Count; i++ ){
-                var CCLMod = CCLMods[ i ];
-                if( !CCLMod.IsValid )
+            for( int i = 0; i < ModHelperDefs.Count; i++ ){
+                var ModHelperDef = ModHelperDefs[ i ];
+                if( !ModHelperDef.IsValid )
                 {
                     // Don't do anything special with broken mods
-                    CCLMods.Remove( CCLMod );
+                    ModHelperDefs.Remove( ModHelperDef );
                     continue;
                 }
             }
@@ -131,12 +131,12 @@ namespace CommunityCoreLibrary
         void                                InjectComponents()
         {
             // Check that all the map components are injected into the game
-            foreach( var CCLMod in CCLMods )
+            foreach( var ModHelperDef in ModHelperDefs )
             {
-                if( !CCLMod.IsInjected )
+                if( !ModHelperDef.IsInjected )
                 {
-                    Log.Message( "Community Core Library :: Injecting MapComponents for " + CCLMod.ModName );
-                    CCLMod.Inject();
+                    Log.Message( "Community Core Library :: Injecting MapComponents for " + ModHelperDef.ModName );
+                    ModHelperDef.Inject();
                 }
             }
         }

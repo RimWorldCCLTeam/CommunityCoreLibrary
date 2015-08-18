@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <ReleaseVersion>0.11.5</ReleaseVersion>
+    <BaseDirectory>..</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,7 +78,6 @@
     <Compile Include="Defs\HelpCategoryDef.cs" />
     <Compile Include="Defs\HelpDef.cs" />
     <Compile Include="OTabs\OTab_ModHelp.cs" />
-    <Compile Include="Defs\CCLVersionDef.cs" />
     <Compile Include="ITabs\ModInit.cs" />
     <Compile Include="Commands\ChangeColor.cs" />
     <Compile Include="Commands\DefOrThingCompInRoom.cs" />
@@ -98,6 +98,7 @@
     <Compile Include="ThingComps\CompHeatPusherPowered.cs" />
     <Compile Include="MonoBehaviour\ModController.cs" />
     <Compile Include="MapComponents\ResearchController.cs" />
+    <Compile Include="Defs\ModHelperDef.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -127,5 +128,6 @@
     <Folder Include="Enumerations\" />
     <Folder Include="Structures\" />
     <Folder Include="Extensions\" />
+    <Folder Include="..\_Mod\" />
   </ItemGroup>
 </Project>
