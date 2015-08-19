@@ -18,6 +18,8 @@ namespace CommunityCoreLibrary
 
         public List< string >               MapComponents;
 
+        public List< DesignatorData >       Designators;
+
         #endregion
 
         //[Unsaved]
@@ -50,10 +52,29 @@ namespace CommunityCoreLibrary
                     {
                         var componentType = Type.GetType( component );
                         if( ( componentType == null )||
-                            ( componentType.BaseType != typeof( MapComponent ) )||
-                            ( componentType.GetConstructor( Type.EmptyTypes ) == null ) )
+                            ( componentType.BaseType != typeof( MapComponent ) ) )
                         {
                             errors += "\n\tUnable to resolve MapComponent \"" + component + "\"";
+                            isValid = false;
+                        }
+                    }
+                }
+
+                if( ( Designators != null )&&
+                    ( Designators.Count > 0 ) )
+                {
+                    foreach( var data in Designators )
+                    {
+                        var designatorType = Type.GetType( data.designatorClass );
+                        if( ( designatorType == null )||
+                            ( designatorType.BaseType != typeof( Designator ) ) )
+                        {
+                            errors += "\n\tUnable to resolve designatorClass \"" + data.designatorClass + "\"";
+                            isValid = false;
+                        }
+                        if( DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false ) == null )
+                        {
+                            errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
                         }
                     }
@@ -68,7 +89,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         IsInjected
+        public bool                         MapComponentsInjected
         {
             get
             {
@@ -79,6 +100,7 @@ namespace CommunityCoreLibrary
                 }
 
                 var colonyMapComponents = Find.Map.components;
+
                 foreach( var mapComponent in MapComponents )
                 {
                     var mapComponentType = Type.GetType( mapComponent );
@@ -87,11 +109,39 @@ namespace CommunityCoreLibrary
                         return false;
                     }
                 }
+
                 return true;
             }
         }
 
-        public void                         Inject()
+        public bool                         DesignatorsInjected
+        {
+            get
+            {
+                if( ( Designators == null )||
+                    ( Designators.Count == 0 ) )
+                {
+                    return true;
+                }
+                foreach( var data in Designators )
+                {
+                    var designatorType = Type.GetType( data.designatorClass );
+                    var designatorCategoryDef = DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false );
+                    if( !designatorCategoryDef.resolvedDesignators.Exists( d => d.GetType() == designatorType ) )
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Injection
+
+        public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -103,17 +153,30 @@ namespace CommunityCoreLibrary
                 // Does it exist in the map?
                 if( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
                 {
-                    // Get the default constructor for the component
-                    var mapComponentConstructor = mapComponentType.GetConstructor( Type.EmptyTypes );
-
-                    // Create a new object for the map component
-                    var mapComponentObject = mapComponentConstructor.Invoke( new object[] {} );
+                    // Create the new map component
+                    var mapComponentObject = (MapComponent) Activator.CreateInstance( mapComponentType );
 
                     // Inject the component
-                    colonyMapComponents.Add( mapComponentObject as MapComponent );
+                    colonyMapComponents.Add( mapComponentObject );
                 }
             }
+        }
 
+        public void                         InjectDesignators()
+        {
+            foreach( var data in Designators )
+            {
+                var designatorType = Type.GetType( data.designatorClass );
+                var designatorCategoryDef = DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false );
+                if( !designatorCategoryDef.resolvedDesignators.Exists( d => d.GetType() == designatorType ) )
+                {
+                    // Create the new designator
+                    var designatorObject = (Designator) Activator.CreateInstance( designatorType );
+
+                    // Inject the designator
+                    designatorCategoryDef.resolvedDesignators.Add( designatorObject );
+                }
+            }
         }
 
         #endregion

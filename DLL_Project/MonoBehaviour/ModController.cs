@@ -45,12 +45,14 @@ namespace CommunityCoreLibrary
 
         public void                         FixedUpdate()
         {
-            if( !ReadyForInjection() )
+            if( ReadyForDesignatorInjection() )
             {
-                return;
+                InjectDesignators();
             }
-
-            InjectComponents();
+            if( ReadyForMapComponentInjection() )
+            {
+                InjectMapComponents();
+            }
         }
 
         #region Versioning
@@ -66,6 +68,10 @@ namespace CommunityCoreLibrary
 #endif
         }
 
+        #endregion
+
+        #region Mod Validation
+
         void                                ValidateMods()
         {
             for( int i = 0; i < ModHelperDefs.Count; i++ ){
@@ -77,7 +83,6 @@ namespace CommunityCoreLibrary
                     continue;
                 }
             }
-
         }
 
         #endregion
@@ -118,9 +123,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Component Injection
+        #region Map Component Injection
 
-        bool                                ReadyForInjection()
+        bool                                ReadyForMapComponentInjection()
         {
             return (
                 ( Find.Map != null )&&
@@ -128,15 +133,47 @@ namespace CommunityCoreLibrary
             );
         }
 
-        void                                InjectComponents()
+        void                                InjectMapComponents()
         {
-            // Check that all the map components are injected into the game
+            // Inject the map components into the game
             foreach( var ModHelperDef in ModHelperDefs )
             {
-                if( !ModHelperDef.IsInjected )
+                if( !ModHelperDef.MapComponentsInjected )
                 {
                     Log.Message( "Community Core Library :: Injecting MapComponents for " + ModHelperDef.ModName );
-                    ModHelperDef.Inject();
+                    ModHelperDef.InjectMapComponents();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Designator Injection
+
+        bool                                ReadyForDesignatorInjection()
+        {
+            var DesignatorCategoryDefs = DefDatabase<DesignationCategoryDef>.AllDefs;
+
+            foreach( var DesignatorCategoryDef in DesignatorCategoryDefs )
+            {
+                if( DesignatorCategoryDef.resolvedDesignators == null )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        void                                InjectDesignators()
+        {
+            // Inject the designators into the categories
+            foreach( var ModHelperDef in ModHelperDefs )
+            {
+                if( !ModHelperDef.DesignatorsInjected )
+                {
+                    Log.Message( "Community Core Library :: Injecting Designators for " + ModHelperDef.ModName );
+                    ModHelperDef.InjectDesignators();
                 }
             }
         }
