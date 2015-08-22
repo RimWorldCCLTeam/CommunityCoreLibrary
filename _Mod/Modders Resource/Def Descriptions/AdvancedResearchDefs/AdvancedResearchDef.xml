@@ -6,6 +6,7 @@
     <AdvancedResearchDef>
     
         <defName>string</defName>       [required] Some unique identifier in class
+        
         <Priority>int</Priority>        [required] Lower values is happen first
         
         <researchDefs>                  [required] All the research listed must be complete for anything to happen

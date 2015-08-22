@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompRefrigerated
+    
+    Requires:   CompPowerTrader
+    
+    tickerType: Normal
+    
+    This comp will maintain the health and rotProgress of all items in the storage building
+    which are ThingWithComps and have CompRottable, while powered.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal</tickerType>
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompRefrigerated</compClass>
+                ...
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

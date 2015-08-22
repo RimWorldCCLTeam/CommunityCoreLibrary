@@ -62,11 +62,6 @@ namespace CommunityCoreLibrary
             return thingDef.GetCompProperties( typeof( RimWorld.CompRottable ) ) as Verse.CompProperties_Rottable;
         }
 
-        public static CommunityCoreLibrary.RestrictedPlacement_Properties RestrictedPlacement_Properties ( this ThingDef thingDef )
-        {
-            return thingDef.GetCompProperties( typeof( CommunityCoreLibrary.RestrictedPlacement_Comp ) ) as CommunityCoreLibrary.RestrictedPlacement_Properties;
-        }
-
         #endregion
 
     }

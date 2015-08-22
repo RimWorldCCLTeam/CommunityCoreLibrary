@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompHeatPusherPowered
+    
+    Requires:   CompPowerTrader
+                CompPowerLowIdleDraw
+    
+    tickerType: Normal
+    
+    This is an clone of Verse.CompHeatPusherPowered adding idle power awareness but is
+    otherwise the same.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal</tickerType>
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                ...
+            </li>
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompHeatPusherPowered</compClass>
+                ...
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

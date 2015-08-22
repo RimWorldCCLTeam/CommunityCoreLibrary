@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    Terrain:    TerrainWithComps
+    
+    tickerType: None
+    
+    Terrain with comps allows you to use the place workers which use RestrictedPlacement_Comp.
+    
+    Currently, the following place workers are supported:
+    
+        PlaceWorker_NotOnTerrain
+        PlaceWorker_OnlyOnTerrain
+        PlaceWorker_NotUnderRoof
+        PlaceWorker_OnlyUnderRoof
+    
+    Usage:
+    
+    <TerrainDef Class="CommunityCoreLibrary.TerrainWithComps">
+        ...
+        
+        <placeWorkers>
+            
+            ...
+            
+        </placeWorkers>
+        
+        <comps>
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                ...
+            </li>
+            
+        </comps>
+        
+        ...
+    </TerrainDef>
+    
+    -->
+
+</Defs>

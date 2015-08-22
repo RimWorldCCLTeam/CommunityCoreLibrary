@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_OnlyOnSurface
+    
+    Requires:   RestrictedPlacement_Comp
+                ThingWithComps
+    
+    tickerType: Normal or Rare
+    
+    Only on surface (PlaceWorker_OnlyOnSurface) restricts placement of a new thing to cells where
+    there is an existing thing with a valid surfaceType (not None).
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal or Rare</tickerType>
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnSurface</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

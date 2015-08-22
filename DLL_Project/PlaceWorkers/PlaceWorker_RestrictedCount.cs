@@ -8,18 +8,18 @@ namespace CommunityCoreLibrary
         
         public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
-            var thingDef = checkingDef as ThingDef;
+            var Restrictions = checkingDef.RestrictedPlacement_Properties();
 #if DEBUG
-            if( thingDef == null ){
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to cast BuildableDef to ThingDef!" );
+            if( Restrictions == null ){
+                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to get properties!" );
                 return AcceptanceReport.WasRejected;
             }
 #endif
 
-            var Restrictions = thingDef.RestrictedPlacement_Properties();
+            var thingDef = checkingDef as ThingDef;
 #if DEBUG
-            if( Restrictions == null ){
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to get properties!" );
+            if( thingDef == null ){
+                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to cast BuildableDef to ThingDef!" );
                 return AcceptanceReport.WasRejected;
             }
 #endif

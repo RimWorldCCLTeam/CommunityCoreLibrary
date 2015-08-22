@@ -130,10 +130,10 @@
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
-                <RestrictedTerrain>
+                <terrainDefs>
                     <li>Soil</li>
                     <li>SoilRich</li>
-                </RestrictedTerrain>
+                </terrainDefs>
             </li>
         </comps>
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
@@ -177,10 +177,10 @@
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
-                <RestrictedTerrain>
+                <terrainDefs>
                     <li>Sand</li>
                     <li>WaterShallow</li>
-                </RestrictedTerrain>
+                </terrainDefs>
             </li>
         </comps>
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
@@ -224,7 +224,7 @@
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
-                <RestrictedThing>
+                <thingDefs>
                     <li>SteamGeyser</li>
                     <li>ChunkGranite</li>
                     <li>ChunkSandstone</li>
@@ -232,7 +232,7 @@
                     <li>ChunkSlate</li>
                     <li>ChunkMarble</li>
                     <li>ChunkSlagSteel</li>
-                </RestrictedThing>
+                </thingDefs>
             </li>
         </comps>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -276,7 +276,7 @@
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
-                <RestrictedThing>
+                <thingDefs>
                     <li>SteamGeyser</li>
                     <li>ChunkGranite</li>
                     <li>ChunkSandstone</li>
@@ -284,7 +284,7 @@
                     <li>ChunkSlate</li>
                     <li>ChunkMarble</li>
                     <li>ChunkSlagSteel</li>
-                </RestrictedThing>
+                </thingDefs>
             </li>
         </comps>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>

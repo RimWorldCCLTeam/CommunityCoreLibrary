@@ -96,18 +96,24 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            var Restrictions = this.RestrictedPlacement_Properties();
 #if DEBUG
-            if( Restrictions == null )
+            if( 
+                ( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_OnlyOnThing ) ) )
+            )
             {
-                Log.Error( "Community Core Library :: RestrictedPlacement_Comp :: " + parent.def.defName + " requires RestrictedPlacement_Properties!" );
-                return;
+                var Restrictions = this.RestrictedPlacement_Properties();
+                if( Restrictions == null )
+                {
+                    Log.Error( "Community Core Library :: RestrictedPlacement_Comp :: " + parent.def.defName + " requires RestrictedPlacement_Properties!" );
+                    return;
+                }
             }
 #endif
 
             // Check on thing
             if( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_OnlyOnThing ) ) )
             {
+                var Restrictions = this.RestrictedPlacement_Properties();
                 bool foundThing = false;
                 foreach( Thing t in parent.Position.GetThingList() )
                 {

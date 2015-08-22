@@ -11,13 +11,19 @@ namespace CommunityCoreLibrary
 
     public class ModController : MonoBehaviour
     {
-        
+
+        #region Instance Data
+
         public readonly string              GameObjectName = "Community Core Library";
 
         public static List< AdvancedResearchDef > AdvancedResearch;
 
         public static Version               CCLVersion;
         List< ModHelperDef >                ModHelperDefs;
+
+        #endregion
+
+        #region Mono Callbacks
 
         public void                         Start()
         {
@@ -54,6 +60,8 @@ namespace CommunityCoreLibrary
                 InjectMapComponents();
             }
         }
+
+        #endregion
 
         #region Versioning
 

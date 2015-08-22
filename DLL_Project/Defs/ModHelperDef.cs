@@ -45,6 +45,7 @@ namespace CommunityCoreLibrary
                     isValid = false;
                 }
 
+#if DEBUG
                 if( ( MapComponents != null )&&
                     ( MapComponents.Count > 0 ) )
                 {
@@ -79,7 +80,8 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-
+#endif
+                
                 if( !isValid )
                 {
                     Log.Error( errors );

@@ -9,7 +9,11 @@ namespace CommunityCoreLibrary
     
     public class CompPowerLowIdleDraw : ThingComp
     {
-        
+
+        [Unsaved]
+
+        #region Instance Data
+
         CompPowerTrader                     PowerTrader;
         List<IntVec3>                       scanPosition;
         Pawn                                curUser;
@@ -25,6 +29,10 @@ namespace CommunityCoreLibrary
         int                                 keepOnTicks;
 
         CompProperties_LowIdleDraw          IdleProps;
+
+        #endregion
+
+        #region Comp Getters
 
         CompGlower                          CompGlower
         {
@@ -42,6 +50,10 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
+        #region Query State
+
         public bool                         LowPowerMode
         {
             get
@@ -49,6 +61,8 @@ namespace CommunityCoreLibrary
                 return !( PowerTrader.PowerOutput < idlePower );
             }
         }
+
+        #endregion
 
         public override void                PostExposeData()
         {
@@ -356,7 +370,7 @@ namespace CommunityCoreLibrary
 
                 if( IdleProps.cycleHighTicks < 0 )
                 {
-                    IdleProps.cycleLowTicks = 500;
+                    IdleProps.cycleHighTicks = 500;
                 }
 
                 //Log.Message( parent.def.defName + " is power cycler " + IdleProps.cycleLowTicks + ":" + IdleProps.cycleHighTicks );

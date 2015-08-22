@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompLifespanPowered
+    
+    Requires:   CompPowerTrader
+    
+    tickerType: Normal or Rare
+    
+    This is an clone of RimWorld.CompLifespan adding a power requirment.  This comp will only
+    tick down the age when the building is powered.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal or Rare</tickerType>
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompLifespanPowered</compClass>
+                ...
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

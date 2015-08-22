@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>Source-DLLs\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,6 +43,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>Source-DLLs\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +99,8 @@
     <Compile Include="MapComponents\ResearchController.cs" />
     <Compile Include="Defs\ModHelperDef.cs" />
     <Compile Include="Structures\DesignatorData.cs" />
+    <Compile Include="Extensions\TerrainWithComps.cs" />
+    <Compile Include="Extensions\BuildableDef_Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

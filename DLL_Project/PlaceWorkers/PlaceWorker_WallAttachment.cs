@@ -13,12 +13,12 @@ namespace CommunityCoreLibrary
             Building support = c.GetEdifice();
             if( support == null )
             {
-                return (AcceptanceReport)"MessagePlacementAgainstSupport".Translate();
+                return (AcceptanceReport)( "MessagePlacementAgainstSupport".Translate() );
             }
 
             return ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) != 0
                 ? AcceptanceReport.WasAccepted
-                : ( AcceptanceReport )"MessagePlacementAgainstSupport".Translate();
+                : ( AcceptanceReport )( "MessagePlacementAgainstSupport".Translate() );
         }
 
     }

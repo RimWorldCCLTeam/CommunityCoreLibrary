@@ -48,6 +48,7 @@ namespace CommunityCoreLibrary
                 // Hopefully...
                 var isValid = true;
 
+#if DEBUG
                 // Validate recipes
                 if( IsRecipeToggle )
                 {
@@ -104,7 +105,7 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-
+#endif
                 return isValid;
             }
         }
