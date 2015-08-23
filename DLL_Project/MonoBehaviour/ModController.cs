@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using RimWorld;
 using UnityEngine;
@@ -60,6 +61,11 @@ namespace CommunityCoreLibrary
                 InjectMapComponents();
             }
         }
+
+	    public void							OnLevelWasLoaded()
+	    {
+		    InjectThingComp<CompPawnGizmo>("Human");
+	    }
 
         #endregion
 
@@ -186,8 +192,39 @@ namespace CommunityCoreLibrary
             }
         }
 
-        #endregion
+		#endregion
 
-    }
+		#region ThingComp Injection
+
+	    void								InjectThingComp<T>(string defName) where T : ThingComp
+		{
+			// Access ThingDef database
+			var typeFromHandle = typeof(DefDatabase<ThingDef>);
+			var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
+			if (defsByName == null)
+			{
+				CCL_Log.Error("ThingComp Injection", "defName is null!");
+			}
+			var dictDefsByName = defsByName?.GetValue(null) as Dictionary<string, ThingDef>;
+			if (dictDefsByName == null)
+			{
+				CCL_Log.Error("ThingComp Injection", "Cannot access private members!");
+			}
+
+			var def = dictDefsByName?.Values.ToList().Find(s => s.defName == defName);
+
+			if (def != null && def.comps.Any(curComp => curComp.GetType() == typeof(T)))
+			{
+				return;
+			}
+
+			CCL_Log.Message("ThingComp Injection", "Injecting ThingComp to" + def.defName);
+			var compProperties = new CompProperties { compClass = typeof(T) };
+			def.comps.Add(compProperties);
+		}
+
+		#endregion
+
+	}
 
 }
