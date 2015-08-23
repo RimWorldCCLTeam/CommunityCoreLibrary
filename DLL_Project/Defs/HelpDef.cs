@@ -14,8 +14,11 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        //[Unsaved]
+
         #region Process State
 
+#if DEBUG
         public override void                ResolveReferences()
         {
             base.ResolveReferences();
@@ -24,6 +27,7 @@ namespace CommunityCoreLibrary
                 Log.Error( "Community Core Library :: Help Tab :: category resolved to null in HelpDef( " + defName + " )" );
             }
         }
+#endif
 
         public int                          CompareTo( object obj )
         {

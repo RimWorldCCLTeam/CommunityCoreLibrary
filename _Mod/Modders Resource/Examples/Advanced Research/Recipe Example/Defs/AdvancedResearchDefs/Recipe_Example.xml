@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will add the level 1 recipe to the bulb
+        -->
+        
+        <defName>AdvancedTechLevelOneAdd</defName>
+        <Priority>0</Priority>
+        
+        <researchDefs>
+            <li>TechLevelOne</li>
+        </researchDefs>
+        
+        <recipeDefs>
+            <li>TechRecipeOne</li>
+        </recipeDefs>
+        
+        <thingDefs>
+            <li>ReplaceRecipeTest</li>
+        </thingDefs>
+        
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will remove the level 1 recipe to the bulb after level 2 is researched
+        -->
+        
+        <defName>AdvancedTechLevelOneRemove</defName>
+        <Priority>1</Priority>
+        
+        <researchDefs>
+            <li>TechLevelTwo</li>
+        </researchDefs>
+        
+        <HideDefs>true</HideDefs>
+        
+        <recipeDefs>
+            <li>TechRecipeOne</li>
+        </recipeDefs>
+        
+        <thingDefs>
+            <li>ReplaceRecipeTest</li>
+        </thingDefs>
+        
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            And now, add the level 2 recipe to the table
+        -->
+        
+        <defName>AdvancedTechLevelTwoAdd</defName>
+        <Priority>2</Priority>
+        
+        <researchDefs>
+            <li>TechLevelTwo</li>
+        </researchDefs>
+        
+        <recipeDefs>
+            <li>TechRecipeTwo</li>
+        </recipeDefs>
+        
+        <thingDefs>
+            <li>ReplaceRecipeTest</li>
+        </thingDefs>
+        
+    </AdvancedResearchDef>
+
+</Defs>

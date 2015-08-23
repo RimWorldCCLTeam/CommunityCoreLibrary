@@ -6,7 +6,15 @@ namespace CommunityCoreLibrary
 
     public class CompLifespanPowered : ThingComp
     {
-        
+
+        [Unsaved]
+
+        #region Instance Data
+
+        public int                          remainingTicks = -1;
+
+        #endregion
+
         CompPowerTrader                     CompPowerTrader
         {
             get
@@ -14,8 +22,6 @@ namespace CommunityCoreLibrary
                 return parent.TryGetComp< CompPowerTrader >();
             }
         }
-
-        public int                          remainingTicks = -1;
 
         public override void                PostSpawnSetup()
         {

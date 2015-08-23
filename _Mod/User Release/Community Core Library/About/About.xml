@@ -1,8 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-    <name>Community Core Library v0.11.5</name>
+
+    <name>Community Core Library v0.12.0</name>
+
     <author>RimWorld CCL Team</author>
+
     <url>https://ludeon.com/forums/index.php?topic=14172.0</url>
-    <targetVersion>RimWorld Alpha 11d</targetVersion>
-    <description>Provides a common core set of library functions for modders as well as making the necessary core compatibility changes.</description>
+
+    <targetVersion>RimWorld Alpha 12</targetVersion>
+
+    <description>Provides a common core set of library functions for modders as well as making required core changes.\n\nThis must be loaded immediately after "Core" unless another mod explicitly tells you to load it between "Core" this mod.</description>
+
 </ModMetaData>

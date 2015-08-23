@@ -8,23 +8,23 @@
   <CommandChangeColorLabel>Change color</CommandChangeColorLabel>
   <CommandChangeColorDesc>LClick - {0};\nRClick - {1}</CommandChangeColorDesc>
 
-  <CommandChangeRoommateColorLabel>Syncronize colorable lights in room</CommandChangeRoommateColorLabel>
+  <CommandChangeRoommateColorLabel>Synchronize colorable lights in room</CommandChangeRoommateColorLabel>
   <CommandChangeRoommateColorLClick>LClick - Only {0}</CommandChangeRoommateColorLClick>
   <CommandChangeRoommateColorRClick>RClick - All lights</CommandChangeRoommateColorRClick>
 
-  <CommandChangeTouchingPlantLabel>Syncronize all touching plant growers</CommandChangeTouchingPlantLabel>
-  <CommandChangeRoommatePlantLabel>Syncronize plant growers in room</CommandChangeRoommatePlantLabel>
+  <CommandChangeTouchingPlantLabel>Synchronize all touching plant growers</CommandChangeTouchingPlantLabel>
+  <CommandChangeRoommatePlantLabel>Synchronize plant growers in room</CommandChangeRoommatePlantLabel>
   <CommandChangeRoommatePlantLClick>LClick - Only {0}</CommandChangeRoommatePlantLClick>
   <CommandChangeRoommatePlantRClick>RClick - All growers</CommandChangeRoommatePlantRClick>
 
   <CommandGroupOfThingsLClick>LClick - In room</CommandGroupOfThingsLClick>
   <CommandGroupOfThingsRClick>RClick - On map</CommandGroupOfThingsRClick>
 
-  <CommandGroupOfThingsByDefLabel>Syncronize all touching {0}</CommandGroupOfThingsByDefLabel>
-  <CommandGroupOfThingsByLinkerLabel>Syncronize all linked {0}</CommandGroupOfThingsByLinkerLabel>
+  <CommandGroupOfThingsByDefLabel>Synchronize all touching {0}</CommandGroupOfThingsByDefLabel>
+  <CommandGroupOfThingsByLinkerLabel>Synchronize all linked {0}</CommandGroupOfThingsByLinkerLabel>
 
-  <CommandGroupOfThingsByDefInRoomLabel>Syncronize all {0} in room</CommandGroupOfThingsByDefInRoomLabel>
-  <CommandGroupOfThingsByLinkerInRoomLabel>Syncronize all linked {0} in room</CommandGroupOfThingsByLinkerInRoomLabel>
+  <CommandGroupOfThingsByDefInRoomLabel>Synchronize all {0} in room</CommandGroupOfThingsByDefInRoomLabel>
+  <CommandGroupOfThingsByLinkerInRoomLabel>Synchronize all linked {0} in room</CommandGroupOfThingsByLinkerInRoomLabel>
 
   <HelpOTabTitle>Mod Help</HelpOTabTitle>
   <NoHelpDefs>No help defs found</NoHelpDefs>

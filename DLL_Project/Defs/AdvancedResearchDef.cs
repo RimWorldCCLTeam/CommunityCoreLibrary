@@ -21,98 +21,268 @@ namespace CommunityCoreLibrary
         // Research requirement
         public List< ResearchProjectDef >   researchDefs;
 
+
         // These are optionally defined in xml
         public List< RecipeDef >            recipeDefs;
         public List< string >               sowTags;
         public List< ThingDef >             thingDefs;
         public List< ResearchProjectDef >   effectedResearchDefs;
-        public List< ResearchMod >          researchMods;
+        public List< AdvancedResearchMod >  researchMods;
 
         #endregion
 
-        #region Instance Data
         [Unsaved]
 
-        public bool                         isEnabled;
+        #region Instance Data
+
+        bool                                isEnabled;
 
         #endregion
 
         #region Query State
 
-        public bool                         ResearchComplete()
+        public bool                         IsValid
         {
-            // God mode, allow it
-            if( Game.GodMode )
+            get
             {
-                return true;
-            }
+                // Hopefully...
+                var isValid = true;
 
-            // No god mode, check it
-            foreach( var researchProject in researchDefs )
-            {
-                if( !researchProject.IsFinished )
+#if DEBUG
+                // Validate recipes
+                if( IsRecipeToggle )
                 {
+                    // Make sure thingDefs are of the appropriate type (has ITab_Bills)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must implement \"IBillGiver\"" );
+                        }
+                    }
+
+                }
+
+                // Validate plant sowTags
+                if( IsPlantToggle )
+                {
+                    // Make sure things are of the appropriate class (Plant)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( thingDef.thingClass != typeof( Plant ) )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must be <thingClass> \"Plant\"" );
+                        }
+                    }
+
+                    // Make sure sowTags are valid (!null or empty)
+                    for( int i = 0; i < sowTags.Count; i++ )
+                    {
+                        var sowTag = sowTags[ i ];
+                        if( string.IsNullOrEmpty( sowTag ) )
+                        {
+                            Log.Error( "Community Core Library :: Advanced Research :: sowTags( index = " + i + " ) resolved to null in AdvancedResearchDef( " + defName + " )" );
+                        }
+                    }
+                }
+
+                // Validate buildings
+                if( IsBuildingToggle )
+                {
+                    // Make sure thingDefs are of the appropriate type (has proper designationCategory)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( ( string.IsNullOrEmpty( thingDef.designationCategory ) )||
+                            ( thingDef.designationCategory.ToLower() == "none" ) )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - <designationCategory> must not be null or \"None\"" );
+                        }
+                    }
+                }
+#endif
+                return isValid;
+            }
+        }
+
+        public bool                         CanEnable
+        {
+            get
+            {
+                // God mode, allow it
+                if( ( Game.GodMode )&&
+                    ( !isEnabled ) )
+                {
+                    return true;
+                }
+
+                if( isEnabled )
+                {
+                    // Already on
                     return false;
                 }
+
+                // Check individual research projects
+                foreach( var researchProject in researchDefs )
+                {
+                    if( !researchProject.IsFinished )
+                    {
+                        return false;
+                    }
+                }
+
+                // All required research complete
+                return true;
             }
-
-            // All done
-            return true;
         }
 
-        public bool                         IsRecipeToggle()
+        public bool                         IsRecipeToggle
         {
-            // Determine if this def toggles recipes
-            return (
-                ( ( recipeDefs != null )&&( recipeDefs.Count > 0 ) )&&
-                ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
-                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
-            );
+            get
+            {
+                // Determine if this def toggles recipes
+                return (
+                    ( ( recipeDefs != null )&&( recipeDefs.Count > 0 ) )&&
+                    ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
+                    ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+                );
+            }
         }
 
-        public bool                         IsPlantToggle()
+        public bool                         IsPlantToggle
         {
-            // Determine if this def toggles plant sow tags
-            return (
-                ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
-                ( ( sowTags != null )&&( sowTags.Count > 0 ) )&&
-                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
-            );
+            get
+            {
+                // Determine if this def toggles plant sow tags
+                return (
+                    ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
+                    ( ( sowTags != null )&&( sowTags.Count > 0 ) )&&
+                    ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+                );
+            }
         }
 
-        public bool                         IsBuildingToggle()
+        public bool                         IsBuildingToggle
         {
-            // Determine if this def toggles buildings
-            return (
-                ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
-                ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
-                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
-            );
+            get
+            {
+                // Determine if this def toggles buildings
+                return (
+                    ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
+                    ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
+                    ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+                );
+            }
         }
 
-        public bool                         HasCallbacks()
+        public bool                         IsResearchToggle
         {
-            // Determine if this def has callbacks
-            return (
-                ( ( researchMods != null )&&( researchMods.Count > 0 ) )
-            );
+            get
+            {
+                // Determine if this def toggles research
+                return (
+                    ( ( effectedResearchDefs != null )&&( effectedResearchDefs.Count > 0 ) )
+                );
+            }
         }
 
-        public bool                         IsResearchToggle()
+        public bool                         HasCallbacks
         {
-            // Determine if this def toggles research
-            return (
-                ( ( effectedResearchDefs != null )&&( effectedResearchDefs.Count > 0 ) )
-            );
+            get
+            {
+                // Determine if this def has callbacks
+                return (
+                    ( ( researchMods != null )&&( researchMods.Count > 0 ) )
+                );
+            }
         }
 
         #endregion
 
         #region Process State
 
-        public void                         ToggleRecipes( List< ThingDef > buildingCache, bool SetInitialState = false )
+        public void                         Disable( bool firstTimeRun = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            // Don't unset if not set
+            if( ( !isEnabled )&&
+                ( firstTimeRun = false ) )
+            {
+                return;
+            }
+            if( IsRecipeToggle )
+            {
+                // Recipe toggle
+                ToggleRecipes( true );
+            }
+            if( IsPlantToggle )
+            {
+                // Plant toggle
+                TogglePlants( true );
+            }
+            if( IsBuildingToggle )
+            {
+                // Building toggle
+                ToggleBuildings( true );
+            }
+            if( IsResearchToggle )
+            {
+                // Research toggle
+                ToggleResearch( true );
+            }
+            if( ( HasCallbacks )&&
+                ( !firstTimeRun ) )
+            {
+                // Cache callbacks
+                ToggleCallbacks( true );
+            }
+            // Flag it as disabled
+            isEnabled = false;
+        }
+
+        public void                         Enable()
+        {
+            // Don't set if set
+            if( isEnabled )
+            {
+                return;
+            }
+            if( IsRecipeToggle )
+            {
+                // Recipe toggle
+                ToggleRecipes();
+            }
+            if( IsPlantToggle )
+            {
+                // Plant toggle
+                TogglePlants();
+            }
+            if( IsBuildingToggle )
+            {
+                // Building toggle
+                ToggleBuildings();
+            }
+            if( IsResearchToggle )
+            {
+                // Research toggle
+                ToggleResearch();
+            }
+            if( HasCallbacks )
+            {
+                // Cache callbacks
+                ToggleCallbacks();
+            }
+            // Flag it as enabled
+            isEnabled = true;
+        }
+
+        void                                ToggleRecipes( bool setInitialState = false )
+        {
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each building
             foreach( var buildingDef in thingDefs )
@@ -145,22 +315,6 @@ namespace CommunityCoreLibrary
                             buildingDef.recipes.Remove( recipeDef );
                         }
 
-                        // Remove bill on any table of this def using this recipe
-                        var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( buildingDef );
-                        foreach( var building in buildings )
-                        {
-                            var BillGiver = building as IBillGiver;
-                            for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
-                            {
-                                var bill = BillGiver.BillStack[ i ];
-                                if( bill.recipe == recipeDef )
-                                {
-                                    BillGiver.BillStack.Delete( bill );
-                                    continue;
-                                }
-                            }
-                        }
-
                     }
                     else
                     {
@@ -170,13 +324,13 @@ namespace CommunityCoreLibrary
                 }
 
                 // Add this building to the list to recache
-                buildingCache.Add( buildingDef );
+                ResearchController.buildingCache.Add( buildingDef );
             }
         }
 
-        public void                         TogglePlants( bool SetInitialState = false )
+        void                                TogglePlants( bool setInitialState = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each plant
             foreach( var plantDef in thingDefs )
@@ -206,9 +360,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         ToggleBuildings( bool SetInitialState = false )
+        void                                ToggleBuildings( bool setInitialState = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each building
             foreach( var buildingDef in thingDefs )
@@ -217,9 +371,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         ToggleResearch( bool SetInitialState = false )
+        void                                ToggleResearch( bool setInitialState = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each research project to be effected
             foreach( var researchProject in effectedResearchDefs )
@@ -232,6 +386,31 @@ namespace CommunityCoreLibrary
                 {
                     // Lock research
                     researchProject.prerequisites.Add( Research.Locker );
+                }
+            }
+        }
+
+        void                                ToggleCallbacks( bool setInitialState = false )
+        {
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
+
+            if( Hide )
+            {
+                // Cache the callbacks in reverse order when hiding
+                for( int i = researchMods.Count - 1; i >= 0; i-- ){
+                    var researchMod = researchMods[ i ];
+                    // Add the advanced research mod to the cache
+                    ResearchController.researchModCache.Add( researchMod );
+                }
+            }
+            else
+            {
+            // Cache the callbacks in order
+                foreach( var researchMod in researchMods )
+                {
+
+                    // Add the advanced research mod to the cache
+                    ResearchController.researchModCache.Add( researchMod );
                 }
             }
         }

@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+    <ThingDef Name="BuildingBase" Abstract="True">
+        <category>Building</category>
+        <thingClass>Building</thingClass>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <selectable>true</selectable>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <repairEffect>Repair</repairEffect>
+        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <filthLeaving>BuildingRubble</filthLeaving>
+    </ThingDef>
+
+    <ThingDef Abstract="True" Name="PlaceWorkerTestBase" ParentName="BuildingBase">
+        <thingClass>Building</thingClass>
+        <category>Building</category>
+        <minifiedDef>MinifiedFurniture</minifiedDef>
+        <altitudeLayer>Waist</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <selectable>true</selectable>
+        <fillPercent>0.20</fillPercent>
+        <costList>
+            <Steel>1</Steel>
+        </costList>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <designationCategory>Furniture</designationCategory>
+        <rotatable>false</rotatable>
+        <graphicData>
+            <texPath>Things/Building/Furniture/LampStanding</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowData>
+                <volume>(0.3, 0.6, 0.3)</volume>
+                <offset>(0,0,-0.1)</offset>
+            </shadowData>
+        </graphicData>
+        <statBases>
+            <MaxHitPoints>50</MaxHitPoints>
+            <WorkToMake>10</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>RestrictedUnderRoof</defName>
+        <label>restricted under roof test</label>
+        <description>Restricted to being under a roof</description>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            </li>
+        </comps>
+        <tickerType>Rare</tickerType>
+        <placeWorkers>
+            <!-- This restriction needs a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyUnderRoof</li>
+        </placeWorkers>
+        <designationCategory>Furniture</designationCategory>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>RestrictedCountTest</defName>
+        <label>restricted count test</label>
+        <description>Limit: 2</description>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <MaxCount>2</MaxCount>
+            </li>
+        </comps>
+        <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_RestrictedCount</li>
+        </placeWorkers>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>NotOnTerrainTest</defName>
+        <label>not on terrain test</label>
+        <description>Restrictions:\nSoil\nSoilRich</description>
+        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <terrainDefs>
+                    <li>Soil</li>
+                    <li>SoilRich</li>
+                </terrainDefs>
+            </li>
+        </comps>
+        <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_NotOnTerrain</li>
+        </placeWorkers>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>OnlyOnTerrainTest</defName>
+        <label>only on terrain test</label>
+        <description>Allowance:\nSand\nWaterShallow</description>
+        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <terrainDefs>
+                    <li>Sand</li>
+                    <li>WaterShallow</li>
+                </terrainDefs>
+            </li>
+        </comps>
+        <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
+        </placeWorkers>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>NotOnThingTest</defName>
+        <label>not on thing test</label>
+        <description>Restrictions:\nSteam Geyser\nrock chunks\nslag</description>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <thingDefs>
+                    <li>SteamGeyser</li>
+                    <li>ChunkGranite</li>
+                    <li>ChunkSandstone</li>
+                    <li>ChunkLimestone</li>
+                    <li>ChunkSlate</li>
+                    <li>ChunkMarble</li>
+                    <li>ChunkSlagSteel</li>
+                </thingDefs>
+            </li>
+        </comps>
+        <placeWorkers>
+            <!-- This restriction does not need a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_NotOnThing</li>
+        </placeWorkers>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>OnlyOnThingTest</defName>
+        <label>only on thing test</label>
+        <description>Allowance:\nSteam Geyser\nrock chunks\nslag</description>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <thingDefs>
+                    <li>SteamGeyser</li>
+                    <li>ChunkGranite</li>
+                    <li>ChunkSandstone</li>
+                    <li>ChunkLimestone</li>
+                    <li>ChunkSlate</li>
+                    <li>ChunkMarble</li>
+                    <li>ChunkSlagSteel</li>
+                </thingDefs>
+            </li>
+        </comps>
+        <tickerType>Rare</tickerType>
+        <placeWorkers>
+            <!-- This restriction needs a ticker to maintain -->
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnThing</li>
+        </placeWorkers>
+    </ThingDef>
+
+</Defs>

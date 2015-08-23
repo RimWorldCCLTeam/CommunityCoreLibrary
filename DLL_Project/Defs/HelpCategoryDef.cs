@@ -15,8 +15,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Instance Data
         [Unsaved]
+
+        #region Instance Data
 
         readonly List<HelpDef>              _cachedHelpDefs = new List<HelpDef>();
 
@@ -38,11 +39,11 @@ namespace CommunityCoreLibrary
             {
                 if( Expanded )
                 {
-                    return OTab_ModHelp.EntryHeight + HelpDefs.Count * OTab_ModHelp.EntryHeight;
+                    return MainTabWindow_ModHelp.EntryHeight + HelpDefs.Count * MainTabWindow_ModHelp.EntryHeight;
                 }
                 else
                 {
-                    return OTab_ModHelp.EntryHeight;
+                    return MainTabWindow_ModHelp.EntryHeight;
                 }
             }
         }
@@ -79,7 +80,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        void                                Recache()
+        public void                         Recache()
         {
             _cachedHelpDefs.Clear();
             foreach( var def in (

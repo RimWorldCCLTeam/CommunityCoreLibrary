@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_WallAttachment
+    
+    Requires:   RestrictedPlacement_Comp
+                ThingWithComps
+    
+    tickerType: Normal or Rare
+    
+    Wall attachment (PlaceWorker_WallAttachment) requires that the south* neighbouring cell has
+    an edifice with the "Rock" or "Wall" graphic linker flags.  Should the "wall" be removed for
+    up to 250 normal ticks (one rare tick), the thing will be destroyed and an alert will be raised
+    for the player.
+    
+    * Based on default rotation
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal or Rare</tickerType>
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_WallAttachment</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

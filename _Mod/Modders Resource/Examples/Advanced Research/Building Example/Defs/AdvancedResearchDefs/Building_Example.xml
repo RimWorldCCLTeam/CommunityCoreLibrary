@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+        <!--
+            This def disables the normal crypto sleep
+        -->
+
+        <defName>HideCryptoSleep</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>Cryptosleep</li>
+            <li>AncientTechnology</li>
+        </researchDefs>
+
+        <HideDefs>true</HideDefs>
+
+        <thingDefs>
+            <li>CryptosleepCasket</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            This def enables the ancient crypto sleep
+        -->
+
+        <defName>BuildAncientCryptoSleep</defName>
+        <Priority>1</Priority>
+
+        <researchDefs>
+            <li>Cryptosleep</li>
+            <li>AncientTechnology</li>
+        </researchDefs>
+
+        <thingDefs>
+            <li>AncientCryptosleepCasket</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+</Defs>

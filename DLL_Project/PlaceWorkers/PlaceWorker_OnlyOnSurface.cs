@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return (AcceptanceReport)"MessagePlacementItemSurface".Translate();
+            return (AcceptanceReport)( "MessagePlacementItemSurface".Translate() );
         }
 
     }

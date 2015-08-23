@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompPowerLowIdleDraw
+    
+    Requires:   CompProperties_LowIdleDraw
+                CompPowerTrader
+    
+    tickerType: Normal or Rare
+    
+    Optional:   CompGlower
+    
+    CompPowerLowIdleDraw (comp idle power), will modify the power usage of a building based on
+    it's operational mode.  Modes curently include "InUse" (work tables), "WhenNear" (pawn is in
+    any cell the building uses or in any adjacent cell to the building) and "Cycle" (operates in
+    "full power" mode for a specified number of ticks then in "low power" mode for a specified
+    number of ticks, cycling between modes).
+    
+    Comp Properties:
+    
+    type (default)  tag                 Details
+    
+    float (0)       idlePowerFactor     [optional] Idle-power basePowerConsumption multiplier
+    enum (InUse)    operationalMode     [optional] Power switching mode
+    int (*)         cycleLowTicks       [optional] Number of normal ticks to operate in low-power mode
+    int (*)         cycleHighTicks      [optional] Number of normal ticks to operate in high-power mode
+    
+    * These values are variable depending on the operationalMode.  Note that at the end of
+    a cycle power may not be switched if the conditions would allow it to stay in that mode.
+    The default values are as follows:
+        
+        mode        low         high
+        InUse       30          500
+        WhenNear    30          500
+        Cycle       1000        500
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal or Rare</tickerType>
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                
+                <idlePowerFactor>0</idlePowerFactor>
+                
+                <operationalMode>InUse</operationalMode>
+                
+                <cycleLowTicks>-1</cycleLowTicks>
+                <cycleHighTicks>-1</cycleHighTicks>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompNeighbourlyGrower
+    
+    Requires:   Building_PlantGrower
+    
+    This comp provides the user with gizmos to share growing information with other
+    Building_PlantGrowers (or child classes) using the comp.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

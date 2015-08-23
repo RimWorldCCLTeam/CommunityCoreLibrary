@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will enable the other inclusive tree
+        -->
+
+        <defName>InclusiveTreeOne</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>ExclusiveTechOneTwo</li>
+        </researchDefs>
+
+        <effectedResearchDefs>
+            <li>InclusiveTech</li>
+        </effectedResearchDefs>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will enable the other inclusive tree
+        -->
+
+        <defName>InclusiveTreeTwo</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>ExclusiveTechTwoTwo</li>
+        </researchDefs>
+
+        <effectedResearchDefs>
+            <li>InclusiveTech</li>
+        </effectedResearchDefs>
+
+    </AdvancedResearchDef>
+
+</Defs>

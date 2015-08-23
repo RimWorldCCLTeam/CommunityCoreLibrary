@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_RestrictedCount
+    
+    Requires:   RestrictedPlacement_Comp
+                ThingWithComps
+    
+    This place worker limits how many of this building can exist at any given time.
+    
+    Comp Properties:
+    
+    type (default)  tag                 Details
+    
+    int (-1)        MaxCount            [required] Maximum count of a building in the world
+    
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                
+                <MaxCount>2</MaxCount>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnThing</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will hide the other exclusive tree
+        -->
+
+        <defName>ExclusiveTreeOne</defName>
+        <Priority>0</Priority>
+
+        <HideDefs>true</HideDefs>
+
+        <researchDefs>
+            <li>ExclusiveTechOne</li>
+        </researchDefs>
+
+        <effectedResearchDefs>
+            <li>ExclusiveTechTwo</li>
+        </effectedResearchDefs>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+        <!--
+            This def will hide the other exclusive tree
+        -->
+
+        <defName>ExclusiveTreeTwo</defName>
+        <Priority>0</Priority>
+
+        <HideDefs>true</HideDefs>
+
+        <researchDefs>
+            <li>ExclusiveTechTwo</li>
+        </researchDefs>
+
+        <effectedResearchDefs>
+            <li>ExclusiveTechOne</li>
+        </effectedResearchDefs>
+
+    </AdvancedResearchDef>
+
+</Defs>

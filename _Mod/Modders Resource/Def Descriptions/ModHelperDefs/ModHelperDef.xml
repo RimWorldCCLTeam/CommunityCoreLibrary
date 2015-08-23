@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    <ModHelperDef>
+
+        <defName>string</defName>       [required] Some Unique Identifier In Class
+
+        <ModName>string</ModName>       [required] Name of your mod
+
+        <version>version</version>      [required] Minimum version of CCL required
+
+        <MapComponents>                 [optional] Class names of MapComponents to inject into save games
+            <li>MapComponent</li>
+        </MapComponents>
+
+        <Designators>                   [optional] List of Designators to inject Designation Categories
+            <li>
+                <designatorClass>Designator</designatorClass>
+                                        [required] Class name of Designator to inject
+
+                <designationCategoryDef>DesignationCategoryDef<designationCategoryDef>
+                                        [required] Designation Category to inject designator into
+            </li>
+        </Designators>
+
+    </ModHelperDef>
+
+    -->
+
+</Defs>

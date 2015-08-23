@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>RefigeratedMealShelfVersion</defName>
+
+        <ModName>Modders Resource: Refrigerated Meal Shelf</ModName>
+
+        <version>0.12.0</version>
+
+    </ModHelperDef>
+
+</Defs>

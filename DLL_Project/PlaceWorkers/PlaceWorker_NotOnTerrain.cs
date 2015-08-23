@@ -8,16 +8,7 @@ namespace CommunityCoreLibrary
         
         public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
-            var thingDef = checkingDef as ThingDef;
-#if DEBUG
-            if( thingDef == null )
-            {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: NotOnTerrain - Unable to cast BuildableDef to ThingDef!" );
-                return AcceptanceReport.WasRejected;
-            }
-#endif
-
-            var Restrictions = thingDef.RestrictedPlacement_Properties();
+            var Restrictions = checkingDef.RestrictedPlacement_Properties();
 #if DEBUG
             if( Restrictions == null )
             {
@@ -31,7 +22,7 @@ namespace CommunityCoreLibrary
             {
                 if( Restrictions.RestrictedTerrain[ i ] == terrainDef )
                 {
-                    return (AcceptanceReport)"MessagePlacementNotOn".Translate() + terrainDef.label;
+                    return (AcceptanceReport)( "MessagePlacementNotOn".Translate() + terrainDef.label );
                 }
             }
 

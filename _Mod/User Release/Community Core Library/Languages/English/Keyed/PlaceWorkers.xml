@@ -5,10 +5,10 @@
     <MessagePlacementItemSurface>Must be placed on an item surface!</MessagePlacementItemSurface>
     <MessagePlacementMustBeUnderRoof>Must be placed under a roof!</MessagePlacementMustBeUnderRoof>
     <MessagePlacementAgainstSupport>Must place against a supporting structure!</MessagePlacementAgainstSupport>
-    <MessagePlacementCountRestricted>Can not have more than: </MessagePlacementCountRestricted>
-    <MessagePlacementNotOn>You can not place that on </MessagePlacementNotOn>
-    <MessagePlacementNotHere>You can not place that here!</MessagePlacementNotHere>
+    <MessagePlacementCountRestricted>Cannot have more than: </MessagePlacementCountRestricted>
+    <MessagePlacementNotOn>You cannot place that on </MessagePlacementNotOn>
+    <MessagePlacementNotHere>You cannot place that here!</MessagePlacementNotHere>
     <AlertPlaceWorkerRestrictionSupportRemovedLabel>A support was removed!</AlertPlaceWorkerRestrictionSupportRemovedLabel>
-    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Something has been destroyed because it's support has been removed or destroyed!\n\nThe following things have been destroyed because their supports are missing:</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Something has been destroyed because its support has been removed or destroyed!\n\nThe following things have been destroyed because their supports are missing:</AlertPlaceWorkerRestrictionSupportRemovedDesc>
     
 </LanguageData>

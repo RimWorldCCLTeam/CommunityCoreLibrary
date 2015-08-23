@@ -10,7 +10,7 @@ namespace CommunityCoreLibrary
         {
             return Find.RoofGrid.Roofed( loc )
                 ? AcceptanceReport.WasAccepted
-                : ( AcceptanceReport )"MessagePlacementMustBeUnderRoof".Translate();
+                : ( AcceptanceReport )( "MessagePlacementMustBeUnderRoof".Translate() );
         }
 
     }

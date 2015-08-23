@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingClass: Building_Hydroponic
+    
+    tickerType: Rare
+    
+    This is an clone of RimWorld.Building_PlantGrower changing the rare ticker to call. the
+    base class rare ticker, allowing comps to tick.  RimWorld.Building_PlantGrower does not
+    call base.TickRare(), this does.  This building is only really useful if you can comps
+    on a Building_PlantGrower which need rare ticking.  It is otherwise the same as the core
+    building.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <thingClass>CommunityCoreLibrary.Building_Hydroponic</thingClass>
+        
+        <tickerType>Rare</tickerType>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

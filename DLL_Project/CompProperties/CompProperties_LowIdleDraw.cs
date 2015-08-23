@@ -10,7 +10,7 @@ namespace CommunityCoreLibrary
 
         public float                        idlePowerFactor;
         public LowIdleDrawMode              operationalMode = LowIdleDrawMode.InUse;
-        public int                          cycleLowTicks = 30;
+        public int                          cycleLowTicks = -1;
         public int                          cycleHighTicks = -1;
 
         #endregion
