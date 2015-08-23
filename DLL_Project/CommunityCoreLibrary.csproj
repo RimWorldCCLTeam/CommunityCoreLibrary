@@ -76,7 +76,7 @@
     <Compile Include="Alerts\Alert_NeedBatteries.cs" />
     <Compile Include="Defs\HelpCategoryDef.cs" />
     <Compile Include="Defs\HelpDef.cs" />
-    <Compile Include="OTabs\OTab_ModHelp.cs" />
+    <Compile Include="MainTabs\MainTabWindow_ModHelp.cs" />
     <Compile Include="ITabs\ModInit.cs" />
     <Compile Include="Commands\ChangeColor.cs" />
     <Compile Include="Commands\DefOrThingCompInRoom.cs" />
@@ -113,22 +113,5 @@
   <ItemGroup />
   <PropertyGroup>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="PlaceWorkers\" />
-    <Folder Include="MapComponents\" />
-    <Folder Include="ThingComps\" />
-    <Folder Include="CompProperties\" />
-    <Folder Include="Toils\" />
-    <Folder Include="Buildings\" />
-    <Folder Include="Defs\" />
-    <Folder Include="StaticClasses\" />
-    <Folder Include="Commands\" />
-    <Folder Include="Alerts\" />
-    <Folder Include="OTabs\" />
-    <Folder Include="ITabs\" />
-    <Folder Include="MonoBehaviour\" />
-    <Folder Include="Enumerations\" />
-    <Folder Include="Structures\" />
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MainTabDefs>
+    
+  <MainTabDef>
+    <defName>CCL.ModHelp</defName>
+    <label>Help</label>
+    <description>Get help with different mods.</description>
+    <windowClass>CommunityCoreLibrary.MainTabWindow_ModHelp</windowClass>
+    <order>81</order>
+    <defaultToggleKey>F9</defaultToggleKey>
+  </MainTabDef>
+
+</MainTabDefs>
