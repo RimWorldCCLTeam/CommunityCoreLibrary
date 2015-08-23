@@ -23,10 +23,39 @@ namespace CommunityCoreLibrary
 
         protected Rect SelectionRect;
         protected Rect DisplayRect;
-        protected static Vector2 ArrowImageSize = new Vector2(20f, 20f);
+        protected static Vector2 ArrowImageSize = new Vector2(15f, 15f);
 
         protected Vector2 selectionScrollPos = default(Vector2);
         protected Vector2 displayScrollPos = default(Vector2);
+
+        public override MainTabWindowAnchor Anchor
+        {
+            get
+            {
+                return MainTabWindowAnchor.Right;
+            }
+        }
+
+        public override Vector2 RequestedTabSize
+        {
+            get
+            {
+                return new Vector2(1024, 10000f);
+            }
+        }
+
+        #endregion
+
+        #region Constructor
+        public MainTabWindow_ModHelp()
+        {
+            this.layer = WindowLayer.GameUI;
+            this.soundAppear = null;
+            this.soundClose = null;
+            this.doCloseButton = false;
+            this.doCloseX = true;
+            this.closeOnEscapeKey = true;
+        }
 
         #endregion
 
@@ -106,6 +135,8 @@ namespace CommunityCoreLibrary
 
         public override void DoWindowContents(Rect rect)
         {
+            base.DoWindowContents(rect);
+
             Text.Font = GameFont.Small;
 
             Rect inRect = rect.ContractedBy(Margin);

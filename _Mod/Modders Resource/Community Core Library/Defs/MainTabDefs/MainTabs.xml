@@ -2,12 +2,11 @@
 <MainTabDefs>
     
   <MainTabDef>
-    <defName>CCL.ModHelp</defName>
+    <defName>CCL_ModHelp</defName>
     <label>Help</label>
     <description>Get help with different mods.</description>
     <windowClass>CommunityCoreLibrary.MainTabWindow_ModHelp</windowClass>
     <order>81</order>
-    <defaultToggleKey>F9</defaultToggleKey>
   </MainTabDef>
 
 </MainTabDefs>
