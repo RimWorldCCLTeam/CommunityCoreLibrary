@@ -28,5 +28,5 @@ using System.Runtime.InteropServices;
 // Can leave some values to be auto-defined such as Build and Revision
 // For auto-defined values use "*", eg:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.11.5")]
-[assembly: AssemblyFileVersion("0.11.5")]
+[assembly: AssemblyVersion("0.12.0")]
+[assembly: AssemblyFileVersion("0.12.0")]

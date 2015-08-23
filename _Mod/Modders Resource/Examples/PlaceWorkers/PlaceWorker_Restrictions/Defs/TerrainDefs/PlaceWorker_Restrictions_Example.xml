@@ -9,7 +9,7 @@
             <li>SmoothHard</li>
         </affordances>
         <statBases>
-            <WorkToMake>135</WorkToMake>
+            <WorkToMake>10</WorkToMake>
         </statBases>
         <designationCategory>Floors</designationCategory>
         <Fertility>0</Fertility>
@@ -26,10 +26,12 @@
         <label>terrain not on terrain test</label>
         <RenderPrecedence>200</RenderPrecedence>
         <Description>Can't place this on most terrain.</Description>
-        <texturePath>Terrain/Surfaces/CarpetRed</texturePath>
+        <texturePath>Terrain/Surfaces/GenericFloorTile</texturePath>
+        <color>(0.45, 0.45, 0.45)</color>
         <CostList>
             <Steel>1</Steel>
         </CostList>
+        <constructEffect>ConstructMetal</constructEffect>
         <placeWorkers>
             <li>CommunityCoreLibrary.PlaceWorker_NotOnTerrain</li>
         </placeWorkers>
@@ -54,10 +56,12 @@
         <label>terrain only on terrain test</label>
         <RenderPrecedence>199</RenderPrecedence>
         <Description>Can only be placed on smoothed stone.</Description>
-        <texturePath>Terrain/Surfaces/CarpetGreen</texturePath>
+        <texturePath>Terrain/Surfaces/GenericFloorTile</texturePath>
+        <color>(0.65, 0.65, 0.35)</color>
         <CostList>
             <Steel>1</Steel>
         </CostList>
+        <constructEffect>ConstructMetal</constructEffect>
         <placeWorkers>
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
         </placeWorkers>
