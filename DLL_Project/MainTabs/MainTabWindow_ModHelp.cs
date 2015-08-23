@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary
 
         #region OTab Rendering
 
-        public override void OTabOnGUI(Rect rect)
+        public override void DoWindowContents(Rect rect)
         {
             Text.Font = GameFont.Small;
 
