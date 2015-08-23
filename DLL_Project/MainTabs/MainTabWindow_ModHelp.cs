@@ -28,6 +28,10 @@ namespace CommunityCoreLibrary
         protected Vector2 selectionScrollPos = default(Vector2);
         protected Vector2 displayScrollPos = default(Vector2);
 
+        public const float MinWidth = 600f;
+        public const float MinHeight = 400f;
+        public const float MinListWidth = 200f;
+
         public override MainTabWindowAnchor Anchor
         {
             get
@@ -40,7 +44,19 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return new Vector2(1024, 10000f);
+                if (TabDef != null)
+                {
+                    return new Vector2(TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
+                }
+                return new Vector2(MinWidth, MinHeight);
+            }
+        }
+
+        private MainTab_HelpMenuDef TabDef
+        {
+            get
+            {
+                return def as MainTab_HelpMenuDef;
             }
         }
 
@@ -112,6 +128,12 @@ namespace CommunityCoreLibrary
 
         private void Reinit()
         {
+            //Set whether the window forces a pause
+            if (TabDef != null)
+            {
+                this.forcePause = TabDef.pauseGame;
+            }
+
             _cachedHelpCategories = new List<ModCategory>();
             foreach (var cat in DefDatabase<HelpCategoryDef>.AllDefs)
             {
@@ -143,7 +165,8 @@ namespace CommunityCoreLibrary
 
             GUI.BeginGroup(inRect);
 
-            SelectionRect = new Rect(0f, 0f, 300f, inRect.height);
+            float selectionWidth = TabDef != null ? (TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth) : MinListWidth;
+            SelectionRect = new Rect(0f, 0f, selectionWidth, inRect.height);
             DisplayRect = new Rect(
                 SelectionRect.width + Margin, 0f,
                 inRect.width - SelectionRect.width - Margin, inRect.height);
