@@ -13,34 +13,40 @@
         <filthLeaving>BuildingRubble</filthLeaving>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
-        <defName>RestrictedUnderRoof</defName>
-        <label>restricted under roof test</label>
+    <ThingDef Abstract="True" Name="PlaceWorkerTestBase" ParentName="BuildingBase">
         <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
+        <category>Building</category>
+        <minifiedDef>MinifiedFurniture</minifiedDef>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
         <selectable>true</selectable>
-        <description>Restricted to being under a roof</description>
+        <fillPercent>0.20</fillPercent>
         <costList>
             <Steel>1</Steel>
         </costList>
         <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
         <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <designationCategory>Furniture</designationCategory>
+        <rotatable>false</rotatable>
+        <graphicData>
+            <texPath>Things/Building/Furniture/LampStanding</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowData>
+                <volume>(0.3, 0.6, 0.3)</volume>
+                <offset>(0,0,-0.1)</offset>
+            </shadowData>
+        </graphicData>
+        <statBases>
+            <MaxHitPoints>50</MaxHitPoints>
+            <WorkToMake>10</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+    </ThingDef>
+
+    <ThingDef ParentName="PlaceWorkerTestBase">
+        <defName>RestrictedUnderRoof</defName>
+        <label>restricted under roof test</label>
+        <description>Restricted to being under a roof</description>
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
@@ -52,38 +58,12 @@
             <li>CommunityCoreLibrary.PlaceWorker_OnlyUnderRoof</li>
         </placeWorkers>
         <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>RestrictedCountTest</defName>
         <label>restricted count test</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Limit: 2</description>
-        <costList>
-            <Steel>1</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
@@ -94,39 +74,13 @@
             <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_RestrictedCount</li>
         </placeWorkers>
-        <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>NotOnTerrainTest</defName>
         <label>not on terrain test</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Restrictions:\nSoil\nSoilRich</description>
-        <costList>
-            <Steel>1</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
@@ -136,44 +90,17 @@
                 </terrainDefs>
             </li>
         </comps>
-        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <placeWorkers>
             <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_NotOnTerrain</li>
         </placeWorkers>
-        <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>OnlyOnTerrainTest</defName>
         <label>only on terrain test</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Allowance:\nSand\nWaterShallow</description>
-        <costList>
-            <Steel>1</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
@@ -183,44 +110,17 @@
                 </terrainDefs>
             </li>
         </comps>
-        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <placeWorkers>
             <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
         </placeWorkers>
-        <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>NotOnThingTest</defName>
         <label>not on thing test</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Restrictions:\nSteam Geyser\nrock chunks\nslag</description>
-        <costList>
-            <Steel>1</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
@@ -235,44 +135,17 @@
                 </thingDefs>
             </li>
         </comps>
-        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <placeWorkers>
             <!-- This restriction does not need a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_NotOnThing</li>
         </placeWorkers>
-        <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>OnlyOnThingTest</defName>
         <label>only on thing test</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Allowance:\nSteam Geyser\nrock chunks\nslag</description>
-        <costList>
-            <Steel>1</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
@@ -287,15 +160,11 @@
                 </thingDefs>
             </li>
         </comps>
-        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <tickerType>Rare</tickerType>
         <placeWorkers>
             <!-- This restriction needs a ticker to maintain -->
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnThing</li>
         </placeWorkers>
-        <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
 </Defs>

@@ -23,14 +23,13 @@
         </graphicData>
         <altitudeLayer>BuildingTall</altitudeLayer>
         <passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
         <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>2200</WorkToMake>
             <MaxHitPoints>350</MaxHitPoints>
             <Flammability>1.0</Flammability>
         </statBases>
-        <description>Synthesizes nutrient paste from organic feedstocks. It consumes less ingredients and time than any other meal production method - but nobody likes eating nutrient paste.</description>
+        <description>Synthesizes nutrient paste from organic feedstocks. It consumes less ingredients and time than any other meal production method - but nobody likes eating nutrient paste. Accepts raw food, but not rough plant matter like hay.</description>
         <building>
             <isMealSource>true</isMealSource>
             <wantsHopperAdjacent>true</wantsHopperAdjacent>
@@ -59,20 +58,24 @@
         <hasInteractionCell>true</hasInteractionCell>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <designationCategory>Production</designationCategory>
-        <staticSunShadowHeight>0.75</staticSunShadowHeight>
         <constructEffect>ConstructMetal</constructEffect>
         <designationHotKey>N</designationHotKey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef Name="BenchBase" ParentName="BuildingBase" Abstract="True">
+        <castEdgeShadows>true</castEdgeShadows>
+        <staticSunShadowHeight>0.20</staticSunShadowHeight>
+    </ThingDef>
+
+    <ThingDef ParentName="BenchBase">
         <DefName>TableTailor</DefName>
         <label>tailor's workbench</label>
         <ThingClass>Building_WorkTable</ThingClass>
         <Description>A workbench equipped for cloth refinement and clothing production.</Description>
         <graphicData>
             <texPath>Things/Building/Production/TableTailor</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,1)</drawSize>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3.5,1.5)</drawSize>
         </graphicData>
         <costStuffCount>75</costStuffCount>
         <CostList>
@@ -112,22 +115,31 @@
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
                 <soundPowerOff>PowerOffSmall</soundPowerOff>
             </li>
+            <li>
+                <compClass>CompAffectedByFacilities</compClass>
+                <linkableFacilities>
+                    <li>ToolCabinet</li>
+                </linkableFacilities>
+            </li>
             <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                 <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
             </li>
         </comps>
         <designationHotKey>P</designationHotKey>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="BenchBase">
         <DefName>TableSmithing</DefName>
         <label>smithing bench</label>
         <ThingClass>Building_WorkTable</ThingClass>
         <Description>A workbench equipped for weapons and tools production.</Description>
         <graphicData>
             <texPath>Things/Building/Production/TableSmithing</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,1)</drawSize>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3.5,1.5)</drawSize>
         </graphicData>
         <CostList>
             <WoodLog>40</WoodLog>
@@ -141,6 +153,7 @@
             <WorkToMake>3000</WorkToMake>
             <MaxHitPoints>180</MaxHitPoints>
             <Flammability>1.0</Flammability>
+            <Cleanliness>-3</Cleanliness>
         </statBases>
         <Size>(3,1)</Size>
         <DesignationCategory>Production</DesignationCategory>
@@ -164,6 +177,12 @@
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
                 <soundPowerOff>PowerOffSmall</soundPowerOff>
             </li>
+            <li>
+                <compClass>CompAffectedByFacilities</compClass>
+                <linkableFacilities>
+                    <li>ToolCabinet</li>
+                </linkableFacilities>
+            </li>
             <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                 <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
             </li>
@@ -174,17 +193,20 @@
             </li>
         </comps>
         <designationHotKey>M</designationHotKey>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="BenchBase">
         <DefName>TableMachining</DefName>
         <label>machining table</label>
         <ThingClass>Building_WorkTable</ThingClass>
         <Description>A table and tools for assembling and disassembling machine components like mechanoids bodies and ammunition.</Description>
         <graphicData>
             <texPath>Things/Building/Production/TableMachining</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,1)</drawSize>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3.5,1.5)</drawSize>
         </graphicData>
         <CostList>
             <Steel>150</Steel>
@@ -196,6 +218,7 @@
             <WorkToMake>3000</WorkToMake>
             <MaxHitPoints>180</MaxHitPoints>
             <Flammability>1.0</Flammability>
+            <Cleanliness>-2</Cleanliness>
         </statBases>
         <Size>(3,1)</Size>
         <DesignationCategory>Production</DesignationCategory>
@@ -211,6 +234,7 @@
         <inspectorTabs>
             <li>ITab_Bills</li>
         </inspectorTabs>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -227,25 +251,33 @@
                 <glowRadius>5</glowRadius>
                 <glowColor>(73,123,138,0)</glowColor>
             </li>
+            <li>
+                <compClass>CompAffectedByFacilities</compClass>
+                <linkableFacilities>
+                    <li>ToolCabinet</li>
+                </linkableFacilities>
+            </li>
         </comps>
         <building>
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
         </building>
-        <tickerType>Normal</tickerType>
         <constructEffect>ConstructMetal</constructEffect>
         <researchPrerequisite>Machining</researchPrerequisite>
         <designationHotKey>I</designationHotKey>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="BenchBase">
         <defName>CookStove</defName>
         <label>cook stove</label>
         <ThingClass>Building_WorkTable_HeatPush</ThingClass>
         <Description>A simple stove and attached countertop for preparing meals.</Description>
         <graphicData>
             <texPath>Things/Building/Production/TableCookStove</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,1)</drawSize>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3.5,1.5)</drawSize>
         </graphicData>
         <constructEffect>ConstructMetal</constructEffect>
         <CostList>
@@ -274,6 +306,7 @@
         <inspectorTabs>
             <li>ITab_Bills</li>
         </inspectorTabs>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -296,19 +329,18 @@
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
             <heatPerTickWhileWorking>0.25</heatPerTickWhileWorking>
         </building>
-        <tickerType>Normal</tickerType>
         <designationHotKey>O</designationHotKey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="BenchBase">
         <DefName>ElectricSmelter</DefName>
         <label>electric smelter</label>
         <ThingClass>Building_WorkTable_HeatPush</ThingClass>
         <Description>Extracts usable metal from slag chunks and other mixed metal items. Consumes a lot of power.</Description>
         <graphicData>
             <texPath>Things/Building/Production/ElectricSmelter</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,1)</drawSize>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3.5,1.5)</drawSize>
         </graphicData>
         <constructEffect>ConstructMetal</constructEffect>
         <CostList>
@@ -336,6 +368,7 @@
         <inspectorTabs>
             <li>ITab_Bills</li>
         </inspectorTabs>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -360,7 +393,6 @@
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
             <heatPerTickWhileWorking>0.5</heatPerTickWhileWorking>
         </building>
-        <tickerType>Normal</tickerType>
         <researchPrerequisite>ElectricSmelting</researchPrerequisite>
         <designationHotKey>L</designationHotKey>
     </ThingDef>
@@ -389,6 +421,7 @@
             <WorkToMake>4500</WorkToMake>
             <MaxHitPoints>300</MaxHitPoints>
             <Flammability>0</Flammability>
+            <Cleanliness>-20</Cleanliness>
         </statBases>
         <Size>(3,2)</Size>
         <DesignationCategory>Production</DesignationCategory>
@@ -404,6 +437,7 @@
         <inspectorTabs>
             <li>ITab_Bills</li>
         </inspectorTabs>
+        <tickerType>Normal</tickerType>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -430,7 +464,6 @@
             <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
             <heatPerTickWhileWorking>0.6</heatPerTickWhileWorking>
         </building>
-        <tickerType>Normal</tickerType>
         <researchPrerequisite>Cremation</researchPrerequisite>
         <designationHotKey>K</designationHotKey>
     </ThingDef>
@@ -451,10 +484,12 @@
         <pathCost>60</pathCost>
         <castEdgeShadows>true</castEdgeShadows>
         <constructEffect>ConstructMetal</constructEffect>
+        <fillPercent>0.30</fillPercent>
         <statBases>
             <WorkToMake>2800</WorkToMake>
             <MaxHitPoints>180</MaxHitPoints>
             <Flammability>1.0</Flammability>
+            <Cleanliness>-3</Cleanliness>
         </statBases>
         <description>For growing food. Hydroponics basins grow a few plants quickly. The basin requires power to work, and plants will die if power is cut.</description>
         <size>(1,4)</size>
@@ -493,7 +528,6 @@
         <researchPrerequisite>Hydroponics</researchPrerequisite>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <designationCategory>Production</designationCategory>
-        <!--<staticSunShadowHeight>0.03</staticSunShadowHeight>-->
         <designationHotKey>Y</designationHotKey>
     </ThingDef>
 

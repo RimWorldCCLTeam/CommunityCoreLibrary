@@ -13,35 +13,29 @@
         <filthLeaving>BuildingRubble</filthLeaving>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
-        <defName>StandingLamp</defName>
-        <label>standing lamp</label>
+    <ThingDef Abstract="True" Name="StandingLampBase" ParentName="BuildingBase">
         <thingClass>Building</thingClass>
         <category>Building</category>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
+        <minifiedDef>MinifiedFurniture</minifiedDef>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>115</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
         <selectable>true</selectable>
-        <description>Standing lamp that lights an area.</description>
+        <fillPercent>0.20</fillPercent>
         <costList>
             <Steel>15</Steel>
         </costList>
         <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
         <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <designationCategory>Furniture</designationCategory>
+        <rotatable>false</rotatable>
+        <graphicData>
+            <texPath>Things/Building/Furniture/LampStanding</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowData>
+                <volume>(0.3, 0.6, 0.3)</volume>
+                <offset>(0,0,-0.1)</offset>
+            </shadowData>
+        </graphicData>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -49,6 +43,9 @@
                 <shortCircuitInRain>false</shortCircuitInRain>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
                 <soundPowerOff>PowerOffSmall</soundPowerOff>
+            </li>
+            <li>
+                <compClass>CompQuality</compClass>
             </li>
             <li>
                 <compClass>CompGlower</compClass>
@@ -59,149 +56,40 @@
                 <compClass>CommunityCoreLibrary.CompColoredLight</compClass>
             </li>
         </comps>
-        <designationCategory>Furniture</designationCategory>
-        <rotatable>false</rotatable>
+        <statBases>
+            <MaxHitPoints>50</MaxHitPoints>
+            <WorkToMake>170</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+    </ThingDef>
+
+
+    <ThingDef ParentName="StandingLampBase" >
+        <defName>StandingLamp</defName>
+        <label>standing lamp</label>
+        <description>Standing lamp that lights an area.</description>
         <designationHotKey>L</designationHotKey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="StandingLampBase">
         <defName>StandingLamp_Red</defName>
         <label>standing lamp (red)</label>
-        <thingClass>Building</thingClass>
-        <category>Building</category>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>130</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
+        <designationHotKey>O</designationHotKey>
         <description>Standing lamp that lights an area in red.</description>
-        <costList>
-            <Steel>15</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <comps>
-            <li>
-                <compClass>CompPowerTrader</compClass>
-                <basePowerConsumption>150</basePowerConsumption>
-                <shortCircuitInRain>false</shortCircuitInRain>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-                <soundPowerOff>PowerOffSmall</soundPowerOff>
-            </li>
-            <li>
-                <compClass>CompGlower</compClass>
-                <glowRadius>12</glowRadius>
-                <glowColor>(217,0,0,0)</glowColor>
-            </li>
-        </comps>
-        <designationCategory>None</designationCategory>
-        <rotatable>false</rotatable>
         <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="StandingLampBase">
         <defName>StandingLamp_Green</defName>
         <label>standing lamp (green)</label>
-        <thingClass>Building</thingClass>
-        <category>Building</category>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>130</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Standing lamp that lights an area in green.</description>
-        <costList>
-            <Steel>15</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <comps>
-            <li>
-                <compClass>CompPowerTrader</compClass>
-                <basePowerConsumption>150</basePowerConsumption>
-                <shortCircuitInRain>false</shortCircuitInRain>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-                <soundPowerOff>PowerOffSmall</soundPowerOff>
-            </li>
-            <li>
-                <compClass>CompGlower</compClass>
-                <glowRadius>12</glowRadius>
-                <glowColor>(0,217,0,0)</glowColor>
-            </li>
-        </comps>
-        <designationCategory>None</designationCategory>
-        <rotatable>false</rotatable>
         <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="StandingLampBase">
         <defName>StandingLamp_Blue</defName>
         <label>standing lamp (blue)</label>
-        <thingClass>Building</thingClass>
-        <category>Building</category>
-        <graphicData>
-            <texPath>Things/Building/Furniture/LampStanding</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <shadowInfo>
-                <basewidth>0.3</basewidth>
-                <baseHeight>0.3</baseHeight>
-                <tallness>0.6</tallness>
-                <offset>(0,0,-0.1)</offset>
-            </shadowInfo>
-        </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <statBases>
-            <MaxHitPoints>50</MaxHitPoints>
-            <WorkToMake>130</WorkToMake>
-            <Flammability>1.0</Flammability>
-        </statBases>
-        <selectable>true</selectable>
         <description>Standing lamp that lights an area in blue.</description>
-        <costList>
-            <Steel>15</Steel>
-        </costList>
-        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-        <comps>
-            <li>
-                <compClass>CompPowerTrader</compClass>
-                <basePowerConsumption>150</basePowerConsumption>
-                <shortCircuitInRain>false</shortCircuitInRain>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-                <soundPowerOff>PowerOffSmall</soundPowerOff>
-            </li>
-            <li>
-                <compClass>CompGlower</compClass>
-                <glowRadius>12</glowRadius>
-                <glowColor>(0,0,217,0)</glowColor>
-            </li>
-        </comps>
-        <designationCategory>None</designationCategory>
-        <rotatable>false</rotatable>
         <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
     </ThingDef>
 

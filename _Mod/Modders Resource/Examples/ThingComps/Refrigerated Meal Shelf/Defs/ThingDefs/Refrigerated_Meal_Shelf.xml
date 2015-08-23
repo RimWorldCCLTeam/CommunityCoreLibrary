@@ -37,7 +37,7 @@
         </costList>
         <statBases>
             <MaxHitPoints>100</MaxHitPoints>
-            <WorkToMake>700</WorkToMake>
+            <WorkToMake>1200</WorkToMake>
             <Flammability>1.0</Flammability>
         </statBases>
         <description>Haulers carry meals here for storage without rotting.</description>

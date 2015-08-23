@@ -39,11 +39,11 @@ namespace CommunityCoreLibrary
             {
                 if( Expanded )
                 {
-                    return OTab_ModHelp.EntryHeight + HelpDefs.Count * OTab_ModHelp.EntryHeight;
+                    return MainTabWindow_ModHelp.EntryHeight + HelpDefs.Count * MainTabWindow_ModHelp.EntryHeight;
                 }
                 else
                 {
-                    return OTab_ModHelp.EntryHeight;
+                    return MainTabWindow_ModHelp.EntryHeight;
                 }
             }
         }
