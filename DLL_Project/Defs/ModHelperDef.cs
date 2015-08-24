@@ -7,13 +7,13 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-	public class CompInjectionSet
-	{
-		public string                       targetDef;
-		//public Type                         compClass;
-											            //Default props
-		public CompProperties               compProps = new CompProperties();
-	}
+
+    public class CompInjectionSet
+    {
+      public string                       targetDef;
+
+      public CompProperties               compProps = new CompProperties();
+    }
     public class ModHelperDef : Def
     {
 
@@ -27,7 +27,7 @@ namespace CommunityCoreLibrary
 
         public List< DesignatorData >       Designators;
 
-		public List< CompInjectionSet >     ThingComps;
+        public List< CompInjectionSet >     ThingComps;
 
         #endregion
 
@@ -90,20 +90,20 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-	            if ((ThingComps != null) &&
-	                (ThingComps.Count > 0))
-	            {
-		            foreach (var comp in ThingComps)
-		            {
-			            if (ThingDef.Named(comp.targetDef) == null)
-						{
-							errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\"";
-						}
-		            }
-	            }
+              if ((ThingComps != null) &&
+                  (ThingComps.Count > 0))
+              {
+                foreach (var comp in ThingComps)
+                {
+                  if (ThingDef.Named(comp.targetDef) == null)
+            {
+              errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\"";
+            }
+                }
+              }
 #endif
                 
-				if ( !isValid )
+        if ( !isValid )
                 {
                     Log.Error( errors );
                 }
@@ -161,40 +161,40 @@ namespace CommunityCoreLibrary
         }
 
         public bool                         ThingCompsInjected
-		{
-			get
-			{
-				if (ThingComps == null || ThingComps.Count == 0)
-				{
-					return true;
-				}
+        {
+            get
+            {
+                if (ThingComps == null || ThingComps.Count == 0)
+                {
+                    return true;
+                }
 
-				foreach (var current in ThingComps)
-				{
-					var targDef = ThingDef.Named(current.targetDef);
-					if (current.targetDef == null)
-					{
-						CCL_Log.Error("Unknown ThingDef named \"" + current.targetDef + "\"", "ThingComps Injection");
-						return true;
-					}
-					if (targDef.comps == null)
-					{
-						targDef.comps = new List<CompProperties>();
-					}
-					if (targDef.comps.Exists(s => s.compClass == current.compProps.compClass))
-					{
-						return true;
-					}
-				}
-				return false;
-			}
-		}
+                foreach (var current in ThingComps)
+                {
+                    var targDef = ThingDef.Named(current.targetDef);
+                    if (current.targetDef == null)
+                    {
+                        CCL_Log.Error("Unknown ThingDef named \"" + current.targetDef + "\"", "ThingComps Injection");
+                        return true;
+                    }
+                    if (targDef.comps == null)
+                    {
+                        targDef.comps = new List<CompProperties>();
+                    }
+                    if (targDef.comps.Exists(s => s.compClass == current.compProps.compClass))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Injection
+        #region Injection
 
-		public void                         InjectMapComponents()
+        public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -215,50 +215,50 @@ namespace CommunityCoreLibrary
             }
         }
 
-	    public void                         InjectDesignators()
-	    {
-		    foreach (var data in Designators)
-		    {
-			    var designatorType = Type.GetType(data.designatorClass);
-			    var designatorCategoryDef = DefDatabase<DesignationCategoryDef>.GetNamed(data.designationCategoryDef, false);
-			    if (!designatorCategoryDef.resolvedDesignators.Exists(d => d.GetType() == designatorType))
-			    {
-				    // Create the new designator
-				    var designatorObject = (Designator) Activator.CreateInstance(designatorType);
+        public void                         InjectDesignators()
+        {
+            foreach (var data in Designators)
+            {
+                var designatorType = Type.GetType(data.designatorClass);
+                var designatorCategoryDef = DefDatabase<DesignationCategoryDef>.GetNamed(data.designationCategoryDef, false);
+                if (!designatorCategoryDef.resolvedDesignators.Exists(d => d.GetType() == designatorType))
+                {
+                    // Create the new designator
+                    var designatorObject = (Designator)Activator.CreateInstance(designatorType);
 
-				    // Inject the designator
-				    designatorCategoryDef.resolvedDesignators.Add(designatorObject);
-			    }
-		    }
+                    // Inject the designator
+                    designatorCategoryDef.resolvedDesignators.Add(designatorObject);
+                }
+            }
 
-	    }
+        }
 
-	    public void                         InjectThingComps()
-	    {
-		    foreach (var comp in ThingComps)
-			{
-				// Access ThingDef database
-				var typeFromHandle = typeof(DefDatabase<ThingDef>);
-				var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
-				if (defsByName == null)
-				{
-					CCL_Log.Error("defName is null!", "ThingComp Injection");
-					return;
-				}
-				var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
-				if (dictDefsByName == null)
-				{
-					CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
-					return;
-				}
-				var def = dictDefsByName.Values.ToList().Find(s => s.defName == comp.targetDef);
+        public void                         InjectThingComps()
+        {
+            foreach (var comp in ThingComps)
+            {
+                // Access ThingDef database
+                var typeFromHandle = typeof(DefDatabase<ThingDef>);
+                var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
+                if (defsByName == null)
+                {
+                    CCL_Log.Error("defName is null!", "ThingComp Injection");
+                    return;
+                }
+                var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
+                if (dictDefsByName == null)
+                {
+                    CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
+                    return;
+                }
+                var def = dictDefsByName.Values.ToList().Find(s => s.defName == comp.targetDef);
 
-				var compProperties = comp.compProps;
+                var compProperties = comp.compProps;
 
-				def.comps.Add(compProperties);
-				CCL_Log.MessageVerbose("Injected " + comp.compProps.compClass.Name + " to " + def.defName, "ThingComp Injection");
-			}
-		}
+                def.comps.Add(compProperties);
+                CCL_Log.MessageVerbose("Injected " + comp.compProps.compClass.Name + " to " + def.defName, "ThingComp Injection");
+            }
+        }
 
         #endregion
 
