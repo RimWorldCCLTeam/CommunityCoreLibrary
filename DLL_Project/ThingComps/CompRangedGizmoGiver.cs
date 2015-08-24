@@ -10,6 +10,6 @@ namespace CommunityCoreLibrary
 	/// </summary>
 	public class CompRangedGizmoGiver : ThingComp
 	{
-		public bool isRangedGiver = true;
+		public readonly bool isRangedGiver = true;
 	}
 }
