@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary
 				pelletCount = 1;
 				expMin = 10;
 				expMid = 50;
-				expMax = 20;
+				expMax = 240;
 			}
 			else
 			{
