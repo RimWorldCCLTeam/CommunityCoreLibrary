@@ -60,12 +60,9 @@ namespace CommunityCoreLibrary
             {
                 InjectMapComponents();
             }
-        }
 
-	    public void							OnLevelWasLoaded()
-	    {
-		    InjectThingComp<CompPawnGizmo>("Human");
-	    }
+			InjectThingComp("Human", typeof(CompPawnGizmo));
+        }
 
         #endregion
 
@@ -196,32 +193,41 @@ namespace CommunityCoreLibrary
 
 		#region ThingComp Injection
 
-	    void								InjectThingComp<T>(string defName) where T : ThingComp
-		{
+	    void								InjectThingComp(string defName, Type compType)
+	    {
+		    if (ThingDef.Named(defName).comps.Exists(s => s.compClass == compType))
+			    return;
+
 			// Access ThingDef database
 			var typeFromHandle = typeof(DefDatabase<ThingDef>);
 			var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
 			if (defsByName == null)
 			{
-				CCL_Log.Error("ThingComp Injection", "defName is null!");
+				CCL_Log.Error("defName is null!", "ThingComp Injection");
+				return;
 			}
 			var dictDefsByName = defsByName?.GetValue(null) as Dictionary<string, ThingDef>;
 			if (dictDefsByName == null)
 			{
-				CCL_Log.Error("ThingComp Injection", "Cannot access private members!");
-			}
-
-			var def = dictDefsByName?.Values.ToList().Find(s => s.defName == defName);
-
-			if (def != null && def.comps.Any(curComp => curComp.GetType() == typeof(T)))
-			{
+				CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
 				return;
 			}
+			var def = dictDefsByName?.Values.ToList().Find(s => s.defName == defName);
+			if (def == null)
+		    {
+				CCL_Log.Error("No def named " + defName + " found!", "ThingComp Injection");
+				return;
+		    }
 
-			CCL_Log.Message("ThingComp Injection", "Injecting ThingComp to" + def.defName);
-			var compProperties = new CompProperties { compClass = typeof(T) };
-			def.comps.Add(compProperties);
-		}
+		    CCL_Log.Message("Injecting " + compType + " to " + def.defName, "ThingComp Injection");
+		    var compProperties = new CompProperties { compClass = compType };
+		    def.comps.Add(compProperties);
+
+		    var str = "\n";
+		    foreach (var current in def.comps)
+			    str += current.compClass.FullName + "\n";
+		    CCL_Log.Message(str);
+	    }
 
 		#endregion
 
