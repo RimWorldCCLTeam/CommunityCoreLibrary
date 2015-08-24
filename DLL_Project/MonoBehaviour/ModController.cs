@@ -197,7 +197,7 @@ namespace CommunityCoreLibrary
 
 	    bool                                ReadyForThingCompInjection(string defName, Type compType)
 	    {
-		    return ThingDef.Named(defName).comps.Exists(s => s.compClass == compType);
+		    return !ThingDef.Named(defName).comps.Exists(s => s.compClass == compType);
 	    }
 
 	    void                                InjectThingComp(string defName, Type compType)
@@ -211,13 +211,13 @@ namespace CommunityCoreLibrary
 				CCL_Log.Error("defName is null!", "ThingComp Injection");
 				return;
 			}
-			var dictDefsByName = defsByName?.GetValue(null) as Dictionary<string, ThingDef>;
+			var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
 			if (dictDefsByName == null)
 			{
 				CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
 				return;
 			}
-			var def = dictDefsByName?.Values.ToList().Find(s => s.defName == defName);
+			var def = dictDefsByName.Values.ToList().Find(s => s.defName == defName);
 			if (def == null)
 		    {
 				CCL_Log.Error("No def named " + defName + " found!", "ThingComp Injection");

@@ -12,7 +12,10 @@ namespace CommunityCoreLibrary
 
 		private bool	gotProps;
 
-		protected override int ShotsPerBurst => verbProps.burstShotCount;
+		protected override int ShotsPerBurst
+		{
+			get { return verbProps.burstShotCount; }
+		}
 
 		// XML data into verb
 		protected virtual void TryGetProps()
