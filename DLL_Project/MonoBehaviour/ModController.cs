@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -62,6 +62,10 @@ namespace CommunityCoreLibrary
             {
                 InjectMapComponents();
             }
+	        if (ReadyForThingCompInjection("Human", typeof(CompPawnGizmo)))
+	        {
+		        InjectThingComp("Human", typeof(CompPawnGizmo));
+	        }
         }
 
         #endregion
@@ -207,8 +211,7 @@ namespace CommunityCoreLibrary
                 }
             }
         }
-
-<<<<<<< HEAD
+		
 		#endregion
 
 		#region ThingComp Injection
@@ -248,12 +251,6 @@ namespace CommunityCoreLibrary
 	    }
 
 		#endregion
-
-	}
-=======
-        #endregion
-
     }
->>>>>>> upstream/development
 
 }

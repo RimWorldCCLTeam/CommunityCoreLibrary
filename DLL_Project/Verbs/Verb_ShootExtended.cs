@@ -5,12 +5,12 @@ namespace CommunityCoreLibrary
 {
 	public class Verb_ShootExtended : Verb_LaunchProjectile
 	{
-		private int		pelletCount;
-		private float	expMin;
-		private float	expMid;
-		private float	expMax;
+		private int pelletCount;
+		private float expMin;
+		private float expMid;
+		private float expMax;
 
-		private bool	gotProps;
+		private bool gotProps;
 
 		protected override int ShotsPerBurst
 		{
