@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
 
         public readonly string              GameObjectName = "Community Core Library";
 
-        public static List< AdvancedResearchDef > AdvancedResearch;
+        static List< AdvancedResearchDef >  advancedResearch;
 
         public static Version               CCLVersion;
         List< ModHelperDef >                ModHelperDefs;
@@ -42,7 +42,10 @@ namespace CommunityCoreLibrary
             }
 
             // Validate advanced research defs
-            CheckAdvancedResearch();
+            if( AdvancedResearch != null )
+            {
+                CheckAdvancedResearch();
+            }
 
             Log.Message( "Community Core Library :: Initialized" );
 
@@ -58,6 +61,22 @@ namespace CommunityCoreLibrary
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
+            }
+        }
+
+        #endregion
+
+        #region Static Properties
+
+        public static List< AdvancedResearchDef > AdvancedResearch
+        {
+            get
+            {
+                if( advancedResearch == null )
+                {
+                    advancedResearch = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
+                }
+                return advancedResearch;
             }
         }
 
@@ -105,15 +124,6 @@ namespace CommunityCoreLibrary
                 Log.Error( "Community Core Library :: Advanced Research :: Missing Research.Locker!" );
             }
 
-            // Get the [advanced] research defs
-            AdvancedResearch = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
-
-            if( ( AdvancedResearch == null )&&
-                ( AdvancedResearch.Count == 0 ) )
-            {
-                return;
-            }
-
             // Validate each advanced research def
             for( int i = 0; i < AdvancedResearch.Count; i++ ){
                 var Advanced = AdvancedResearch[ i ];
@@ -126,7 +136,19 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            // All advanced research checked, no log errors means it's all good
+            if( AdvancedResearch.Count == 0 )
+            {
+                // All branches pruned
+                return;
+            }
+
+            // All research left is valid
+            foreach( var Advanced in AdvancedResearch )
+            {
+                if( Advanced.HasHelp )
+                {
+                }
+            }
         }
 
         #endregion
