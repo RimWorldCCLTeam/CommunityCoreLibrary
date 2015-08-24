@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Reflection;
 using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
-
+	public struct CompInjectionSet
+	{
+		public string                       targetDef;
+		public Type                         compClass;
+	}
     public class ModHelperDef : Def
     {
 
@@ -19,6 +24,8 @@ namespace CommunityCoreLibrary
         public List< string >               MapComponents;
 
         public List< DesignatorData >       Designators;
+
+		public List< CompInjectionSet >     ThingComps;
 
         #endregion
 
@@ -79,10 +86,27 @@ namespace CommunityCoreLibrary
                             isValid = false;
                         }
                     }
-                }
+				}
+
+	            if ((ThingComps != null) &&
+	                (ThingComps.Count > 0))
+	            {
+		            foreach (var comp in ThingComps)
+		            {
+			            if (ThingDef.Named(comp.targetDef) == null)
+						{
+							errors += "\n\tUnable to find ThingDef named \"" + comp.compClass.FullName + "\"";
+						}
+			            if (!comp.compClass.IsSubclassOf(typeof (ThingComp)))
+			            {
+				            errors += "\n\t\"" + comp.compClass.FullName + "\" is not ThingComp";
+				            isValid = false;
+			            }
+		            }
+	            }
 #endif
-                
-                if( !isValid )
+
+				if ( !isValid )
                 {
                     Log.Error( errors );
                 }
@@ -139,11 +163,41 @@ namespace CommunityCoreLibrary
             }
         }
 
-        #endregion
+        public bool                         ThingCompsInjected
+		{
+	        get
+	        {
+		        if (ThingComps == null || ThingComps.Count == 0)
+		        {
+			        return true;
+		        }
 
-        #region Injection
+		        foreach (var current in ThingComps)
+		        {
+			        var targDef = ThingDef.Named(current.targetDef);
+			        if (current.targetDef == null)
+			        {
+						CCL_Log.Error("Unknown ThingDef named \"" + current.targetDef + "\"", "ThingComps Injection");
+				        return true;
+			        }
+			        if (targDef.comps == null)
+					{
+						targDef.comps = new List<CompProperties>();
+			        }
+			        if (targDef.comps.Exists(s => s.compClass == current.compClass))
+			        {
+				        return true;
+			        }
+		        }
+		        return false;
+	        }
+		}
 
-        public void                         InjectMapComponents()
+			#endregion
+
+			#region Injection
+
+			public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -180,6 +234,32 @@ namespace CommunityCoreLibrary
                 }
             }
         }
+
+	    public void InjectThingComps()
+	    {
+		    foreach (var comp in ThingComps)
+			{
+				// Access ThingDef database
+				var typeFromHandle = typeof(DefDatabase<ThingDef>);
+				var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
+				if (defsByName == null)
+				{
+					CCL_Log.Error("defName is null!", "ThingComp Injection");
+					return;
+				}
+				var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
+				if (dictDefsByName == null)
+				{
+					CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
+					return;
+				}
+				var def = dictDefsByName.Values.ToList().Find(s => s.defName == comp.targetDef);
+
+				var compProperties = new CompProperties { compClass = comp.compClass };
+				def.comps.Add(compProperties);
+				CCL_Log.MessageVerbose("Injected " + comp.compClass.Name + " to " + def.defName, "ThingComp Injection");
+			}
+		}
 
         #endregion
 

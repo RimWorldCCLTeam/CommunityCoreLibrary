@@ -61,12 +61,16 @@ namespace CommunityCoreLibrary
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
-            }
-	        if (ReadyForThingCompInjection("Human", typeof(CompPawnGizmo)))
-	        {
-		        InjectThingComp("Human", typeof(CompPawnGizmo));
-	        }
-        }
+			}
+	        if (ReadyForThingCompsInjection())
+			{
+				InjectThingComp();
+			}
+		}
+
+	    public void OnLevelWasLoaded()
+		{
+		}
 
         #endregion
 
@@ -215,39 +219,29 @@ namespace CommunityCoreLibrary
 		#endregion
 
 		#region ThingComp Injection
-
-	    bool                                ReadyForThingCompInjection(string defName, Type compType)
-	    {
-		    return !ThingDef.Named(defName).comps.Exists(s => s.compClass == compType);
-	    }
-
-	    void                                InjectThingComp(string defName, Type compType)
-	    {
-
-			// Access ThingDef database
-			var typeFromHandle = typeof(DefDatabase<ThingDef>);
-			var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
-			if (defsByName == null)
+		
+        bool                                ReadyForThingCompsInjection()
+		{
+			foreach (var current in ModHelperDefs)
 			{
-				CCL_Log.Error("defName is null!", "ThingComp Injection");
-				return;
+				if (current.ThingCompsInjected)
+				{
+					return false;
+				}
 			}
-			var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
-			if (dictDefsByName == null)
-			{
-				CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
-				return;
-			}
-			var def = dictDefsByName.Values.ToList().Find(s => s.defName == defName);
-			if (def == null)
+			return true;
+		}
+	
+
+		void                                InjectThingComp()
+	    {
+		    foreach (var current in ModHelperDefs)
 		    {
-				CCL_Log.Error("No def named " + defName + " found!", "ThingComp Injection");
-				return;
-		    }
+			    if (current.ThingCompsInjected) continue;
 
-		    CCL_Log.Message("Injecting " + compType + " to " + def.defName, "ThingComp Injection");
-		    var compProperties = new CompProperties { compClass = compType };
-		    def.comps.Add(compProperties);
+			    CCL_Log.Message("Injecting ThingComps for " + current.ModName);
+			    current.InjectThingComps();
+		    }
 	    }
 
 		#endregion
