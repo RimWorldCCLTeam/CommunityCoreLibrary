@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
 		}
 
 		// XML stuff
-		public int							pelletCount = 1;
-		public VerbExperience				experienceGain = new VerbExperience();
+		public int				pelletCount = 1;
+		public VerbExperience	experienceGain = new VerbExperience();
 	}
 }

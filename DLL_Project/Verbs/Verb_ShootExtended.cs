@@ -5,17 +5,17 @@ namespace CommunityCoreLibrary
 {
 	public class Verb_ShootExtended : Verb_LaunchProjectile
 	{
-		private int							pelletCount;
-		private float						expMin;
-		private float						expMid;
-		private float						expMax;
+		private int		pelletCount;
+		private float	expMin;
+		private float	expMid;
+		private float	expMax;
 
-		private bool						gotProps;
+		private bool	gotProps;
 
-		protected override int				ShotsPerBurst => verbProps.burstShotCount;
+		protected override int ShotsPerBurst => verbProps.burstShotCount;
 
 		// XML data into verb
-		protected virtual void				TryGetProps()
+		protected virtual void TryGetProps()
 		{
 			if (gotProps)
 				//Already done, pass
@@ -40,7 +40,7 @@ namespace CommunityCoreLibrary
 			gotProps = true;
 		}
 
-		public override void				WarmupComplete()
+		public override void WarmupComplete()
 		{
 			TryGetProps();
 
@@ -56,7 +56,7 @@ namespace CommunityCoreLibrary
 			CasterPawn.skills.Learn(SkillDefOf.Shooting, xp);
 		}
 
-		protected override bool				TryCastShot()
+		protected override bool TryCastShot()
 		{
 			if (!base.TryCastShot()) return false;
 			var i = 1;

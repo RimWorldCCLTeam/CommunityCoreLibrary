@@ -195,12 +195,12 @@ namespace CommunityCoreLibrary
 
 		#region ThingComp Injection
 
-	    bool ReadyForThingCompInjection(string defName, Type compType)
+	    bool                                ReadyForThingCompInjection(string defName, Type compType)
 	    {
 		    return ThingDef.Named(defName).comps.Exists(s => s.compClass == compType);
 	    }
 
-	    void								InjectThingComp(string defName, Type compType)
+	    void                                InjectThingComp(string defName, Type compType)
 	    {
 
 			// Access ThingDef database
