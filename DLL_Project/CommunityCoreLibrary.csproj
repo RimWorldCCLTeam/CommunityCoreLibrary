@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
+    <Compile Include="MapComponents\InjectionController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyUnderRoof.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_WallAttachment.cs" />

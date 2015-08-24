@@ -6,6 +6,11 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+	public struct CompInjectionSet
+	{
+		public Type                         compClass;
+		public ThingDef                     targetDef;
+	}
 
     public class ModHelperDef : Def
     {
@@ -19,6 +24,8 @@ namespace CommunityCoreLibrary
         public List< string >               MapComponents;
 
         public List< DesignatorData >       Designators;
+
+		public List< CompInjectionSet >     ThingComps;
 
         #endregion
 
@@ -180,6 +187,14 @@ namespace CommunityCoreLibrary
                 }
             }
         }
+
+	    public void                         InjectThingComps()
+	    {
+		    foreach (var comp in ThingComps)
+		    {
+			    //
+		    }
+	    }
 
         #endregion
 
