@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- PlaceWorkers -->
+    <MessagePlacementItemSurface>Must be placed on an item surface!</MessagePlacementItemSurface>
+    <MessagePlacementMustBeUnderRoof>지붕 아래에 배치되어야 합니다.</MessagePlacementMustBeUnderRoof>
+    <MessagePlacementAgainstSupport>벽 옆에 배치되어야 합니다.</MessagePlacementAgainstSupport>
+    <MessagePlacementCountRestricted>{0}개 이상 배치할 수 없습니다. </MessagePlacementCountRestricted>
+    <MessagePlacementNotOn>{0} 위에 배치할 수 없습니다.</MessagePlacementNotOn>
+    <MessagePlacementNotHere>여기 배치할 수 없습니다.</MessagePlacementNotHere>
+    <AlertPlaceWorkerRestrictionSupportRemovedLabel>벽 제거됨</AlertPlaceWorkerRestrictionSupportRemovedLabel>
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>벽이 제거되면서 붙어있던 물건이 파괴되었습니다.\n\n파괴된 물건의 목록입니다.\n\n{0}</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+
+</LanguageData>

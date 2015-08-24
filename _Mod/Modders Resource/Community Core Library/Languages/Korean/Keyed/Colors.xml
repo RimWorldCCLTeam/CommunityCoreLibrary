@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- Colors -->
+    <colorWhite>하양</colorWhite>
+    <colorRed>빨강</colorRed>
+    <colorGreen>초록</colorGreen>
+    <colorBlue>파랑</colorBlue>
+    <colorYellow>노랑</colorYellow>
+    <colorOrange>주황</colorOrange>
+    <colorPurple>보라</colorPurple>
+
+</LanguageData>

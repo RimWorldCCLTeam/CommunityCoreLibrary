@@ -20,7 +20,7 @@ namespace CommunityCoreLibrary
             {
                 if( Restrictions.RestrictedThing.Find( r => r == t.def ) != null )
                 {
-                    return (AcceptanceReport)( "MessagePlacementNotOn".Translate() + t.def.label );
+                    return (AcceptanceReport)( "MessagePlacementNotOn".Translate(t.def.label) );
                 }
             }
 
