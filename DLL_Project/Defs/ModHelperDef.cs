@@ -7,10 +7,12 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-	public struct CompInjectionSet
+	public class CompInjectionSet
 	{
 		public string                       targetDef;
-		public Type                         compClass;
+		//public Type                         compClass;
+											            //Default props
+		public CompProperties               compProps = new CompProperties();
 	}
     public class ModHelperDef : Def
     {
@@ -95,13 +97,8 @@ namespace CommunityCoreLibrary
 		            {
 			            if (ThingDef.Named(comp.targetDef) == null)
 						{
-							errors += "\n\tUnable to find ThingDef named \"" + comp.compClass.FullName + "\"";
+							errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\"";
 						}
-			            if (!comp.compClass.IsSubclassOf(typeof (ThingComp)))
-			            {
-				            errors += "\n\t\"" + comp.compClass.FullName + "\" is not ThingComp";
-				            isValid = false;
-			            }
 		            }
 	            }
 #endif
@@ -165,39 +162,39 @@ namespace CommunityCoreLibrary
 
         public bool                         ThingCompsInjected
 		{
-	        get
-	        {
-		        if (ThingComps == null || ThingComps.Count == 0)
-		        {
-			        return true;
-                }
+			get
+			{
+				if (ThingComps == null || ThingComps.Count == 0)
+				{
+					return true;
+				}
 
-		        foreach (var current in ThingComps)
-		        {
-			        var targDef = ThingDef.Named(current.targetDef);
-			        if (current.targetDef == null)
-			        {
+				foreach (var current in ThingComps)
+				{
+					var targDef = ThingDef.Named(current.targetDef);
+					if (current.targetDef == null)
+					{
 						CCL_Log.Error("Unknown ThingDef named \"" + current.targetDef + "\"", "ThingComps Injection");
-				        return true;
-			        }
-			        if (targDef.comps == null)
+						return true;
+					}
+					if (targDef.comps == null)
 					{
 						targDef.comps = new List<CompProperties>();
-			        }
-			        if (targDef.comps.Exists(s => s.compClass == current.compClass))
-			        {
-                return true;
-            }
-        }
-		        return false;
-	        }
+					}
+					if (targDef.comps.Exists(s => s.compClass == current.compProps.compClass))
+					{
+						return true;
+					}
+				}
+				return false;
+			}
 		}
 
-        #endregion
+		#endregion
 
-        #region Injection
+		#region Injection
 
-        public void                         InjectMapComponents()
+		public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -256,9 +253,10 @@ namespace CommunityCoreLibrary
 				}
 				var def = dictDefsByName.Values.ToList().Find(s => s.defName == comp.targetDef);
 
-				var compProperties = new CompProperties { compClass = comp.compClass };
+				var compProperties = comp.compProps;
+
 				def.comps.Add(compProperties);
-				CCL_Log.MessageVerbose("Injected " + comp.compClass.Name + " to " + def.defName, "ThingComp Injection");
+				CCL_Log.MessageVerbose("Injected " + comp.compProps.compClass.Name + " to " + def.defName, "ThingComp Injection");
 			}
 		}
 
