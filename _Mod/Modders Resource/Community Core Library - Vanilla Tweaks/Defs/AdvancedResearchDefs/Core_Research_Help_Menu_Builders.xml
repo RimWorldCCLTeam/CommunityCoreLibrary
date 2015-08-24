@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+
+        <defName>GeothermalPower_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>GeothermalPower</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Hydroponics_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Hydroponics</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Brewing_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Brewing</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>PneumaticPicks_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>PneumaticPicks</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Stonecutting_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Stonecutting</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ElectricSmelting_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ElectricSmelting</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Machining_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Machining</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>NutrientResynthesis_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>NutrientResynthesis</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>GunTurretCooling_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>GunTurretCooling</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Mortars_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Mortars</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Cremation_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Cremation</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>CarpetMaking_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>CarpetMaking</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ColoredLights_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ColoredLights</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>HospitalBed_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>HospitalBed</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>Cryptosleep_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>Cryptosleep</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>IEDBomb_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>IEDBomb</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>IEDIncendiary_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>IEDIncendiary</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ShipBasics_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ShipBasics</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ShipCryptosleep_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ShipCryptosleep</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ShipReactor_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ShipReactor</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ShipEngine_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ShipEngine</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>ShipComputerCore_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li>ShipComputerCore</li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+<!--
+    <AdvancedResearchDef>
+
+        <defName>_HelpBuilder</defName>
+        <Priority>-1</Priority>
+
+        <researchDefs>
+            <li></li>
+        </researchDefs>
+
+        <helpCategoryDef>CoreResearchHelp</helpCategoryDef>
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+    </AdvancedResearchDef>
+
+-->
+</Defs>

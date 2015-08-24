@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Text;
+using System.Collections.Generic;
 
 using RimWorld;
 using Verse;
@@ -23,6 +24,11 @@ namespace CommunityCoreLibrary
 
 
         // These are optionally defined in xml
+
+        public HelpCategoryDef              helpCategoryDef;
+        public bool                         ConsolidateHelp;
+        public bool                         HideUntilResearched;
+
         public List< RecipeDef >            recipeDefs;
         public List< string >               sowTags;
         public List< ThingDef >             thingDefs;
@@ -36,6 +42,11 @@ namespace CommunityCoreLibrary
         #region Instance Data
 
         bool                                isEnabled;
+        bool                                researchSorted;
+
+        HelpDef                             helpDef;
+
+        List< AdvancedResearchDef >         matchingAdvancedResearch;
 
         #endregion
 
@@ -105,7 +116,38 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
+
+                // Validate help
+                if( HasHelp )
+                {
+                    // More than one research requirement means we can't use the research data
+                    if( researchDefs.Count > 1 )
+                    {
+                        if( string.IsNullOrEmpty( label ) )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            Log.Error( "Community Core Library :: Advanced Research :: AdvancedResearchDef( " + defName + " ) has more than one research requirment but is missing a help label!" );
+                        }
+                        if( string.IsNullOrEmpty( description ) )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            Log.Error( "Community Core Library :: Advanced Research :: AdvancedResearchDef( " + defName + " ) has more than one research requirment but is missing a help description!" );
+                        }
+                    }
+                            
+                    // Try to generate help def
+                    if( HelpDef == null )
+                    {
+                        // Error processing data
+                        isValid = false;
+                        Log.Error( "Community Core Library :: Advanced Research :: Unable to create HelpDef in AdvancedResearchDef( " + defName + " )" );
+                    }
+                }
+
 #endif
+                
                 return isValid;
             }
         }
@@ -202,6 +244,34 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         HasHelp
+        {
+            get
+            {
+                return ( helpCategoryDef != null );
+            }
+        }
+
+        bool                                HasMatchingResearch( AdvancedResearchDef other )
+        {
+            if( researchDefs.Count != other.researchDefs.Count )
+            {
+                return false;
+            }
+
+            SortResearch();
+            other.SortResearch();
+
+            for( int i = 0; i < researchDefs.Count; ++ i )
+            {
+                if( researchDefs[ i ] != other.researchDefs[ i ] )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         #endregion
 
         #region Process State
@@ -210,7 +280,7 @@ namespace CommunityCoreLibrary
         {
             // Don't unset if not set
             if( ( !isEnabled )&&
-                ( firstTimeRun = false ) )
+                ( firstTimeRun == false ) )
             {
                 return;
             }
@@ -239,6 +309,11 @@ namespace CommunityCoreLibrary
             {
                 // Cache callbacks
                 ToggleCallbacks( true );
+            }
+            if( HasHelp )
+            {
+                // Build & toggle help
+                ToggleHelp( true );
             }
             // Flag it as disabled
             isEnabled = false;
@@ -276,9 +351,28 @@ namespace CommunityCoreLibrary
                 // Cache callbacks
                 ToggleCallbacks();
             }
+            if( HasHelp )
+            {
+                // Build & toggle help
+                ToggleHelp();
+            }
             // Flag it as enabled
             isEnabled = true;
         }
+
+        void                                SortResearch()
+        {
+            if( researchSorted )
+            {
+                return;
+            }
+            researchDefs.Sort();
+            researchSorted = true;
+        }
+
+        #endregion
+
+        #region Toggle States
 
         void                                ToggleRecipes( bool setInitialState = false )
         {
@@ -413,6 +507,403 @@ namespace CommunityCoreLibrary
                     ResearchController.researchModCache.Add( researchMod );
                 }
             }
+        }
+
+        public void                         ToggleHelp( bool setInitialState = false )
+        {
+            bool Hide = !HideUntilResearched ? false : setInitialState;
+
+            if( Hide )
+            {
+                // Hide it from the help system
+                HelpDef.category = (HelpCategoryDef)null;
+            }
+            else
+            {
+                // Show it to the help system
+                HelpDef.category = helpCategoryDef;
+            }
+
+            // Queue for recache
+            ResearchController.helpCategoryCache.Add( helpCategoryDef );
+        }
+
+        #endregion
+
+        #region Help Def
+
+        List< AdvancedResearchDef >         MatchingAdvancedResearch
+        {
+            get
+            {
+                if( matchingAdvancedResearch == null )
+                {
+                    // Matching advanced research (by requirements) not including this one
+                    matchingAdvancedResearch = ModController.AdvancedResearch.FindAll( a => (
+                        ( a.defName != this.defName )&&
+                        ( HasMatchingResearch( a ) )
+                    ) );
+                }
+                return matchingAdvancedResearch;
+            }
+        }
+
+        string                              baseLabel()
+        {
+            // Set simple stuff
+            if( ( researchDefs.Count == 1 )&&
+                ( string.IsNullOrEmpty( label ) ) )
+            {
+                return researchDefs[ 0 ].label;
+            }
+            return label;
+        }
+
+        string                              baseDescription()
+        {
+            // Set simple stuff
+            if( ( researchDefs.Count == 1 )&&
+                ( string.IsNullOrEmpty( description ) ) )
+            {
+                return researchDefs[ 0 ].description;
+            }
+            return description;
+        }
+
+        public HelpDef                      HelpDef
+        {
+            get
+            {
+                if( helpDef == null )
+                {
+                    // Build the helpDef only once
+                    helpDef = new HelpDef();
+                    helpDef.defName = defName + "_Help";
+
+                    // Set base label
+                    helpDef.label = baseLabel();
+
+                    // Build description
+                    var stringBuilder = new StringBuilder();
+
+                    // Start with base description
+                    stringBuilder.AppendLine( baseDescription() );
+                    stringBuilder.AppendLine();
+
+                    // Fill in the rest of the description from the data
+                    BuildHelpDescription( stringBuilder );
+
+                    // Set the description
+                    helpDef.description = stringBuilder.ToString();
+
+                    // Inject the help def into the database
+                    DefDatabase< HelpDef >.Add( helpDef );
+
+                }
+
+                return helpDef;
+            }
+        }
+
+        #endregion
+
+        #region String Builders
+
+        void BuildHelpDescription( StringBuilder s )
+        {
+            BuildRequiredResearchDescription( s, "Required research:" );
+
+            BuildRecipeDescription( s, "Adds recipes:", "To buildings:", false );
+            BuildPlantDescription( s, "Adds sow tags:", "To plants:", false );
+            BuildBuildingDescription( s, "Enables construction of:", false );
+            BuildEffectedResearchDescription( s, "Enables research projects:", false );
+
+            BuildRecipeDescription( s, "Removes recipes:", "From buildings:", true );
+            BuildPlantDescription( s, "Removes sow tags:", "From plants:", true );
+            BuildBuildingDescription( s, "Disables construction of:", true );
+            BuildEffectedResearchDescription( s, "Disables research projects:", true );
+
+        }
+
+        void BuildRequiredResearchDescription( StringBuilder s, string prependResearch )
+        {
+            List< ResearchProjectDef > researchList;
+            if( Priority == -1 )
+            {
+                var prerequisite = researchDefs[ 0 ];
+                if( ( prerequisite.prerequisites == null )||
+                    ( prerequisite.prerequisites.Count == 0 ) )
+                {
+                    return;
+                }
+                else
+                {
+                    researchList = prerequisite.prerequisites;
+                }
+            }
+            else
+            {
+                researchList = researchDefs;
+            }
+
+            var labels = new List< string >();
+
+            s.AppendLine( prependResearch );
+
+            labels.Clear();
+            for( int i = 0, count = researchList.Count - 1; i <= count; i++ ){
+                var d = researchList[ i ];
+                if( !labels.Contains( d.label.ToLower() ) )
+                {
+                    labels.Add( d.label.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d.LabelCap );
+                }
+            }
+            s.AppendLine();
+        }
+
+        void BuildRecipeDescription( StringBuilder s, string prependRecipes, string prependBuildings, bool hidden ) 
+        {
+            var labels = new List< string >();
+
+            List< RecipeDef > recipeList = new List< RecipeDef >();
+            List< ThingDef > thingList = new List< ThingDef >();
+            if( ( HideDefs == hidden )&&
+                ( IsRecipeToggle ) )
+            {
+                recipeList.AddRange( recipeDefs );
+                thingList.AddRange( thingDefs );
+            }
+
+            if( ConsolidateHelp )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if( ( a.HideDefs == hidden )&&
+                        ( a.IsRecipeToggle ) )
+                    {
+                        recipeList.AddRange( a.recipeDefs );
+                        thingList.AddRange( a.thingDefs );
+                    }
+                }
+
+                if( ( !hidden )&&
+                    ( researchDefs.Count == 1 ) )
+                {
+                    // Only one research prerequisite, look at core defs too
+                    var prerequisite = researchDefs[ 0 ];
+
+                    var coreRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.FindAll( r => (
+                        ( r.researchPrerequisite == prerequisite )
+                    ) );
+
+                    foreach( var r in coreRecipes )
+                    {
+                        recipeList.Add( r );
+                        thingList.AddRange( r.AllRecipeUsers );
+                    }
+                }
+
+            }
+
+            if( recipeList.Count == 0 )
+            {
+                return;
+            }
+
+            s.AppendLine( prependRecipes );
+            labels.Clear();
+            for( int i = 0, count = recipeList.Count - 1; i <= count; i++ ){
+                var d = recipeList[ i ];
+                if( !labels.Contains( d.label.ToLower() ) )
+                {
+                    labels.Add( d.label.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d.LabelCap );
+                }
+            }
+            s.AppendLine();
+
+            s.AppendLine( prependBuildings );
+            labels.Clear();
+            for( int i = 0, count = thingList.Count - 1; i <= count; i++ ){
+                var d = thingList[ i ];
+                if( !labels.Contains( d.label.ToLower() ) )
+                {
+                    labels.Add( d.label.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d.LabelCap );
+                }
+            }
+            s.AppendLine();
+        }
+
+        void BuildPlantDescription( StringBuilder s, string prependSowTags, string prependPlants , bool hidden ) 
+        {
+            var labels = new List< string >();
+
+            List< string > sowTagList = new List< string >();
+            List< ThingDef > thingList = new List< ThingDef >();
+            if( ( HideDefs == hidden )&&
+                ( IsPlantToggle ) )
+            {
+                sowTagList.AddRange( sowTags );
+                thingList.AddRange( thingDefs );
+            }
+
+            if( ConsolidateHelp )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if( ( a.HideDefs == hidden )&&
+                        ( a.IsPlantToggle ) )
+                    {
+                        sowTagList.AddRange( a.sowTags );
+                        thingList.AddRange( a.thingDefs );
+                    }
+                }
+            }
+
+            if( sowTagList.Count == 0 )
+            {
+                return;
+            }
+
+            s.AppendLine( prependSowTags );
+            labels.Clear();
+            for( int i = 0, count = sowTagList.Count - 1; i <= count; i++ ){
+                var d = sowTagList[ i ];
+                if( !labels.Contains( d.ToLower() ) )
+                {
+                    labels.Add( d.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d );
+                }
+            }
+            s.AppendLine();
+
+            s.AppendLine( prependPlants );
+            labels.Clear();
+            for( int i = 0, count = thingList.Count - 1; i <= count; i++ ){
+                var d = thingList[ i ];
+                if( !labels.Contains( d.label.ToLower() ) )
+                {
+                    labels.Add( d.label.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d.LabelCap );
+                }
+            }
+            s.AppendLine();
+        }
+
+        void BuildBuildingDescription( StringBuilder s, string prependBuildings, bool hidden ) 
+        {
+            var labels = new List< string >();
+
+            List< ThingDef > thingList = new List< ThingDef >();
+            if( ( HideDefs == hidden )&&
+                ( IsBuildingToggle ) )
+            {
+                thingList.AddRange( thingDefs );
+            }
+
+            if( ConsolidateHelp )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if( ( a.HideDefs == hidden )&&
+                        ( a.IsBuildingToggle ) )
+                    {
+                        thingList.AddRange( a.thingDefs );
+                    }
+                }
+
+                if( ( !hidden )&&
+                    ( researchDefs.Count == 1 ) )
+                {
+                    // Only one research prerequisite, look at core defs too
+                    var prerequisite = researchDefs[ 0 ];
+
+                    var coreThings = DefDatabase<ThingDef>.AllDefsListForReading.FindAll( t => (
+                        ( t.researchPrerequisite == prerequisite )
+                    ) );
+
+                    thingList.AddRange( coreThings );
+                }
+
+            }
+
+            if( thingList.Count == 0 )
+            {
+                return;
+            }
+
+            s.AppendLine( prependBuildings );
+            labels.Clear();
+            for( int i = 0, count = thingList.Count - 1; i <= count; i++ ){
+                var d = thingList[ i ];
+                if( !labels.Contains( d.label.ToLower() ) )
+                {
+                    labels.Add( d.label.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d.LabelCap );
+                }
+            }
+            s.AppendLine();
+        }
+
+        void BuildEffectedResearchDescription( StringBuilder s, string prependResearch, bool hidden )
+        {
+            var labels = new List< string >();
+
+            List< ResearchProjectDef > researchList = new List< ResearchProjectDef >();
+            if( ( HideDefs == hidden )&&
+                ( IsResearchToggle ) )
+            {
+                researchList.AddRange( effectedResearchDefs );
+            }
+
+            if( ConsolidateHelp )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if( ( a.HideDefs == hidden )&&
+                        ( a.IsResearchToggle ) )
+                    {
+                        researchList.AddRange( a.effectedResearchDefs );
+                    }
+                }
+
+                if( ( researchDefs.Count == 1 )&&
+                    ( !hidden ) )
+                {
+                    var prerequisite = researchDefs[ 0 ];
+                    var children = DefDatabase<ResearchProjectDef>.AllDefsListForReading.FindAll( r => (
+                        ( r.prerequisites != null )&&
+                        ( r.prerequisites.Contains( prerequisite ) )
+                    ) );
+                    researchList.AddRange( children );
+                }
+            }
+
+            if( researchList.Count == 0 )
+            {
+                return;
+            }
+
+            s.AppendLine( prependResearch );
+            labels.Clear();
+            for( int i = 0, count = researchList.Count - 1; i <= count; i++ ){
+                var d = researchList[ i ];
+                if( !labels.Contains( d.label.ToLower() ) )
+                {
+                    labels.Add( d.label.ToLower() );
+                    s.Append( "\t" );
+                    s.AppendLine( d.LabelCap );
+                }
+            }
+            s.AppendLine();
         }
 
         #endregion

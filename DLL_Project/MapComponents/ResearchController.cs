@@ -28,6 +28,7 @@ namespace CommunityCoreLibrary
         readonly List< ResearchCompletePair > researchCache = new List< ResearchCompletePair >();
         public static readonly List< ThingDef >    buildingCache = new List< ThingDef >();
         public static readonly List< AdvancedResearchMod > researchModCache = new List< AdvancedResearchMod >();
+        public static readonly List< HelpCategoryDef > helpCategoryCache = new List<HelpCategoryDef>();
 
         #region State Management
 
@@ -124,6 +125,7 @@ namespace CommunityCoreLibrary
             // Prepare the caches
             buildingCache.Clear();
             researchModCache.Clear();
+            helpCategoryCache.Clear();
         }
 
         void                                ProcessCaches( bool setInitialState = false )
@@ -140,6 +142,16 @@ namespace CommunityCoreLibrary
             foreach( var researchMod in researchModCache )
             {
                 researchMod.Invoke( !setInitialState );
+            }
+
+            // Recache the help system
+            if( helpCategoryCache.Count > 0 )
+            {
+                foreach( var helpCategory in helpCategoryCache )
+                {
+                    helpCategory.Recache();
+                }
+                MainTabWindow_ModHelp.Recache();
             }
 
         }
