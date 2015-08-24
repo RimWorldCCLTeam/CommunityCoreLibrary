@@ -215,7 +215,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-	    public void InjectDesignators()
+	    public void                         InjectDesignators()
 	    {
 		    foreach (var data in Designators)
 		    {
@@ -233,7 +233,7 @@ namespace CommunityCoreLibrary
 
 	    }
 
-	    public void InjectThingComps()
+	    public void                         InjectThingComps()
 	    {
 		    foreach (var comp in ThingComps)
 			{

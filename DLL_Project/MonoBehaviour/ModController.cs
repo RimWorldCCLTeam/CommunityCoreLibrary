@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -61,16 +62,16 @@ namespace CommunityCoreLibrary
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
-			}
-	        if (ReadyForThingCompsInjection())
-			{
-				InjectThingComp();
-			}
-		}
+            }
+            if (ReadyForThingCompsInjection())
+            {
+                InjectThingComp();
+            }
+        }
 
-	    public void OnLevelWasLoaded()
-		{
-		}
+        public void OnLevelWasLoaded()
+        {
+        }
 
         #endregion
 
@@ -215,36 +216,36 @@ namespace CommunityCoreLibrary
                 }
             }
         }
-		
-		#endregion
+        
+        #endregion
 
-		#region ThingComp Injection
-		
+        #region ThingComp Injection
+        
         bool                                ReadyForThingCompsInjection()
-		{
-			foreach (var current in ModHelperDefs)
-			{
-				if (current.ThingCompsInjected)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-	
+        {
+            foreach (var current in ModHelperDefs)
+            {
+                if (current.ThingCompsInjected)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    
 
-		void                                InjectThingComp()
-	    {
-		    foreach (var current in ModHelperDefs)
-		    {
-			    if (current.ThingCompsInjected) continue;
+        void                                InjectThingComp()
+        {
+            foreach (var current in ModHelperDefs)
+            {
+                if (current.ThingCompsInjected) continue;
 
-			    CCL_Log.Message("Injecting ThingComps for " + current.ModName);
-			    current.InjectThingComps();
-		    }
-	    }
+                CCL_Log.Message("Injecting ThingComps for " + current.ModName);
+                current.InjectThingComps();
+            }
+        }
 
-		#endregion
+        #endregion
     }
 
 }
