@@ -86,7 +86,7 @@ namespace CommunityCoreLibrary
                             isValid = false;
                         }
                     }
-				}
+                }
 
 	            if ((ThingComps != null) &&
 	                (ThingComps.Count > 0))
@@ -105,7 +105,7 @@ namespace CommunityCoreLibrary
 		            }
 	            }
 #endif
-
+                
 				if ( !isValid )
                 {
                     Log.Error( errors );
@@ -170,7 +170,7 @@ namespace CommunityCoreLibrary
 		        if (ThingComps == null || ThingComps.Count == 0)
 		        {
 			        return true;
-		        }
+                }
 
 		        foreach (var current in ThingComps)
 		        {
@@ -186,18 +186,18 @@ namespace CommunityCoreLibrary
 			        }
 			        if (targDef.comps.Exists(s => s.compClass == current.compClass))
 			        {
-				        return true;
-			        }
-		        }
+                return true;
+            }
+        }
 		        return false;
 	        }
 		}
 
-			#endregion
+        #endregion
 
-			#region Injection
+        #region Injection
 
-			public void                         InjectMapComponents()
+        public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -218,22 +218,23 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         InjectDesignators()
-        {
-            foreach( var data in Designators )
-            {
-                var designatorType = Type.GetType( data.designatorClass );
-                var designatorCategoryDef = DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false );
-                if( !designatorCategoryDef.resolvedDesignators.Exists( d => d.GetType() == designatorType ) )
-                {
-                    // Create the new designator
-                    var designatorObject = (Designator) Activator.CreateInstance( designatorType );
+	    public void InjectDesignators()
+	    {
+		    foreach (var data in Designators)
+		    {
+			    var designatorType = Type.GetType(data.designatorClass);
+			    var designatorCategoryDef = DefDatabase<DesignationCategoryDef>.GetNamed(data.designationCategoryDef, false);
+			    if (!designatorCategoryDef.resolvedDesignators.Exists(d => d.GetType() == designatorType))
+			    {
+				    // Create the new designator
+				    var designatorObject = (Designator) Activator.CreateInstance(designatorType);
 
-                    // Inject the designator
-                    designatorCategoryDef.resolvedDesignators.Add( designatorObject );
-                }
-            }
-        }
+				    // Inject the designator
+				    designatorCategoryDef.resolvedDesignators.Add(designatorObject);
+			    }
+		    }
+
+	    }
 
 	    public void InjectThingComps()
 	    {
