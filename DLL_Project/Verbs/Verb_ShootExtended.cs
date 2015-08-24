@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
 		protected override int				ShotsPerBurst => verbProps.burstShotCount;
 
 		// XML data into verb
-		protected void						TryGetProps()
+		protected virtual void				TryGetProps()
 		{
 			if (gotProps)
 				//Already done, pass
