@@ -12,7 +12,7 @@ namespace CommunityCoreLibrary
 				// Vanilla default values
 				min = 10;
 				mid = 50;
-				max = 200;
+				max = 240;
 			}
 		}
 

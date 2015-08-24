@@ -5,10 +5,10 @@
     <MessagePlacementItemSurface>Doit être placé en surface!</MessagePlacementItemSurface>
     <MessagePlacementMustBeUnderRoof>Doit être placé sous un toit!</MessagePlacementMustBeUnderRoof>
     <MessagePlacementAgainstSupport>Doit être placé contre une structure portante!</MessagePlacementAgainstSupport>
-    <MessagePlacementCountRestricted>Impossible d'en avoir plus de: </MessagePlacementCountRestricted>
-    <MessagePlacementNotOn>Impossible de placer par dessus </MessagePlacementNotOn>
+    <MessagePlacementCountRestricted>Impossible d'en avoir plus de: {0}</MessagePlacementCountRestricted>
+    <MessagePlacementNotOn>Impossible de placer par dessus {0}</MessagePlacementNotOn>
     <MessagePlacementNotHere>Impossible à placer ici</MessagePlacementNotHere>
     <AlertPlaceWorkerRestrictionSupportRemovedLabel>Un support a été enlevé!</AlertPlaceWorkerRestrictionSupportRemovedLabel>
-    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Quelque chose a été cassé car son support a été enlevé ou detruit!\n\nLes objets suivant ont été détruit à cause d'un support manquant:</AlertPlaceWorkerRestrictionSupportRemovedDesc>
-    
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Quelque chose a été cassé car son support a été enlevé ou detruit!\n\nLes objets suivant ont été détruit à cause d'un support manquant:\n\n{0}</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+
 </LanguageData>

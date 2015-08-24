@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
 
             return count < Restrictions.MaxCount
                 ? AcceptanceReport.WasAccepted
-                : ( AcceptanceReport )( "MessagePlacementCountRestricted".Translate() + Restrictions.MaxCount );
+                : "MessagePlacementCountRestricted".Translate(Restrictions.MaxCount);
 
         }
 

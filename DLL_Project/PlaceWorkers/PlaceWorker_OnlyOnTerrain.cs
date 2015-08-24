@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return (AcceptanceReport)( "MessagePlacementNotOn".Translate() + terrainDef.label );
+            return "MessagePlacementNotOn".Translate(terrainDef.label);
         }
 
     }

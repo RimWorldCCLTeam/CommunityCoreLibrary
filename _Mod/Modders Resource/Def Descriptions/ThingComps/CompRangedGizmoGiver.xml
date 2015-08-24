@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Namespace:  CommunityCoreLibrary
+
+    ThingComp:  CompRangedGizmoGiver
+
+    Requires:   CompEquippable, CompForbiddable
+
+    This comp will provide extra Gizmos of a ranged weapon to pawn.
+    To use, make a new class inherit from CompRangedGizmoGiver and override
+    CompGetGizmosExtra().
+
+    Usage:
+
+    <ThingDef>
+        ...
+
+        <comps>
+            ...
+
+            <li>
+                <compClass>YourNamespace.YourInheritedCompRangedGizmoGiver</compClass>
+            </li>
+
+            ...
+        </comps>
+
+        ...
+    </ThingDef>
+
+    -->
+
+</Defs>
