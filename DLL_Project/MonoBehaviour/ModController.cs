@@ -60,8 +60,10 @@ namespace CommunityCoreLibrary
             {
                 InjectMapComponents();
             }
-
-			InjectThingComp("Human", typeof(CompPawnGizmo));
+	        if ( ReadyForThingCompInjection("Human", typeof(CompPawnGizmo)) )
+	        {
+		        InjectThingComp("Human", typeof(CompPawnGizmo));
+	        }
         }
 
         #endregion
@@ -193,10 +195,13 @@ namespace CommunityCoreLibrary
 
 		#region ThingComp Injection
 
+	    bool ReadyForThingCompInjection(string defName, Type compType)
+	    {
+		    return ThingDef.Named(defName).comps.Exists(s => s.compClass == compType);
+	    }
+
 	    void								InjectThingComp(string defName, Type compType)
 	    {
-		    if (ThingDef.Named(defName).comps.Exists(s => s.compClass == compType))
-			    return;
 
 			// Access ThingDef database
 			var typeFromHandle = typeof(DefDatabase<ThingDef>);
