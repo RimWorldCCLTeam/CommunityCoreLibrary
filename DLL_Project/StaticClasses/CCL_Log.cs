@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
 		public static void Message(string content, string category = null)
 		{
 			var builder = new StringBuilder();
-			builder.Append("Community Core Library:: ");
+			builder.Append("Community Core Library :: ");
 
 			if (category != null)
 				builder.Append(category).Append(" :: ");
@@ -27,7 +27,7 @@ namespace CommunityCoreLibrary
 		public static void Error(string content, string category = null)
 		{
 			var builder = new StringBuilder();
-			builder.Append("Community Core Library:: ");
+			builder.Append("Community Core Library :: ");
 
 			if (category != null)
 				builder.Append(category).Append(" :: ");

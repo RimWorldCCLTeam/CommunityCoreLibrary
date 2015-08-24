@@ -227,11 +227,6 @@ namespace CommunityCoreLibrary
 		    CCL_Log.Message("Injecting " + compType + " to " + def.defName, "ThingComp Injection");
 		    var compProperties = new CompProperties { compClass = compType };
 		    def.comps.Add(compProperties);
-
-		    var str = "\n";
-		    foreach (var current in def.comps)
-			    str += current.compClass.FullName + "\n";
-		    CCL_Log.Message(str);
 	    }
 
 		#endregion

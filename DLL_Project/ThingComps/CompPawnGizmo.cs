@@ -11,7 +11,6 @@ namespace CommunityCoreLibrary
 	        {
 		        if (!s.GetType().IsSubclassOf(typeof (CompRangedGizmoGiver)))
 		        {
-			        Log.Message(s + " not sub");
 			        return false;
 		        }
 
@@ -21,11 +20,9 @@ namespace CommunityCoreLibrary
 
 	        if (comp == null)
 	        {
-				Log.Message("null");
 				yield break;
 	        }
-
-			Log.Message("gizmo");
+			
 			foreach (var current in comp.CompGetGizmosExtra())
 				yield return current;
 		}
