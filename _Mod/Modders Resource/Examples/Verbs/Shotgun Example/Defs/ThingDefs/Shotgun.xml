@@ -1,127 +1,127 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ThingDefs>
+<Defs>
 
-  <ThingDef Abstract="True" Name="BaseGun">
-    <category>Item</category>
-    <thingClass>ThingWithComps</thingClass>
-    <equipmentType>Primary</equipmentType>
-    <pathCost>10</pathCost>
-    <useHitPoints>True</useHitPoints>
-    <selectable>True</selectable>
-    <graphicData>
-      <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
-    </graphicData>
-    <drawGUIOverlay>true</drawGUIOverlay>
-    <statBases>
-      <MaxHitPoints>100</MaxHitPoints>
-      <Flammability>1.0</Flammability>
-      <DeteriorationRate>1</DeteriorationRate>
-      <SellPriceFactor>0.5</SellPriceFactor>
-    </statBases>
-    <altitudeLayer>Item</altitudeLayer>
-    <alwaysHaulable>True</alwaysHaulable>
-    <tickerType>Never</tickerType>
-    <techLevel>Midworld</techLevel>
-    <thingCategories>
-      <li>WeaponsRanged</li>
-    </thingCategories>
-    <inspectorTabs>
-      <li>ITab_Art</li>
-    </inspectorTabs>
-    <comps>
-      <li>
-        <compClass>CompForbiddable</compClass>
-      </li>
-      <li>
-        <compClass>CompEquippable</compClass>
-      </li>
-      <li>
-        <compClass>CompQuality</compClass>
-      </li>
-      <li>
-        <compClass>CompArt</compClass>
-        <nameMaker>NamerGun</nameMaker>
-        <descriptionMaker>ArtWeaponGun</descriptionMaker>
-        <minQualityForArtistic>Excellent</minQualityForArtistic>
-      </li>
-    </comps>
-    <smeltProducts>
-      <Steel>20</Steel>
-    </smeltProducts>
-  </ThingDef>
+    <ThingDef Abstract="True" Name="BaseGun">
+        <category>Item</category>
+        <thingClass>ThingWithComps</thingClass>
+        <equipmentType>Primary</equipmentType>
+        <pathCost>10</pathCost>
+        <useHitPoints>True</useHitPoints>
+        <selectable>True</selectable>
+        <graphicData>
+            <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
+        </graphicData>
+        <drawGUIOverlay>true</drawGUIOverlay>
+        <statBases>
+            <MaxHitPoints>100</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+            <DeteriorationRate>1</DeteriorationRate>
+            <SellPriceFactor>0.5</SellPriceFactor>
+        </statBases>
+        <altitudeLayer>Item</altitudeLayer>
+        <alwaysHaulable>True</alwaysHaulable>
+        <tickerType>Never</tickerType>
+        <techLevel>Midworld</techLevel>
+        <thingCategories>
+            <li>WeaponsRanged</li>
+        </thingCategories>
+        <inspectorTabs>
+            <li>ITab_Art</li>
+        </inspectorTabs>
+        <comps>
+            <li>
+                <compClass>CompForbiddable</compClass>
+            </li>
+            <li>
+                <compClass>CompEquippable</compClass>
+            </li>
+            <li>
+                <compClass>CompQuality</compClass>
+            </li>
+            <li>
+                <compClass>CompArt</compClass>
+                <nameMaker>NamerGun</nameMaker>
+                <descriptionMaker>ArtWeaponGun</descriptionMaker>
+                <minQualityForArtistic>Excellent</minQualityForArtistic>
+            </li>
+        </comps>
+        <smeltProducts>
+            <Steel>20</Steel>
+        </smeltProducts>
+    </ThingDef>
 
-  <ThingDef Abstract="True" Name="BaseHumanGun" ParentName="BaseGun">
-    <weaponTags>
-      <li>Gun</li>
-    </weaponTags>
-  </ThingDef>
+    <ThingDef Abstract="True" Name="BaseHumanGun" ParentName="BaseGun">
+        <weaponTags>
+            <li>Gun</li>
+        </weaponTags>
+    </ThingDef>
 
-  <ThingDef Abstract="True" Name="BaseBullet">
-    <category>Projectile</category>
-    <tickerType>Normal</tickerType>
-    <altitudeLayer>Projectile</altitudeLayer>
-    <thingClass>Bullet</thingClass>
-    <label>bullet</label>
-    <useHitPoints>False</useHitPoints>
-    <neverMultiSelect>True</neverMultiSelect>
-    <graphicData>
-      <shaderType>Transparent</shaderType>
-    </graphicData>
-  </ThingDef>
+    <ThingDef Abstract="True" Name="BaseBullet">
+        <category>Projectile</category>
+        <tickerType>Normal</tickerType>
+        <altitudeLayer>Projectile</altitudeLayer>
+        <thingClass>Bullet</thingClass>
+        <label>bullet</label>
+        <useHitPoints>False</useHitPoints>
+        <neverMultiSelect>True</neverMultiSelect>
+        <graphicData>
+            <shaderType>Transparent</shaderType>
+        </graphicData>
+    </ThingDef>
 
-<!-- ============================================== -->
+    <!-- ============================================== -->
 
-  <ThingDef ParentName="BaseBullet">
-    <defName>Bullet_PumpShotgun</defName>
-    <label>shotgun pellet</label>
-    <graphicData>
-      <texPath>Things/Projectile/Bullet_Shotgun</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <projectile>
-      <damageDef>Bullet</damageDef>
-      <damageAmountBase>4</damageAmountBase>
-      <speed>55</speed>
-    </projectile>
-  </ThingDef>
+    <ThingDef ParentName="BaseBullet">
+        <defName>Bullet_PumpShotgun</defName>
+        <label>shotgun pellet</label>
+        <graphicData>
+            <texPath>Things/Projectile/Bullet_Shotgun</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <projectile>
+            <damageDef>Bullet</damageDef>
+            <damageAmountBase>4</damageAmountBase>
+            <speed>55</speed>
+        </projectile>
+    </ThingDef>
 
-  <ThingDef ParentName="BaseHumanGun">
-    <defName>Gun_PumpShotgun</defName>
-    <label>pump shotgun</label>
-    <description>Ancient design. Deadly, but short range.</description>
-    <graphicData>
-      <texPath>Things/Item/Equipment/WeaponRanged/Shotgun</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <soundInteract>InteractShotgun</soundInteract>
-    <statBases>
-      <MarketValue>400</MarketValue>
-      <AccuracyTouch>0.80</AccuracyTouch>
-      <AccuracyShort>0.87</AccuracyShort>
-      <AccuracyMedium>0.77</AccuracyMedium>
-      <AccuracyLong>0.64</AccuracyLong>
-      <RangedWeapon_Cooldown>0.66</RangedWeapon_Cooldown>
-    </statBases>
-    <verbs>
-      <li Class="CommunityCoreLibrary.VerbProperties_Extended">
-        <verbClass>CommunityCoreLibrary.Verb_ShootExtended</verbClass>
+    <ThingDef ParentName="BaseHumanGun">
+        <defName>Gun_PumpShotgun</defName>
+        <label>pump shotgun</label>
+        <description>Ancient design. Deadly, but short range.</description>
+        <graphicData>
+            <texPath>Things/Item/Equipment/WeaponRanged/Shotgun</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <soundInteract>InteractShotgun</soundInteract>
+        <statBases>
+            <MarketValue>400</MarketValue>
+            <AccuracyTouch>0.80</AccuracyTouch>
+            <AccuracyShort>0.87</AccuracyShort>
+            <AccuracyMedium>0.77</AccuracyMedium>
+            <AccuracyLong>0.64</AccuracyLong>
+            <RangedWeapon_Cooldown>0.66</RangedWeapon_Cooldown>
+        </statBases>
+        <verbs>
+            <li Class="CommunityCoreLibrary.VerbProperties_Extended">
+                <verbClass>CommunityCoreLibrary.Verb_ShootExtended</verbClass>
 
-        <pelletCount>8</pelletCount>
-        <experienceGain>
-          <min>10</min>
-          <mid>200</mid>
-          <max>900</max>
-        </experienceGain>
+                <pelletCount>8</pelletCount>
+                <experienceGain>
+                    <min>10</min>
+                    <mid>200</mid>
+                    <max>900</max>
+                </experienceGain>
 
-        <hasStandardCommand>true</hasStandardCommand>
-        <projectileDef>Bullet_PumpShotgun</projectileDef>
-        <warmupTicks>90</warmupTicks>
-        <range>16</range>
-        <soundCast>ShotShotgun</soundCast>
-        <soundCastTail>GunTail_Heavy</soundCastTail>
-        <muzzleFlashScale>9</muzzleFlashScale>
-      </li>
-    </verbs>
-  </ThingDef>
+                <hasStandardCommand>true</hasStandardCommand>
+                <projectileDef>Bullet_PumpShotgun</projectileDef>
+                <warmupTicks>90</warmupTicks>
+                <range>16</range>
+                <soundCast>ShotShotgun</soundCast>
+                <soundCastTail>GunTail_Heavy</soundCastTail>
+                <muzzleFlashScale>9</muzzleFlashScale>
+            </li>
+        </verbs>
+    </ThingDef>
 
-</ThingDefs>
+</Defs>
