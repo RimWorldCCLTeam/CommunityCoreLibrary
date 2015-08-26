@@ -45,6 +45,22 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        #region Log Dump
+
+        public string LogDump()
+        {
+            return 
+                "HelpDef: " + defName +
+                "\n\t" + keyDef +
+                "\n\t" + category.LabelCap +
+                "\n\t" + LabelCap +
+                "\n------\n" +
+                description +
+                "\n------\n";
+        }
+
+        #endregion
+
     }
 
 }

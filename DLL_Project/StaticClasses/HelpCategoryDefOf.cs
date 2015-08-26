@@ -16,6 +16,8 @@ namespace CommunityCoreLibrary
         public static readonly HelpCategoryDef  BuildingHelp = DefDatabase< HelpCategoryDef >.GetNamed( "BuildingHelp", true );
         public static readonly HelpCategoryDef  WeaponHelp = DefDatabase< HelpCategoryDef >.GetNamed( "WeaponHelp", true );
 
+        public static readonly HelpCategoryDef  RecipeHelp = DefDatabase< HelpCategoryDef >.GetNamed( "RecipeHelp", true );
+
         public static readonly HelpCategoryDef  ResearchHelp = DefDatabase< HelpCategoryDef >.GetNamed( "ResearchHelp", true );
         public static readonly HelpCategoryDef  AdvancedResearchHelp = DefDatabase< HelpCategoryDef >.GetNamed( "AdvancedResearchHelp", true );
 

@@ -42,9 +42,9 @@ namespace CommunityCoreLibrary
             }
 
             // Validate advanced research defs
-            if( AdvancedResearch != null )
+            if( CheckAdvancedResearch() )
             {
-                CheckAdvancedResearch();
+                ResearchController.InitComponent();
             }
 
             // Auto-generate help menus
@@ -127,12 +127,13 @@ namespace CommunityCoreLibrary
 
         #region Research Verification
 
-        void                                CheckAdvancedResearch()
+        bool                                CheckAdvancedResearch()
         {
             // Make sure the hidden research exists
             if( Research.Locker == null )
             {
                 Log.Error( "Community Core Library :: Advanced Research :: Missing Research.Locker!" );
+                return false;
             }
 
             // Validate each advanced research def
@@ -158,8 +159,7 @@ namespace CommunityCoreLibrary
             }
 
             // All research left is valid
-            ResearchController.InitComponent();
-
+            return true;
         }
 
         #endregion

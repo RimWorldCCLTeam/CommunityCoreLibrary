@@ -76,7 +76,7 @@ namespace CommunityCoreLibrary
             UpdateTicks = 0;
             okToProcess = true;
 
-            Log.Message( "Community Core Library :: Advanced Research :: Ready" );
+            Log.Message( "Community Core Library :: Advanced Research :: Initialized" );
         }
 
         void                                UpdateComponent()
