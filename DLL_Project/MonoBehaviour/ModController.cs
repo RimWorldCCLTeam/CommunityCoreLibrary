@@ -141,6 +141,7 @@ namespace CommunityCoreLibrary
                 {
                     // Remove projects with errors from list of usable projects
                     AdvancedResearch.Remove( Advanced );
+                    Log.Error( "Community Core Library :: Advanced Research :: Pruning " + Advanced.defName );
                     continue;
                 }
             }
@@ -152,12 +153,6 @@ namespace CommunityCoreLibrary
             }
 
             // All research left is valid
-            foreach( var Advanced in AdvancedResearch )
-            {
-                if( Advanced.HasHelp )
-                {
-                }
-            }
         }
 
         #endregion

@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-  <ModHelperDef>
-    <defName>ThingCompInjectionExample</defName>
+    <ModHelperDef>
+        <defName>ThingCompInjectionExample</defName>
 
-    <ModName>ThingComp Injection Example</ModName>
+        <ModName>ThingComp Injection Example</ModName>
 
-    <version>0.12.0</version>
+        <version>0.12.1</version>
 
-    <ThingComps>
-      <li>
-        <compProps>
-          <compClass>CompForbiddable</compClass>
-        </compProps>
-        <targetDef>Human</targetDef>
-      </li>
+        <ThingComps>
+            <li>
+                <compProps>
+                    <compClass>CompForbiddable</compClass>
+                </compProps>
+                <targetDef>Human</targetDef>
+            </li>
 
-      <li>
-        <compProps>
-          <compClass>CompPowerTrader</compClass>
-          <basePowerConsumption>-50</basePowerConsumption>
-          <transmitsPower>true</transmitsPower>
-          <powerToggleable>false</powerToggleable>
-        </compProps>
-        <targetDef>Wall</targetDef>
-      </li>
-    </ThingComps>
+            <li>
+                <compProps>
+                    <compClass>CompPowerTrader</compClass>
+                    <basePowerConsumption>-50</basePowerConsumption>
+                    <transmitsPower>true</transmitsPower>
+                    <powerToggleable>false</powerToggleable>
+                </compProps>
+                <targetDef>Wall</targetDef>
+            </li>
+        </ThingComps>
 
-  </ModHelperDef>
+    </ModHelperDef>
 
 </Defs>

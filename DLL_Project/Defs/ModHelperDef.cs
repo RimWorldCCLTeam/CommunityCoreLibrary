@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary
 
         public string                       version;
 
-        public List< string >               MapComponents;
+        public List< Type >                 MapComponents;
 
         public List< DesignatorData >       Designators;
 
@@ -58,13 +58,13 @@ namespace CommunityCoreLibrary
                 if( ( MapComponents != null )&&
                     ( MapComponents.Count > 0 ) )
                 {
-                    foreach( var component in MapComponents )
+                    foreach( var componentType in MapComponents )
                     {
-                        var componentType = Type.GetType( component );
+                        //var componentType = Type.GetType( component );
                         if( ( componentType == null )||
                             ( componentType.BaseType != typeof( MapComponent ) ) )
                         {
-                            errors += "\n\tUnable to resolve MapComponent \"" + component + "\"";
+                            errors += "\n\tUnable to resolve MapComponent \"" + componentType.ToString() + "\"";
                             isValid = false;
                         }
                     }
@@ -75,14 +75,16 @@ namespace CommunityCoreLibrary
                 {
                     foreach( var data in Designators )
                     {
-                        var designatorType = Type.GetType( data.designatorClass );
-                        if( ( designatorType == null )||
-                            ( designatorType.BaseType != typeof( Designator ) ) )
+                        var designatorType = data.designatorClass;
+                        if( ( designatorType == null )//||
+                        //    ( designatorType.BaseType != typeof( Designator ) )
+                        )
                         {
                             errors += "\n\tUnable to resolve designatorClass \"" + data.designatorClass + "\"";
                             isValid = false;
                         }
-                        if( DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false ) == null )
+                        if( (  string.IsNullOrEmpty( data.designationCategoryDef ) )||
+                            ( DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false ) == null ) )
                         {
                             errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
@@ -90,17 +92,29 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-              if ((ThingComps != null) &&
-                  (ThingComps.Count > 0))
-              {
-                foreach (var comp in ThingComps)
-                {
-                  if (ThingDef.Named(comp.targetDef) == null)
-            {
-              errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\"";
-            }
-                }
-              }
+	            if ((ThingComps != null) &&
+	                (ThingComps.Count > 0))
+	            {
+		            foreach (var comp in ThingComps)
+		            {
+                        if( string.IsNullOrEmpty( comp.targetDef ) )
+                        {
+                            errors += "\n\tNull targetDef in ThingComps";
+                            isValid = false;
+                        }
+                        var targDef = ThingDef.Named( comp.targetDef );
+                        if( targDef == null )
+						{
+							errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\" in ThingComps";
+                            isValid = false;
+						}
+                        if (targDef.comps == null)
+                        {
+                            // Make sure it has a list of comps
+                            targDef.comps = new List<CompProperties>();
+                        }
+		            }
+	            }
 #endif
                 
         if ( !isValid )
@@ -124,9 +138,9 @@ namespace CommunityCoreLibrary
 
                 var colonyMapComponents = Find.Map.components;
 
-                foreach( var mapComponent in MapComponents )
+                foreach( var mapComponentType in MapComponents )
                 {
-                    var mapComponentType = Type.GetType( mapComponent );
+                    //var mapComponentType = Type.GetType( mapComponent );
                     if( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
                     {
                         return false;
@@ -148,9 +162,8 @@ namespace CommunityCoreLibrary
                 }
                 foreach( var data in Designators )
                 {
-                    var designatorType = Type.GetType( data.designatorClass );
-                    var designatorCategoryDef = DefDatabase< DesignationCategoryDef >.GetNamed( data.designationCategoryDef, false );
-                    if( !designatorCategoryDef.resolvedDesignators.Exists( d => d.GetType() == designatorType ) )
+                    var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
+                    if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                     {
                         return false;
                     }
@@ -161,6 +174,7 @@ namespace CommunityCoreLibrary
         }
 
         public bool                         ThingCompsInjected
+<<<<<<< HEAD
         {
             get
             {
@@ -195,13 +209,40 @@ namespace CommunityCoreLibrary
         #region Injection
 
         public void                         InjectMapComponents()
+=======
+		{
+			get
+			{
+				if (ThingComps == null || ThingComps.Count == 0)
+				{
+					return true;
+				}
+
+				foreach( var current in ThingComps )
+				{
+					var targDef = ThingDef.Named(current.targetDef);
+					if( !targDef.comps.Exists( s => s.compClass == current.compProps.compClass ) )
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+
+		#endregion
+
+		#region Injection
+
+		public void                         InjectMapComponents()
+>>>>>>> upstream/development
         {
             var colonyMapComponents = Find.Map.components;
 
-            foreach( var mapComponent in MapComponents )
+            foreach( var mapComponentType in MapComponents )
             {
                 // Get the component type
-                var mapComponentType = Type.GetType( mapComponent );
+                //var mapComponentType = Type.GetType( mapComponent );
 
                 // Does it exist in the map?
                 if( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
@@ -215,6 +256,7 @@ namespace CommunityCoreLibrary
             }
         }
 
+<<<<<<< HEAD
         public void                         InjectDesignators()
         {
             foreach (var data in Designators)
@@ -259,6 +301,51 @@ namespace CommunityCoreLibrary
                 CCL_Log.MessageVerbose("Injected " + comp.compProps.compClass.Name + " to " + def.defName, "ThingComp Injection");
             }
         }
+=======
+	    public void                         InjectDesignators()
+	    {
+		    foreach (var data in Designators)
+		    {
+                var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
+                if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
+			    {
+				    // Create the new designator
+                    var designatorObject = (Designator) Activator.CreateInstance( data.designatorClass );
+
+				    // Inject the designator
+                    designationCategory.resolvedDesignators.Add( designatorObject );
+			    }
+		    }
+
+	    }
+
+	    public void                         InjectThingComps()
+	    {
+		    foreach (var comp in ThingComps)
+			{
+				// Access ThingDef database
+				var typeFromHandle = typeof(DefDatabase<ThingDef>);
+				var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
+				if (defsByName == null)
+				{
+					CCL_Log.Error("defName is null!", "ThingComp Injection");
+					return;
+				}
+				var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
+				if (dictDefsByName == null)
+				{
+					CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
+					return;
+				}
+				var def = dictDefsByName.Values.ToList().Find(s => s.defName == comp.targetDef);
+
+				var compProperties = comp.compProps;
+
+				def.comps.Add(compProperties);
+				CCL_Log.MessageVerbose("Injected " + comp.compProps.compClass.Name + " to " + def.defName, "ThingComp Injection");
+			}
+		}
+>>>>>>> upstream/development
 
         #endregion
 

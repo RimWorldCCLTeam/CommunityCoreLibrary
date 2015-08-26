@@ -4,13 +4,13 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class HelpDef : Def, IComparable
     {
-        
+
         #region XML Data
 
-        public HelpCategoryDef              category;
+        public HelpCategoryDef category;
 
         #endregion
 
@@ -19,21 +19,21 @@ namespace CommunityCoreLibrary
         #region Process State
 
 #if DEBUG
-        public override void                ResolveReferences()
+        public override void ResolveReferences()
         {
             base.ResolveReferences();
-            if( category == null )
+            if (category == null)
             {
-                Log.Error( "Community Core Library :: Help Tab :: category resolved to null in HelpDef( " + defName + " )" );
+                Log.Error("Community Core Library :: Help Tab :: category resolved to null in HelpDef( " + defName + " )");
             }
         }
 #endif
 
-        public int                          CompareTo( object obj )
+        public int CompareTo(object obj)
         {
             var d = obj as HelpDef;
             return d != null
-                ? d.label.CompareTo( label )
+                ? d.label.CompareTo(label) * -1
                 : 1;
         }
 
