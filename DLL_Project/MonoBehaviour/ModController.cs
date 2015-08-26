@@ -233,7 +233,10 @@ namespace CommunityCoreLibrary
         {
             foreach (var ModHelperDef in ModHelperDefs)
             {
-                if (ModHelperDef.ThingCompsInjected) continue;
+                if ( ModHelperDef.ThingCompsInjected )
+                {
+                    continue;
+                }
 
                 CCL_Log.Message("Injecting ThingComps for " + ModHelperDef.ModName);
                 ModHelperDef.InjectThingComps();
