@@ -218,25 +218,25 @@ namespace CommunityCoreLibrary
         
         bool                                ReadyForThingCompsInjection()
         {
-            foreach (var current in ModHelperDefs)
+            foreach ( var ModHelperDef in ModHelperDefs )
             {
-                if (current.ThingCompsInjected)
+                if ( !ModHelperDef.ThingCompsInjected )
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
     
 
         void                                InjectThingComp()
         {
-            foreach (var current in ModHelperDefs)
+            foreach (var ModHelperDef in ModHelperDefs)
             {
-                if (current.ThingCompsInjected) continue;
+                if (ModHelperDef.ThingCompsInjected) continue;
 
-                CCL_Log.Message("Injecting ThingComps for " + current.ModName);
-                current.InjectThingComps();
+                CCL_Log.Message("Injecting ThingComps for " + ModHelperDef.ModName);
+                ModHelperDef.InjectThingComps();
             }
         }
 

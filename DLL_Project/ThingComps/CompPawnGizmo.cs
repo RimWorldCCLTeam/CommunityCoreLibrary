@@ -16,6 +16,7 @@ namespace CommunityCoreLibrary
                 {
                     if (!s.GetType().IsSubclassOf(typeof (CompRangedGizmoGiver)))
                     {
+                        // Comp must be a subclass of ranged gizmo giver
                         return false;
                     }
 

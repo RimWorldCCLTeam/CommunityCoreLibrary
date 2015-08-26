@@ -6,7 +6,10 @@ namespace CommunityCoreLibrary
     {
         public class VerbExperience
         {
-            public float min, mid, max;
+            public float                    min;
+            public float                    mid;
+            public float                    max;
+
             public VerbExperience()
             {
                 // Vanilla default values
