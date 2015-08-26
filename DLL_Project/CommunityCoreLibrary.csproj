@@ -107,6 +107,9 @@
     <Compile Include="Extensions\BuildableDef_Extensions.cs" />
     <Compile Include="Verbs\VerbProperties_Extended.cs" />
     <Compile Include="Verbs\Verb_ShootExtended.cs" />
+    <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
+    <Compile Include="StaticClasses\HelpController.cs" />
+    <Compile Include="StaticClasses\HelpCategoryDefOf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

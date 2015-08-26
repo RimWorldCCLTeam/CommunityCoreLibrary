@@ -52,6 +52,19 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
+        public bool                         IsLockedOut()
+        {
+            foreach( var p in researchDefs )
+            {
+                if( p.IsLockedOut() )
+                {
+                    // Any of the research parents locked out?
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool                         IsValid
         {
             get
@@ -60,6 +73,7 @@ namespace CommunityCoreLibrary
                 var isValid = true;
 
 #if DEBUG
+                
                 // Validate recipes
                 if( IsRecipeToggle )
                 {
@@ -248,7 +262,8 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return ( helpCategoryDef != null );
+                return ( !IsLockedOut() )&&
+                    ( helpCategoryDef != null );
             }
         }
 
@@ -530,7 +545,7 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Help Def
+        #region Aggegate Data
 
         List< AdvancedResearchDef >         MatchingAdvancedResearch
         {
@@ -569,6 +584,10 @@ namespace CommunityCoreLibrary
             }
             return description;
         }
+
+        #endregion
+
+        #region Help Def
 
         public HelpDef                      HelpDef
         {

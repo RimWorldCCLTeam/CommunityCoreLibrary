@@ -14,7 +14,13 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        //[Unsaved]
+        [Unsaved]
+
+        #region Instance Data
+
+        public string                   keyDef;
+
+        #endregion
 
         #region Process State
 

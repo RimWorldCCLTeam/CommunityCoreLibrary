@@ -47,6 +47,9 @@ namespace CommunityCoreLibrary
                 CheckAdvancedResearch();
             }
 
+            // Auto-generate help menus
+            HelpController.Initialize();
+
             Log.Message( "Community Core Library :: Initialized" );
 
             enabled = true;
@@ -141,17 +144,22 @@ namespace CommunityCoreLibrary
                     // Remove projects with errors from list of usable projects
                     AdvancedResearch.Remove( Advanced );
                     Log.Error( "Community Core Library :: Advanced Research :: Pruning " + Advanced.defName );
+                    i--;
+                    continue;
+                }
+
+                if( Advanced.IsLockedOut() )
+                {
+                    // Remove locked out projects
+                    AdvancedResearch.Remove( Advanced );
+                    i--;
                     continue;
                 }
             }
 
-            if( AdvancedResearch.Count == 0 )
-            {
-                // All branches pruned
-                return;
-            }
-
             // All research left is valid
+            ResearchController.InitComponent();
+
         }
 
         #endregion
