@@ -630,6 +630,8 @@ namespace CommunityCoreLibrary
 
         void BuildHelpDescription( StringBuilder s )
         {
+
+            // TODO: Please move these to Keyed before release
             BuildRequiredResearchDescription( s, "Required research:" );
 
             BuildRecipeDescription( s, "Adds recipes:", "To buildings:", false );

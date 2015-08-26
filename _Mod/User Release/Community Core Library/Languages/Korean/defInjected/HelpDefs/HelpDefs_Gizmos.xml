@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <ColoredLights.label>색조 조명</ColoredLights.label>
+    <ColoredLights.description>색이 있는 조명을 지원하는 건물들의 명령 단추로 색을 바꿀 수 있고, 연구 후에는 다른 조명과 색을 공유할 수도 있습니다.</ColoredLights.description>
+
+    <NeighbourlyGrowers.label>인접 재배기</NeighbourlyGrowers.label>
+    <NeighbourlyGrowers.description>서로 인접한 수경 재배기끼리 재배 설정을 공유할 수 있습니다.</NeighbourlyGrowers.description>
+
+</LanguageData>
