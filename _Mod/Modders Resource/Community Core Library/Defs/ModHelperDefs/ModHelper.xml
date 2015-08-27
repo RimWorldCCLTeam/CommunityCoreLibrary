@@ -12,15 +12,6 @@
             <li>CommunityCoreLibrary.ResearchController</li>
         </MapComponents>
 
-        <ThingComps>
-            <li>
-                <targetDef>Human</targetDef>
-                <compProps>
-                    <compClass>CommunityCoreLibrary.CompPawnGizmo</compClass>
-                </compProps>
-            </li>
-        </ThingComps>
-
     </ModHelperDef>
 
 </Defs>

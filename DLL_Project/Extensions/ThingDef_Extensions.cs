@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using RimWorld;
@@ -41,6 +42,78 @@ namespace CommunityCoreLibrary
                 }
             }
 
+        }
+
+        #endregion
+
+        #region Lists of affected data
+
+        public static void                  GetRecipesByResearchUnlocked( this ThingDef thingDef, ref List< RecipeDef > recipeDefs, ref List< Def > researchDefs )
+        {
+            // Things it is unlocked on with research
+            recipeDefs = new List<RecipeDef>();
+            researchDefs = new List<Def>();
+
+            // Look at recipes
+            var recipes = DefDatabase< RecipeDef >.AllDefsListForReading.Where( r => (
+                ( r.researchPrerequisite != null )&&
+                ( r.recipeUsers != null )&&
+                ( !r.IsLockedOut() )&&
+                ( r.recipeUsers.Contains( thingDef ) )
+            ) ).ToList();
+
+            // Look in advanced research too
+            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+                ( a.IsRecipeToggle )&&
+                ( !a.HideDefs )&&
+                ( a.thingDefs.Contains( thingDef ) )
+            ) ).ToList();
+
+            // Aggregate advanced research
+            foreach( var a in advancedResearch )
+            {
+                recipeDefs.AddRange( a.recipeDefs );
+                if( a.researchDefs.Count == 1 )
+                {
+                    // If it's a single research project, add that
+                    researchDefs.Add( a.researchDefs[ 0 ] );
+                }
+                else
+                {
+                    // Add the advanced project instead
+                    researchDefs.Add( a );
+                }
+            }
+        }
+
+        public static void                  GetRecipesByResearchLocked( this ThingDef thingDef, ref List< RecipeDef > recipeDefs, ref List< Def > researchDefs )
+        {
+            // Things it is locked on with research
+            recipeDefs = new List<RecipeDef>();
+            researchDefs = new List<Def>();
+
+            // Look in advanced research
+            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+                ( a.IsRecipeToggle )&&
+                ( a.HideDefs )&&
+                ( a.thingDefs.Contains( thingDef ) )
+            ) ).ToList();
+
+            // Aggregate advanced research
+            foreach( var a in advancedResearch )
+            {
+                recipeDefs.AddRange( a.recipeDefs );
+                if( a.researchDefs.Count == 1 )
+                {
+                    // If it's a single research project, add that
+                    researchDefs.Add( a.researchDefs[ 0 ] );
+                }
+                else if( a.HelpConsolidator != null )
+                {
+                    // Add the advanced project instead
+                    researchDefs.Add( a.HelpConsolidator );
+                }
+            }
         }
 
         #endregion

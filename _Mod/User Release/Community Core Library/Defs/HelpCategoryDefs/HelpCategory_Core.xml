@@ -3,56 +3,6 @@
 
     <HelpCategoryDef>
 
-        <defName>ApparelHelp</defName>
-
-        <ModName>Things</ModName>
-
-        <label>Apparel</label>
-
-    </HelpCategoryDef>
-
-    <HelpCategoryDef>
-
-        <defName>BuildingHelp</defName>
-
-        <ModName>Things</ModName>
-
-        <label>Buildings</label>
-
-    </HelpCategoryDef>
-
-    <HelpCategoryDef>
-
-        <defName>WeaponHelp</defName>
-
-        <ModName>Things</ModName>
-
-        <label>Weapons</label>
-
-    </HelpCategoryDef>
-
-    <HelpCategoryDef>
-
-        <defName>ResearchHelp</defName>
-
-        <ModName>Research</ModName>
-
-        <label>Research Projects</label>
-
-    </HelpCategoryDef>
-
-    <HelpCategoryDef>
-
-        <defName>AdvancedResearchHelp</defName>
-
-        <ModName>Research</ModName>
-
-        <label>Advanced Research</label>
-
-    </HelpCategoryDef>
-
-    <HelpCategoryDef>
-
         <defName>GizmoHelp</defName>
 
         <ModName>Gizmos</ModName>

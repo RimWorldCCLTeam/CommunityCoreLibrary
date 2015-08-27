@@ -63,7 +63,7 @@ namespace CommunityCoreLibrary
             }
 
             // Build research quick-reference
-            var researchProjects = DefDatabase< ResearchProjectDef >.AllDefs.ToList();
+            var researchProjects = DefDatabase< ResearchProjectDef >.AllDefsListForReading;
             foreach( var researchProject in researchProjects )
             {
                 researchCache.Add( new ResearchCompletePair( researchProject ) );

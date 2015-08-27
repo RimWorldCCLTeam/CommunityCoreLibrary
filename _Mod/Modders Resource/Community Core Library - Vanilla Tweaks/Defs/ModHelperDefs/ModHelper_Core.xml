@@ -3,24 +3,15 @@
 
     <ModHelperDef>
         <defName>CommunityCoreLibrary</defName>
-
+        
         <ModName>Community Core Library</ModName>
-
+        
         <version>0.12.1</version>
-
+        
         <MapComponents>
             <li>CommunityCoreLibrary.ResearchController</li>
         </MapComponents>
-
-        <ThingComps>
-            <li>
-                <targetDef>Human</targetDef>
-                <compProps>
-                    <compClass>CommunityCoreLibrary.CompPawnGizmo</compClass>
-                </compProps>
-            </li>
-        </ThingComps>
-
+        
     </ModHelperDef>
 
 </Defs>

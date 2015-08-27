@@ -43,7 +43,7 @@ namespace CommunityCoreLibrary
             }
 
             // Validate advanced research defs
-            if( CheckAdvancedResearch() )
+            if( ValidateResearch() )
             {
                 ResearchController.InitComponent();
             }
@@ -128,7 +128,7 @@ namespace CommunityCoreLibrary
 
         #region Research Verification
 
-        bool                                CheckAdvancedResearch()
+        bool                                ValidateResearch()
         {
             // Make sure the hidden research exists
             if( Research.Locker == null )

@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
 
         #region XML Data
 
-        public string ModName;
+        public string                   ModName;
 
         #endregion
 
@@ -19,7 +19,9 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        readonly List<HelpDef> _cachedHelpDefs = new List<HelpDef>();
+        readonly List<HelpDef>          _cachedHelpDefs = new List<HelpDef>();
+
+        public string                   keyDef;
 
         #endregion
 
