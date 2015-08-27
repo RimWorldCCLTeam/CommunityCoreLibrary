@@ -175,7 +175,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( ThingComps == null || ThingComps.Count == 0 )
+                if ( ThingComps.NullOrEmpty() )
                 {
                     return true;
                 }

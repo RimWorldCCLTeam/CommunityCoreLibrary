@@ -11,6 +11,8 @@ namespace CommunityCoreLibrary
     public static class ThingDef_Extensions
     {
 
+        public static List<Def>             nullDefs = null;
+
         #region Recipe Cache
 
         public static void                  RecacheRecipes( this ThingDef thingDef, bool validateBills )
@@ -46,13 +48,39 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        #region Availability
+
+        public static bool                  EverHasRecipes( this ThingDef thingDef )
+        {
+            return (
+                ( !thingDef.GetRecipesCurrent().NullOrEmpty() )||
+                ( !thingDef.GetRecipesUnlocked( ref nullDefs ).NullOrEmpty() )||
+                ( !thingDef.GetRecipesLocked( ref nullDefs ).NullOrEmpty() )
+            );
+        }
+
+        public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
+        {
+            
+            return (
+                ( thingDef.GetRecipesCurrent().Contains( recipeDef ) )||
+                ( thingDef.GetRecipesUnlocked( ref nullDefs ).Contains( recipeDef ) )||
+                ( thingDef.GetRecipesLocked( ref nullDefs ).Contains( recipeDef ) )
+            );
+        }
+
+        #endregion
+
         #region Lists of affected data
 
-        public static void                  GetRecipesByResearchUnlocked( this ThingDef thingDef, ref List< RecipeDef > recipeDefs, ref List< Def > researchDefs )
+        public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
             // Things it is unlocked on with research
-            recipeDefs = new List<RecipeDef>();
-            researchDefs = new List<Def>();
+            var recipeDefs = new List<RecipeDef>();
+            if( researchDefs != null )
+            {
+                researchDefs.Clear();
+            }
 
             // Look at recipes
             var recipes = DefDatabase< RecipeDef >.AllDefsListForReading.Where( r => (
@@ -73,24 +101,31 @@ namespace CommunityCoreLibrary
             foreach( var a in advancedResearch )
             {
                 recipeDefs.AddRange( a.recipeDefs );
-                if( a.researchDefs.Count == 1 )
+                if( researchDefs != null )
                 {
-                    // If it's a single research project, add that
-                    researchDefs.Add( a.researchDefs[ 0 ] );
-                }
-                else
-                {
-                    // Add the advanced project instead
-                    researchDefs.Add( a );
+                    if( a.researchDefs.Count == 1 )
+                    {
+                        // If it's a single research project, add that
+                        researchDefs.Add( a.researchDefs[ 0 ] );
+                    }
+                    else
+                    {
+                        // Add the advanced project instead
+                        researchDefs.Add( a );
+                    }
                 }
             }
+            return recipeDefs;
         }
 
-        public static void                  GetRecipesByResearchLocked( this ThingDef thingDef, ref List< RecipeDef > recipeDefs, ref List< Def > researchDefs )
+        public static List< RecipeDef >     GetRecipesLocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
             // Things it is locked on with research
-            recipeDefs = new List<RecipeDef>();
-            researchDefs = new List<Def>();
+            var recipeDefs = new List<RecipeDef>();
+            if( researchDefs != null )
+            {
+                researchDefs.Clear();
+            }
 
             // Look in advanced research
             var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
@@ -103,17 +138,40 @@ namespace CommunityCoreLibrary
             foreach( var a in advancedResearch )
             {
                 recipeDefs.AddRange( a.recipeDefs );
-                if( a.researchDefs.Count == 1 )
+
+                if( researchDefs != null )
                 {
-                    // If it's a single research project, add that
-                    researchDefs.Add( a.researchDefs[ 0 ] );
-                }
-                else if( a.HelpConsolidator != null )
-                {
-                    // Add the advanced project instead
-                    researchDefs.Add( a.HelpConsolidator );
+                    if( a.researchDefs.Count == 1 )
+                    {
+                        // If it's a single research project, add that
+                        researchDefs.Add( a.researchDefs[ 0 ] );
+                    }
+                    else if( a.HelpConsolidator != null )
+                    {
+                        // Add the advanced project instead
+                        researchDefs.Add( a.HelpConsolidator );
+                    }
                 }
             }
+
+            return recipeDefs;
+        }
+
+        public static List< RecipeDef >     GetRecipesCurrent( this ThingDef thingDef )
+        {
+            return thingDef.AllRecipes;
+        }
+
+        public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
+        {
+            // Things it is locked on with research
+            var recipeDefs = new List<RecipeDef>();
+
+            recipeDefs.AddRange( thingDef.GetRecipesCurrent() );
+            recipeDefs.AddRange( thingDef.GetRecipesUnlocked( ref nullDefs ) );
+            recipeDefs.AddRange( thingDef.GetRecipesLocked( ref nullDefs ) );
+
+            return recipeDefs;
         }
 
         #endregion

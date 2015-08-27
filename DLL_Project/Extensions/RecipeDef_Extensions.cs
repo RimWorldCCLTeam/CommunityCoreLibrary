@@ -152,16 +152,22 @@ namespace CommunityCoreLibrary
             return thingsOn;
         }
 
-        public static void                  GetThingsByResearchUnlocked( this RecipeDef recipeDef, ref List< ThingDef > thingDefs, ref List< Def > researchDefs )
+        public static List< ThingDef >      GetThingsUnlocked( this RecipeDef recipeDef, ref List< Def > researchDefs )
         {
             // Things it is unlocked on with research
-            thingDefs = new List<ThingDef>();
-            researchDefs = new List<Def>();
+            var thingDefs = new List<ThingDef>();
+            if( researchDefs != null )
+            {
+                researchDefs.Clear();
+            }
 
             if( recipeDef.researchPrerequisite != null )
             {
                 thingDefs.AddRange( recipeDef.recipeUsers );
-                researchDefs.Add( recipeDef.researchPrerequisite );
+                if( researchDefs != null )
+                {
+                    researchDefs.Add( recipeDef.researchPrerequisite );
+                }
             }
 
             // Look in advanced research too
@@ -175,24 +181,33 @@ namespace CommunityCoreLibrary
             foreach( var a in advancedResearch )
             {
                 thingDefs.AddRange( a.thingDefs );
-                if( a.researchDefs.Count == 1 )
+
+                if( researchDefs != null )
                 {
-                    // If it's a single research project, add that
-                    researchDefs.Add( a.researchDefs[ 0 ] );
-                }
-                else
-                {
-                    // Add the advanced project instead
-                    researchDefs.Add( a );
+                    if( a.researchDefs.Count == 1 )
+                    {
+                        // If it's a single research project, add that
+                        researchDefs.Add( a.researchDefs[ 0 ] );
+                    }
+                    else
+                    {
+                        // Add the advanced project instead
+                        researchDefs.Add( a );
+                    }
                 }
             }
+
+            return thingDefs;
         }
 
-        public static void                  GetThingsByResearchLocked( this RecipeDef recipeDef, ref List< ThingDef > thingDefs, ref List< Def > researchDefs )
+        public static List< ThingDef >      GetThingsLocked( this RecipeDef recipeDef, ref List< Def > researchDefs )
         {
             // Things it is locked on with research
-            thingDefs = new List<ThingDef>();
-            researchDefs = new List<Def>();
+            var thingDefs = new List<ThingDef>();
+            if( researchDefs != null )
+            {
+                researchDefs.Clear();
+            }
 
             // Look in advanced research
             var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
@@ -205,17 +220,23 @@ namespace CommunityCoreLibrary
             foreach( var a in advancedResearch )
             {
                 thingDefs.AddRange( a.thingDefs );
-                if( a.researchDefs.Count == 1 )
+
+                if( researchDefs != null )
                 {
-                    // If it's a single research project, add that
-                    researchDefs.Add( a.researchDefs[ 0 ] );
-                }
-                else if( a.HelpConsolidator != null )
-                {
-                    // Add the advanced project instead
-                    researchDefs.Add( a.HelpConsolidator );
+                    if( a.researchDefs.Count == 1 )
+                    {
+                        // If it's a single research project, add that
+                        researchDefs.Add( a.researchDefs[ 0 ] );
+                    }
+                    else if( a.HelpConsolidator != null )
+                    {
+                        // Add the advanced project instead
+                        researchDefs.Add( a.HelpConsolidator );
+                    }
                 }
             }
+
+            return thingDefs;
         }
 
         #endregion

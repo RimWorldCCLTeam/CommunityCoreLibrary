@@ -111,7 +111,7 @@ namespace CommunityCoreLibrary
                     ( thingDefs.Count > 0 ) )
                 {
                     // Get help category
-                    var helpCategoryDef = HelpCategoryForKey( designationCategoryDef.defName, designationCategoryDef.label, "Buildings" );
+                    var helpCategoryDef = HelpCategoryForKey( designationCategoryDef.defName + "_Building" + HelpCategoryDefOf.HelpPostFix, designationCategoryDef.label, "Buildings" );
 
                     // Scan through all possible buildable defs and auto-generate help
                     ResolveThingDefList(
@@ -152,44 +152,43 @@ namespace CommunityCoreLibrary
 
         static void                         ResolveRecipes()
         {
-            // Get recipe database
-            var recipeDefs =
-                DefDatabase< RecipeDef >.AllDefsListForReading.Where( r => (
-                    ( !r.IsLockedOut() )
+            // Get the thing database of things which ever have recipes
+            var thingDefs =
+                DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
+                    ( !t.IsLockedOut() )&&
+                    ( t.EverHasRecipes() )&&
+                    ( t.thingClass != typeof( Corpse ) )
                 ) ).ToList();
-
-            if( ( recipeDefs == null )||
-                ( recipeDefs.Count == 0 ) )
-            {
-                return;
-            }
-
-            // Get help category
-            var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.RecipeHelp, "Recipes", "Items" );
 
             // Get help database
             var helpDefs = DefDatabase< HelpDef >.AllDefsListForReading;
 
             // Scan through defs and auto-generate help
-            foreach( var recipeDef in recipeDefs )
+            foreach( var thingDef in thingDefs )
             {
-                // Find an existing entry
-                var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == recipeDef.defName )
-                ) );
+                // Get help category
+                var helpCategoryDef = HelpCategoryForKey( thingDef.defName + "_Recipe" + HelpCategoryDefOf.HelpPostFix, thingDef.label, "Recipes" );
 
-                if( helpDef == null )
+                var recipeDefs = thingDef.GetRecipesAll();
+                foreach( var recipeDef in recipeDefs )
                 {
-                    // Make a new one
-                    helpDef = HelpForRecipe( recipeDef, helpCategoryDef );
+                    // Find an existing entry
+                    var helpDef = helpDefs.Find( h => (
+                        ( h.keyDef == thingDef.defName + "_" + recipeDef.defName )
+                    ) );
 
-                    // Inject the def
-                    if( helpDef != null )
+                    if( helpDef == null )
                     {
-                        helpDefs.Add( helpDef );
+                        // Make a new one
+                        helpDef = HelpForRecipe( thingDef, recipeDef, helpCategoryDef );
+
+                        // Inject the def
+                        if( helpDef != null )
+                        {
+                            helpDefs.Add( helpDef );
+                        }
                     }
                 }
-
             }
         }
 
@@ -326,24 +325,24 @@ namespace CommunityCoreLibrary
             }
             s.AppendLine();
 
-            var t = buildableDef as ThingDef;
-            if( t != null )
+            var thingDef = buildableDef as ThingDef;
+            if( thingDef != null )
             {
 
                 // What stuff can it be made from?
-                if( t.costStuffCount > 0 )
+                if( thingDef.costStuffCount > 0 )
                 {
                     s.Append( "Stuff Cost : " );
-                    s.AppendLine( t.costStuffCount.ToString() );
-                    BuildDefDescription( s, "Stuff made from:", t.stuffCategories.ConvertAll<Def>( def => (Def)def ) );
+                    s.AppendLine( thingDef.costStuffCount.ToString() );
+                    BuildDefDescription( s, "Stuff made from:", thingDef.stuffCategories.ConvertAll<Def>( def => (Def)def ) );
                 }
 
                 // What other things are required?
-                if( ( t.costList != null )&&
-                    ( t.costList.Count > 0 ) )
+                if( ( thingDef.costList != null )&&
+                    ( thingDef.costList.Count > 0 ) )
                 {
                     s.AppendLine( "Cost to build:" );
-                    foreach( var tc in t.costList )
+                    foreach( var tc in thingDef.costList )
                     {
                         s.Append( "\t" );
                         s.Append( tc.thingDef.LabelCap );
@@ -354,23 +353,23 @@ namespace CommunityCoreLibrary
                 }
 
                 // Get list of recipes
-                var recipes = t.AllRecipes;
-                BuildDefDescription( s, "Recipes:", recipes.ConvertAll<Def>( def => (Def)def ) );
+                var recipeDefs = thingDef.AllRecipes;
+                BuildDefDescription( s, "Recipes:", recipeDefs.ConvertAll<Def>( def => (Def)def ) );
 
                 // Add list of required research
-                var researchRequired = buildableDef.GetResearchRequirements();
-                BuildDefDescription( s, "Required Research:", researchRequired.ConvertAll<Def>( def => (Def)def ) );
+                var researchDefs = buildableDef.GetResearchRequirements();
+                BuildDefDescription( s, "Required Research:", researchDefs.ConvertAll<Def>( def => (Def)def ) );
 
                 // Build help for unlocked recipes associated with building
-                t.GetRecipesByResearchUnlocked( ref recipes, ref researchRequired );
-                BuildDefWithDefDescription( s, "Recipes Unlocked:", "By research:", recipes.ConvertAll<Def>( def => (Def)def ), researchRequired.ConvertAll<Def>( def => (Def)def ) );
+                recipeDefs = thingDef.GetRecipesUnlocked( ref researchDefs );
+                BuildDefWithDefDescription( s, "Recipes Unlocked:", "By research:", recipeDefs.ConvertAll<Def>( def => (Def)def ), researchDefs.ConvertAll<Def>( def => (Def)def ) );
 
                 // Build help for locked recipes associated with building
-                t.GetRecipesByResearchLocked( ref recipes, ref researchRequired );
-                BuildDefWithDefDescription( s, "Recipes Locked:", "By research:", recipes.ConvertAll<Def>( def => (Def)def ), researchRequired.ConvertAll<Def>( def => (Def)def ) );
+                recipeDefs = thingDef.GetRecipesLocked( ref researchDefs );
+                BuildDefWithDefDescription( s, "Recipes Locked:", "By research:", recipeDefs.ConvertAll<Def>( def => (Def)def ), researchDefs.ConvertAll<Def>( def => (Def)def ) );
 
                 // Get list of facilities that effect it
-                var affectedBy = t.GetCompProperties( typeof( CompAffectedByFacilities ) );
+                var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
                 if( ( affectedBy != null )&&
                     ( affectedBy.linkableFacilities != null )&&
                     ( affectedBy.linkableFacilities.Count > 0 ) )
@@ -379,19 +378,19 @@ namespace CommunityCoreLibrary
                 }
 
                 // Get list of buildings effected by it
-                if( t.HasComp( typeof( CompFacility ) ) )
+                if( thingDef.HasComp( typeof( CompFacility ) ) )
                 {
                     var effectsBuildings = DefDatabase< ThingDef >.AllDefsListForReading
                         .Where( f => (
                             ( f.HasComp( typeof( CompAffectedByFacilities ) ) )&&
                             ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ) != null )&&
                             ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities != null )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities.Contains( t ) )
+                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities.Contains( thingDef ) )
                         ) ).ToList();
                     if( ( effectsBuildings != null )&&
                         ( effectsBuildings.Count > 0 ) )
                     {
-                        var facilityProperties = t.GetCompProperties( typeof( CompFacility ) );
+                        var facilityProperties = thingDef.GetCompProperties( typeof( CompFacility ) );
                         s.Append( "Maximum affected buildings : " );
                         s.AppendLine( facilityProperties.maxSimultaneous.ToString() );
                         // Look at stats modifiers
@@ -413,11 +412,11 @@ namespace CommunityCoreLibrary
             return helpDef;
         }
 
-        static HelpDef                      HelpForRecipe( RecipeDef recipeDef, HelpCategoryDef category )
+        static HelpDef                      HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
             var helpDef = new HelpDef();
-            helpDef.defName = recipeDef.defName + "_RecipeDef_Help";
-            helpDef.keyDef = recipeDef.defName;
+            helpDef.keyDef = thingDef.defName +"_" + recipeDef.defName;
+            helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
             helpDef.label = recipeDef.label;
             helpDef.category = category;
 
@@ -473,20 +472,20 @@ namespace CommunityCoreLibrary
             }
 
             // Add things it's on
-            var thingsOn = recipeDef.GetThingsCurrent();
-            BuildDefDescription( s, "Applies to:", thingsOn.ConvertAll<Def>( def => (Def)def ) );
+            var thingDefs = recipeDef.GetThingsCurrent();
+            BuildDefDescription( s, "Applies to:", thingDefs.ConvertAll<Def>( def => (Def)def ) );
 
             // Add research required
-            var researchRequired = recipeDef.GetResearchRequirements();
-            BuildDefDescription( s, "Required research:", researchRequired );
+            var researchDefs = recipeDef.GetResearchRequirements();
+            BuildDefDescription( s, "Required research:", researchDefs );
 
             // What things is it on after research
-            recipeDef.GetThingsByResearchUnlocked( ref thingsOn, ref researchRequired );
-            BuildDefWithDefDescription( s, "Available on:", "After researching:", thingsOn.ConvertAll<Def>( def => (Def)def ), researchRequired.ConvertAll<Def>( def => (Def)def ) );
+            thingDefs = recipeDef.GetThingsUnlocked( ref researchDefs );
+            BuildDefWithDefDescription( s, "Available on:", "After researching:", thingDefs.ConvertAll<Def>( def => (Def)def ), researchDefs.ConvertAll<Def>( def => (Def)def ) );
 
             // Get research which locks recipe
-            recipeDef.GetThingsByResearchLocked( ref thingsOn, ref researchRequired );
-            BuildDefWithDefDescription( s, "Removed from:", "After researching:", thingsOn.ConvertAll<Def>( def => (Def)def ), researchRequired.ConvertAll<Def>( def => (Def)def ) );
+            thingDefs = recipeDef.GetThingsLocked( ref researchDefs );
+            BuildDefWithDefDescription( s, "Removed from:", "After researching:", thingDefs.ConvertAll<Def>( def => (Def)def ), researchDefs.ConvertAll<Def>( def => (Def)def ) );
 
             helpDef.description = s.ToString();
             return helpDef;
@@ -510,26 +509,26 @@ namespace CommunityCoreLibrary
             s.AppendLine();
 
             // Add research required
-            var researchRequired = researchProjectDef.GetResearchRequirements();
-            BuildDefDescription( s, "Required research:", researchRequired.ConvertAll<Def>( def =>(Def)def ) );
+            var researchDefs = researchProjectDef.GetResearchRequirements();
+            BuildDefDescription( s, "Required research:", researchDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add buildings it unlocks
-            var thingsOn = researchProjectDef.GetBuildsUnlocked();
-            BuildDefDescription( s, "Allows construction of:", thingsOn.ConvertAll<Def>( def =>(Def)def ) );
+            var thingDefs = researchProjectDef.GetBuildingsUnlocked();
+            BuildDefDescription( s, "Allows construction of:", thingDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add recipes it unlocks
-            List< RecipeDef > recipes = null;
-            researchProjectDef.GetRecipesOnBuildingsUnlocked( ref recipes, ref thingsOn );
-            BuildDefWithDefDescription( s, "Allows recipes:", "On:", recipes.ConvertAll<Def>( def =>(Def)def ), thingsOn.ConvertAll<Def>( def =>(Def)def ) );
+            List< RecipeDef > recipeDefs = null;
+            researchProjectDef.GetRecipesOnBuildingsUnlocked( ref recipeDefs, ref thingDefs );
+            BuildDefWithDefDescription( s, "Allows recipes:", "On:", recipeDefs.ConvertAll<Def>( def =>(Def)def ), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Look in advanced research to add plants and sow tags it unlocks
             List< string > sowTags = null;
-            researchProjectDef.GetSowTagsOnPlantsUnlocked( ref sowTags, ref thingsOn );
-            BuildDefWithStringDescription( s, "Allows planting:", "In:", thingsOn.ConvertAll<Def>( def =>(Def)def ), sowTags );
+            researchProjectDef.GetSowTagsOnPlantsUnlocked( ref sowTags, ref thingDefs );
+            BuildDefWithStringDescription( s, "Allows planting:", "In:", thingDefs.ConvertAll<Def>( def =>(Def)def ), sowTags );
 
             // Get advanced research which locks
-            researchRequired = researchProjectDef.GetResearchedLockedBy();
-            BuildDefDescription( s, "Hidden by research:", researchRequired.ConvertAll<Def>( def =>(Def)def ) );
+            researchDefs = researchProjectDef.GetResearchedLockedBy();
+            BuildDefDescription( s, "Hidden by research:", researchDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             helpDef.description = s.ToString();
             return helpDef;
@@ -560,34 +559,34 @@ namespace CommunityCoreLibrary
             s.AppendLine();
 
             // Add research required
-            var researchRequired = advancedResearchDef.GetResearchRequirements();
-            BuildDefDescription( s, "Required research:", researchRequired.ConvertAll<Def>( def =>(Def)def ) );
+            var researchDefs = advancedResearchDef.GetResearchRequirements();
+            BuildDefDescription( s, "Required research:", researchDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add buildings it unlocks
-            var thingsOn = advancedResearchDef.GetBuildsUnlocked();
-            BuildDefDescription( s, "Allows construction of:", thingsOn.ConvertAll<Def>( def =>(Def)def ) );
+            var thingDefs = advancedResearchDef.GetBuildsUnlocked();
+            BuildDefDescription( s, "Allows construction of:", thingDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add recipes it unlocks
-            List< RecipeDef > recipes = null;
-            advancedResearchDef.GetRecipesOnBuildingsUnlocked( ref recipes, ref thingsOn );
-            BuildDefWithDefDescription( s, "Allows recipes:", "On:", recipes.ConvertAll<Def>( def =>(Def)def ), thingsOn.ConvertAll<Def>( def =>(Def)def ) );
+            List< RecipeDef > recipeDefs = null;
+            advancedResearchDef.GetRecipesOnBuildingsUnlocked( ref recipeDefs, ref thingDefs );
+            BuildDefWithDefDescription( s, "Allows recipes:", "On:", recipeDefs.ConvertAll<Def>( def =>(Def)def ), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add plants and sow tags it unlocks
             List< string > sowTags = null;
-            advancedResearchDef.GetSowTagsOnPlantsUnlocked( ref sowTags, ref thingsOn );
-            BuildDefWithStringDescription( s, "Allows planting:", "In:", thingsOn.ConvertAll<Def>( def =>(Def)def ), sowTags );
+            advancedResearchDef.GetSowTagsOnPlantsUnlocked( ref sowTags, ref thingDefs );
+            BuildDefWithStringDescription( s, "Allows planting:", "In:", thingDefs.ConvertAll<Def>( def =>(Def)def ), sowTags );
 
             // Add buildings it locks
-            thingsOn = advancedResearchDef.GetBuildsLocked();
-            BuildDefDescription( s, "Prevents construction of:", thingsOn.ConvertAll<Def>( def =>(Def)def ) );
+            thingDefs = advancedResearchDef.GetBuildsLocked();
+            BuildDefDescription( s, "Prevents construction of:", thingDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add recipes it locks
-            advancedResearchDef.GetRecipesOnBuildingsLocked( ref recipes, ref thingsOn );
-            BuildDefWithDefDescription( s, "Prevents recipes:", "On:", recipes.ConvertAll<Def>( def =>(Def)def ), thingsOn.ConvertAll<Def>( def =>(Def)def ) );
+            advancedResearchDef.GetRecipesOnBuildingsLocked( ref recipeDefs, ref thingDefs );
+            BuildDefWithDefDescription( s, "Prevents recipes:", "On:", recipeDefs.ConvertAll<Def>( def =>(Def)def ), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
 
             // Add plants and sow tags it locks
-            advancedResearchDef.GetSowTagsOnPlantsLocked( ref sowTags, ref thingsOn );
-            BuildDefWithStringDescription( s, "Prevents planting:", "In:", thingsOn.ConvertAll<Def>( def =>(Def)def ), sowTags );
+            advancedResearchDef.GetSowTagsOnPlantsLocked( ref sowTags, ref thingDefs );
+            BuildDefWithStringDescription( s, "Prevents planting:", "In:", thingDefs.ConvertAll<Def>( def =>(Def)def ), sowTags );
 
             helpDef.description = s.ToString();
             advancedResearchDef.HelpDef = helpDef;

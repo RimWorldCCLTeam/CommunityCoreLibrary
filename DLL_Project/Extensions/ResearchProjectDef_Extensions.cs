@@ -114,7 +114,7 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
-        public static List< ThingDef >      GetBuildsUnlocked( this ResearchProjectDef researchProjectDef )
+        public static List< ThingDef >      GetBuildingsUnlocked( this ResearchProjectDef researchProjectDef )
         {
             // Buildings it unlocks
             var thingsOn = new List<ThingDef>();

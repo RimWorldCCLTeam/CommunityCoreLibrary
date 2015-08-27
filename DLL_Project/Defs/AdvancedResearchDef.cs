@@ -211,9 +211,9 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles recipes
                 return (
-                    ( ( recipeDefs != null )&&( recipeDefs.Count > 0 ) )&&
-                    ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
-                    ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+                    ( !recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
+                    ( !thingDefs.NullOrEmpty() )
                 );
             }
         }
@@ -224,9 +224,9 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles plant sow tags
                 return (
-                    ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
-                    ( ( sowTags != null )&&( sowTags.Count > 0 ) )&&
-                    ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( !sowTags.NullOrEmpty() )&&
+                    ( !thingDefs.NullOrEmpty() )
                 );
             }
         }
@@ -237,9 +237,9 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles buildings
                 return (
-                    ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
-                    ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
-                    ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
+                    ( !thingDefs.NullOrEmpty() )
                 );
             }
         }
@@ -250,7 +250,7 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles research
                 return (
-                    ( ( effectedResearchDefs != null )&&( effectedResearchDefs.Count > 0 ) )
+                    ( !effectedResearchDefs.NullOrEmpty() )
                 );
             }
         }
@@ -261,7 +261,7 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def has callbacks
                 return (
-                    ( ( researchMods != null )&&( researchMods.Count > 0 ) )
+                    ( !researchMods.NullOrEmpty() )
                 );
             }
         }
@@ -587,6 +587,7 @@ namespace CommunityCoreLibrary
                         ( HasMatchingResearch( a ) )
                     ) );
                     // Set reference to help consolidator
+                    this.HelpConsolidator = this;
                     foreach( var a in matchingAdvancedResearch )
                     {
                         a.HelpConsolidator = this;
