@@ -316,6 +316,8 @@ namespace CommunityCoreLibrary
             s.AppendLine( buildableDef.description );
             s.AppendLine();
 
+            #region Base Stats
+
             // Look at base stats
             foreach( var stat in buildableDef.statBases )
             {
@@ -325,9 +327,15 @@ namespace CommunityCoreLibrary
             }
             s.AppendLine();
 
+            #endregion
+
+            #region ThingDef Specific
+
             var thingDef = buildableDef as ThingDef;
             if( thingDef != null )
             {
+
+                #region Stuff Cost
 
                 // What stuff can it be made from?
                 if( thingDef.costStuffCount > 0 )
@@ -336,6 +344,10 @@ namespace CommunityCoreLibrary
                     s.AppendLine( thingDef.costStuffCount.ToString() );
                     BuildDefDescription( s, "Stuff made from:", thingDef.stuffCategories.ConvertAll<Def>( def => (Def)def ) );
                 }
+
+                #endregion
+
+                #region Cost List
 
                 // What other things are required?
                 if( ( thingDef.costList != null )&&
@@ -351,6 +363,10 @@ namespace CommunityCoreLibrary
                     }
                     s.AppendLine();
                 }
+
+                #endregion
+
+                #region Recipes & Research
 
                 // Get list of recipes
                 var recipeDefs = thingDef.AllRecipes;
@@ -368,13 +384,17 @@ namespace CommunityCoreLibrary
                 recipeDefs = thingDef.GetRecipesLocked( ref researchDefs );
                 BuildDefWithDefDescription( s, "Recipes Locked:", "By research:", recipeDefs.ConvertAll<Def>( def => (Def)def ), researchDefs.ConvertAll<Def>( def => (Def)def ) );
 
+                #endregion
+
+                #region Facilities
+
                 // Get list of facilities that effect it
                 var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
                 if( ( affectedBy != null )&&
                     ( affectedBy.linkableFacilities != null )&&
                     ( affectedBy.linkableFacilities.Count > 0 ) )
                 {
-                    BuildDefDescription( s, "Affected by facilities:", affectedBy.linkableFacilities.ConvertAll<Def>( def => (Def)def ) );
+                    BuildDefDescription( s, "Affected by:", affectedBy.linkableFacilities.ConvertAll<Def>( def => (Def)def ) );
                 }
 
                 // Get list of buildings effected by it
@@ -391,7 +411,7 @@ namespace CommunityCoreLibrary
                         ( effectsBuildings.Count > 0 ) )
                     {
                         var facilityProperties = thingDef.GetCompProperties( typeof( CompFacility ) );
-                        s.Append( "Maximum affected buildings : " );
+                        s.Append( "Maximum affected : " );
                         s.AppendLine( facilityProperties.maxSimultaneous.ToString() );
                         // Look at stats modifiers
                         foreach( var stat in facilityProperties.statOffsets )
@@ -401,12 +421,47 @@ namespace CommunityCoreLibrary
                             s.AppendLine( stat.stat.ValueToString( stat.value, stat.stat.toStringNumberSense ) );
                         }
                         s.AppendLine();
-                        BuildDefDescription( s, "Buildings affected:", effectsBuildings.ConvertAll<Def>( def => (Def)def ) );
+                        BuildDefDescription( s, "Affects:", effectsBuildings.ConvertAll<Def>( def => (Def)def ) );
                     }
                 }
 
+                #endregion
+
+                #region Joy
+
+                // Get valid joy givers
+                var joyGiverDefs = DefDatabase< JoyGiverDef >.AllDefsListForReading
+                    .Where( j => (
+                        ( j.thingDef == thingDef )&&
+                        ( j.jobDef != null )
+                    ) ).ToList();
+
+                if( !joyGiverDefs.NullOrEmpty() )
+                {
+                    s.AppendLine( "Joy Activities:" );
+                    foreach( var joyGiverDef in joyGiverDefs )
+                    {
+                        // Get job driver stats
+                        s.Append( "\t" );
+                        s.AppendLine( joyGiverDef.jobDef.reportString );
+                        s.Append( "\tMax Participants : " );
+                        s.AppendLine( joyGiverDef.jobDef.joyMaxParticipants.ToString() );
+                        s.Append( "\tJoy Kind : " );
+                        s.AppendLine( joyGiverDef.jobDef.joyKind.LabelCap );
+                        if( joyGiverDef.jobDef.joySkill != null )
+                        {
+                            s.Append( "\tSkill : " );
+                            s.AppendLine( joyGiverDef.jobDef.joySkill.LabelCap );
+                        }
+                    }
+                    s.AppendLine();
+                }
+
+                #endregion
 
             }
+
+            #endregion
 
             helpDef.description = s.ToString();
             return helpDef;
@@ -425,8 +480,14 @@ namespace CommunityCoreLibrary
             s.AppendLine( recipeDef.description );
             s.AppendLine();
 
+            #region Base Stats
+
             s.AppendLine( "WorkAmount".Translate() + " : " + GenText.ToStringWorkAmount( recipeDef.WorkAmountTotal( (ThingDef) null ) ) );
             s.AppendLine();
+
+            #endregion
+
+            #region Skill Requirements
 
             if( ( recipeDef.skillRequirements != null )&&
                 ( recipeDef.skillRequirements.Count > 0 ) )
@@ -439,6 +500,10 @@ namespace CommunityCoreLibrary
                 }
                 s.AppendLine();
             }
+
+            #endregion
+
+            #region Ingredients
 
             // List of ingredients
             if( ( recipeDef.ingredients != null )&&
@@ -456,6 +521,10 @@ namespace CommunityCoreLibrary
                 s.AppendLine();
             }
 
+            #endregion
+
+            #region Products
+
             // List of products
             if( ( recipeDef.products != null )&&
                 ( recipeDef.products.Count > 0 ) )
@@ -470,6 +539,10 @@ namespace CommunityCoreLibrary
                 }
                 s.AppendLine();
             }
+
+            #endregion
+
+            #region Things & Research
 
             // Add things it's on
             var thingDefs = recipeDef.GetThingsCurrent();
@@ -486,6 +559,8 @@ namespace CommunityCoreLibrary
             // Get research which locks recipe
             thingDefs = recipeDef.GetThingsLocked( ref researchDefs );
             BuildDefWithDefDescription( s, "Removed from:", "After researching:", thingDefs.ConvertAll<Def>( def => (Def)def ), researchDefs.ConvertAll<Def>( def => (Def)def ) );
+
+            #endregion
 
             helpDef.description = s.ToString();
             return helpDef;
@@ -504,9 +579,15 @@ namespace CommunityCoreLibrary
             s.AppendLine( researchProjectDef.description );
             s.AppendLine();
 
+            #region Base Stats
+
             s.Append( "Total Cost : " );
             s.AppendLine( researchProjectDef.totalCost.ToString() );
             s.AppendLine();
+
+            #endregion
+
+            #region Research, Buildings, Recipes and SowTags
 
             // Add research required
             var researchDefs = researchProjectDef.GetResearchRequirements();
@@ -526,9 +607,15 @@ namespace CommunityCoreLibrary
             researchProjectDef.GetSowTagsOnPlantsUnlocked( ref sowTags, ref thingDefs );
             BuildDefWithStringDescription( s, "Allows planting:", "In:", thingDefs.ConvertAll<Def>( def =>(Def)def ), sowTags );
 
+            #endregion
+
+            #region Lockouts
+
             // Get advanced research which locks
             researchDefs = researchProjectDef.GetResearchedLockedBy();
             BuildDefDescription( s, "Hidden by research:", researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+            #endregion
 
             helpDef.description = s.ToString();
             return helpDef;
@@ -554,9 +641,15 @@ namespace CommunityCoreLibrary
             s.AppendLine( advancedResearchDef.description );
             s.AppendLine();
 
+            #region Base Stats
+
             s.Append( "Total Cost : " );
             s.AppendLine( advancedResearchDef.TotalCost.ToString() );
             s.AppendLine();
+
+            #endregion
+
+            #region Research, Buildings, Recipes and SowTags
 
             // Add research required
             var researchDefs = advancedResearchDef.GetResearchRequirements();
@@ -576,6 +669,10 @@ namespace CommunityCoreLibrary
             advancedResearchDef.GetSowTagsOnPlantsUnlocked( ref sowTags, ref thingDefs );
             BuildDefWithStringDescription( s, "Allows planting:", "In:", thingDefs.ConvertAll<Def>( def =>(Def)def ), sowTags );
 
+            #endregion
+
+            #region Lockouts
+
             // Add buildings it locks
             thingDefs = advancedResearchDef.GetBuildsLocked();
             BuildDefDescription( s, "Prevents construction of:", thingDefs.ConvertAll<Def>( def =>(Def)def ) );
@@ -587,6 +684,8 @@ namespace CommunityCoreLibrary
             // Add plants and sow tags it locks
             advancedResearchDef.GetSowTagsOnPlantsLocked( ref sowTags, ref thingDefs );
             BuildDefWithStringDescription( s, "Prevents planting:", "In:", thingDefs.ConvertAll<Def>( def =>(Def)def ), sowTags );
+
+            #endregion
 
             helpDef.description = s.ToString();
             advancedResearchDef.HelpDef = helpDef;

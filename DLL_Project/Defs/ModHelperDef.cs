@@ -44,11 +44,26 @@ namespace CommunityCoreLibrary
                 var isValid = true;
                 var errors = "Community Core Library :: Mod Dependency :: " + ModName;
 
-                var modVersion = new Version( version );
-
-                if ( modVersion > ModController.CCLVersion )
+                try
                 {
-                    errors += "\n\tVersion requirement: v" + modVersion;
+                    var modVersion = new Version( version );
+
+                    if( modVersion < ModController.CCLVersionMin )
+                    {
+                        errors += "\n\tMinimum Version requirement: v" + modVersion;
+                        isValid = false;
+                    }
+
+                    if ( modVersion > ModController.CCLVersion )
+                    {
+                        errors += "\n\tVersion requirement: v" + modVersion;
+                        isValid = false;
+                    }
+
+                }
+                catch
+                {
+                    errors += "\n\tUnable to get version from: '" + version + "'";
                     isValid = false;
                 }
 

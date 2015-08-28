@@ -19,6 +19,7 @@ namespace CommunityCoreLibrary
 
         static List< AdvancedResearchDef >  advancedResearch;
 
+        public static Version               CCLVersionMin = new Version( "0.12.0" );
         public static Version               CCLVersion;
         List< ModHelperDef >                ModHelperDefs;
 
