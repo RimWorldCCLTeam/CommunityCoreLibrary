@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using Verse;
 
 namespace CommunityCoreLibrary
 {
-    public class CompInjectionSet
-    {
-        public string                       targetDef;
-
-        public CompProperties               compProps = new CompProperties();
-    }
     public class ModHelperDef : Def
     {
 
@@ -106,24 +101,31 @@ namespace CommunityCoreLibrary
                 }
 
                 if ( (ThingComps != null) &&
-                    (ThingComps.Count > 0) )
+                    (ThingComps.Count > 0 ) )
                 {
-                    foreach ( var comp in ThingComps )
+                    foreach ( var compSet in ThingComps )
                     {
-                        if ( string.IsNullOrEmpty(comp.targetDef) )
+                        if ( compSet.targetDefs.NullOrEmpty() )
                         {
-                            errors += "\n\tNull targetDef in ThingComps";
+                            errors += "\n\tNull or no targetDefs in ThingComps";
                             isValid = false;
                         }
+                        /*
                         var targDef = ThingDef.Named( comp.targetDef );
                         if ( targDef == null )
                         {
                             errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\" in ThingComps";
                             isValid = false;
-                        }
-                        else if ( targDef.comps == null )
+                        }*/
+                        if ( compSet.compProps == null )
                         {
                             errors += "\n\tNull compProps in ThingComps";
+                            isValid = false;
+                        }
+                        foreach ( var targetDef in compSet.targetDefs.Where( targetDef => string.IsNullOrEmpty(targetDef) ||
+                                                                                       DefDatabase<ThingDef>.GetNamed(targetDef, false) == null ) )
+                        {
+                            errors += "\n\tUnable to resolve ThingDef \"" + targetDef + "\"";
                             isValid = false;
                         }
                     }
@@ -195,12 +197,15 @@ namespace CommunityCoreLibrary
                     return true;
                 }
 
-                foreach ( var current in ThingComps )
+                foreach ( var compSet in ThingComps )
                 {
-                    var targDef = ThingDef.Named( current.targetDef );
-                    if ( targDef != null && !targDef.comps.Exists( s => s.compClass == current.compProps.compClass ) )
+                    foreach ( var targetName in compSet.targetDefs )
                     {
-                        return false;
+                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
+                        if ( targetDef != null && !targetDef.comps.Exists(s => s.compClass == compSet.compProps.compClass) )
+                        {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -251,7 +256,7 @@ namespace CommunityCoreLibrary
 
         public void                         InjectThingComps()
         {
-            foreach ( var comp in ThingComps )
+            foreach ( var compSet in ThingComps )
             {
                 // Access ThingDef database
                 var typeFromHandle = typeof(DefDatabase<ThingDef>);
@@ -267,12 +272,14 @@ namespace CommunityCoreLibrary
                     CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
                     return;
                 }
-                // Null check for def will be handled in ThingCompsInjected()
-                var def = dictDefsByName.Values.ToList().Find(s => s.defName == comp.targetDef);
-                var compProperties = comp.compProps;
+                
+                foreach ( var targetName in compSet.targetDefs )
+                {
+                    var def = dictDefsByName.Values.ToList().Find(s => s.defName == targetName);
+                    var compProperties = compSet.compProps;
 
-                def.comps.Add(compProperties);
-                CCL_Log.MessageVerbose("Injected " + comp.compProps.compClass.Name + " to " + def.defName, "ThingComp Injection");
+                    def.comps.Add(compProperties);
+                }
             }
         }
 

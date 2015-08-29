@@ -8,7 +8,7 @@
 	This is an example of how to inject ThingComps to ThingDef at runtime.
 
 	Demonstrates:
-	Injecting CompForbiddable to Human
+	Injecting CompForbiddable to Human and Wall
 	Injecting CompPowerTrader with CompProperties to Wall
     </description>
 </ModMetaData>
