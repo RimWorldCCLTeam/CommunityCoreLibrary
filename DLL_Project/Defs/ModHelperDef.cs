@@ -103,9 +103,9 @@ namespace CommunityCoreLibrary
                 if ( (ThingComps != null) &&
                     (ThingComps.Count > 0 ) )
                 {
-                    foreach ( var comp in ThingComps )
+                    foreach ( var compSet in ThingComps )
                     {
-                        if ( comp.targetDefs.NullOrEmpty() )
+                        if ( compSet.targetDefs.NullOrEmpty() )
                         {
                             errors += "\n\tNull or no targetDefs in ThingComps";
                             isValid = false;
@@ -117,12 +117,12 @@ namespace CommunityCoreLibrary
                             errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\" in ThingComps";
                             isValid = false;
                         }*/
-                        if ( comp.compProps == null )
+                        if ( compSet.compProps == null )
                         {
                             errors += "\n\tNull compProps in ThingComps";
                             isValid = false;
                         }
-                        foreach ( var targetDef in comp.targetDefs.Where( targetDef => string.IsNullOrEmpty(targetDef) ||
+                        foreach ( var targetDef in compSet.targetDefs.Where( targetDef => string.IsNullOrEmpty(targetDef) ||
                                                                                        DefDatabase<ThingDef>.GetNamed(targetDef, false) == null ) )
                         {
                             errors += "\n\tUnable to resolve ThingDef \"" + targetDef + "\"";
