@@ -25,12 +25,11 @@ namespace CommunityCoreLibrary
             get
             {
                 var msg = new StringBuilder();
-                msg.AppendLine( "AlertPlaceWorkerRestrictionSupportRemovedDesc".Translate() );
                 foreach( var t in PlaceWorker_Restriction_Alert_Data.DestroyedThings )
                 {
                     msg.AppendLine( "   " + t.def.defName );
-                }
-                return msg.ToString();
+				}
+	            return "AlertPlaceWorkerRestrictionSupportRemovedDesc".Translate(msg.ToString());
             }
         }
 

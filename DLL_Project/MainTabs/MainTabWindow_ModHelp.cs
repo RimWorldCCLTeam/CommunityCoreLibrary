@@ -14,7 +14,7 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        protected List<ModCategory> _cachedHelpCategories;
+        protected static List<ModCategory> _cachedHelpCategories;
         protected HelpDef SelectedHelpDef;
 
         public const float Margin = 18f;
@@ -63,6 +63,7 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Constructor
+
         public MainTabWindow_ModHelp()
         {
             this.layer = WindowLayer.GameUI;
@@ -123,17 +124,19 @@ namespace CommunityCoreLibrary
         public override void PreOpen()
         {
             base.PreOpen();
-            Reinit();
-        }
 
-        private void Reinit()
-        {
             //Set whether the window forces a pause
             if (TabDef != null)
             {
                 this.forcePause = TabDef.pauseGame;
             }
 
+            // Build the help system
+            Recache();
+        }
+
+        public static void Recache()
+        {
             _cachedHelpCategories = new List<ModCategory>();
             foreach (var cat in DefDatabase<HelpCategoryDef>.AllDefs)
             {

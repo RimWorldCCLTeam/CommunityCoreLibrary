@@ -5,13 +5,13 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class HelpCategoryDef : Def
     {
 
         #region XML Data
 
-        public string                       ModName;
+        public string                   ModName;
 
         #endregion
 
@@ -19,13 +19,15 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        readonly List<HelpDef>              _cachedHelpDefs = new List<HelpDef>();
+        readonly List<HelpDef>          _cachedHelpDefs = new List<HelpDef>();
+
+        public string                   keyDef;
 
         #endregion
 
         #region Query State
 
-        public List<HelpDef>                HelpDefs
+        public List<HelpDef> HelpDefs
         {
             get
             {
@@ -33,11 +35,11 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public float                        DrawHeight
+        public float DrawHeight
         {
             get
             {
-                if( Expanded )
+                if (Expanded)
                 {
                     return MainTabWindow_ModHelp.EntryHeight + HelpDefs.Count * MainTabWindow_ModHelp.EntryHeight;
                 }
@@ -48,7 +50,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         ShouldDraw
+        public bool ShouldDraw
         {
             get
             {
@@ -56,39 +58,39 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         Expanded { get; set; }
+        public bool Expanded { get; set; }
 
         #endregion
 
         #region Process State
 
-        public override void                ResolveReferences()
+        public override void ResolveReferences()
         {
             base.ResolveReferences();
             Recache();
         }
 
 #if DEBUG
-        public override void                PostLoad()
+        public override void PostLoad()
         {
             base.PostLoad();
 
-            if( ModName.NullOrEmpty() )
+            if (ModName.NullOrEmpty())
             {
-                Log.Error( "Community Core Library :: Help Tab :: ModName resolved to null in HelpCategoryDef( " + defName + " )" );
+                Log.Error("Community Core Library :: Help Tab :: ModName resolved to null in HelpCategoryDef( " + defName + " )");
             }
         }
 #endif
 
-        public void                         Recache()
+        public void Recache()
         {
             _cachedHelpDefs.Clear();
-            foreach( var def in (
+            foreach (var def in (
                 from t in DefDatabase<HelpDef>.AllDefs
                 where t.category == this
-                select t ) )
+                select t))
             {
-                _cachedHelpDefs.Add( def );
+                _cachedHelpDefs.Add(def);
             }
             _cachedHelpDefs.Sort();
         }

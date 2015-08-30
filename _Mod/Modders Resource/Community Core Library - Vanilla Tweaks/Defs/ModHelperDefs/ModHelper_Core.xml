@@ -2,15 +2,11 @@
 <Defs>
 
     <ModHelperDef>
-        <defName>CommunityCoreLibrary</defName>
+        <defName>CommunityCoreLibraryVanillaTweaks</defName>
         
-        <ModName>Community Core Library</ModName>
+        <ModName>Community Core Library - Vanilla Tweaks</ModName>
         
-        <version>0.12.0</version>
-        
-        <MapComponents>
-            <li>CommunityCoreLibrary.ResearchController</li>
-        </MapComponents>
+        <version>0.12.1</version>
         
     </ModHelperDef>
 

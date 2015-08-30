@@ -14,24 +14,25 @@ namespace CommunityCoreLibrary
         const int                           TicksPerSecond = 60;
         const int                           UpdatesPerSecond = 2;
         const int                           BaseUpdateTicks = TicksPerSecond / UpdatesPerSecond;
-        int                                 UpdateTicks;
+        static int                          UpdateTicks;
 
-        List< AdvancedResearchDef >         _advancedResearch;
+        static List< AdvancedResearchDef >  _advancedResearch;
 
-        bool                                wasGodMode;
+        static bool                         wasGodMode;
 
-        bool                                firstRun = true;
-        bool                                okToProcess;
+        static bool                         firstRun = true;
+        static bool                         okToProcess;
 
         // These are used to optimize the process so the same data
         // isn't constantly reprocessed with every itteration.
-        readonly List< ResearchCompletePair > researchCache = new List< ResearchCompletePair >();
+        static readonly List< ResearchCompletePair > researchCache = new List< ResearchCompletePair >();
         public static readonly List< ThingDef >    buildingCache = new List< ThingDef >();
         public static readonly List< AdvancedResearchMod > researchModCache = new List< AdvancedResearchMod >();
+        public static readonly List< HelpCategoryDef > helpCategoryCache = new List<HelpCategoryDef>();
 
         #region State Management
 
-        List< AdvancedResearchDef >         AdvancedResearch
+        public static List< AdvancedResearchDef > AdvancedResearch
         {
             get
             {
@@ -48,7 +49,7 @@ namespace CommunityCoreLibrary
             firstRun = true;
         }
 
-        void                                InitComponent()
+        public static void                  InitComponent()
         {
             firstRun = false;
             okToProcess = false;
@@ -62,7 +63,7 @@ namespace CommunityCoreLibrary
             }
 
             // Build research quick-reference
-            var researchProjects = DefDatabase< ResearchProjectDef >.AllDefs.ToList();
+            var researchProjects = DefDatabase< ResearchProjectDef >.AllDefsListForReading;
             foreach( var researchProject in researchProjects )
             {
                 researchCache.Add( new ResearchCompletePair( researchProject ) );
@@ -75,7 +76,7 @@ namespace CommunityCoreLibrary
             UpdateTicks = 0;
             okToProcess = true;
 
-            Log.Message( "Community Core Library :: Advanced Research :: Ready" );
+            Log.Message( "Community Core Library :: Advanced Research :: Initialized" );
         }
 
         void                                UpdateComponent()
@@ -119,27 +120,44 @@ namespace CommunityCoreLibrary
 
         #region Cache Processing
 
-        void                                PrepareCaches()
+        static void                         PrepareCaches()
         {
             // Prepare the caches
             buildingCache.Clear();
             researchModCache.Clear();
+            helpCategoryCache.Clear();
         }
 
-        void                                ProcessCaches( bool setInitialState = false )
+        static void                         ProcessCaches( bool setInitialState = false )
         {
             // Process the caches
 
             // Recache the buildings recipes
-            foreach( var building in buildingCache )
+            if( buildingCache.Count > 0 )
             {
-                building.RecacheRecipes( !setInitialState );
+                foreach( var building in buildingCache )
+                {
+                    building.RecacheRecipes( !setInitialState );
+                }
             }
 
             // Apply all the research mods
-            foreach( var researchMod in researchModCache )
+            if( researchModCache.Count > 0 )
             {
-                researchMod.Invoke( !setInitialState );
+                foreach( var researchMod in researchModCache )
+                {
+                    researchMod.Invoke( !setInitialState );
+                }
+            }
+
+            // Recache the help system
+            if( helpCategoryCache.Count > 0 )
+            {
+                foreach( var helpCategory in helpCategoryCache )
+                {
+                    helpCategory.Recache();
+                }
+                MainTabWindow_ModHelp.Recache();
             }
 
         }
@@ -148,7 +166,7 @@ namespace CommunityCoreLibrary
 
         #region Research Processing
         
-        void                                SetInitialState( bool firstTimeRun = false )
+        static void                         SetInitialState( bool firstTimeRun = false )
         {   
             // Set the initial state of the advanced research
             PrepareCaches();

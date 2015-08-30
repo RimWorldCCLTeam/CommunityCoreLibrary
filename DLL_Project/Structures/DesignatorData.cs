@@ -1,14 +1,16 @@
 ﻿using System;
 
+using Verse;
+
 namespace CommunityCoreLibrary
 {
 
     public struct DesignatorData
     {
         
-        public string           designatorClass;
+        public Type                         designatorClass;
 
-        public string           designationCategoryDef;
+        public string                       designationCategoryDef;
 
     }
 }

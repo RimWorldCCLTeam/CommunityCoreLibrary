@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Namespace:      CommunityCoreLibrary
+
+    VerbProperties: VerbProperties_Extended
+
+    Requires:       Verb_ShootExtended
+
+    VerbProperties_Extended provides value for Verb_ShootExtended. Must be paired with it.
+
+
+    Verb Properties:
+
+    type (default)  tag                 Details
+
+    int (1)         pellet              [optional] Number of pellets(bullets) the verb fires at once
+    VerbExperience  experienceGain
+        int (10)    min                 [optional] Amount of experience points gain when the shooter fires at a non-pawn object, such as a wall.
+        int (50)    mid                 [optional] Amount of experience points gain when the shooter fires at a non-hostile pawn.
+        int (200)   max                 [optional] Amount of experience points gain when the shooter fires at a hostile pawn.
+
+
+    Usage:
+
+    <ThingDef>
+        ...
+
+        <verbs>
+            ...
+
+            <li Class="CommunityCoreLibrary.VerbProperties_Extended">
+                <verbClass>CommunityCoreLibrary.Verb_ShootExtended</verbClass>
+                ...
+                
+                <pelletCount>8</pelletCount>
+                <experienceGain>
+                    <min>30</min>
+                    <mid>50</mid>
+                    <max>100</max>
+                </experienceGain>
+                ...
+
+            </li>
+
+            ...
+        </verbs>
+
+        ...
+    </ThingDef>
+
+    -->
+
+</Defs>

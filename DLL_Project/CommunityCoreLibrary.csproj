@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.12.0</ReleaseVersion>
+    <ReleaseVersion>0.12.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,13 +47,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyUnderRoof.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_WallAttachment.cs" />
+    <Compile Include="StaticClasses\CCL_Log.cs" />
+    <Compile Include="ThingComps\CompPawnGizmo.cs" />
     <Compile Include="ThingComps\CompPowerLowIdleDraw.cs" />
     <Compile Include="CompProperties\CompProperties_LowIdleDraw.cs" />
     <Compile Include="Defs\AdvancedResearchDef.cs" />
+    <Compile Include="ThingComps\CompRangedGizmoGiver.cs" />
     <Compile Include="Toils\Toils_Common.cs" />
     <Compile Include="ThingComps\CompRefrigerated.cs" />
     <Compile Include="StaticClasses\Icons.cs" />
@@ -102,6 +106,12 @@
     <Compile Include="Structures\DesignatorData.cs" />
     <Compile Include="Extensions\TerrainWithComps.cs" />
     <Compile Include="Extensions\BuildableDef_Extensions.cs" />
+    <Compile Include="Verbs\VerbProperties_Extended.cs" />
+    <Compile Include="Verbs\Verb_ShootExtended.cs" />
+    <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
+    <Compile Include="StaticClasses\HelpController.cs" />
+    <Compile Include="StaticClasses\HelpCategoryDefOf.cs" />
+    <Compile Include="Extensions\RecipeDef_Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

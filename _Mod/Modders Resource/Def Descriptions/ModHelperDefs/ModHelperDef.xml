@@ -25,6 +25,20 @@
             </li>
         </Designators>
 
+        <ThingComps>                    [optional] List of ThingComps to inject
+            <li>
+                <compProps>             [required] Property of ThingComp to inject
+
+                    <compClass>ThingComp</compClass>
+                    ...
+
+                </compProps>
+                <targetDefs>            [required] List of ThingDefs to inject ThingComp into
+                    <li>ThingDef</li>
+                </targetDefs>
+
+            </li>
+
     </ModHelperDef>
 
     -->

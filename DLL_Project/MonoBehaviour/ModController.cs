@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using RimWorld;
 using UnityEngine;
@@ -16,8 +17,9 @@ namespace CommunityCoreLibrary
 
         public readonly string              GameObjectName = "Community Core Library";
 
-        public static List< AdvancedResearchDef > AdvancedResearch;
+        static List< AdvancedResearchDef >  advancedResearch;
 
+        public static Version               CCLVersionMin = new Version( "0.12.0" );
         public static Version               CCLVersion;
         List< ModHelperDef >                ModHelperDefs;
 
@@ -42,7 +44,13 @@ namespace CommunityCoreLibrary
             }
 
             // Validate advanced research defs
-            CheckAdvancedResearch();
+            if( ValidateResearch() )
+            {
+                ResearchController.InitComponent();
+            }
+
+            // Auto-generate help menus
+            HelpController.Initialize();
 
             Log.Message( "Community Core Library :: Initialized" );
 
@@ -58,6 +66,30 @@ namespace CommunityCoreLibrary
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
+            }
+            if (ReadyForThingCompsInjection())
+            {
+                InjectThingComp();
+            }
+        }
+
+        public void OnLevelWasLoaded()
+        {
+        }
+
+        #endregion
+
+        #region Static Properties
+
+        public static List< AdvancedResearchDef > AdvancedResearch
+        {
+            get
+            {
+                if( advancedResearch == null )
+                {
+                    advancedResearch = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
+                }
+                return advancedResearch;
             }
         }
 
@@ -97,21 +129,13 @@ namespace CommunityCoreLibrary
 
         #region Research Verification
 
-        void                                CheckAdvancedResearch()
+        bool                                ValidateResearch()
         {
             // Make sure the hidden research exists
             if( Research.Locker == null )
             {
                 Log.Error( "Community Core Library :: Advanced Research :: Missing Research.Locker!" );
-            }
-
-            // Get the [advanced] research defs
-            AdvancedResearch = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
-
-            if( ( AdvancedResearch == null )&&
-                ( AdvancedResearch.Count == 0 ) )
-            {
-                return;
+                return false;
             }
 
             // Validate each advanced research def
@@ -122,11 +146,22 @@ namespace CommunityCoreLibrary
                 {
                     // Remove projects with errors from list of usable projects
                     AdvancedResearch.Remove( Advanced );
+                    Log.Error( "Community Core Library :: Advanced Research :: Pruning " + Advanced.defName );
+                    i--;
+                    continue;
+                }
+
+                if( Advanced.IsLockedOut() )
+                {
+                    // Remove locked out projects
+                    AdvancedResearch.Remove( Advanced );
+                    i--;
                     continue;
                 }
             }
 
-            // All advanced research checked, no log errors means it's all good
+            // All research left is valid
+            return true;
         }
 
         #endregion
@@ -185,9 +220,37 @@ namespace CommunityCoreLibrary
                 }
             }
         }
-
+        
         #endregion
 
+        #region ThingComp Injection
+        
+        bool                                ReadyForThingCompsInjection()
+        {
+            foreach ( var ModHelperDef in ModHelperDefs )
+            {
+                if ( !ModHelperDef.ThingCompsInjected )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    
+
+        void                                InjectThingComp()
+        {
+            foreach (var ModHelperDef in ModHelperDefs)
+            {
+                if ( !ModHelperDef.ThingCompsInjected )
+                {
+                    CCL_Log.Message( "Injecting ThingComps for " + ModHelperDef.ModName );
+                    ModHelperDef.InjectThingComps();
+                }
+            }
+        }
+
+        #endregion
     }
 
 }

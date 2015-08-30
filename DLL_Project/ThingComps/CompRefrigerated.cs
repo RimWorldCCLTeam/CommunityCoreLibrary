@@ -173,7 +173,7 @@ namespace CommunityCoreLibrary
             {
                 CompRottable compRottable = t.TryGetComp< CompRottable >();
                 if( ( compRottable != null )&&
-                    ( contents.Find( item => item.thing == t ) == null ) )
+                    ( !contents.Exists( item => item.thing == t ) ) )
                 {
                     contents.Add( new RefrigeratorContents( t, compRottable ) );
                 }
