@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- HelpDef AutoGen Keys -->
+
+    <!-- Categorization Keys -->
+
+    <AutoHelpCategoryItems>물건</AutoHelpCategoryItems>
+    <AutoHelpCategoryBuildings>건물</AutoHelpCategoryBuildings>
+    <AutoHelpCategoryRecipes>제작법</AutoHelpCategoryRecipes>
+    <AutoHelpCategoryResearch>연구</AutoHelpCategoryResearch>
+
+    <AutoHelpSubCategoryApparel>의류</AutoHelpSubCategoryApparel>
+    <AutoHelpSubCategoryBodyParts>신체 부위 &amp; 임플란트</AutoHelpSubCategoryBodyParts>
+    <AutoHelpSubCategoryDrugs>약물</AutoHelpSubCategoryDrugs>
+    <AutoHelpSubCategoryMeals>음식</AutoHelpSubCategoryMeals>
+    <AutoHelpSubCategoryWeapons>무기</AutoHelpSubCategoryWeapons>
+
+    <!--
+    <AutoHelpSubCategoryAdvanced>고급</AutoHelpSubCategoryAdvanced>
+    <AutoHelpSubCategoryProjects>Projects</AutoHelpSubCategoryProjects>
+    <AutoHelpSubCategorySpecial>Special</AutoHelpSubCategorySpecial>-->
+
+    <!-- List Prepend Keys -->
+    <AutoHelpListFacilitiesAffecting>영향 받음:</AutoHelpListFacilitiesAffecting>
+    <AutoHelpListFacilitiesAffected>영향 줌:</AutoHelpListFacilitiesAffected>
+    <!--<AutoHelpListJoyActivities>즐거움 활동:</AutoHelpListJoyActivities>-->
+    <AutoHelpListRecipeProducts>생산:</AutoHelpListRecipeProducts>
+    <AutoHelpListRecipes>제작법:</AutoHelpListRecipes>
+    <AutoHelpListRecipesLocked>잠긴 제작법:</AutoHelpListRecipesLocked>
+    <AutoHelpListRecipesUnlocked>풀린 제작법:</AutoHelpListRecipesUnlocked>
+    <AutoHelpListRecipesOnThings>적용:</AutoHelpListRecipesOnThings>
+    <AutoHelpListRecipesOnThingsLocked>불가능:</AutoHelpListRecipesOnThingsLocked>
+    <AutoHelpListRecipesOnThingsUnlocked>가능:</AutoHelpListRecipesOnThingsUnlocked>
+    <AutoHelpListResearchBy>연구 후:</AutoHelpListResearchBy>
+    <AutoHelpListResearchRequired>필요한 연구:</AutoHelpListResearchRequired>
+    <AutoHelpListResearchLockout>연구로 인해 비활성화:</AutoHelpListResearchLockout>
+    <!--<AutoHelpListStuffCategories>Potential stuff:</AutoHelpListStuffCategories>-->
+    <AutoHelpListPlantsLocked>재배 불가:</AutoHelpListPlantsLocked>
+    <AutoHelpListPlantsUnlocked>재배 가능:</AutoHelpListPlantsUnlocked>
+    <AutoHelpListPlantsIn>장소:</AutoHelpListPlantsIn>
+    <AutoHelpListThingsLocked>건설 불가:</AutoHelpListThingsLocked>
+    <AutoHelpListThingsUnlocked>건설 가능:</AutoHelpListThingsUnlocked>
+
+    <!-- Specific Keys -->
+
+    <!--<AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>-->
+
+    <AutoHelpStuffCost>재료 수량: {0}</AutoHelpStuffCost>
+    <AutoHelpThingCost>건설 비용</AutoHelpThingCost>
+    <AutoHelpTotalCost>총 비용: {0}</AutoHelpTotalCost>
+
+    <!--<AutoHelpMaximumAffected>Maximum affected : {0}</AutoHelpMaximumAffected>
+    <AutoHelpMaximumParticipants>Maximum participants : {0}</AutoHelpMaximumParticipants>-->
+
+    <AutoHelpJoyKind>재미 유형: {0}</AutoHelpJoyKind>
+    <AutoHelpJoySkill>기술: {0}</AutoHelpJoySkill>
+
+</LanguageData>
