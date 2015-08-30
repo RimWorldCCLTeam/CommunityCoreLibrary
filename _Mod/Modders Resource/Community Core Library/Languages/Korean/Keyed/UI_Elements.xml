@@ -8,26 +8,26 @@
   <CommandChangeColorLabel>색 변경</CommandChangeColorLabel>
   <CommandChangeColorDesc>왼쪽 클릭 - {0}\n오른쪽 클릭 - {1}</CommandChangeColorDesc>
 
-  <CommandChangeRoommateColorLabel>전등 색 동기화</CommandChangeRoommateColorLabel>
+  <CommandChangeRoommateColorLabel>같은 방 조명 색 동기화</CommandChangeRoommateColorLabel>
   <CommandChangeRoommateColorLClick>왼쪽 클릭 - {0}만</CommandChangeRoommateColorLClick>
-  <CommandChangeRoommateColorRClick>오른쪽 클릭 - 모든 전등</CommandChangeRoommateColorRClick>
+  <CommandChangeRoommateColorRClick>오른쪽 클릭 - 모든 조명</CommandChangeRoommateColorRClick>
 
-  <CommandChangeTouchingPlantLabel>근접한 재배기 동기화</CommandChangeTouchingPlantLabel>
-  <CommandChangeRoommatePlantLabel>방의 모든 재배기 동기화</CommandChangeRoommatePlantLabel>
+  <CommandChangeTouchingPlantLabel>인접 재배기 동기화</CommandChangeTouchingPlantLabel>
+  <CommandChangeRoommatePlantLabel>같은 방 재배기 동기화</CommandChangeRoommatePlantLabel>
   <CommandChangeRoommatePlantLClick>왼쪽 클릭 - {0}만</CommandChangeRoommatePlantLClick>
   <CommandChangeRoommatePlantRClick>오른쪽 클릭 - 모든 재배기</CommandChangeRoommatePlantRClick>
 
-  <CommandGroupOfThingsLClick>왼쪽 클릭 - 방 안</CommandGroupOfThingsLClick>
+  <CommandGroupOfThingsLClick>왼쪽 클릭 - 같은 방</CommandGroupOfThingsLClick>
   <CommandGroupOfThingsRClick>오른쪽 클릭 - 지도 전체</CommandGroupOfThingsRClick>
 
-  <CommandGroupOfThingsByDefLabel>근접한 모든 {0} 동기화</CommandGroupOfThingsByDefLabel>
-  <CommandGroupOfThingsByLinkerLabel>연결된 모든 {0} 동기화</CommandGroupOfThingsByLinkerLabel>
+  <CommandGroupOfThingsByDefLabel>인접 {0} 동기화</CommandGroupOfThingsByDefLabel>
+  <CommandGroupOfThingsByLinkerLabel>연결된 {0} 동기화</CommandGroupOfThingsByLinkerLabel>
 
-  <CommandGroupOfThingsByDefInRoomLabel>방 안의 모든 {0} 동기화</CommandGroupOfThingsByDefInRoomLabel>
-  <CommandGroupOfThingsByLinkerInRoomLabel>방 안의 연결된 {0} 동기화</CommandGroupOfThingsByLinkerInRoomLabel>
+  <CommandGroupOfThingsByDefInRoomLabel>같은 방 {0} 동기화</CommandGroupOfThingsByDefInRoomLabel>
+  <CommandGroupOfThingsByLinkerInRoomLabel>같은 방의 연결된 {0} 동기화</CommandGroupOfThingsByLinkerInRoomLabel>
 
   <HelpOTabTitle>모드 도움말</HelpOTabTitle>
-  <NoHelpDefs>도움말이 없습니다.</NoHelpDefs>
+  <NoHelpDefs>도움말 정의를 찾을 수 없음</NoHelpDefs>
 
 
 </LanguageData>
