@@ -114,7 +114,7 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
-        public static List< ThingDef >      GetBuildingsUnlocked( this ResearchProjectDef researchProjectDef )
+        public static List< ThingDef >      GetThingsUnlocked( this ResearchProjectDef researchProjectDef )
         {
             // Buildings it unlocks
             var thingsOn = new List<ThingDef>();
@@ -138,21 +138,27 @@ namespace CommunityCoreLibrary
             return thingsOn;
         }
 
-        public static void                  GetRecipesOnBuildingsUnlocked( this ResearchProjectDef researchProjectDef, ref List< RecipeDef > recipes, ref List< ThingDef > buildings )
+        public static List< RecipeDef >     GetRecipesUnlocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
             // Recipes on buildings it unlocks
-            recipes = new List<RecipeDef>();
-            buildings = new List<ThingDef>();
+            var recipes = new List<RecipeDef>();
+            if( thingDefs != null )
+            {
+                thingDefs.Clear();
+            }
 
             // Add all recipes using this research projects
             recipes.AddRange( DefDatabase<RecipeDef>.AllDefsListForReading.Where( d => (
                 ( d.researchPrerequisite == researchProjectDef )
             ) ).ToList() );
 
-            // Add buildings for those recipes
-            foreach( var r in recipes )
+            if( thingDefs != null )
             {
-                buildings.AddRange( r.recipeUsers );
+                // Add buildings for those recipes
+                foreach( var r in recipes )
+                {
+                    thingDefs.AddRange( r.recipeUsers );
+                }
             }
 
             // Look in advanced research too
@@ -167,15 +173,52 @@ namespace CommunityCoreLibrary
             foreach( var a in advancedResearch )
             {
                 recipes.AddRange( a.recipeDefs );
-                buildings.AddRange( a.thingDefs );
+                if( thingDefs != null )
+                {
+                    thingDefs.AddRange( a.thingDefs );
+                }
             }
 
+            return recipes;
         }
 
-        public static void                  GetSowTagsOnPlantsUnlocked( this ResearchProjectDef researchProjectDef, ref List< string > sowTags, ref List< ThingDef > plants )
+        public static List< RecipeDef >     GetRecipesLocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
-            sowTags = new List< string >();
-            plants = new List< ThingDef >();
+            // Recipes on buildings it locks
+            var recipes = new List<RecipeDef>();
+            if( thingDefs != null )
+            {
+                thingDefs.Clear();
+            }
+
+            // Look in advanced research
+            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+                ( a.IsRecipeToggle )&&
+                ( a.HideDefs )&&
+                ( a.researchDefs.Count == 1 )&&
+                ( a.researchDefs.Contains( researchProjectDef ) )
+            ) ).ToList();
+
+            // Aggregate research
+            foreach( var a in advancedResearch )
+            {
+                recipes.AddRange( a.recipeDefs );
+                if( thingDefs != null )
+                {
+                    thingDefs.AddRange( a.thingDefs );
+                }
+            }
+
+            return recipes;
+        }
+
+        public static List< string >        GetSowTagsUnlocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
+        {
+            var sowTags = new List< string >();
+            if( thingDefs != null )
+            {
+                thingDefs.Clear();
+            }
 
             // Look in advanced research to add plants and sow tags it unlocks
             var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
@@ -189,9 +232,42 @@ namespace CommunityCoreLibrary
             foreach( var a in advancedResearch )
             {
                 sowTags.AddRange( a.sowTags );
-                plants.AddRange( a.thingDefs );
+                if( thingDefs != null )
+                {
+                    thingDefs.AddRange( a.thingDefs );
+                }
             }
 
+            return sowTags;
+        }
+
+        public static List< string >        GetSowTagsLocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
+        {
+            var sowTags = new List< string >();
+            if( thingDefs != null )
+            {
+                thingDefs.Clear();
+            }
+
+            // Look in advanced research to add plants and sow tags it unlocks
+            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+                ( a.IsPlantToggle )&&
+                ( a.HideDefs )&&
+                ( a.researchDefs.Count == 1 )&&
+                ( a.researchDefs.Contains( researchProjectDef ) )
+            ) ).ToList();
+
+            // Aggregate advanced research
+            foreach( var a in advancedResearch )
+            {
+                sowTags.AddRange( a.sowTags );
+                if( thingDefs != null )
+                {
+                    thingDefs.AddRange( a.thingDefs );
+                }
+            }
+
+            return sowTags;
         }
 
         #endregion

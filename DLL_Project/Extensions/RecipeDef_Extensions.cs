@@ -78,9 +78,7 @@ namespace CommunityCoreLibrary
                 thingsOn.AddRange( a.thingDefs );
             }
             // Now check for an absolute requirement
-            return
-                ( thingsOn.Exists( t => t.HasResearchRequirement() ) )&&
-                ( !thingsOn.Exists( t => !t.HasResearchRequirement() ) );
+            return ( thingsOn.All( t => t.HasResearchRequirement() ) );
         }
 
         #endregion
@@ -95,12 +93,11 @@ namespace CommunityCoreLibrary
             {
                 // Basic requirement
                 researchDefs.Add( recipeDef.researchPrerequisite );
-                 
+
                 // Advanced requirement
                 foreach( var a in ResearchController.AdvancedResearch.Where( a => (
                     ( a.IsRecipeToggle )&&
                     ( !a.HideDefs )&&
-                    ( a.ConsolidateHelp )&&
                     ( a.recipeDefs.Contains( recipeDef ) )
                 ) ).ToList() )
                 {
@@ -119,8 +116,7 @@ namespace CommunityCoreLibrary
             ) ) );
 
             // Add those linked via the recipe
-            if( ( recipeDef.recipeUsers != null )&&
-                ( recipeDef.recipeUsers.Count > 0 ) )
+            if( !recipeDef.recipeUsers.NullOrEmpty() )
             {
                 thingsOn.AddRange( recipeDef.recipeUsers );
             }
@@ -228,10 +224,10 @@ namespace CommunityCoreLibrary
                         // If it's a single research project, add that
                         researchDefs.Add( a.researchDefs[ 0 ] );
                     }
-                    else if( a.HelpConsolidator != null )
+                    else if( a.ResearchConsolidator != null )
                     {
                         // Add the advanced project instead
-                        researchDefs.Add( a.HelpConsolidator );
+                        researchDefs.Add( a.ResearchConsolidator );
                     }
                 }
             }

@@ -50,6 +50,35 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
+        public static bool                  IsImplant( this ThingDef thingDef )
+        {
+            // Return true if a recipe exist implanting this thing def
+            return
+                DefDatabase< RecipeDef >.AllDefsListForReading.Exists( r => (
+                    ( r.addsHediff != null )&&
+                    ( r.IsIngredient( thingDef ) )
+                ) );
+        }
+
+        public static RecipeDef             GetImplantRecipeDef( this ThingDef thingDef )
+        {
+            // Get recipe for implant
+            return
+                DefDatabase< RecipeDef >.AllDefsListForReading.Find( r => (
+                    ( r.addsHediff != null )&&
+                    ( r.IsIngredient( thingDef ) )
+                ) );
+        }
+
+        public static HediffDef             GetImplantHediffDef( this ThingDef thingDef )
+        {
+            // Get hediff for implant
+            var recipeDef = thingDef.GetImplantRecipeDef();
+            return recipeDef != null
+                ? recipeDef.addsHediff
+                : null;
+        }
+
         public static bool                  EverHasRecipes( this ThingDef thingDef )
         {
             return (
@@ -146,10 +175,10 @@ namespace CommunityCoreLibrary
                         // If it's a single research project, add that
                         researchDefs.Add( a.researchDefs[ 0 ] );
                     }
-                    else if( a.HelpConsolidator != null )
+                    else if( a.ResearchConsolidator != null )
                     {
                         // Add the advanced project instead
-                        researchDefs.Add( a.HelpConsolidator );
+                        researchDefs.Add( a.ResearchConsolidator );
                     }
                 }
             }

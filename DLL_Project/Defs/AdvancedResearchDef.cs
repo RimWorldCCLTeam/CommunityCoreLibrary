@@ -48,7 +48,7 @@ namespace CommunityCoreLibrary
         HelpDef                             helpDef;
 
         List< AdvancedResearchDef >         matchingAdvancedResearch;
-        public AdvancedResearchDef          HelpConsolidator;
+        AdvancedResearchDef                 researchConsolidator;
 
         float                               totalCost = -1;
 
@@ -152,7 +152,8 @@ namespace CommunityCoreLibrary
                 }
 
                 // Validate help
-                if( HasHelp )
+                if( ( HasHelp )&&
+                    ( ResearchConsolidator == this ) )
                 {
                     if( string.IsNullOrEmpty( label ) )
                     {
@@ -270,7 +271,12 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return ConsolidateHelp;
+                return 
+                    ( ConsolidateHelp )||
+                    (
+                        ( ResearchConsolidator != null )&&
+                        ( ResearchConsolidator.ConsolidateHelp )
+                    );
             }
         }
 
@@ -307,6 +313,29 @@ namespace CommunityCoreLibrary
                     }
                 }
                 return totalCost;
+            }
+        }
+
+        public AdvancedResearchDef          ResearchConsolidator
+        {
+            get
+            {
+                if( ConsolidateHelp )
+                {
+                    return this;
+                }
+                if( researchConsolidator == null )
+                {
+                    var matching = ModController.AdvancedResearch.Where( a => (
+                        ( HasMatchingResearch( a ) )
+                    ) ).ToList();
+                    researchConsolidator = matching.FirstOrDefault( a => ( a.ConsolidateHelp ) );
+                    if( researchConsolidator == null )
+                    {
+                        researchConsolidator = matching.FirstOrDefault();
+                    }
+                }
+                return researchConsolidator;
             }
         }
 
@@ -549,7 +578,8 @@ namespace CommunityCoreLibrary
 
         public void                         ToggleHelp( bool setInitialState = false )
         {
-            if( HelpDef == null )
+            if( ( !ConsolidateHelp )||
+                ( HelpDef == null ) )
             {
                 return;
             }
@@ -579,40 +609,62 @@ namespace CommunityCoreLibrary
             get
             {
                 if( ( matchingAdvancedResearch == null )&&
-                    ( ConsolidateHelp ) )
+                    ( ResearchConsolidator == this )  )
                 {
-                    // Matching advanced research (by requirements) not including this one
-                    matchingAdvancedResearch = ModController.AdvancedResearch.FindAll( a => (
-                        ( a.defName != this.defName )&&
+                    // Matching advanced research (by requirements)
+                    var matching  = ModController.AdvancedResearch.FindAll( a => (
                         ( HasMatchingResearch( a ) )
                     ) );
-                    // Set reference to help consolidator
-                    this.HelpConsolidator = this;
-                    foreach( var a in matchingAdvancedResearch )
+                    // Find this research as the consolidator
+                    researchConsolidator = matching.First( a => ( a.ConsolidateHelp ) );
+                    if( researchConsolidator == null )
                     {
-                        a.HelpConsolidator = this;
+                        // Find the highest priority one instead
+                        researchConsolidator = matching.First();   
+                    }
+                    if( researchConsolidator == this )
+                    {
+                        // This is the final consolidator
+                        matching.Remove( this );
+                        // Set reference to help consolidator
+                        foreach( var a in matching )
+                        {
+                            a.researchConsolidator = this;
+                        }
+                        matchingAdvancedResearch = matching;
                     }
                 }
+                // return the matching research or null
                 return matchingAdvancedResearch;
             }
         }
 
         public List< Def >                  GetResearchRequirements()
         {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetResearchRequirements();
+            }
+
             // Return the list of research required
             return researchDefs.ConvertAll<Def>( def => (Def)def );
         }
 
-        public List< ThingDef >             GetBuildsUnlocked()
+        public List< ThingDef >             GetThingsUnlocked()
         {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetThingsUnlocked();
+            }
+
             // Buildings it unlocks
-            var thingsOn = new List<ThingDef>();
+            var thingdefs = new List<ThingDef>();
 
             // Look at this def
             if( ( !HideDefs )&&
                 ( IsBuildingToggle ) )
             {
-                thingsOn.AddRange( thingDefs );
+                thingdefs.AddRange( thingDefs );
             }
 
             // Look in matching research
@@ -621,23 +673,28 @@ namespace CommunityCoreLibrary
                 if( ( !a.HideDefs )&&
                     ( a.IsBuildingToggle ) )
                 {
-                    thingsOn.AddRange( a.thingDefs );
+                    thingdefs.AddRange( a.thingDefs );
                 }
             }
 
-            return thingsOn;
+            return thingdefs;
         }
 
-        public List< ThingDef >             GetBuildsLocked()
+        public List< ThingDef >             GetThingsLocked()
         {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetThingsLocked();
+            }
+
             // Buildings it locks
-            var thingsOn = new List<ThingDef>();
+            var thingdefs = new List<ThingDef>();
 
             // Look at this def
             if( ( HideDefs )&&
                 ( IsBuildingToggle ) )
             {
-                thingsOn.AddRange( thingDefs );
+                thingdefs.AddRange( thingDefs );
             }
 
             // Look in matching research
@@ -646,25 +703,36 @@ namespace CommunityCoreLibrary
                 if( ( a.HideDefs )&&
                     ( a.IsBuildingToggle ) )
                 {
-                    thingsOn.AddRange( a.thingDefs );
+                    thingdefs.AddRange( a.thingDefs );
                 }
             }
 
-            return thingsOn;
+            return thingdefs;
         }
 
-        public void                         GetRecipesOnBuildingsUnlocked( ref List< RecipeDef > recipes, ref List< ThingDef > buildings )
+        public List< RecipeDef >            GetRecipesUnlocked( ref List< ThingDef > thingdefs )
         {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetRecipesUnlocked( ref thingdefs );
+            }
+
             // Recipes on buildings it unlocks
-            recipes = new List<RecipeDef>();
-            buildings = new List<ThingDef>();
+            var recipedefs = new List<RecipeDef>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
 
             // Look at this def
             if( ( !HideDefs )&&
                 ( IsRecipeToggle ) )
             {
-                recipes.AddRange( recipeDefs );
-                buildings.AddRange( thingDefs );
+                recipedefs.AddRange( recipeDefs );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
             }
 
             // Look in matching research
@@ -673,24 +741,40 @@ namespace CommunityCoreLibrary
                 if( ( !a.HideDefs )&&
                     ( a.IsRecipeToggle ) )
                 {
-                    recipes.AddRange( a.recipeDefs );
-                    buildings.AddRange( a.thingDefs );
+                    recipedefs.AddRange( a.recipeDefs );
+                    if( thingdefs != null )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
                 }
             }
+
+            return recipedefs;
         }
 
-        public void                         GetRecipesOnBuildingsLocked( ref List< RecipeDef > recipes, ref List< ThingDef > buildings )
+        public List< RecipeDef >            GetRecipesLocked( ref List< ThingDef > thingdefs )
         {
-            // Recipes on buildings it unlocks
-            recipes = new List<RecipeDef>();
-            buildings = new List<ThingDef>();
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetRecipesLocked( ref thingdefs );
+            }
+
+            // Recipes on buildings it locks
+            var recipedefs = new List<RecipeDef>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
 
             // Look at this def
             if( ( HideDefs )&&
                 ( IsRecipeToggle ) )
             {
-                recipes.AddRange( recipeDefs );
-                buildings.AddRange( thingDefs );
+                recipedefs.AddRange( recipeDefs );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
             }
 
             // Look in matching research
@@ -699,24 +783,40 @@ namespace CommunityCoreLibrary
                 if( ( a.HideDefs )&&
                     ( a.IsRecipeToggle ) )
                 {
-                    recipes.AddRange( a.recipeDefs );
-                    buildings.AddRange( a.thingDefs );
+                    recipedefs.AddRange( a.recipeDefs );
+                    if( thingdefs != null )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
                 }
             }
+
+            return recipedefs;
         }
 
-        public void                         GetSowTagsOnPlantsUnlocked( ref List< string > SowTags, ref List< ThingDef > plants )
+        public List< string >               GetSowTagsUnlocked( ref List< ThingDef > thingdefs )
         {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetSowTagsUnlocked( ref thingdefs );
+            }
+
             // Sow tags on plants it unlocks
-            SowTags = new List<string>();
-            plants = new List<ThingDef>();
+            var sowtags = new List<string>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
 
             // Look at this def
             if( ( !HideDefs )&&
                 ( IsPlantToggle ) )
             {
-                SowTags.AddRange( sowTags );
-                plants.AddRange( thingDefs );
+                sowtags.AddRange( sowTags );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
             }
 
             // Look in matching research
@@ -725,24 +825,40 @@ namespace CommunityCoreLibrary
                 if( ( !a.HideDefs )&&
                     ( a.IsPlantToggle ) )
                 {
-                    SowTags.AddRange( a.sowTags );
-                    plants.AddRange( a.thingDefs );
+                    sowtags.AddRange( a.sowTags );
+                    if( thingdefs != null )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
                 }
             }
+
+            return sowtags;
         }
 
-        public void                         GetSowTagsOnPlantsLocked( ref List< string > SowTags, ref List< ThingDef > plants )
+        public List< string >               GetSowTagsLocked( ref List< ThingDef > thingdefs )
         {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetSowTagsLocked( ref thingdefs );
+            }
+
             // Sow tags on plants it unlocks
-            SowTags = new List<string>();
-            plants = new List<ThingDef>();
+            var sowtags = new List<string>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
 
             // Look at this def
             if( ( HideDefs )&&
                 ( IsPlantToggle ) )
             {
-                SowTags.AddRange( sowTags );
-                plants.AddRange( thingDefs );
+                sowtags.AddRange( sowTags );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
             }
 
             // Look in matching research
@@ -751,10 +867,75 @@ namespace CommunityCoreLibrary
                 if( ( a.HideDefs )&&
                     ( a.IsPlantToggle ) )
                 {
-                    SowTags.AddRange( a.sowTags );
-                    plants.AddRange( a.thingDefs );
+                    sowtags.AddRange( a.sowTags );
+                    if( thingdefs != null )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
                 }
             }
+
+            return sowtags;
+        }
+
+        public List< Def >                  GetResearchUnlocked()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetResearchUnlocked();
+            }
+
+            // Research it unlocks
+            var researchdefs = new List<Def>();
+
+            // Look at this def
+            if( ( !HideDefs )&&
+                ( IsResearchToggle ) )
+            {
+                researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+            }
+
+            // Look in matching research
+            foreach( var a in MatchingAdvancedResearch )
+            {
+                if( ( !a.HideDefs )&&
+                    ( a.IsResearchToggle ) )
+                {
+                    researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                }
+            }
+
+            return researchdefs;
+        }
+
+        public List< Def >                  GetResearchLocked()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetResearchLocked();
+            }
+
+            // Research it locks
+            var researchdefs = new List<Def>();
+
+            // Look at this def
+            if( ( HideDefs )&&
+                ( IsResearchToggle ) )
+            {
+                researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+            }
+
+            // Look in matching research
+            foreach( var a in MatchingAdvancedResearch )
+            {
+                if( ( a.HideDefs )&&
+                    ( a.IsResearchToggle ) )
+                {
+                    researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                }
+            }
+
+            return researchdefs;
         }
 
         #endregion
@@ -770,9 +951,9 @@ namespace CommunityCoreLibrary
                     return helpDef;
                 }
 
-                if( HelpConsolidator != null )
+                if( ResearchConsolidator != null )
                 {
-                    return HelpConsolidator.HelpDef;
+                    return ResearchConsolidator.helpDef;
                 }
                 return null;
             }

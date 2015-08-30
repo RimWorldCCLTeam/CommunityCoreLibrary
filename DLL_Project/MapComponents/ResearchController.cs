@@ -133,15 +133,21 @@ namespace CommunityCoreLibrary
             // Process the caches
 
             // Recache the buildings recipes
-            foreach( var building in buildingCache )
+            if( buildingCache.Count > 0 )
             {
-                building.RecacheRecipes( !setInitialState );
+                foreach( var building in buildingCache )
+                {
+                    building.RecacheRecipes( !setInitialState );
+                }
             }
 
             // Apply all the research mods
-            foreach( var researchMod in researchModCache )
+            if( researchModCache.Count > 0 )
             {
-                researchMod.Invoke( !setInitialState );
+                foreach( var researchMod in researchModCache )
+                {
+                    researchMod.Invoke( !setInitialState );
+                }
             }
 
             // Recache the help system
