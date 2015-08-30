@@ -1,8 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <LanguageData>
 
-	  <MakeArtilleryShellSmithingTable.label>박격포탄 만들기</MakeArtilleryShellSmithingTable.label>
-	  <MakeArtilleryShellSmithingTable.description>박격포 포탄을 만듭니다.</MakeArtilleryShellSmithingTable.description>
-	  <MakeArtilleryShellSmithingTable.jobString>박격포탄 만드는 중</MakeArtilleryShellSmithingTable.jobString>
-  
+    <MakeArtilleryShellSmithingTable.label>박격포탄 만들기</MakeArtilleryShellSmithingTable.label>
+    <MakeArtilleryShellSmithingTable.description>박격포 포탄을 만듭니다.</MakeArtilleryShellSmithingTable.description>
+    <MakeArtilleryShellSmithingTable.jobString>박격포탄 만드는 중</MakeArtilleryShellSmithingTable.jobString>
+
 </LanguageData>
