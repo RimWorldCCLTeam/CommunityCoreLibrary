@@ -6,11 +6,15 @@
 
         <ModName>Community Core Library</ModName>
 
-        <version>0.12.1</version>
+        <version>0.12.2</version>
 
         <MapComponents>
             <li>CommunityCoreLibrary.ResearchController</li>
         </MapComponents>
+
+        <SpecialInjectors>
+            <li>CommunityCoreLibrary.CompRottableRefrigerated_Injector</li>
+        </SpecialInjectors>
 
     </ModHelperDef>
 

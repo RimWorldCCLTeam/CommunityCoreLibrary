@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.12.1</ReleaseVersion>
+    <ReleaseVersion>0.12.2</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -112,6 +112,7 @@
     <Compile Include="StaticClasses\HelpController.cs" />
     <Compile Include="StaticClasses\HelpCategoryDefOf.cs" />
     <Compile Include="Extensions\RecipeDef_Extensions.cs" />
+    <Compile Include="ThingComps\CompRottableRefrigerated.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
