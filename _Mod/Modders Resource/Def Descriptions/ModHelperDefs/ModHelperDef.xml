@@ -11,6 +11,10 @@
 
         <version>version</version>      [required] Minimum version of CCL required
 
+        <SpecialInjectors>              [optional] Class names of SpecialInjectors execute after mod validation and any other injection
+            <li>SpecialInjector</li>
+        </SpecialInjectors>
+
         <MapComponents>                 [optional] Class names of MapComponents to inject into save games
             <li>MapComponent</li>
         </MapComponents>
@@ -38,6 +42,7 @@
                 </targetDefs>
 
             </li>
+        </ThingComps>
 
     </ModHelperDef>
 
