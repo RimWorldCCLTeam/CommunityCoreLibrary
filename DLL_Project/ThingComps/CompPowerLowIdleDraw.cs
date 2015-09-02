@@ -134,6 +134,11 @@ namespace CommunityCoreLibrary
             //Log.Message( parent.def.defName + " :: CompTick" );
             base.CompTick();
 
+            if( !CompPowerTrader.PowerOn )
+            {
+                return;
+            }
+
             if( !parent.IsHashIntervalTick( 30 ) )
             {
                 return;
@@ -147,6 +152,11 @@ namespace CommunityCoreLibrary
         {
             //Log.Message( parent.def.defName + " :: CompTickRare" );
             base.CompTickRare();
+
+            if( !CompPowerTrader.PowerOn )
+            {
+                return;
+            }
 
             // keepOnTicks -= 250;
             PowerLevelToggle( 250 );
@@ -338,6 +348,13 @@ namespace CommunityCoreLibrary
 
         void                                ToggleGlower( bool turnItOn )
         {
+            if( ( IdleProps.operationalMode == LowIdleDrawMode.Cycle )&&
+                ( !turnItOn ) )
+            {
+                // Cyclers don't toggle glowers, but let them turn it back on (old saves)
+                return;
+            }
+
             //Log.Message( parent.def.defName + " - Toggle glower" );
             // If no state change, abort
             if( turnItOn == CompGlower.Lit )

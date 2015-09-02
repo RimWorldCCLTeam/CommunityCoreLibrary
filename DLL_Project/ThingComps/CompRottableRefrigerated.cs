@@ -14,18 +14,20 @@ namespace CommunityCoreLibrary
         public override void Inject()
         {
             // Replace CompRottable on ThingDefs
-            var thingDefs =
-                DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
-                    ( t.CompProperties_Rottable() != null )
-                ) ).ToList();
+            var thingDefs = DefDatabase< ThingDef >.AllDefsListForReading;
             if( !thingDefs.NullOrEmpty() )
             {
                 foreach( var thingDef in thingDefs )
                 {
-                    var comp = thingDef.CompProperties_Rottable();
-                    if( comp != null )
+                    if( !thingDef.comps.NullOrEmpty() )
                     {
-                        comp.compClass = typeof( CompRottableRefrigerated );
+                        foreach( var prop in thingDef.comps )
+                        {
+                            if( prop.GetType() == typeof( CompProperties_Rottable ) )
+                            {
+                                prop.compClass = typeof( CompRottableRefrigerated );
+                            }
+                        }
                     }
                 }
             }
