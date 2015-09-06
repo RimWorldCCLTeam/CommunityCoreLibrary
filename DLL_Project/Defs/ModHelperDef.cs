@@ -7,6 +7,20 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+
+    //public delegate void                    SpecialInjector();
+    public class                            SpecialInjector
+    {
+        public                              SpecialInjector ()
+        {
+        }
+
+        public virtual void                 Inject()
+        {
+        }
+
+    }
+
     public class ModHelperDef : Def
     {
 
@@ -22,11 +36,15 @@ namespace CommunityCoreLibrary
 
         public List< CompInjectionSet >     ThingComps;
 
+        public List< Type >                 SpecialInjectors;
+
         #endregion
 
-        //[Unsaved]
+        [Unsaved]
 
         #region Instance Data
+
+        bool                                specialsInjected;
 
         #endregion
 
@@ -63,8 +81,7 @@ namespace CommunityCoreLibrary
                 }
 
 #if DEBUG
-                if ( (MapComponents != null) &&
-                    (MapComponents.Count > 0) )
+                if ( !MapComponents.NullOrEmpty() )
                 {
                     foreach ( var componentType in MapComponents )
                     {
@@ -78,8 +95,7 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-                if ( (Designators != null) &&
-                    (Designators.Count > 0) )
+                if ( !Designators.NullOrEmpty() )
                 {
                     foreach ( var data in Designators )
                     {
@@ -100,8 +116,7 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-                if ( (ThingComps != null) &&
-                    (ThingComps.Count > 0 ) )
+                if ( !ThingComps.NullOrEmpty() )
                 {
                     foreach ( var compSet in ThingComps )
                     {
@@ -126,6 +141,19 @@ namespace CommunityCoreLibrary
                                                                                        DefDatabase<ThingDef>.GetNamed(targetDef, false) == null ) )
                         {
                             errors += "\n\tUnable to resolve ThingDef \"" + targetDef + "\"";
+                            isValid = false;
+                        }
+                    }
+                }
+
+                if ( !SpecialInjectors.NullOrEmpty() )
+                {
+                    foreach( var injectorType in SpecialInjectors )
+                    {
+                        if ( (injectorType == null) ||
+                            (injectorType.BaseType != typeof(SpecialInjector)) )
+                        {
+                            errors += "\n\tUnable to resolve SpecialInjector \"" + injectorType.ToString() + "\"";
                             isValid = false;
                         }
                     }
@@ -212,6 +240,19 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         SpecialsInjected
+        {
+            get
+            {
+                if ( SpecialInjectors.NullOrEmpty() )
+                {
+                    return true;
+                }
+
+                return specialsInjected;
+            }
+        }
+
         #endregion
 
         #region Injection
@@ -281,6 +322,16 @@ namespace CommunityCoreLibrary
                     def.comps.Add(compProperties);
                 }
             }
+        }
+
+        public void                         InjectSpecials()
+        {
+            foreach( var injectorType in SpecialInjectors )
+            {
+                var injectorObject = (SpecialInjector) Activator.CreateInstance( injectorType );
+                injectorObject.Inject();
+            }
+            specialsInjected = true;
         }
 
         #endregion

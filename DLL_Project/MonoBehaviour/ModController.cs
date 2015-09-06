@@ -43,6 +43,9 @@ namespace CommunityCoreLibrary
                 ValidateMods();
             }
 
+            // Do special injectors
+            InjectSpecials();
+
             // Validate advanced research defs
             if( ValidateResearch() )
             {
@@ -69,7 +72,7 @@ namespace CommunityCoreLibrary
             }
             if (ReadyForThingCompsInjection())
             {
-                InjectThingComp();
+                InjectThingComps();
             }
         }
 
@@ -236,9 +239,8 @@ namespace CommunityCoreLibrary
             }
             return false;
         }
-    
 
-        void                                InjectThingComp()
+        void                                InjectThingComps()
         {
             foreach (var ModHelperDef in ModHelperDefs)
             {
@@ -251,6 +253,23 @@ namespace CommunityCoreLibrary
         }
 
         #endregion
+
+        #region Special Injection
+
+        void                                InjectSpecials()
+        {
+            foreach (var ModHelperDef in ModHelperDefs)
+            {
+                if ( !ModHelperDef.SpecialsInjected )
+                {
+                    CCL_Log.Message( "Special Injections for " + ModHelperDef.ModName );
+                    ModHelperDef.InjectSpecials();
+                }
+            }
+        }
+
+        #endregion
+
     }
 
 }

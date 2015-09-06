@@ -5,6 +5,7 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+    /*
     public class RefrigeratorContents : IExposable
     {
         // This is to handle the degredation of items in the refrigerator
@@ -20,7 +21,7 @@ namespace CommunityCoreLibrary
             // Needed for Scribing
         }
 
-        public                              RefrigeratorContents( Thing t, CompRottable compRottable )
+        public                              RefrigeratorContents( Thing t, CompRottableRefrigerated compRottable )
         {
             thing = t;
             HitPoints = t.HitPoints;
@@ -44,9 +45,11 @@ namespace CommunityCoreLibrary
         }
 
     }
+    */
 
     public class CompRefrigerated : ThingComp
     {
+        /*
         List< RefrigeratorContents >        contents = new List< RefrigeratorContents >();
 
         Building_Storage                    Building_Storage
@@ -133,7 +136,7 @@ namespace CommunityCoreLibrary
             // Refrigerate the items
             foreach( RefrigeratorContents item in contents )
             {
-                var compRottable = item.thing.TryGetComp< CompRottable >();
+                var compRottable = item.thing.TryGetComp< CompRottableRefrigerated >();
 #if DEBUG
                 if( compRottable == null )
                 {
@@ -171,7 +174,7 @@ namespace CommunityCoreLibrary
             // Add new things
             foreach( Thing t in Building_Storage.slotGroup.HeldThings )
             {
-                CompRottable compRottable = t.TryGetComp< CompRottable >();
+                CompRottableRefrigerated compRottable = t.TryGetComp< CompRottableRefrigerated >();
                 if( ( compRottable != null )&&
                     ( !contents.Exists( item => item.thing == t ) ) )
                 {
@@ -180,6 +183,7 @@ namespace CommunityCoreLibrary
             }
 
         }
+        */
 
     }
 

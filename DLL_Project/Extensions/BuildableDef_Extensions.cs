@@ -91,12 +91,12 @@ namespace CommunityCoreLibrary
 
         public static CommunityCoreLibrary.RestrictedPlacement_Properties RestrictedPlacement_Properties ( this BuildableDef buildableDef )
         {
-            if( buildableDef.GetType() == typeof( TerrainWithComps ) )
+            if( buildableDef is TerrainWithComps )
             {
                 // Terrain with comps
                 return ( (TerrainWithComps)buildableDef ).GetCompProperties( typeof( RestrictedPlacement_Comp ) ) as RestrictedPlacement_Properties;
             }
-            else if ( buildableDef.GetType() == typeof( ThingDef ) )
+            else if ( buildableDef is ThingDef )
             {
                 // Thing with comps
                 return ( (ThingDef)buildableDef ).GetCompProperties( typeof( RestrictedPlacement_Comp ) ) as RestrictedPlacement_Properties;

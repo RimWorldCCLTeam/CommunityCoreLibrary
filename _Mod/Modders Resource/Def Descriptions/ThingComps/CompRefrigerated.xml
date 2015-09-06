@@ -9,17 +9,13 @@
     
     Requires:   CompPowerTrader
     
-    tickerType: Normal
-    
-    This comp will maintain the health and rotProgress of all items in the storage building
-    which are ThingWithComps and have CompRottable, while powered.
+    This comp flags a storage building as protecting rottable items from exposure and,
+    in short, that the item is refrigerated which carries all the benefits of being frozen.
     
     Usage:
     
     <ThingDef>
         ...
-        
-        <tickerType>Normal</tickerType>
         
         <comps>
             ...
