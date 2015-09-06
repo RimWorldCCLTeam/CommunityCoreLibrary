@@ -2,38 +2,38 @@
 <Defs>
 
     <!--
-    
+
     Namespace:  CommunityCoreLibrary
-    
+
     PlaceWorker:PlaceWorker_OnlyOnThing
-    
+
     Requires:   RestrictedPlacement_Comp
                 ThingWithComps
-    
+
     tickerType: Normal or Rare
-    
+
     This place worker restricts the building to being placed only on one of the filtered ThingDefs.
-    
+
     Comp Properties:
-    
+
     type (default)  tag                 Details
-    
+
     ThingDefs       thingDefs           [required] List of things to do allow placement on
         (null)
-    
+
     Usage:
-    
+
     <ThingDef>
         ...
-        
+
         <tickerType>Normal or Rare</tickerType>
-        
+
         <comps>
             ...
-            
+
             <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
                 <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
-                
+
                 <thingDefs>
                     <li>ChunkGranite</li>
                     <li>ChunkSandstone</li>
@@ -42,23 +42,23 @@
                     <li>ChunkMarble</li>
                     <li>ChunkSlagSteel</li>
                 </thingDefs>
-                
+
             </li>
-            
+
             ...
         </comps>
-        
+
         <placeWorkers>
             ...
-            
+
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnThing</li>
-            
+
             ...
         </placeWorkers>
-        
+
         ...
     </ThingDef>
-    
+
     -->
 
 </Defs>
