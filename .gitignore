@@ -7,7 +7,7 @@
 *.userprefs
 *.sln.docstates
 DLL_Project/Source-DLLs/*.dll
-DLL_Project/PostBuild.bat
+DLL_Project/*.bat
 
 # Build results
 [Dd]ebug/
