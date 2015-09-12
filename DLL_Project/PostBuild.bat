@@ -3,8 +3,7 @@ REM This is a local file copy after build.  Get it once and your .gitnore
 REM should handle it after that.  Make all your local copies at the end.
 
 REM Set this to your local RimWorld install path and CCL Assemblies directory
-Set InstalledCCLAssemblies="C:\Games\RimWorld A12\Mods\Community Core Library\Assemblies"
-rem Set InstalledCCLAssemblies="/badkarma/"
+Set InstalledCCLAssemblies="/badkarma/"
 
 if NOT EXIST %InstalledCCLAssemblies% (
 	echo Missing or invalid copy target:
@@ -28,19 +27,10 @@ if %1 == Debug (
 	copy %2 "%3_Mod\User Release\Community Core Library\Assemblies"
 )
 
-REM Add any other local copies here (and comment the next line)
-goto Finished
+REM Add any other local copies here
+rem goto Finished
 
-echo Copy to ModPile
-copy %2 "C:\Utils\dev\Projects\ModPile\ModPile_ProjectDLL\Source-DLLs"
-
-echo Copy to RT Fusebox
-copy %2 "C:\Utils\dev\Projects\RTFusebox\Source-DLLs"
-
-echo Copy to Fish Industry
-copy %2 "C:\Utils\dev\Projects\FishIndustry\FishIndustry\Source-DLLs"
-
-echo Copy to MD2
-copy %2 "C:\Utils\dev\Projects\MD2\MD2-Source\Source-DLLs"
+rem echo Copy to ModPile
+rem copy %2 "C:\Utils\dev\Projects\ModPile\ModPile_ProjectDLL\Source-DLLs"
 
 :Finished
