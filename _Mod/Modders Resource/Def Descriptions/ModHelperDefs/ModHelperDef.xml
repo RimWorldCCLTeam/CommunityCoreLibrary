@@ -26,6 +26,9 @@
 
                 <designationCategoryDef>DesignationCategoryDef<designationCategoryDef>
                                         [required] Designation Category to inject designator into
+                <designatorNextTo>Designator</designatorNextTo>
+                                        [optional] Class name of Designator to inject beside (immediately after)
+
             </li>
         </Designators>
 

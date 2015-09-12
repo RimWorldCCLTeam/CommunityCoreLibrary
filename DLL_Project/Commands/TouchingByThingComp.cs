@@ -50,10 +50,17 @@ namespace CommunityCoreLibrary.Commands
             }
         }
 
-        public                              TouchingByThingComp( Thing parent, Type RequiredType, string label, Action_OnThings LeftClick = null, Action_OnThings RightClick = null )
+        public                              TouchingByThingComp(
+            Thing parent,
+            Type RequiredType,
+            string label,
+            Texture2D designatorIcon,
+            Action_OnThings LeftClick = null,
+            Action_OnThings RightClick = null
+        )
         {
             parentThing = parent;
-            icon = Icon.NextButton;
+            icon = designatorIcon;
 
             parentType = RequiredType;
 
