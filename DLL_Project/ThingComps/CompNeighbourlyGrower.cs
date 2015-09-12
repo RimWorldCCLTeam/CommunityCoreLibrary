@@ -32,6 +32,7 @@ namespace CommunityCoreLibrary
                             parent,
                             GetType(),
                             "CommandChangeTouchingPlantLabel".Translate(),
+                            Icon.ShareSowTag,
                             GroupPlantChange,
                             GroupPlantChange
                         );
@@ -50,6 +51,7 @@ namespace CommunityCoreLibrary
                     _GizmoTouchingByLinker =
                         new TouchingByLinker(
                             parent,
+                            Icon.ShareSowTag,
                             GroupPlantChange,
                             GroupPlantChange
                         );
@@ -69,7 +71,8 @@ namespace CommunityCoreLibrary
                         new DefOrThingCompInRoom(
                             parent,
                             GetType(),
-                            "CommandChangeRoommatePlantLabel".Translate()
+                            "CommandChangeRoommatePlantLabel".Translate(),
+                            Icon.ShareSowTag
                         );
                     _GizmoDefOrThingCompInRoom.LabelByDef = "CommandChangeRoommatePlantLClick".Translate( parent.def.label );
                     _GizmoDefOrThingCompInRoom.ClickByDef = GroupPlantChange;
@@ -127,20 +130,40 @@ namespace CommunityCoreLibrary
                 return;
             }
 #endif
-            
+            // Get plant to grow
+            var plantDef = thisGrower.GetPlantDefToGrow();
+            if(
+                ( plantDef == null )||
+                ( plantDef.plant == null )||
+                ( plantDef.plant.sowTags.NullOrEmpty() )
+            )
+            {
+                // "Plant" doesn't contain the required information
+                Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + parent.def.defName + " unable to resolve to plant def to grow! - " + plantDef.defName );
+                return;
+            }
+
             // Now set their plant
             foreach( Thing g in things )
             {
                 // Should be a Building_PlantGrower
                 var grower = g as Building_PlantGrower;
 #if DEBUG
-                if( grower == null )
+                if(
+                    ( grower == null )||
+                    ( grower.def.building == null )||
+                    ( string.IsNullOrEmpty( grower.def.building.sowTag ) )
+                )
                 {
                     Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + g.def.defName + " unable to resolve to Building_PlantGrower!" );
                     return;
                 }
 #endif
-                grower.SetPlantDefToGrow( thisGrower.GetPlantDefToGrow() );
+                // Only set if the sow tags match
+                if( plantDef.plant.sowTags.Contains( grower.def.building.sowTag ) )
+                {
+                    grower.SetPlantDefToGrow( plantDef );
+                }
             }
         }
 

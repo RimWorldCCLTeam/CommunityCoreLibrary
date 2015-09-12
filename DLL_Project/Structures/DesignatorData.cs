@@ -12,5 +12,7 @@ namespace CommunityCoreLibrary
 
         public string                       designationCategoryDef;
 
+        public Type                         designatorNextTo;
+
     }
 }

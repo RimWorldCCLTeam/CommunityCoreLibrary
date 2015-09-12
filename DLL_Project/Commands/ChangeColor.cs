@@ -35,10 +35,13 @@ namespace CommunityCoreLibrary.Commands
             }
         }
 
-        public                              ChangeColor( CompColoredLight light )
+        public                              ChangeColor(
+            CompColoredLight light,
+            Texture2D designatorIcon
+        )
         {
             parentLight = light;
-            icon = Icon.NextButton;
+            icon = designatorIcon;
             defaultLabel = "CommandChangeColorLabel".Translate();
         }
 

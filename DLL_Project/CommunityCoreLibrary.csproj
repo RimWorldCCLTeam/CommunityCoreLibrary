@@ -122,8 +122,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup />
   <PropertyGroup>
+    <PostBuildEvent>call "$(ProjectDir)PostBuild.bat" $(ConfigurationName) "$(TargetPath)" $(SolutionDir)</PostBuildEvent>
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="PostBuild.bat" />
+  </ItemGroup>
 </Project>

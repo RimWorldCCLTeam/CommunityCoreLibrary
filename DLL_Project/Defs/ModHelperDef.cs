@@ -113,6 +113,13 @@ namespace CommunityCoreLibrary
                             errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
                         }
+                        if ( ( data.designatorNextTo != null )&&
+                            ( data.designatorNextTo.BaseType != typeof( Designator ) ) 
+                        )
+                        {
+                            errors += "\n\tUnable to resolve designatorNextTo \"" + data.designatorNextTo + "\"";
+                            isValid = false;
+                        }
                     }
                 }
 
@@ -288,8 +295,29 @@ namespace CommunityCoreLibrary
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( data.designatorClass );
 
-                    // Inject the designator
-                    designationCategory.resolvedDesignators.Add(designatorObject);
+                    if( data.designatorNextTo == null )
+                    {
+                        // Inject the designator at the end
+                        designationCategory.resolvedDesignators.Add( designatorObject );
+                    }
+                    else
+                    {
+                        // Prefers to be beside a specific designator
+                        var designatorIndex = designationCategory.resolvedDesignators.FindIndex( d => (
+                            ( d.GetType() == data.designatorNextTo )
+                        ) );
+                        if( designatorIndex < 0 )
+                        {
+                            // Other designator doesn't exist (yet?)
+                            // Inject the designator at the end
+                            designationCategory.resolvedDesignators.Add( designatorObject );
+                        }
+                        else
+                        {
+                            // Inject beside desired designator
+                            designationCategory.resolvedDesignators.Insert( designatorIndex + 1, designatorObject );
+                        }
+                    }
                 }
             }
 
