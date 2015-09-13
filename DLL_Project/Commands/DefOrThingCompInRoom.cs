@@ -54,10 +54,15 @@ namespace CommunityCoreLibrary.Commands
             }
         }
 
-        public                              DefOrThingCompInRoom ( Thing parent, Type RequiredType, string label )
+        public                              DefOrThingCompInRoom (
+            Thing parent,
+            Type RequiredType,
+            string label,
+            Texture2D designatorIcon
+        )
         {
             parentThing = parent;
-            icon = Icon.NextButton;
+            icon = designatorIcon;
 
             parentType = RequiredType;
 

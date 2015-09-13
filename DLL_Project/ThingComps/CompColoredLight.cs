@@ -42,7 +42,10 @@ namespace CommunityCoreLibrary
         ChangeColor                 GizmoChangeColor {
             get{
                 if( _GizmoChangeColor == null )
-                    _GizmoChangeColor = new ChangeColor( this );
+                    _GizmoChangeColor = new ChangeColor(
+                        this,
+                        Icon.SelectLightColor
+                    );
                 return _GizmoChangeColor;
             }
         }
@@ -51,7 +54,12 @@ namespace CommunityCoreLibrary
         TouchingByLinker            GizmoTouchingByLinker {
             get {
                 if( _GizmoTouchingByLinker == null )
-                    _GizmoTouchingByLinker = new TouchingByLinker( parent, GroupColorChange, GroupColorChange );
+                    _GizmoTouchingByLinker = new TouchingByLinker(
+                        parent,
+                        Icon.ShareLightColor,
+                        GroupColorChange,
+                        GroupColorChange
+                    );
                 return _GizmoTouchingByLinker;
             }
         }
@@ -61,7 +69,12 @@ namespace CommunityCoreLibrary
             get {
                 if( _GizmoDefOrThingCompInRoom == null )
                 {
-                    _GizmoDefOrThingCompInRoom = new DefOrThingCompInRoom( parent, GetType(), "CommandChangeRoommateColorLabel".Translate() );
+                    _GizmoDefOrThingCompInRoom = new DefOrThingCompInRoom(
+                        parent,
+                        GetType(),
+                        "CommandChangeRoommateColorLabel".Translate(),
+                        Icon.ShareLightColor
+                    );
                     _GizmoDefOrThingCompInRoom.LabelByDef = Translator.Translate( "CommandChangeRoommateColorLClick", parent.def.label );
                     _GizmoDefOrThingCompInRoom.ClickByDef = GroupColorChange;
                     _GizmoDefOrThingCompInRoom.LabelByThingComp = "CommandChangeRoommateColorRClick".Translate();
