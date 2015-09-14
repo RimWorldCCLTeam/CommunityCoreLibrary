@@ -113,8 +113,8 @@ namespace CommunityCoreLibrary
                             errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
                         }
-                        if ( ( data.designatorNextTo != null )&&
-                            ( data.designatorNextTo.BaseType != typeof( Designator ) ) 
+                        if ( (data.designatorNextTo != null)&&
+                            !(data.designatorNextTo.IsSubclassOf( typeof(Designator) )) 
                         )
                         {
                             errors += "\n\tUnable to resolve designatorNextTo \"" + data.designatorNextTo + "\"";
