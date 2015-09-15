@@ -111,16 +111,21 @@ namespace CommunityCoreLibrary
                             isValid = false;
                         }
                         if(
-                            (string.IsNullOrEmpty(data.designationCategoryDef)) ||
-                            (DefDatabase<DesignationCategoryDef>.GetNamed(data.designationCategoryDef, false) == null)
+                            ( string.IsNullOrEmpty( data.designationCategoryDef ) )||
+                            ( DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false ) == null )
                         )
                         {
                             errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
                         }
+<<<<<<< HEAD
                         if(
                             ( data.designatorNextTo != null )&&
                             ( !data.designatorNextTo.IsSubclassOf( typeof( Designator ) ) )
+=======
+                        if ( (data.designatorNextTo != null)&&
+                            !(data.designatorNextTo.IsSubclassOf( typeof(Designator) )) 
+>>>>>>> CommunityCoreLibrary/development
                         )
                         {
                             errors += "\n\tUnable to resolve designatorNextTo \"" + data.designatorNextTo + "\"";

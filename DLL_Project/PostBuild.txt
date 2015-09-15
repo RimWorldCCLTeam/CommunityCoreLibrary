@@ -1,4 +1,4 @@
-REM DO NOT RECOMMIT THIS FILE!
+REM Copy this file to "PostBuild.bat"
 REM This is a local file copy after build.  Get it once and your .gitnore
 REM should handle it after that.  Make all your local copies at the end.
 
@@ -28,9 +28,9 @@ if %1 == Debug (
 )
 
 REM Add any other local copies here
-rem goto Finished
+REM See example below
 
 rem echo Copy to ModPile
-rem copy %2 "C:\Utils\dev\Projects\ModPile\ModPile_ProjectDLL\Source-DLLs"
+rem copy %2 "C:\Utils\dev\Projects\ModPile\Source-DLLs"
 
 :Finished
