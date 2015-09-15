@@ -83,10 +83,7 @@ namespace CommunityCoreLibrary
                 return (
                     ( compRefrigerated != null )&&
                     ( compPowerTrader == null )||
-                    (
-                        ( compPowerTrader != null )&&
-                        ( compPowerTrader.PowerOn )
-                    )
+                    ( compPowerTrader.PowerOn )
                 );
             }
         }
