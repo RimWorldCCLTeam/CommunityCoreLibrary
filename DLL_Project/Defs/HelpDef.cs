@@ -28,9 +28,9 @@ namespace CommunityCoreLibrary
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            if (category == null)
+            if( category == null )
             {
-                Log.Error("Community Core Library :: Help Tab :: category resolved to null in HelpDef( " + defName + " )");
+                CCL_Log.Error( "Category resolved to null", defName );
             }
         }
 #endif

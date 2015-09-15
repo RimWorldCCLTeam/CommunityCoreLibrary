@@ -11,13 +11,13 @@ namespace CommunityCoreLibrary
     public static class ThingDef_Extensions
     {
 
+        // Dummy for functions needing a ref list
         public static List<Def>             nullDefs = null;
 
         #region Recipe Cache
 
         public static void                  RecacheRecipes( this ThingDef thingDef, bool validateBills )
         {
-            //Log.Message( building.LabelCap + " - Recaching" );
             typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic ).SetValue( thingDef, null );
 
             if( !validateBills )

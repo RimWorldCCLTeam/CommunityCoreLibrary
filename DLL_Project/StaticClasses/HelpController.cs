@@ -43,7 +43,7 @@ namespace CommunityCoreLibrary
             // Rebuild help caches
             ResolveReferences();
 
-            Log.Message( "Community Core Library :: Help System :: Initialized" );
+            CCL_Log.Message( "Initialized", "Help System" );
         }
 
         static void                         ResolveReferences()

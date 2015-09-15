@@ -55,7 +55,7 @@ namespace CommunityCoreLibrary
             // Auto-generate help menus
             HelpController.Initialize();
 
-            Log.Message( "Community Core Library :: Initialized" );
+            CCL_Log.Message( "Initialized" );
 
             enabled = true;
         }
@@ -137,7 +137,7 @@ namespace CommunityCoreLibrary
             // Make sure the hidden research exists
             if( Research.Locker == null )
             {
-                Log.Error( "Community Core Library :: Advanced Research :: Missing Research.Locker!" );
+                CCL_Log.Error( "Missing research locker!", "Advanced Research" );
                 return false;
             }
 
@@ -149,7 +149,7 @@ namespace CommunityCoreLibrary
                 {
                     // Remove projects with errors from list of usable projects
                     AdvancedResearch.Remove( Advanced );
-                    Log.Error( "Community Core Library :: Advanced Research :: Pruning " + Advanced.defName );
+                    CCL_Log.Error( "Pruning " + Advanced.defName, "Advanced Research" );
                     i--;
                     continue;
                 }
@@ -186,7 +186,7 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.MapComponentsInjected )
                 {
-                    Log.Message( "Community Core Library :: Injecting MapComponents for " + ModHelperDef.ModName );
+                    CCL_Log.Message( "Injecting MapComponents for " + ModHelperDef.ModName );
                     ModHelperDef.InjectMapComponents();
                 }
             }
@@ -218,7 +218,7 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.DesignatorsInjected )
                 {
-                    Log.Message( "Community Core Library :: Injecting Designators for " + ModHelperDef.ModName );
+                    CCL_Log.Message( "Injecting Designators for " + ModHelperDef.ModName );
                     ModHelperDef.InjectDesignators();
                 }
             }

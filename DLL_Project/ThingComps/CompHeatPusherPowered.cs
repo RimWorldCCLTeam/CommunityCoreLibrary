@@ -26,20 +26,19 @@ namespace CommunityCoreLibrary
 #if DEBUG
         public override void                PostSpawnSetup()
         {
-            //Log.Message( def.defName + " - SpawnSetup()" );
             base.PostSpawnSetup();
 
             // Check power comp
             if( CompPowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompHeatPusherLowPowered :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompHeatPusherLowPowered requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 
             // Check idle power comp
             if( CompPowerLowIdleDraw == null )
             {
-                Log.Error( "Community Core Library :: CompHeatPusherLowPowered :: " + parent.def.defName + " requires CompPowerLowIdleDraw!" );
+                CCL_Log.Error( "CompHeatPusherLowPowered requires CompPowerLowIdleDraw!", parent.def.defName );
                 return;
             }
 
