@@ -337,26 +337,12 @@ namespace CommunityCoreLibrary
         {
             foreach ( var compSet in ThingComps )
             {
-                // Access ThingDef database
-                var typeFromHandle = typeof(DefDatabase<ThingDef>);
-                var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
-                if ( defsByName == null )
-                {
-                    CCL_Log.Error("defName is null!", "ThingComp Injection");
-                    return;
-                }
-                var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
-                if ( dictDefsByName == null )
-                {
-                    CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
-                    return;
-                }
+                var defsByName = DefDatabase<ThingDef>.AllDefs;
                 
                 foreach ( var targetName in compSet.targetDefs )
                 {
-                    var def = dictDefsByName.Values.ToList().Find(s => s.defName == targetName);
+                    var def = defsByName.ToList().Find(s => s.defName == targetName);
                     var compProperties = compSet.compProps;
-
                     def.comps.Add(compProperties);
                 }
             }
