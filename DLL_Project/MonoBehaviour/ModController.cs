@@ -43,11 +43,13 @@ namespace CommunityCoreLibrary
                 ValidateMods();
             }
 
-            // Do special injectors
+            // Do injections
             InjectSpecials();
+            InjectThingComps();
+            InjectDesignators();
 
             // Validate advanced research defs
-            if( ValidateResearch() )
+            if ( ValidateResearch() )
             {
                 ResearchController.InitComponent();
             }
@@ -62,17 +64,9 @@ namespace CommunityCoreLibrary
 
         public void                         FixedUpdate()
         {
-            if( ReadyForDesignatorInjection() )
-            {
-                InjectDesignators();
-            }
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
-            }
-            if (ReadyForThingCompsInjection())
-            {
-                InjectThingComps();
             }
         }
 
@@ -196,21 +190,6 @@ namespace CommunityCoreLibrary
 
         #region Designator Injection
 
-        bool                                ReadyForDesignatorInjection()
-        {
-            var DesignatorCategoryDefs = DefDatabase<DesignationCategoryDef>.AllDefs;
-
-            foreach( var DesignatorCategoryDef in DesignatorCategoryDefs )
-            {
-                if( DesignatorCategoryDef.resolvedDesignators == null )
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         void                                InjectDesignators()
         {
             // Inject the designators into the categories
@@ -227,18 +206,6 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region ThingComp Injection
-        
-        bool                                ReadyForThingCompsInjection()
-        {
-            foreach ( var ModHelperDef in ModHelperDefs )
-            {
-                if ( !ModHelperDef.ThingCompsInjected )
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         void                                InjectThingComps()
         {
