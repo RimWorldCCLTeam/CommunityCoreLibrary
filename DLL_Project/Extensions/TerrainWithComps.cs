@@ -43,7 +43,7 @@ namespace CommunityCoreLibrary
                         ( placeWorker != typeof( PlaceWorker_OnlyUnderRoof ) )
                     )
                     {
-                        Log.Error( "Community Core Library :: TerrainWithComps :: PlaceWorker( " + placeWorker.FullName + " ) is invalid for TerrainWithComps in " + defName );
+                        CCL_Log.Error( "TerrainWithComps using invalid PlaceWorker \"" + placeWorker.FullName + "\"", defName );
                     }
                 }
             }
@@ -61,7 +61,7 @@ namespace CommunityCoreLibrary
                         ( compClass != typeof( RestrictedPlacement_Comp ) )
                     )
                     {
-                        Log.Error( "Community Core Library :: TerrainWithComps :: comp( " + compClass.FullName + " ) is invalid for TerrainWithComps in " + defName );
+                        CCL_Log.Error( "TerrainWithComps using invalid ThingComp \"" + compClass.FullName + "\"", defName );
                     }
                 }
             }

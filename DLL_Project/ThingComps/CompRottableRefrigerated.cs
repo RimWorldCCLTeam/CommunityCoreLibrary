@@ -46,7 +46,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private CompRefrigerated CompRefigerated
+        private CompRefrigerated CompRefrigerated
         {
             get
             {
@@ -61,26 +61,30 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private CompPowerTrader CompPowerTrader
+        private CompPowerTrader PowerTraderFor( CompRefrigerated refrigerator )
         {
-            get
+            if( refrigerator != null )
             {
-                var foo = CompRefigerated;
-                if( foo != null )
-                {
-                    return foo.parent.TryGetComp<CompPowerTrader>();
-                }
-                return null;
+                return refrigerator.parent.TryGetComp<CompPowerTrader>();
             }
+            return null;
         }
 
         private bool InRefrigerator
         {
             get
             {
+                var compRefrigerated = CompRefrigerated;
+                var compPowerTrader = PowerTraderFor( compRefrigerated );
                 return (
-                    ( CompPowerTrader != null )&&
-                    ( CompPowerTrader.PowerOn )
+                    ( compRefrigerated != null )&&
+                    (
+                        ( compPowerTrader == null )||
+                        (
+                            ( compPowerTrader != null )&&
+                            ( compPowerTrader.PowerOn )
+                        )
+                    )
                 );
             }
         }

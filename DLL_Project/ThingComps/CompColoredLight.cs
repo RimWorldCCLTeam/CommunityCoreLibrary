@@ -91,7 +91,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostExposeData()
         {
-            //Log.Message( def.defName + " - ExposeData()" );
             base.PostExposeData();
 
             Scribe_Values.LookValue<int>( ref ColorIndex, "ColorIndex", -1 );
@@ -99,7 +98,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostSpawnSetup()
         {
-            //Log.Message( def.defName + " - SpawnSetup()" );
             base.PostSpawnSetup();
 
             // Get power comp
@@ -107,7 +105,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( PowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompColoredLight requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 #endif
@@ -116,7 +114,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( CompGlower == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompGlower!" );
+                CCL_Log.Error( "CompColoredLight requires CompGlower!", parent.def.defName );
                 return;
             }
 #endif
@@ -126,7 +124,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( ColorProps == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompProperties_ColoredLight!" );
+                CCL_Log.Error( "CompColoredLight requires CompProperties_ColoredLight!", parent.def.defName );
                 return;
             }
 #endif
@@ -276,7 +274,7 @@ namespace CommunityCoreLibrary
             var newGlower = new CompGlower();
             if( newGlower == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to create new CompGlower!" );
+                CCL_Log.Error( "CompColoredLight unable to create new CompGlower!", parent.def.defName );
                 return;
             }
             newGlower.parent = parent;
@@ -285,7 +283,7 @@ namespace CommunityCoreLibrary
             var newProps = new CompProperties();
             if( newProps == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to create new CompProperties!" );
+                CCL_Log.Error( "CompColoredLight unable to create new CompProperties!", parent.def.defName );
                 return;
             }
             newProps.compClass = typeof( CompGlower );
@@ -299,7 +297,7 @@ namespace CommunityCoreLibrary
             var allComps = parent.GetComps();
             if( allComps == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to get list of comps!" );
+                CCL_Log.Error( "CompColoredLight unable to get list of comps!", parent.def.defName );
                 return;
             }
 

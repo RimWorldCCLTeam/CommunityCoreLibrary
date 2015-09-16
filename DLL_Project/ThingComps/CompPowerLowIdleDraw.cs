@@ -66,8 +66,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostExposeData()
         {
-
-            //Log.Message( parent.def.defName + " - PostExposeData()" );
             base.PostExposeData();
 
             Scribe_Values.LookValue<int>( ref keepOnTicks, "keepOnTicks", 30 );
@@ -83,7 +81,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostSpawnSetup()
         {
-            //Log.Message( parent.def.defName + " - PostSpawnSetup()" );
             base.PostSpawnSetup();
 
             // Get the power comp
@@ -91,7 +88,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( PowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompPowerLowIdleDraw :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompPowerLowIdleDraw requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 #endif
@@ -101,7 +98,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( IdleProps == null )
             {
-                Log.Message( "Community Core Library :: CompPowerLowIdleDraw :: " + parent.def.defName + " requires CompProperties_LowIdleDraw!" );
+                CCL_Log.Error( "CompPowerLowIdleDraw requires CompProperties_LowIdleDraw!", parent.def.defName );
                 return;
             }
 #endif
@@ -115,7 +112,6 @@ namespace CommunityCoreLibrary
             {
                 idlePower = minIdleDraw;
             }
-            //Log.Message( parent.def.defName + " - " + idlePower + " - " + PowerTrader.props.basePowerConsumption + " - " + IdleProps.idlePowerFactor );
 
             // Initial state...
 
@@ -131,7 +127,6 @@ namespace CommunityCoreLibrary
 
         public override void                CompTick()
         {
-            //Log.Message( parent.def.defName + " :: CompTick" );
             base.CompTick();
 
             if( !CompPowerTrader.PowerOn )
@@ -150,7 +145,6 @@ namespace CommunityCoreLibrary
 
         public override void                CompTickRare()
         {
-            //Log.Message( parent.def.defName + " :: CompTickRare" );
             base.CompTickRare();
 
             if( !CompPowerTrader.PowerOn )
@@ -181,8 +175,6 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-
-            //Log.Message( parent.def.defName + " - PowerLevelToggle" );
 
             // Basic decision, turn on if someone is on it, only if it turns
             // on when someone is on it (duh?), otherwise turn on if someone is
@@ -252,7 +244,6 @@ namespace CommunityCoreLibrary
                                 if( turnItOn )
                                 {
                                     // ..Using this building!...
-                                    //Log.Message( parent.def.defName + " - New User" );
                                     curUser = pUser;
                                     curJob = pUser.CurJob;
                                 }
@@ -266,7 +257,6 @@ namespace CommunityCoreLibrary
                     break;
                 case LowIdleDrawMode.Cycle :
                     // Power cycler
-                   // Log.Message( parent.def.defName + " is power cycling" );
 
                     if( LowPowerMode )
                     {
@@ -282,7 +272,6 @@ namespace CommunityCoreLibrary
                     if( Find.ThingGrid.ThingAt<Pawn>( curPos ) != null )
                     {
                         // Found a pawn, turn it on and early out
-                        //Log.Message( parent.def.defName + " - A pawn upon" );
                         turnItOn = true;
                         break;
                     }
@@ -355,7 +344,6 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            //Log.Message( parent.def.defName + " - Toggle glower" );
             // If no state change, abort
             if( turnItOn == CompGlower.Lit )
             {
@@ -371,7 +359,6 @@ namespace CommunityCoreLibrary
 
         void                                BuildScanList()
         {
-            //Log.Message( parent.def.defName + " - BuildScanlist" );
             // Default to interaction cell only, is also means that a pawn must
             // be using the building so star-gazers aren't turning the stove on.
             onIfOn = false;
@@ -390,8 +377,6 @@ namespace CommunityCoreLibrary
                     IdleProps.cycleHighTicks = 500;
                 }
 
-                //Log.Message( parent.def.defName + " is power cycler " + IdleProps.cycleLowTicks + ":" + IdleProps.cycleHighTicks );
-
                 return;
             }
 
@@ -402,7 +387,6 @@ namespace CommunityCoreLibrary
             if( parent.def.hasInteractionCell )
             {
                 // Force-add interaction cell
-                //Log.Message( parent.def.defName + " - Force-add InteractionCell" );
                 scanPosition.Add( parent.InteractionCell );
 
                 switch( IdleProps.operationalMode )
@@ -490,7 +474,6 @@ namespace CommunityCoreLibrary
             }
             // All things are passable, add cell
             scanPosition.Add( position );
-            //Log.Message( parent.def.defName + " - Add Cell " + position.ToString() );
         }
 
     }

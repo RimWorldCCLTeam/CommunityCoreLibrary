@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( Restrictions == null )
             {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: OnlyOnThing - Unable to get properties!" );
+                CCL_Log.Error( "PlaceWorker_OnlyOnThing unable to get properties!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif
@@ -22,7 +22,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( thingDef == null )
             {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: OnlyOnThing - Unable to cast BuildableDef to ThingDef!" );
+                CCL_Log.Error( "PlaceWorker_OnlyOnTerrain unable to cast BuildableDef to ThingDef!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif

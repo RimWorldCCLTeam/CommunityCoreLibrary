@@ -55,7 +55,7 @@ namespace CommunityCoreLibrary
             get
             {
                 var isValid = true;
-                var errors = "Community Core Library :: Mod Dependency :: " + ModName;
+                var errors = "";
 
                 try
                 {
@@ -83,11 +83,13 @@ namespace CommunityCoreLibrary
 #if DEBUG
                 if ( !MapComponents.NullOrEmpty() )
                 {
-                    foreach ( var componentType in MapComponents )
+                    foreach( var componentType in MapComponents )
                     {
                         //var componentType = Type.GetType( component );
-                        if ( (componentType == null) ||
-                            (componentType.BaseType != typeof(MapComponent)) )
+                        if(
+                            ( componentType == null ) ||
+                            ( !componentType.IsSubclassOf( typeof( MapComponent ) ) )
+                        )
                         {
                             errors += "\n\tUnable to resolve MapComponent \"" + componentType.ToString() + "\"";
                             isValid = false;
@@ -100,21 +102,25 @@ namespace CommunityCoreLibrary
                     foreach ( var data in Designators )
                     {
                         var designatorType = data.designatorClass;
-                        if ( (designatorType == null)//||
-                        //    ( designatorType.BaseType != typeof( Designator ) )
+                        if(
+                            ( designatorType == null )||
+                            ( !designatorType.IsSubclassOf( typeof( Designator ) ) )
                         )
                         {
                             errors += "\n\tUnable to resolve designatorClass \"" + data.designatorClass + "\"";
                             isValid = false;
                         }
-                        if ( (string.IsNullOrEmpty(data.designationCategoryDef)) ||
-                            (DefDatabase<DesignationCategoryDef>.GetNamed(data.designationCategoryDef, false) == null) )
+                        if(
+                            ( string.IsNullOrEmpty( data.designationCategoryDef ) )||
+                            ( DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false ) == null )
+                        )
                         {
                             errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
                         }
-                        if ( (data.designatorNextTo != null)&&
-                            !(data.designatorNextTo.IsSubclassOf( typeof(Designator) )) 
+                        if(
+                            ( data.designatorNextTo != null )&&
+                            ( !data.designatorNextTo.IsSubclassOf( typeof( Designator ) ) )
                         )
                         {
                             errors += "\n\tUnable to resolve designatorNextTo \"" + data.designatorNextTo + "\"";
@@ -144,8 +150,10 @@ namespace CommunityCoreLibrary
                             errors += "\n\tNull compProps in ThingComps";
                             isValid = false;
                         }
-                        foreach ( var targetDef in compSet.targetDefs.Where( targetDef => string.IsNullOrEmpty(targetDef) ||
-                                                                                       DefDatabase<ThingDef>.GetNamed(targetDef, false) == null ) )
+                        foreach( var targetDef in compSet.targetDefs.Where( targetDef => (
+                            ( string.IsNullOrEmpty( targetDef ) )||
+                            ( DefDatabase< ThingDef >.GetNamed( targetDef, false ) == null )
+                        ) ) )
                         {
                             errors += "\n\tUnable to resolve ThingDef \"" + targetDef + "\"";
                             isValid = false;
@@ -157,8 +165,10 @@ namespace CommunityCoreLibrary
                 {
                     foreach( var injectorType in SpecialInjectors )
                     {
-                        if ( (injectorType == null) ||
-                            (injectorType.BaseType != typeof(SpecialInjector)) )
+                        if(
+                            ( injectorType == null )||
+                            ( !injectorType.IsSubclassOf( typeof( SpecialInjector ) ) )
+                        )
                         {
                             errors += "\n\tUnable to resolve SpecialInjector \"" + injectorType.ToString() + "\"";
                             isValid = false;
@@ -169,7 +179,7 @@ namespace CommunityCoreLibrary
 
                 if ( !isValid )
                 {
-                    Log.Error(errors);
+                    CCL_Log.Error( errors, "Mod Dependency :: " + ModName );
                 }
 
                 return isValid;
@@ -191,7 +201,7 @@ namespace CommunityCoreLibrary
                 foreach ( var mapComponentType in MapComponents )
                 {
                     //var mapComponentType = Type.GetType( mapComponent );
-                    if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType) )
+                    if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType ) )
                     {
                         return false;
                     }
@@ -213,7 +223,7 @@ namespace CommunityCoreLibrary
                 foreach ( var data in Designators )
                 {
                     var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
-                    if ( !designationCategory.resolvedDesignators.Exists(d => d.GetType() == data.designatorClass) )
+                    if ( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                     {
                         return false;
                     }
@@ -274,7 +284,7 @@ namespace CommunityCoreLibrary
                 //var mapComponentType = Type.GetType( mapComponent );
 
                 // Does it exist in the map?
-                if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType) )
+                if ( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
                 {
                     // Create the new map component
                     var mapComponentObject = (MapComponent) Activator.CreateInstance( mapComponentType );
@@ -290,7 +300,7 @@ namespace CommunityCoreLibrary
             foreach ( var data in Designators )
             {
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
-                if ( !designationCategory.resolvedDesignators.Exists(d => d.GetType() == data.designatorClass) )
+                if ( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                 {
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( data.designatorClass );

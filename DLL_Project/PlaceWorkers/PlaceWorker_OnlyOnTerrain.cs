@@ -12,7 +12,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( Restrictions == null )
             {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: OnlyOnTerrain - Unable to get properties!" );
+                CCL_Log.Error( "PlaceWorker_OnlyOnTerrain unable to get properties!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif

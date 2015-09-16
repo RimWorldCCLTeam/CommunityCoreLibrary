@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
             var Restrictions = checkingDef.RestrictedPlacement_Properties();
 #if DEBUG
             if( Restrictions == null ){
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to get properties!" );
+                CCL_Log.Error( "PlaceWorker_RestrictedCount unable to get properties!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif
@@ -19,7 +19,7 @@ namespace CommunityCoreLibrary
             var thingDef = checkingDef as ThingDef;
 #if DEBUG
             if( thingDef == null ){
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: RestrictedCount - Unable to cast BuildableDef to ThingDef!" );
+                CCL_Log.Error( "PlaceWorker_RestrictedCount unable to get cast BuildableDef to ThingDef!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif
