@@ -11,10 +11,11 @@ namespace CommunityCoreLibrary
             var equip = pawn != null
                 ? pawn.equipment.Primary
                 : null;
+
             var comp = equip != null
-                ? equip.AllComps.Find(s =>
+                ? equip.AllComps.Find( s =>
                 {
-                    if (!s.GetType().IsSubclassOf(typeof (CompRangedGizmoGiver)))
+                    if ( !s.GetType().IsSubclassOf(typeof (CompRangedGizmoGiver)) )
                     {
                         // Comp must be a subclass of ranged gizmo giver
                         return false;
@@ -22,16 +23,18 @@ namespace CommunityCoreLibrary
 
                     var gizmoGiver = s as CompRangedGizmoGiver;
                     return gizmoGiver != null && gizmoGiver.isRangedGiver;
-                })
+                } )
                 : null;
 
-            if (comp == null)
+            if ( comp == null )
             {
                 yield break;
             }
-            
-            foreach (var current in comp.CompGetGizmosExtra())
+
+            foreach ( var current in comp.CompGetGizmosExtra() )
+            {
                 yield return current;
+            }
         }
     }
 }
