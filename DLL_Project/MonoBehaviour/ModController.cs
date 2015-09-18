@@ -180,8 +180,14 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.MapComponentsInjected )
                 {
-                    CCL_Log.Message( "Injecting MapComponents for " + ModHelperDef.ModName );
-                    ModHelperDef.InjectMapComponents();
+                    if( ModHelperDef.InjectMapComponents() )
+                    {
+                        CCL_Log.Message( "Injected MapComponents", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error injecting MapComponents", ModHelperDef.ModName );
+                    }
                 }
             }
         }
@@ -197,8 +203,14 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.DesignatorsInjected )
                 {
-                    CCL_Log.Message( "Injecting Designators for " + ModHelperDef.ModName );
-                    ModHelperDef.InjectDesignators();
+                    if( ModHelperDef.InjectDesignators() )
+                    {
+                        CCL_Log.Message( "Injected Designators", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error injecting Designators", ModHelperDef.ModName );
+                    }
                 }
             }
         }
@@ -213,8 +225,14 @@ namespace CommunityCoreLibrary
             {
                 if ( !ModHelperDef.ThingCompsInjected )
                 {
-                    CCL_Log.Message( "Injecting ThingComps for " + ModHelperDef.ModName );
-                    ModHelperDef.InjectThingComps();
+                    if( ModHelperDef.InjectThingComps() )
+                    {
+                        CCL_Log.Message( "Injected ThingComps", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error injecting ThingComps", ModHelperDef.ModName );
+                    }
                 }
             }
         }
@@ -229,8 +247,14 @@ namespace CommunityCoreLibrary
             {
                 if ( !ModHelperDef.SpecialsInjected )
                 {
-                    CCL_Log.Message( "Special Injections for " + ModHelperDef.ModName );
-                    ModHelperDef.InjectSpecials();
+                    if( ModHelperDef.InjectSpecials() )
+                    {
+                        CCL_Log.Message( "Injected Specials", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error in Special Injections", ModHelperDef.ModName );
+                    }
                 }
             }
         }

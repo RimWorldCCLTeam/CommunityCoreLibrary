@@ -190,8 +190,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( (MapComponents == null) ||
-                    (MapComponents.Count == 0) )
+                if( MapComponents.NullOrEmpty() )
                 {
                     return true;
                 }
@@ -274,7 +273,7 @@ namespace CommunityCoreLibrary
 
         #region Injection
 
-        public void                         InjectMapComponents()
+        public bool                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -293,9 +292,11 @@ namespace CommunityCoreLibrary
                     colonyMapComponents.Add(mapComponentObject);
                 }
             }
+
+            return MapComponentsInjected;
         }
 
-        public void                         InjectDesignators()
+        public bool                         InjectDesignators()
         {
             foreach ( var data in Designators )
             {
@@ -331,9 +332,10 @@ namespace CommunityCoreLibrary
                 }
             }
 
+            return DesignatorsInjected;
         }
 
-        public void                         InjectThingComps()
+        public bool                         InjectThingComps()
         {
             foreach ( var compSet in ThingComps )
             {
@@ -346,9 +348,11 @@ namespace CommunityCoreLibrary
                     def.comps.Add(compProperties);
                 }
             }
+
+            return ThingCompsInjected;
         }
 
-        public void                         InjectSpecials()
+        public bool                         InjectSpecials()
         {
             foreach( var injectorType in SpecialInjectors )
             {
@@ -356,6 +360,8 @@ namespace CommunityCoreLibrary
                 injectorObject.Inject();
             }
             specialsInjected = true;
+
+            return SpecialsInjected;
         }
 
         #endregion
