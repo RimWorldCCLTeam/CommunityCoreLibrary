@@ -96,8 +96,10 @@ namespace CommunityCoreLibrary
 
         void                                GetCCLVersion ()
         {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            CCLVersion = assembly.GetName().Version;
+            // TODO:  Fix issue #30 so we can use proper assembly versioning
+            //System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            //CCLVersion = assembly.GetName().Version;
+            CCLVersion = new Version( "0.12.3" );
 #if DEBUG
             Log.Message( "Community Core Library v" + CCLVersion + " (debug)" );
 #else
@@ -180,7 +182,11 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.MapComponentsInjected )
                 {
-                    if( ModHelperDef.InjectMapComponents() )
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectMapComponents() )
+
+                    ModHelperDef.InjectMapComponents();
+                    if( ModHelperDef.MapComponentsInjected )
                     {
                         CCL_Log.Message( "Injected MapComponents", ModHelperDef.ModName );
                     }
@@ -203,7 +209,11 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.DesignatorsInjected )
                 {
-                    if( ModHelperDef.InjectDesignators() )
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectDesignators() )
+
+                    ModHelperDef.InjectDesignators();
+                    if( ModHelperDef.DesignatorsInjected )
                     {
                         CCL_Log.Message( "Injected Designators", ModHelperDef.ModName );
                     }
@@ -225,7 +235,11 @@ namespace CommunityCoreLibrary
             {
                 if ( !ModHelperDef.ThingCompsInjected )
                 {
-                    if( ModHelperDef.InjectThingComps() )
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectThingComps() )
+
+                    ModHelperDef.InjectThingComps();
+                    if ( ModHelperDef.ThingCompsInjected )
                     {
                         CCL_Log.Message( "Injected ThingComps", ModHelperDef.ModName );
                     }
@@ -247,7 +261,11 @@ namespace CommunityCoreLibrary
             {
                 if ( !ModHelperDef.SpecialsInjected )
                 {
-                    if( ModHelperDef.InjectSpecials() )
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectSpecials() )
+
+                    ModHelperDef.InjectSpecials();
+                    if ( ModHelperDef.SpecialsInjected )
                     {
                         CCL_Log.Message( "Injected Specials", ModHelperDef.ModName );
                     }

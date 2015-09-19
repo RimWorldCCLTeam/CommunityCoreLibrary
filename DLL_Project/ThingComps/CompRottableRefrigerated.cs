@@ -10,7 +10,9 @@ namespace CommunityCoreLibrary
 
     public class CompRottableRefrigerated_Injector : SpecialInjector
     {
-        
+
+        // TODO:  Alpha 13 API change
+        //public override bool Inject()
         public override void Inject()
         {
             // Replace CompRottable on ThingDefs
@@ -31,7 +33,8 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-
+            // TODO:  Alpha 13 API change
+            //return true;
         }
 
     }

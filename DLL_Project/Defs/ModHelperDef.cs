@@ -8,9 +8,18 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    //public delegate void                    SpecialInjector();
+    // TODO:  Alpha 13 API change
+    /*
+    public abstract class                   SpecialInjector
+    {
+
+        public abstract bool                Inject();
+
+    }
+    */
     public class                            SpecialInjector
     {
+
         public                              SpecialInjector ()
         {
         }
@@ -273,7 +282,9 @@ namespace CommunityCoreLibrary
 
         #region Injection
 
-        public bool                         InjectMapComponents()
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectMapComponents()
+        public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
 
@@ -293,10 +304,13 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return MapComponentsInjected;
+            // TODO:  Alpha 13 API change
+            //return MapComponentsInjected;
         }
 
-        public bool                         InjectDesignators()
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectDesignators()
+        public void                         InjectDesignators()
         {
             foreach ( var data in Designators )
             {
@@ -332,10 +346,13 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return DesignatorsInjected;
+            // TODO:  Alpha 13 API change
+            //return DesignatorsInjected;
         }
 
-        public bool                         InjectThingComps()
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectThingComps()
+        public void                         InjectThingComps()
         {
             foreach ( var compSet in ThingComps )
             {
@@ -349,10 +366,13 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return ThingCompsInjected;
+            // TODO:  Alpha 13 API change
+            //return ThingCompsInjected;
         }
 
-        public bool                         InjectSpecials()
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectSpecials()
+        public void                         InjectSpecials()
         {
             foreach( var injectorType in SpecialInjectors )
             {
@@ -361,7 +381,8 @@ namespace CommunityCoreLibrary
             }
             specialsInjected = true;
 
-            return SpecialsInjected;
+            // TODO:  Alpha 13 API change
+            //return SpecialsInjected;
         }
 
         #endregion
