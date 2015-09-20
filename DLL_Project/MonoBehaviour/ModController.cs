@@ -64,6 +64,10 @@ namespace CommunityCoreLibrary
 
         public void                         FixedUpdate()
         {
+            if( ReadyForPostLoadInjection() )
+            {
+                InjectPostLoaders();
+            }
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
@@ -272,6 +276,40 @@ namespace CommunityCoreLibrary
                     else
                     {
                         CCL_Log.Message( "Error in Special Injections", ModHelperDef.ModName );
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Map Component Injection
+
+        bool                                ReadyForPostLoadInjection()
+        {
+            return (
+                ( Find.Map != null )&&
+                ( Find.Map.components != null )
+            );
+        }
+
+        void                                InjectPostLoaders()
+        {
+            foreach (var ModHelperDef in ModHelperDefs)
+            {
+                if ( !ModHelperDef.PostLoadersInjected )
+                {
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectPostLoaders() )
+
+                    ModHelperDef.InjectPostLoaders();
+                    if ( ModHelperDef.PostLoadersInjected )
+                    {
+                        CCL_Log.Message( "Injected Post Loaders", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error in Post Load Injections", ModHelperDef.ModName );
                     }
                 }
             }

@@ -47,6 +47,8 @@ namespace CommunityCoreLibrary
 
         public List< Type >                 SpecialInjectors;
 
+        public List< Type >                 PostLoadInjectors;
+
         #endregion
 
         [Unsaved]
@@ -54,6 +56,7 @@ namespace CommunityCoreLibrary
         #region Instance Data
 
         bool                                specialsInjected;
+        bool                                postLoadersInjected;
 
         #endregion
 
@@ -184,6 +187,21 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
+
+                if ( !PostLoadInjectors.NullOrEmpty() )
+                {
+                    foreach( var injectorType in PostLoadInjectors )
+                    {
+                        if(
+                            ( injectorType == null )||
+                            ( !injectorType.IsSubclassOf( typeof( SpecialInjector ) ) )
+                        )
+                        {
+                            errors += "\n\tUnable to resolve PostLoadInjector \"" + injectorType.ToString() + "\"";
+                            isValid = false;
+                        }
+                    }
+                }
 #endif
 
                 if ( !isValid )
@@ -275,6 +293,19 @@ namespace CommunityCoreLibrary
                 }
 
                 return specialsInjected;
+            }
+        }
+
+        public bool                         PostLoadersInjected
+        {
+            get
+            {
+                if ( PostLoadInjectors.NullOrEmpty() )
+                {
+                    return true;
+                }
+
+                return postLoadersInjected;
             }
         }
 
@@ -383,6 +414,21 @@ namespace CommunityCoreLibrary
 
             // TODO:  Alpha 13 API change
             //return SpecialsInjected;
+        }
+
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectPostLoaders()
+        public void                         InjectPostLoaders()
+        {
+            foreach( var injectorType in PostLoadInjectors )
+            {
+                var injectorObject = (SpecialInjector) Activator.CreateInstance( injectorType );
+                injectorObject.Inject();
+            }
+            postLoadersInjected = true;
+
+            // TODO:  Alpha 13 API change
+            //return postLoadersInjected;
         }
 
         #endregion
