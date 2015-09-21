@@ -8,7 +8,6 @@
 *.sln.docstates
 DLL_Project/Source-DLLs/*.dll
 DLL_Project/*.bat
-DLL_Project/PostBuild.txt
 
 # Build results
 [Dd]ebug/
