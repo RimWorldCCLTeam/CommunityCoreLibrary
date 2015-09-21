@@ -116,7 +116,7 @@ namespace CommunityCoreLibrary
                     // Make sure things are of the appropriate class (Plant)
                     foreach( var thingDef in thingDefs )
                     {
-                        if( thingDef.thingClass != typeof( Plant ) )
+                        if( thingDef.thingClass != typeof( Plant ) && !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
                         {
                             // Invalid project
                             isValid = false;
