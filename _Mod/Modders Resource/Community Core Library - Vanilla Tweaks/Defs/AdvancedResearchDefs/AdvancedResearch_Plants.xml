@@ -21,24 +21,4 @@
 
     </AdvancedResearchDef>
 
-    <AdvancedResearchDef>
-
-        <defName>PlantXerigium</defName>
-        <Priority>0</Priority>
-
-        <researchDefs>
-            <li>HospitalBed</li>
-        </researchDefs>
-
-        <sowTags>
-            <li>Ground</li>
-            <li>Hydroponic</li>
-        </sowTags>
-
-        <thingDefs>
-            <li>PlantXerigium</li>
-        </thingDefs>
-
-    </AdvancedResearchDef>
-
 </Defs>
