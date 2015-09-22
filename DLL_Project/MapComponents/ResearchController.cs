@@ -58,7 +58,7 @@ namespace CommunityCoreLibrary
                 ( AdvancedResearch.Count == 0 ) )
             {
                 // No advanced research, hybernate
-                Log.Message( "Community Core Library :: Advanced Research :: No advanced research defined, hybernating..." );
+                CCL_Log.Message( "No advanced research defined, hybernating...", "Advanced Research" );
                 return;
             }
 
@@ -76,7 +76,7 @@ namespace CommunityCoreLibrary
             UpdateTicks = 0;
             okToProcess = true;
 
-            Log.Message( "Community Core Library :: Advanced Research :: Initialized" );
+            CCL_Log.Message( "Initialized", "Advanced Research" );
         }
 
         void                                UpdateComponent()

@@ -75,9 +75,9 @@ namespace CommunityCoreLibrary
         {
             base.PostLoad();
 
-            if (ModName.NullOrEmpty())
+            if( ModName.NullOrEmpty() )
             {
-                Log.Error("Community Core Library :: Help Tab :: ModName resolved to null in HelpCategoryDef( " + defName + " )");
+                CCL_Log.Error( "ModName resolved to null", defName );
             }
         }
 #endif

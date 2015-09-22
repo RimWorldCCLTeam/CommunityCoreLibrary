@@ -43,11 +43,13 @@ namespace CommunityCoreLibrary
                 ValidateMods();
             }
 
-            // Do special injectors
+            // Do injections
             InjectSpecials();
+            InjectThingComps();
+            InjectDesignators();
 
             // Validate advanced research defs
-            if( ValidateResearch() )
+            if ( ValidateResearch() )
             {
                 ResearchController.InitComponent();
             }
@@ -55,24 +57,20 @@ namespace CommunityCoreLibrary
             // Auto-generate help menus
             HelpController.Initialize();
 
-            Log.Message( "Community Core Library :: Initialized" );
+            CCL_Log.Message( "Initialized" );
 
             enabled = true;
         }
 
         public void                         FixedUpdate()
         {
-            if( ReadyForDesignatorInjection() )
+            if( ReadyForPostLoadInjection() )
             {
-                InjectDesignators();
+                InjectPostLoaders();
             }
             if( ReadyForMapComponentInjection() )
             {
                 InjectMapComponents();
-            }
-            if (ReadyForThingCompsInjection())
-            {
-                InjectThingComps();
             }
         }
 
@@ -102,8 +100,10 @@ namespace CommunityCoreLibrary
 
         void                                GetCCLVersion ()
         {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            CCLVersion = assembly.GetName().Version;
+            // TODO:  Fix issue #30 so we can use proper assembly versioning
+            //System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            //CCLVersion = assembly.GetName().Version;
+            CCLVersion = new Version( "0.12.3" );
 #if DEBUG
             Log.Message( "Community Core Library v" + CCLVersion + " (debug)" );
 #else
@@ -137,7 +137,7 @@ namespace CommunityCoreLibrary
             // Make sure the hidden research exists
             if( Research.Locker == null )
             {
-                Log.Error( "Community Core Library :: Advanced Research :: Missing Research.Locker!" );
+                CCL_Log.Error( "Missing research locker!", "Advanced Research" );
                 return false;
             }
 
@@ -149,7 +149,7 @@ namespace CommunityCoreLibrary
                 {
                     // Remove projects with errors from list of usable projects
                     AdvancedResearch.Remove( Advanced );
-                    Log.Error( "Community Core Library :: Advanced Research :: Pruning " + Advanced.defName );
+                    CCL_Log.Error( "Pruning " + Advanced.defName, "Advanced Research" );
                     i--;
                     continue;
                 }
@@ -186,8 +186,18 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.MapComponentsInjected )
                 {
-                    Log.Message( "Community Core Library :: Injecting MapComponents for " + ModHelperDef.ModName );
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectMapComponents() )
+
                     ModHelperDef.InjectMapComponents();
+                    if( ModHelperDef.MapComponentsInjected )
+                    {
+                        CCL_Log.Message( "Injected MapComponents", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error injecting MapComponents", ModHelperDef.ModName );
+                    }
                 }
             }
         }
@@ -196,21 +206,6 @@ namespace CommunityCoreLibrary
 
         #region Designator Injection
 
-        bool                                ReadyForDesignatorInjection()
-        {
-            var DesignatorCategoryDefs = DefDatabase<DesignationCategoryDef>.AllDefs;
-
-            foreach( var DesignatorCategoryDef in DesignatorCategoryDefs )
-            {
-                if( DesignatorCategoryDef.resolvedDesignators == null )
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         void                                InjectDesignators()
         {
             // Inject the designators into the categories
@@ -218,8 +213,18 @@ namespace CommunityCoreLibrary
             {
                 if( !ModHelperDef.DesignatorsInjected )
                 {
-                    Log.Message( "Community Core Library :: Injecting Designators for " + ModHelperDef.ModName );
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectDesignators() )
+
                     ModHelperDef.InjectDesignators();
+                    if( ModHelperDef.DesignatorsInjected )
+                    {
+                        CCL_Log.Message( "Injected Designators", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error injecting Designators", ModHelperDef.ModName );
+                    }
                 }
             }
         }
@@ -227,18 +232,6 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region ThingComp Injection
-        
-        bool                                ReadyForThingCompsInjection()
-        {
-            foreach ( var ModHelperDef in ModHelperDefs )
-            {
-                if ( !ModHelperDef.ThingCompsInjected )
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         void                                InjectThingComps()
         {
@@ -246,8 +239,18 @@ namespace CommunityCoreLibrary
             {
                 if ( !ModHelperDef.ThingCompsInjected )
                 {
-                    CCL_Log.Message( "Injecting ThingComps for " + ModHelperDef.ModName );
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectThingComps() )
+
                     ModHelperDef.InjectThingComps();
+                    if ( ModHelperDef.ThingCompsInjected )
+                    {
+                        CCL_Log.Message( "Injected ThingComps", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error injecting ThingComps", ModHelperDef.ModName );
+                    }
                 }
             }
         }
@@ -262,8 +265,52 @@ namespace CommunityCoreLibrary
             {
                 if ( !ModHelperDef.SpecialsInjected )
                 {
-                    CCL_Log.Message( "Special Injections for " + ModHelperDef.ModName );
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectSpecials() )
+
                     ModHelperDef.InjectSpecials();
+                    if ( ModHelperDef.SpecialsInjected )
+                    {
+                        CCL_Log.Message( "Injected Specials", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error in Special Injections", ModHelperDef.ModName );
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Map Component Injection
+
+        bool                                ReadyForPostLoadInjection()
+        {
+            return (
+                ( Find.Map != null )&&
+                ( Find.Map.components != null )
+            );
+        }
+
+        void                                InjectPostLoaders()
+        {
+            foreach (var ModHelperDef in ModHelperDefs)
+            {
+                if ( !ModHelperDef.PostLoadersInjected )
+                {
+                    // TODO:  Alpha 13 API change
+                    //if( ModHelperDef.InjectPostLoaders() )
+
+                    ModHelperDef.InjectPostLoaders();
+                    if ( ModHelperDef.PostLoadersInjected )
+                    {
+                        CCL_Log.Message( "Injected Post Loaders", ModHelperDef.ModName );
+                    }
+                    else
+                    {
+                        CCL_Log.Message( "Error in Post Load Injections", ModHelperDef.ModName );
+                    }
                 }
             }
         }

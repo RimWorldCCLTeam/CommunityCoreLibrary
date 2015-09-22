@@ -90,14 +90,6 @@ namespace CommunityCoreLibrary
                         }
                     }
 
-#if DEBUG
-                    if( ( restrictedTerrain == null )||
-                        ( restrictedTerrain.Count == 0 ) )
-                    {
-                        Log.Error( "Community Core Library :: Restricted Placement Properties :: Restricted terrain comp used with no terrainDefs!" );
-                    }
-#endif
-                    
                 }
                 return restrictedTerrain;
             }

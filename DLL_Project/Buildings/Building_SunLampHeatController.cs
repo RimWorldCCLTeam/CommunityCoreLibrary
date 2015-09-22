@@ -36,14 +36,14 @@ namespace CommunityCoreLibrary
             // Validate power trade
             if( CompPowerTrader == null )
             {
-                Log.Error( "Community Core Library :: Building_SunLampHeatController :: " + def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "Building_SunLampHeatController requires CompPowerTrader!", def.defName );
                 return;
             }
 
             // Validate temp control
             if( CompTempControl == null )
             {
-                Log.Error( "Community Core Library :: Building_SunLampHeatController :: " + def.defName + " requires CompTempControl!" );
+                CCL_Log.Error( "Building_SunLampHeatController requires CompTempControl!", def.defName );
                 return;
             }
         }

@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( Restrictions == null )
             {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: NotOnThing - Unable to get properties!" );
+                CCL_Log.Error( "PlaceWorker_NotOnThing unable to get properties!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif

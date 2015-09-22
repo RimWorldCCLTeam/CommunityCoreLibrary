@@ -8,9 +8,18 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    //public delegate void                    SpecialInjector();
+    // TODO:  Alpha 13 API change
+    /*
+    public abstract class                   SpecialInjector
+    {
+
+        public abstract bool                Inject();
+
+    }
+    */
     public class                            SpecialInjector
     {
+
         public                              SpecialInjector ()
         {
         }
@@ -38,6 +47,8 @@ namespace CommunityCoreLibrary
 
         public List< Type >                 SpecialInjectors;
 
+        public List< Type >                 PostLoadInjectors;
+
         #endregion
 
         [Unsaved]
@@ -45,6 +56,7 @@ namespace CommunityCoreLibrary
         #region Instance Data
 
         bool                                specialsInjected;
+        bool                                postLoadersInjected;
 
         #endregion
 
@@ -55,7 +67,7 @@ namespace CommunityCoreLibrary
             get
             {
                 var isValid = true;
-                var errors = "Community Core Library :: Mod Dependency :: " + ModName;
+                var errors = "";
 
                 try
                 {
@@ -83,11 +95,13 @@ namespace CommunityCoreLibrary
 #if DEBUG
                 if ( !MapComponents.NullOrEmpty() )
                 {
-                    foreach ( var componentType in MapComponents )
+                    foreach( var componentType in MapComponents )
                     {
                         //var componentType = Type.GetType( component );
-                        if ( (componentType == null) ||
-                            (componentType.BaseType != typeof(MapComponent)) )
+                        if(
+                            ( componentType == null ) ||
+                            ( !componentType.IsSubclassOf( typeof( MapComponent ) ) )
+                        )
                         {
                             errors += "\n\tUnable to resolve MapComponent \"" + componentType.ToString() + "\"";
                             isValid = false;
@@ -100,21 +114,25 @@ namespace CommunityCoreLibrary
                     foreach ( var data in Designators )
                     {
                         var designatorType = data.designatorClass;
-                        if ( (designatorType == null)//||
-                        //    ( designatorType.BaseType != typeof( Designator ) )
+                        if(
+                            ( designatorType == null )||
+                            ( !designatorType.IsSubclassOf( typeof( Designator ) ) )
                         )
                         {
                             errors += "\n\tUnable to resolve designatorClass \"" + data.designatorClass + "\"";
                             isValid = false;
                         }
-                        if ( (string.IsNullOrEmpty(data.designationCategoryDef)) ||
-                            (DefDatabase<DesignationCategoryDef>.GetNamed(data.designationCategoryDef, false) == null) )
+                        if(
+                            ( string.IsNullOrEmpty( data.designationCategoryDef ) )||
+                            ( DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false ) == null )
+                        )
                         {
                             errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
                             isValid = false;
                         }
-                        if ( ( data.designatorNextTo != null )&&
-                            ( data.designatorNextTo.BaseType != typeof( Designator ) ) 
+                        if(
+                            ( data.designatorNextTo != null )&&
+                            ( !data.designatorNextTo.IsSubclassOf( typeof( Designator ) ) )
                         )
                         {
                             errors += "\n\tUnable to resolve designatorNextTo \"" + data.designatorNextTo + "\"";
@@ -144,8 +162,10 @@ namespace CommunityCoreLibrary
                             errors += "\n\tNull compProps in ThingComps";
                             isValid = false;
                         }
-                        foreach ( var targetDef in compSet.targetDefs.Where( targetDef => string.IsNullOrEmpty(targetDef) ||
-                                                                                       DefDatabase<ThingDef>.GetNamed(targetDef, false) == null ) )
+                        foreach( var targetDef in compSet.targetDefs.Where( targetDef => (
+                            ( string.IsNullOrEmpty( targetDef ) )||
+                            ( DefDatabase< ThingDef >.GetNamed( targetDef, false ) == null )
+                        ) ) )
                         {
                             errors += "\n\tUnable to resolve ThingDef \"" + targetDef + "\"";
                             isValid = false;
@@ -157,10 +177,27 @@ namespace CommunityCoreLibrary
                 {
                     foreach( var injectorType in SpecialInjectors )
                     {
-                        if ( (injectorType == null) ||
-                            (injectorType.BaseType != typeof(SpecialInjector)) )
+                        if(
+                            ( injectorType == null )||
+                            ( !injectorType.IsSubclassOf( typeof( SpecialInjector ) ) )
+                        )
                         {
                             errors += "\n\tUnable to resolve SpecialInjector \"" + injectorType.ToString() + "\"";
+                            isValid = false;
+                        }
+                    }
+                }
+
+                if ( !PostLoadInjectors.NullOrEmpty() )
+                {
+                    foreach( var injectorType in PostLoadInjectors )
+                    {
+                        if(
+                            ( injectorType == null )||
+                            ( !injectorType.IsSubclassOf( typeof( SpecialInjector ) ) )
+                        )
+                        {
+                            errors += "\n\tUnable to resolve PostLoadInjector \"" + injectorType.ToString() + "\"";
                             isValid = false;
                         }
                     }
@@ -169,7 +206,7 @@ namespace CommunityCoreLibrary
 
                 if ( !isValid )
                 {
-                    Log.Error(errors);
+                    CCL_Log.Error( errors, "Mod Dependency :: " + ModName );
                 }
 
                 return isValid;
@@ -180,8 +217,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( (MapComponents == null) ||
-                    (MapComponents.Count == 0) )
+                if( MapComponents.NullOrEmpty() )
                 {
                     return true;
                 }
@@ -191,7 +227,7 @@ namespace CommunityCoreLibrary
                 foreach ( var mapComponentType in MapComponents )
                 {
                     //var mapComponentType = Type.GetType( mapComponent );
-                    if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType) )
+                    if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType ) )
                     {
                         return false;
                     }
@@ -213,7 +249,7 @@ namespace CommunityCoreLibrary
                 foreach ( var data in Designators )
                 {
                     var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
-                    if ( !designationCategory.resolvedDesignators.Exists(d => d.GetType() == data.designatorClass) )
+                    if ( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                     {
                         return false;
                     }
@@ -260,10 +296,25 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         PostLoadersInjected
+        {
+            get
+            {
+                if ( PostLoadInjectors.NullOrEmpty() )
+                {
+                    return true;
+                }
+
+                return postLoadersInjected;
+            }
+        }
+
         #endregion
 
         #region Injection
 
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectMapComponents()
         public void                         InjectMapComponents()
         {
             var colonyMapComponents = Find.Map.components;
@@ -274,7 +325,7 @@ namespace CommunityCoreLibrary
                 //var mapComponentType = Type.GetType( mapComponent );
 
                 // Does it exist in the map?
-                if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType) )
+                if ( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
                 {
                     // Create the new map component
                     var mapComponentObject = (MapComponent) Activator.CreateInstance( mapComponentType );
@@ -283,14 +334,19 @@ namespace CommunityCoreLibrary
                     colonyMapComponents.Add(mapComponentObject);
                 }
             }
+
+            // TODO:  Alpha 13 API change
+            //return MapComponentsInjected;
         }
 
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectDesignators()
         public void                         InjectDesignators()
         {
             foreach ( var data in Designators )
             {
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
-                if ( !designationCategory.resolvedDesignators.Exists(d => d.GetType() == data.designatorClass) )
+                if ( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                 {
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( data.designatorClass );
@@ -321,37 +377,32 @@ namespace CommunityCoreLibrary
                 }
             }
 
+            // TODO:  Alpha 13 API change
+            //return DesignatorsInjected;
         }
 
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectThingComps()
         public void                         InjectThingComps()
         {
             foreach ( var compSet in ThingComps )
             {
-                // Access ThingDef database
-                var typeFromHandle = typeof(DefDatabase<ThingDef>);
-                var defsByName = typeFromHandle.GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic);
-                if ( defsByName == null )
-                {
-                    CCL_Log.Error("defName is null!", "ThingComp Injection");
-                    return;
-                }
-                var dictDefsByName = defsByName.GetValue(null) as Dictionary<string, ThingDef>;
-                if ( dictDefsByName == null )
-                {
-                    CCL_Log.Error("Cannot access private members!", "ThingComp Injection");
-                    return;
-                }
+                var defsByName = DefDatabase<ThingDef>.AllDefs;
                 
                 foreach ( var targetName in compSet.targetDefs )
                 {
-                    var def = dictDefsByName.Values.ToList().Find(s => s.defName == targetName);
+                    var def = defsByName.ToList().Find(s => s.defName == targetName);
                     var compProperties = compSet.compProps;
-
                     def.comps.Add(compProperties);
                 }
             }
+
+            // TODO:  Alpha 13 API change
+            //return ThingCompsInjected;
         }
 
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectSpecials()
         public void                         InjectSpecials()
         {
             foreach( var injectorType in SpecialInjectors )
@@ -360,6 +411,24 @@ namespace CommunityCoreLibrary
                 injectorObject.Inject();
             }
             specialsInjected = true;
+
+            // TODO:  Alpha 13 API change
+            //return SpecialsInjected;
+        }
+
+        // TODO:  Alpha 13 API change
+        //public bool                         InjectPostLoaders()
+        public void                         InjectPostLoaders()
+        {
+            foreach( var injectorType in PostLoadInjectors )
+            {
+                var injectorObject = (SpecialInjector) Activator.CreateInstance( injectorType );
+                injectorObject.Inject();
+            }
+            postLoadersInjected = true;
+
+            // TODO:  Alpha 13 API change
+            //return postLoadersInjected;
         }
 
         #endregion

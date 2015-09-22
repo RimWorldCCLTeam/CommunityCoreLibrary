@@ -18,6 +18,39 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         IsTerrainRestriction
+        {
+            get
+            {
+                return(
+                    ( this.parent.def.PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyOnTerrain ) ) ) )||
+                    ( this.parent.def.PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_NotOnTerrain ) ) ) )
+                );
+            }
+        }
+
+        public bool                         IsThingRestriction
+        {
+            get
+            {
+                return(
+                    ( this.parent.def.PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyOnThing ) ) ) )||
+                    ( this.parent.def.PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_NotOnThing ) ) ) )
+                );
+            }
+        }
+
+        public bool                         RequiresProperties
+        {
+            get
+            {
+                return(
+                    ( IsTerrainRestriction )||
+                    ( IsThingRestriction )
+                );
+            }
+        }
+
         // Make sure things stagger their checks to prevent lag spikes
         public override void                PostExposeData()
         {
@@ -26,6 +59,31 @@ namespace CommunityCoreLibrary
 
         public override void                PostSpawnSetup()
         {
+#if DEBUG
+            if( this.RequiresProperties )
+            {
+                var properties = this.RestrictedPlacement_Properties();
+                if( properties == null )
+                {
+                    CCL_Log.Error( "PlaceWorker requires RestrictedPlacement_Comp with RestrictedPlacement_Properties!", parent.def.defName );
+                    return;
+                }
+                if(
+                    ( IsTerrainRestriction )&&
+                    ( properties.RestrictedTerrain.NullOrEmpty() )
+                )
+                {
+                    CCL_Log.Error( "Restricted terrain PlaceWorker used with no terrainDefs!", parent.def.defName );
+                }
+                if(
+                    ( IsThingRestriction )&&
+                    ( properties.RestrictedThing.NullOrEmpty() )
+                )
+                {
+                    CCL_Log.Error( "Restricted thing PlaceWorker used with no thingDefs!", parent.def.defName );
+                }
+            }
+#endif
             tickCount = parent.GetHashCode() % 250;
         }
 
@@ -58,15 +116,18 @@ namespace CommunityCoreLibrary
             tickCount = 250;
 
             // Check for a roof
-            if( ( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_OnlyUnderRoof ) ) )&&
-                ( !Find.RoofGrid.Roofed( parent.Position ) ) )
+            if(
+                ( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyUnderRoof ) ) ) )&&
+                ( !Find.RoofGrid.Roofed( parent.Position ) )
+            )
             {
                 DestroyParent();
                 return;
             }
 
             // Check wall support
-            if( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_WallAttachment ) ) ) {
+            if( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_WallAttachment ) ) ) )
+            {
                 IntVec3 c = parent.Position - parent.Rotation.FacingCell;
                 Building support = c.GetEdifice();
                 if( ( support == null )||
@@ -78,7 +139,7 @@ namespace CommunityCoreLibrary
             }
 
             // Check surface
-            if( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_OnlyOnSurface ) ) )
+            if( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyOnSurface ) ) ) )
             {
                 bool foundThing = false;
                 foreach( Thing t in parent.Position.GetThingList() )
@@ -96,22 +157,8 @@ namespace CommunityCoreLibrary
                 }
             }
 
-#if DEBUG
-            if( 
-                ( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_OnlyOnThing ) ) )
-            )
-            {
-                var Restrictions = this.RestrictedPlacement_Properties();
-                if( Restrictions == null )
-                {
-                    Log.Error( "Community Core Library :: RestrictedPlacement_Comp :: " + parent.def.defName + " requires RestrictedPlacement_Properties!" );
-                    return;
-                }
-            }
-#endif
-
             // Check on thing
-            if( PlaceWorkers.Exists( p => p.GetType() == typeof( PlaceWorker_OnlyOnThing ) ) )
+            if( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyOnThing ) ) ) )
             {
                 var Restrictions = this.RestrictedPlacement_Properties();
                 bool foundThing = false;

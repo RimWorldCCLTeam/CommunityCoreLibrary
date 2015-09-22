@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary
                         {
                             // Invalid project
                             isValid = false;
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must implement \"IBillGiver\"" );
+                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must implement \"IBillGiver\"", defName );
                         }
                     }
 
@@ -116,11 +116,11 @@ namespace CommunityCoreLibrary
                     // Make sure things are of the appropriate class (Plant)
                     foreach( var thingDef in thingDefs )
                     {
-                        if( thingDef.thingClass != typeof( Plant ) )
+                        if( thingDef.thingClass != typeof( Plant ) && !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
                         {
                             // Invalid project
                             isValid = false;
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - Must be <thingClass> \"Plant\"" );
+                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must be <thingClass> \"Plant\"", defName );
                         }
                     }
 
@@ -130,7 +130,7 @@ namespace CommunityCoreLibrary
                         var sowTag = sowTags[ i ];
                         if( string.IsNullOrEmpty( sowTag ) )
                         {
-                            Log.Error( "Community Core Library :: Advanced Research :: sowTags( index = " + i + " ) resolved to null in AdvancedResearchDef( " + defName + " )" );
+                            CCL_Log.Error( "sowTags( index = " + i + " ) resolved to null", defName );
                         }
                     }
                 }
@@ -146,7 +146,7 @@ namespace CommunityCoreLibrary
                         {
                             // Invalid project
                             isValid = false;
-                            Log.Error( "Community Core Library :: Advanced Research :: thingDef( " + thingDef.defName + " ) is of inappropriate type in AdvancedResearchDef( " + defName + " ) - <designationCategory> must not be null or \"None\"" );
+                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, <designationCategory> must not be null or \"None\"", defName );
                         }
                     }
                 }
@@ -159,13 +159,13 @@ namespace CommunityCoreLibrary
                     {
                         // Error processing data
                         isValid = false;
-                        Log.Error( "Community Core Library :: Advanced Research :: AdvancedResearchDef( " + defName + " ) has more than one research requirment but is missing a help label!" );
+                        CCL_Log.Error( "Def is help consolidator but missing label!", defName );
                     }
                     if( string.IsNullOrEmpty( description ) )
                     {
                         // Error processing data
                         isValid = false;
-                        Log.Error( "Community Core Library :: Advanced Research :: AdvancedResearchDef( " + defName + " ) has more than one research requirment but is missing a help description!" );
+                        CCL_Log.Error( "Def is help consolidator but missing description!", defName );
                     }
                 }
 

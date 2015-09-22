@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( CompPowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompHeatPusherPowered :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompHeatPusherPowered requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 #endif

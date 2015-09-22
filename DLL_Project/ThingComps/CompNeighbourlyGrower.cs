@@ -126,7 +126,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( thisGrower == null )
             {
-                Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + parent.def.defName + " unable to resolve to Building_PlantGrower!" );
+                CCL_Log.Error( "CompNeighbourlyGrower unable to resolve parent to Building_PlantGrower!", parent.def.defName );
                 return;
             }
 #endif
@@ -139,7 +139,7 @@ namespace CommunityCoreLibrary
             )
             {
                 // "Plant" doesn't contain the required information
-                Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + parent.def.defName + " unable to resolve to plant def to grow! - " + plantDef.defName );
+                CCL_Log.Error( "CompNeighbourlyGrower unable to resolve to plant def to grow!", parent.def.defName );
                 return;
             }
 
@@ -155,7 +155,7 @@ namespace CommunityCoreLibrary
                     ( string.IsNullOrEmpty( grower.def.building.sowTag ) )
                 )
                 {
-                    Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + g.def.defName + " unable to resolve to Building_PlantGrower!" );
+                    CCL_Log.Error( "CompNeighbourlyGrower unable to resolve other building to Building_PlantGrower!", g.def.defName );
                     return;
                 }
 #endif

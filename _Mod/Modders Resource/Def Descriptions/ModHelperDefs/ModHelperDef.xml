@@ -11,9 +11,13 @@
 
         <version>version</version>      [required] Minimum version of CCL required
 
-        <SpecialInjectors>              [optional] Class names of SpecialInjectors execute after mod validation and any other injection
+        <SpecialInjectors>              [optional] Class names of SpecialInjectors to execute after mod validation and before any other injection
             <li>SpecialInjector</li>
         </SpecialInjectors>
+
+        <PostLoadInjectors>             [optional] Class names of SpecialInjectors to execute after starting a new game or loading save games
+            <li>SpecialInjector</li>
+        </PostLoadInjectors>
 
         <MapComponents>                 [optional] Class names of MapComponents to inject into save games
             <li>MapComponent</li>
