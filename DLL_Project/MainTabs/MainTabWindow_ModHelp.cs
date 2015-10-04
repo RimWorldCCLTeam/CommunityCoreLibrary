@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
         protected static List<ModCategory> _cachedHelpCategories;
         protected HelpDef SelectedHelpDef;
 
-        public const float MarginX = 6f; // 15 is way too much.
+        public const float Margin = 6f; // 15 is way too much.
         public const float EntryHeight = 30f;
         public const float EntryIndent = 15f;
 
@@ -163,11 +163,12 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private static void AddToNewOrExistingHelpCategory(HelpDef help, ref HelpCategoryDef helpCategory,
-            bool expanded = false)
-        {
+        // TODO: Local copies of helpcategories so we can filter individual helpdefs.
+        //private static void AddToNewOrExistingHelpCategory(HelpDef help, ref HelpCategoryDef helpCategory,
+        //    bool expanded = false)
+        //{
             
-        }
+        //}
 
         #endregion
 
@@ -184,8 +185,8 @@ namespace CommunityCoreLibrary
             float selectionWidth = TabDef != null ? (TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth) : MinListWidth;
             SelectionRect = new Rect(0f, 0f, selectionWidth, rect.height);
             DisplayRect = new Rect(
-                SelectionRect.width + MarginX, 0f,
-                rect.width - SelectionRect.width - MarginX, rect.height);
+                SelectionRect.width + Margin, 0f,
+                rect.width - SelectionRect.width - Margin, rect.height);
 
             DrawSelectionArea(SelectionRect);
             DrawDisplayArea(DisplayRect);
@@ -211,7 +212,7 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
-            var outRect = rect.AtZero().ContractedBy(MarginX);
+            var outRect = rect.AtZero().ContractedBy(Margin);
             outRect.yMin += titleRect.height;
 
             float height = Text.CalcHeight(SelectedHelpDef.description, outRect.width - 16f);
@@ -306,8 +307,8 @@ namespace CommunityCoreLibrary
             Widgets.DrawMenuSection(rect);
             GUI.BeginGroup(rect);
             
-            Rect filterRect = new Rect(MarginX, MarginX, rect.width - 3 * MarginX - 30f, 30f);
-            Rect clearRect = new Rect(filterRect.xMax + MarginX + 3f, MarginX + 3f, 24f, 24f);
+            Rect filterRect = new Rect(Margin, Margin, rect.width - 3 * Margin - 30f, 30f);
+            Rect clearRect = new Rect(filterRect.xMax + Margin + 3f, Margin + 3f, 24f, 24f);
             _filterString = Widgets.TextField(filterRect, _filterString);
             if (_filterString != "")
             {
@@ -382,15 +383,15 @@ namespace CommunityCoreLibrary
             }
 
             var imageRect = new Rect(
-                MarginX + curX, modRect.height / 2f - ArrowImageSize.y / 2f,
+                Margin + curX, modRect.height / 2f - ArrowImageSize.y / 2f,
                 ArrowImageSize.x, ArrowImageSize.y);
 
             Texture2D texture = mod.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight;
             GUI.DrawTexture(imageRect, texture);
 
             var labelRect = new Rect(
-                imageRect.xMax + MarginX, 0f,
-                modRect.width - ArrowImageSize.x - MarginX * 2 - curX, EntryHeight);
+                imageRect.xMax + Margin, 0f,
+                modRect.width - ArrowImageSize.x - Margin * 2 - curX, EntryHeight);
 
             Text.Anchor = TextAnchor.MiddleLeft;
             //GUI.color = Color.yellow;
@@ -444,15 +445,15 @@ namespace CommunityCoreLibrary
             }
 
             var imageRect = new Rect(
-                MarginX + curX, catRect.height / 2f - ArrowImageSize.y / 2f,
+                Margin + curX, catRect.height / 2f - ArrowImageSize.y / 2f,
                 ArrowImageSize.x, ArrowImageSize.y);
 
             Texture2D texture = cat.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight;
             GUI.DrawTexture(imageRect, texture);
 
             var labelRect = new Rect(
-                imageRect.xMax + MarginX, 0f,
-                catRect.width - imageRect.width - MarginX * 3 - curX, catRect.height);
+                imageRect.xMax + Margin, 0f,
+                catRect.width - imageRect.width - Margin * 3 - curX, catRect.height);
 
             Text.Anchor = TextAnchor.MiddleLeft;
 
