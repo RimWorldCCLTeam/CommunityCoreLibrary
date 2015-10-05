@@ -41,7 +41,7 @@ namespace CommunityCoreLibrary
             {
                 if (Expanded)
                 {
-                    return MainTabWindow_ModHelp.EntryHeight + HelpDefs.Count * MainTabWindow_ModHelp.EntryHeight;
+                    return MainTabWindow_ModHelp.EntryHeight + HelpDefs.Count(hd => hd.ShouldDraw) * MainTabWindow_ModHelp.EntryHeight;
                 }
                 else
                 {
@@ -50,15 +50,31 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool ShouldDraw
+        public bool ShouldDraw { get; set; }
+
+        public bool Expanded { get; set; }
+
+        public bool MatchesFilter(string filter)
         {
-            get
+            return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
+        }
+
+        public bool ThisOrAnyChildMatchesFilter(string filter)
+        {
+            return MatchesFilter(filter) || HelpDefs.Any(hd => hd.MatchesFilter(filter));
+        }
+
+        public void Filter(string filter, bool force = false)
+        {
+            ShouldDraw = force || ThisOrAnyChildMatchesFilter(filter);
+            Expanded = filter != "" && (force || ThisOrAnyChildMatchesFilter(filter));
+            foreach (HelpDef hd in HelpDefs)
             {
-                return HelpDefs.Count > 0;
+                hd.Filter(filter, force || MatchesFilter(filter));
             }
         }
 
-        public bool Expanded { get; set; }
+
 
         #endregion
 
