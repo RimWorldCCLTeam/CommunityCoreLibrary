@@ -64,6 +64,14 @@ namespace CommunityCoreLibrary
 
         public void                         FixedUpdate()
         {
+            if(
+                ( !GameMode.MapPlaying )||
+                ( Find.Map == null )||
+                ( Find.Map.components != null )
+            )
+            {
+                return;
+            }
             if( ReadyForPostLoadInjection() )
             {
                 InjectPostLoaders();
