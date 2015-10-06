@@ -17,13 +17,13 @@ namespace CommunityCoreLibrary
         protected static List<ModCategory> _cachedHelpCategories;
         protected HelpDef SelectedHelpDef;
 
-        public const float Margin = 18f;
-        public const float EntryHeight = 40f;
-        public const float EntryIndent = 50f;
+        public const float Margin = 6f; // 15 is way too much.
+        public const float EntryHeight = 30f;
+        public const float EntryIndent = 15f;
 
         protected Rect SelectionRect;
         protected Rect DisplayRect;
-        protected static Vector2 ArrowImageSize = new Vector2(15f, 15f);
+        protected static Vector2 ArrowImageSize = new Vector2(10f, 10f);
 
         protected Vector2 selectionScrollPos = default(Vector2);
         protected Vector2 displayScrollPos = default(Vector2);
@@ -83,6 +83,7 @@ namespace CommunityCoreLibrary
             readonly List<HelpCategoryDef> helpCategories = new List<HelpCategoryDef>();
 
             public readonly string ModName;
+
             public bool Expanded;
 
             public ModCategory(string modName)
@@ -98,13 +99,35 @@ namespace CommunityCoreLibrary
                 }
             }
 
+            public bool ShouldDraw { get; set; }
+
+            public bool MatchesFilter(string filter)
+            {
+                return filter == "" || ModName.ToUpper().Contains(filter.ToUpper());
+            }
+
+            public bool ThisOrAnyChildMatchesFilter(string filter)
+            {
+                return MatchesFilter(filter) || HelpCategories.Any(hc => hc.ThisOrAnyChildMatchesFilter(filter));
+            }
+
+            public void Filter(string filter)
+            {
+                ShouldDraw = ThisOrAnyChildMatchesFilter(filter);
+                Expanded = filter != "" && (ThisOrAnyChildMatchesFilter(filter));
+                foreach (HelpCategoryDef hc in HelpCategories)
+                {
+                    hc.Filter(filter, MatchesFilter(filter));
+                }
+            }
+
             public float DrawHeight
             {
                 get
                 {
                     return Expanded
-                        ? MainTabWindow_ModHelp.EntryHeight + HelpCategories.Sum(cat => cat.DrawHeight)
-                        : EntryHeight;
+                           ? MainTabWindow_ModHelp.EntryHeight + HelpCategories.Where(hc => hc.ShouldDraw).Sum(hc => hc.DrawHeight)
+                           : EntryHeight;
                 }
             }
 
@@ -133,28 +156,72 @@ namespace CommunityCoreLibrary
 
             // Build the help system
             Recache();
+
+            // set initial Filter
+            Filter();
         }
 
         public static void Recache()
         {
             _cachedHelpCategories = new List<ModCategory>();
-            foreach (var cat in DefDatabase<HelpCategoryDef>.AllDefs)
+            foreach (var helpCategory in DefDatabase<HelpCategoryDef>.AllDefs)
             {
-                if (_cachedHelpCategories.All(t => t.ModName != cat.ModName))
+                // parent modcategory does not exist, create it.
+                if (_cachedHelpCategories.All(t => t.ModName != helpCategory.ModName))
                 {
-                    var mCat = new ModCategory(cat.ModName);
-                    mCat.AddCategory(cat);
+                    var mCat = new ModCategory(helpCategory.ModName);
+                    mCat.AddCategory(helpCategory);
                     _cachedHelpCategories.Add(mCat);
                 }
+                // add to existing modcategory
                 else
                 {
-                    var mCat = _cachedHelpCategories.Find(t => t.ModName == cat.ModName);
-                    mCat.AddCategory(cat);
+                    var mCat = _cachedHelpCategories.Find(t => t.ModName == helpCategory.ModName);
+                    mCat.AddCategory(helpCategory);
                 }
             }
         }
 
         #endregion
+
+        #region Filter
+
+        private static string _filterString = "";
+
+        private string _lastFilterString = "";
+
+        private int _lastFilterTick;
+
+        private bool _filtered;
+
+        private void _filterUpdate()
+        {
+            // filter after a short delay.
+            // Log.Message(_filterString + " | " + _lastFilterTick + " | " + _filtered);
+            if (_filterString != _lastFilterString)
+            {
+                _lastFilterString = _filterString;
+                _lastFilterTick = 0;
+                _filtered = false;
+            }
+            else if (!_filtered)
+            {
+                if (_lastFilterTick > 60) Filter();
+                _lastFilterTick++;
+            }
+        }
+
+        public void Filter()
+        {
+            foreach (ModCategory mc in _cachedHelpCategories)
+            {
+                mc.Filter(_filterString);
+            }
+            _filtered = true;
+        }
+
+        #endregion
+
 
         #region OTab Rendering
 
@@ -164,19 +231,16 @@ namespace CommunityCoreLibrary
 
             Text.Font = GameFont.Small;
 
-            Rect inRect = rect.ContractedBy(Margin);
-
-            GUI.BeginGroup(inRect);
+            GUI.BeginGroup(rect);
 
             float selectionWidth = TabDef != null ? (TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth) : MinListWidth;
-            SelectionRect = new Rect(0f, 0f, selectionWidth, inRect.height);
+            SelectionRect = new Rect(0f, 0f, selectionWidth, rect.height);
             DisplayRect = new Rect(
                 SelectionRect.width + Margin, 0f,
-                inRect.width - SelectionRect.width - Margin, inRect.height);
+                rect.width - SelectionRect.width - Margin, rect.height);
 
             DrawSelectionArea(SelectionRect);
             DrawDisplayArea(DisplayRect);
-            Widgets.DrawLineVertical(SelectionRect.xMax + Margin / 2f, 0f, inRect.height);
 
             GUI.EndGroup();
         }
@@ -199,11 +263,8 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
-            Widgets.DrawLineHorizontal(0f, titleRect.yMax, rect.width);
-
-            var outRect = new Rect(
-                Margin, titleRect.yMax + Margin,
-                rect.width - Margin, rect.height - titleRect.yMax - Margin);
+            var outRect = rect.AtZero().ContractedBy(Margin);
+            outRect.yMin += titleRect.height;
 
             float height = Text.CalcHeight(SelectedHelpDef.description, outRect.width - 16f);
 
@@ -223,101 +284,122 @@ namespace CommunityCoreLibrary
             Widgets.DrawMenuSection(rect);
             GUI.BeginGroup(rect);
 
+            _filterUpdate();
+            Rect filterRect = new Rect(Margin, Margin, rect.width - 3 * Margin - 30f, 30f);
+            Rect clearRect = new Rect(filterRect.xMax + Margin + 3f, Margin + 3f, 24f, 24f);
+            _filterString = Widgets.TextField(filterRect, _filterString);
+            if (_filterString != "")
+            {
+                if (Widgets.ImageButton(clearRect, Widgets.CheckboxOffTex))
+                {
+                    _filterString = "";
+                    Filter();
+                }
+            }
+
             Rect outRect = rect.AtZero();
-            float height = _cachedHelpCategories.Sum(c => c.DrawHeight);
-            var viewRect = new Rect(0f, 0f, outRect.width - 16f, height);
-            float curY = outRect.y;
+            outRect.yMin += 40f;
+            float height = _cachedHelpCategories.Where(mc => mc.ShouldDraw).Sum(c => c.DrawHeight);
+            var viewRect = new Rect(0f, 0f, (height > outRect.height ? outRect.width - 16f : outRect.width), height);
 
             Widgets.BeginScrollView(outRect, ref selectionScrollPos, viewRect);
-            if (_cachedHelpCategories.Count < 1)
+            if (_cachedHelpCategories.Count(mc => mc.ShouldDraw) < 1)
             {
                 Rect messageRect = outRect.AtZero();
                 Widgets.Label(messageRect, "NoHelpDefs".Translate());
             }
             else
             {
-                foreach (var m in _cachedHelpCategories)
+                float curY = 0f;
+                float curX = 0f;
+                foreach (var mc in _cachedHelpCategories.Where(mc => mc.ShouldDraw))
                 {
-                    var entryRect = new Rect(0f, curY, viewRect.width, m.DrawHeight);
-                    DrawModCategory(entryRect, m);
-                    curY += m.DrawHeight;
+                    var entryRect = new Rect(0f, curY, viewRect.width, mc.DrawHeight);
+                    DrawModCategory(entryRect, curX, mc);
+                    GUI.color = Color.gray;
+                    Widgets.DrawLineHorizontal(0f, curY, viewRect.width);
+                    GUI.color = Color.white;
+                    curY += mc.DrawHeight;
                 }
+                GUI.color = Color.gray;
+                Widgets.DrawLineHorizontal(0f, curY, viewRect.width);
+                GUI.color = Color.white;
             }
 
             Widgets.EndScrollView();
             GUI.EndGroup();
         }
 
-        void DrawModCategory(Rect entryRect, ModCategory m)
+        void DrawModCategory(Rect entryRect, float curX, ModCategory mc)
         {
             GUI.BeginGroup(entryRect);
 
             float curY = 0f;
             var modRect = new Rect(0f, 0f, entryRect.width, EntryHeight);
-            DrawModRow(modRect, m);
+            DrawModRow(modRect, curX, mc);
             curY += EntryHeight;
-            if (m.Expanded)
+            if (mc.Expanded)
             {
-                foreach (var cat in m.HelpCategories)
+                foreach (var hc in mc.HelpCategories.Where(hc => hc.ShouldDraw))
                 {
-                    var catRect = new Rect(0f, curY, entryRect.width, cat.DrawHeight);
-                    DrawHelpCategory(catRect, cat);
-                    curY += cat.DrawHeight;
+                    var catRect = new Rect(0f, curY, entryRect.width, hc.DrawHeight);
+                    DrawHelpCategory(catRect, curX + EntryIndent, hc);
+                    curY += hc.DrawHeight;
                 }
             }
             GUI.EndGroup();
         }
 
-        void DrawModRow(Rect modRect, ModCategory mod)
+        void DrawModRow(Rect modRect, float curX, ModCategory mc)
         {
             GUI.BeginGroup(modRect);
 
-            if (modRect.Contains(Event.current.mousePosition))
+            if (Mouse.IsOver(modRect))
             {
                 Widgets.DrawHighlight(modRect);
             }
 
             var imageRect = new Rect(
-                Margin, modRect.height / 2f - ArrowImageSize.y / 2f,
+                Margin + curX, modRect.height / 2f - ArrowImageSize.y / 2f,
                 ArrowImageSize.x, ArrowImageSize.y);
 
-            Texture2D texture = mod.Expanded ? Icon.HelpMenuArrowUp : Icon.HelpMenuArrowDown;
+            Texture2D texture = mc.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight;
             GUI.DrawTexture(imageRect, texture);
 
             var labelRect = new Rect(
                 imageRect.xMax + Margin, 0f,
-                modRect.width - ArrowImageSize.x - Margin * 2, EntryHeight);
+                modRect.width - ArrowImageSize.x - Margin * 2 - curX, EntryHeight);
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            GUI.color = Color.yellow;
-            Widgets.Label(labelRect, mod.ModName);
-            GUI.color = Color.white;
+            //GUI.color = Color.yellow;
+            Widgets.Label(labelRect, mc.ModName);
+            //GUI.color = Color.white;
             Text.Anchor = TextAnchor.UpperLeft;
 
             if (Widgets.InvisibleButton(modRect))
             {
-                mod.Expanded = !mod.Expanded;
+                mc.Expanded = !mc.Expanded;
             }
             GUI.EndGroup();
         }
 
-        void DrawHelpCategory(Rect catRect, HelpCategoryDef cat)
+        void DrawHelpCategory(Rect catRect, float curX, HelpCategoryDef hc)
         {
             GUI.BeginGroup(catRect);
 
             var catRowRect = new Rect(0f, 0f, catRect.width, EntryHeight);
-            DrawHelpCategoryRow(catRowRect, cat);
+            DrawHelpCategoryRow(catRowRect, curX, hc);
 
-            if (cat.Expanded)
+            if (hc.Expanded)
             {
                 float curY = EntryHeight;
-                foreach (var helpDef in cat.HelpDefs)
+                foreach (var hd in hc.HelpDefs.Where(hd => hd.ShouldDraw))
                 {
                     var helpRect = new Rect(
-                        EntryIndent, curY,
+                        0f, curY,
                         catRect.width, EntryHeight);
 
-                    DrawHelpRow(helpRect, helpDef);
+                    DrawHelpRow(helpRect, curX, hd);
                     GUI.color = Color.gray;
                     Widgets.DrawLineHorizontal(0f, curY, catRect.width);
                     GUI.color = Color.white;
@@ -330,28 +412,31 @@ namespace CommunityCoreLibrary
             GUI.EndGroup();
         }
 
-        void DrawHelpCategoryRow(Rect catRect, HelpCategoryDef cat)
+        void DrawHelpCategoryRow(Rect catRect, float curX, HelpCategoryDef hc)
         {
             GUI.BeginGroup(catRect);
 
-            if (catRect.Contains(Event.current.mousePosition))
+            if (Mouse.IsOver(catRect))
             {
                 Widgets.DrawHighlight(catRect);
             }
 
             var imageRect = new Rect(
-                Margin * 2, catRect.height / 2f - ArrowImageSize.y / 2f,
+                Margin + curX, catRect.height / 2f - ArrowImageSize.y / 2f,
                 ArrowImageSize.x, ArrowImageSize.y);
 
-            Texture2D texture = cat.Expanded ? Icon.HelpMenuArrowUp : Icon.HelpMenuArrowDown;
+            Texture2D texture = hc.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight;
             GUI.DrawTexture(imageRect, texture);
 
             var labelRect = new Rect(
                 imageRect.xMax + Margin, 0f,
-                catRect.width - imageRect.width - Margin * 3, catRect.height);
+                catRect.width - imageRect.width - Margin * 3 - curX, catRect.height);
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(labelRect, cat.LabelCap);
+
+            if (Text.CalcHeight(hc.LabelCap, labelRect.width) > EntryHeight) Text.Font = GameFont.Tiny;
+            Widgets.Label(labelRect, hc.LabelCap);
+            Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
             GUI.color = Color.gray;
@@ -360,31 +445,36 @@ namespace CommunityCoreLibrary
 
             if (Widgets.InvisibleButton(catRect))
             {
-                cat.Expanded = !cat.Expanded;
+                hc.Expanded = !hc.Expanded;
             }
 
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.EndGroup();
         }
 
-        void DrawHelpRow(Rect hRect, HelpDef hCat)
+        void DrawHelpRow(Rect hRect, float curX, HelpDef hd)
         {
-            if (hCat == SelectedHelpDef)
+            if (hd == SelectedHelpDef)
             {
                 Widgets.DrawHighlightSelected(hRect);
             }
-            else if (hRect.Contains(Event.current.mousePosition))
+            else if (Mouse.IsOver(hRect))
             {
                 Widgets.DrawHighlight(hRect);
             }
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(hRect, hCat.LabelCap);
+            Rect labelRect = hRect;
+            labelRect.xMin += curX + Margin * 2 + ArrowImageSize.x;
+            labelRect.width -= curX + Margin * 2 + ArrowImageSize.x;
+            if (Text.CalcHeight(hd.LabelCap, labelRect.width) > EntryHeight) Text.Font = GameFont.Tiny;
+            Widgets.Label(labelRect, hd.LabelCap);
+            Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
             if (Widgets.InvisibleButton(hRect))
             {
-                SelectedHelpDef = hCat;
+                SelectedHelpDef = hd;
             }
         }
 

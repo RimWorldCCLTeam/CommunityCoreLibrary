@@ -12,8 +12,9 @@ namespace CommunityCoreLibrary
         public static readonly Texture2D    ShareLightColor     = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/ShareLightColor" );
         public static readonly Texture2D    SelectLightColor    = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/SelectLightColor" );
 
-        public static readonly Texture2D    HelpMenuArrowUp     = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowDown" );
-        public static readonly Texture2D    HelpMenuArrowDown   = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowUp" );
+        public static readonly Texture2D    HelpMenuArrowUp     = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowUp" );
+        public static readonly Texture2D    HelpMenuArrowDown   = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowDown" );
+        public static readonly Texture2D    HelpMenuArrowRight  = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowRight" );
 
     }
 

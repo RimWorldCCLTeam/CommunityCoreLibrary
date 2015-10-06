@@ -61,6 +61,23 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        #region Filter
+
+        public bool ShouldDraw { get; set; }
+
+        public void Filter(string filter, bool force = false)
+        {
+            ShouldDraw = force || MatchesFilter(filter);
+        }
+
+        public bool MatchesFilter(string filter)
+        {
+           return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
+
+        }
+
+        #endregion
+
     }
 
 }
