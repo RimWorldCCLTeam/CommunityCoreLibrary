@@ -65,21 +65,15 @@ namespace CommunityCoreLibrary
         public void                         FixedUpdate()
         {
             if(
-                ( !GameMode.MapPlaying )||
+                ( Game.Mode != GameMode.MapPlaying )||
                 ( Find.Map == null )||
                 ( Find.Map.components != null )
             )
             {
                 return;
             }
-            if( ReadyForPostLoadInjection() )
-            {
-                InjectPostLoaders();
-            }
-            if( ReadyForMapComponentInjection() )
-            {
-                InjectMapComponents();
-            }
+            InjectPostLoaders();
+            InjectMapComponents();
         }
 
         public void OnLevelWasLoaded()
@@ -111,7 +105,7 @@ namespace CommunityCoreLibrary
             // TODO:  Fix issue #30 so we can use proper assembly versioning
             //System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             //CCLVersion = assembly.GetName().Version;
-            CCLVersion = new Version( "0.12.3" );
+            CCLVersion = new Version( "0.12.4" );
 #if DEBUG
             Log.Message( "Community Core Library v" + CCLVersion + " (debug)" );
 #else
@@ -138,7 +132,7 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Research Verification
+        #region Research Validation
 
         bool                                ValidateResearch()
         {
@@ -178,14 +172,6 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Map Component Injection
-
-        bool                                ReadyForMapComponentInjection()
-        {
-            return (
-                ( Find.Map != null )&&
-                ( Find.Map.components != null )
-            );
-        }
 
         void                                InjectMapComponents()
         {
@@ -291,21 +277,13 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Map Component Injection
-
-        bool                                ReadyForPostLoadInjection()
-        {
-            return (
-                ( Find.Map != null )&&
-                ( Find.Map.components != null )
-            );
-        }
+        #region Post Load Injection
 
         void                                InjectPostLoaders()
         {
-            foreach (var ModHelperDef in ModHelperDefs)
+            foreach( var ModHelperDef in ModHelperDefs )
             {
-                if ( !ModHelperDef.PostLoadersInjected )
+                if( !ModHelperDef.PostLoadersInjected )
                 {
                     // TODO:  Alpha 13 API change
                     //if( ModHelperDef.InjectPostLoaders() )
