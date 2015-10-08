@@ -44,14 +44,14 @@
     <!-- Specific Keys -->
 
     <AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>
-    
+
     <AutoHelpStuffCost>Stuff cost : {0}</AutoHelpStuffCost>
     <AutoHelpThingCost>Cost to build</AutoHelpThingCost>
     <AutoHelpTotalCost>Total cost : {0}</AutoHelpTotalCost>
 
     <AutoHelpMaximumAffected>Maximum affected : {0}</AutoHelpMaximumAffected>
     <AutoHelpMaximumParticipants>Maximum participants : {0}</AutoHelpMaximumParticipants>
-    
+
     <AutoHelpJoyKind>Joy kind : {0}</AutoHelpJoyKind>
     <AutoHelpJoySkill>Skill : {0}</AutoHelpJoySkill>
 

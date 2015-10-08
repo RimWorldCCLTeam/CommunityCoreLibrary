@@ -54,6 +54,9 @@ namespace CommunityCoreLibrary
                 ResearchController.InitComponent();
             }
 
+            // Enablers CCL buildings for mods wanting them
+            EnableCCLBuildings();
+
             // Auto-generate help menus
             HelpController.Initialize();
 
@@ -76,7 +79,7 @@ namespace CommunityCoreLibrary
             InjectMapComponents();
         }
 
-        public void OnLevelWasLoaded()
+        public void                         OnLevelWasLoaded()
         {
         }
 
@@ -299,6 +302,42 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region Enable CCL Buildings
+
+        public void                         EnableCCLBuildings()
+        {
+            foreach( var ModHelperDef in ModHelperDefs )
+            {
+                if( ModHelperDef.UsesGenericHoppers )
+                {
+                    // Mod wants generic hoppers
+                    CCL_Log.Message( "Enabling hoppers", ModHelperDef.ModName );
+                    EnableGenericHoppers();
+                }
+            }
+        }
+
+        private bool                        hoppersEnabled = false;
+        private void                        EnableGenericHoppers()
+        {
+            if( hoppersEnabled )
+            {
+                // Only enable them once
+                return;
+            }
+            var hoppers = DefDatabase<ThingDef>.AllDefs.Where( d => (
+                ( d.thingClass == typeof( Building_Hopper ) )&&
+                ( d.HasComp( typeof( CompHopper ) ) )
+            ) ).ToList();
+            foreach( var hopper in hoppers )
+            {
+                hopper.researchPrerequisite = null;
+            }
+            hoppersEnabled = true;
         }
 
         #endregion

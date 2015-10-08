@@ -116,6 +116,17 @@
     <Compile Include="Extensions\ReverseDesignatorDatabase_Extensions.cs" />
     <Compile Include="CompProperties\CompProperties_ShearableRenameable.cs" />
     <Compile Include="ThingComps\CompShearableRenameable.cs" />
+    <Compile Include="Alerts\Alert_BuildingNeedsHopper.cs" />
+    <Compile Include="Alerts\Alert_HopperNeedsBuilding.cs" />
+    <Compile Include="Buildings\Building_Hopper.cs" />
+    <Compile Include="CompProperties\CompProperties_HopperUser.cs" />
+    <Compile Include="Interfaces\IHopperUser.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_HopperMagnifier.cs" />
+    <Compile Include="PlaceWorkers\PlaceWorker_HopperUserMagnifier.cs" />
+    <Compile Include="StaticClasses\HopperHelper.cs" />
+    <Compile Include="ThingComps\CompHopper.cs" />
+    <Compile Include="ThingComps\CompHopperUser.cs" />
+    <Compile Include="WorkGivers\WorkGiver_FillHopper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

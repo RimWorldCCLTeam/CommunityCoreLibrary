@@ -49,6 +49,8 @@ namespace CommunityCoreLibrary
 
         public List< Type >                 PostLoadInjectors;
 
+        public bool                         UsesGenericHoppers = false;
+
         #endregion
 
         [Unsaved]

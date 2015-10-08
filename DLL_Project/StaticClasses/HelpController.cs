@@ -221,9 +221,9 @@ namespace CommunityCoreLibrary
                         (
                             ( t.designationCategory.NullOrEmpty() )||
                             ( t.designationCategory == "None" )
-                        )||
-                        ( t.IsLockedOut() )
-                    )
+                        )
+                    )&&
+                    ( !t.IsLockedOut() )
                 ) ).ToList();
 
             if( thingDefs.NullOrEmpty() )
