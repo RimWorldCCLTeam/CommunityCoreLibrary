@@ -114,8 +114,8 @@
     <Compile Include="Extensions\RecipeDef_Extensions.cs" />
     <Compile Include="ThingComps\CompRottableRefrigerated.cs" />
     <Compile Include="Extensions\ReverseDesignatorDatabase_Extensions.cs" />
-    <Compile Include="ThingComps\CompShearableBoom.cs" />
     <Compile Include="CompProperties\CompProperties_ShearableRenameable.cs" />
+    <Compile Include="ThingComps\CompShearableRenameable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
