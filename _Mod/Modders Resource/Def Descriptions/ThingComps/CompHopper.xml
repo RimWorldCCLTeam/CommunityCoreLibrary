@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompHopper
+    
+    Requires:   Building_Hopper
+    
+    Optional:   PlaceWorker_HopperUserMagnifier
+    
+    This comp is only usable on Building_Hopper and contains all the low-level functions required
+    to internally manage hoppers.  CCL comes with two basic hoppers, a refrigerated an unrefrigerated
+    one.  Both of which are hidden unless <UsesGenericHoppers> is set to "true" in ModHelperDef.
+    
+    Generally speaking there is no need to create your own hoppers as there are two supplied with
+    CCL.  You can if you wish to add more functionality to your hoppers, but be aware that any
+    building using the generic hopper types can use your hoppers too.  If you do create your own
+    hoppers you should also use the PlaceWorker_HopperUserMagnifier to indicate to the player
+    the building connection.
+    
+    Remember, the generic hoppers are directional and rotateable, they will only connect on the
+    "north" side (based on default rotation).
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <thingClass>CommunityCoreLibrary.Building_Hopper</thingClass>
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompHopper</compClass>
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_HopperUserMagnifier</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

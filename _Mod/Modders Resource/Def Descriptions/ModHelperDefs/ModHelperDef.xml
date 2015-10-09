@@ -5,7 +5,7 @@
 
     <ModHelperDef>
 
-        <defName>string</defName>       [required] Some Unique Identifier In Class
+        <defName>string</defName>       [required] This must uniquely identify your def
 
         <ModName>string</ModName>       [required] Name of your mod
 
@@ -50,6 +50,10 @@
 
             </li>
         </ThingComps>
+
+        <UsesGenericHoppers>bool</UsesGenericHoppers>
+                                        [optional] Enables the generic hoppers for use with buildings, hoppers
+                                        are hidden by default from player use unless a mod enables them
 
     </ModHelperDef>
 
