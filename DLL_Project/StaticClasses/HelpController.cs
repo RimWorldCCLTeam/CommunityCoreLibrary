@@ -255,7 +255,7 @@ namespace CommunityCoreLibrary
             {
                 // Find an existing entry
                 var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == thingDef.defName )
+                    ( h.keyDef == thingDef )
                 ) );
 
                 if( helpDef == null )
@@ -302,7 +302,7 @@ namespace CommunityCoreLibrary
                 {
                     // Find an existing entry
                     var helpDef = helpDefs.Find( h => (
-                        ( h.keyDef == thingDef.defName + "_" + recipeDef.defName )
+                        ( h.keyDef == recipeDef )
                     ) );
 
                     if( helpDef == null )
@@ -349,7 +349,7 @@ namespace CommunityCoreLibrary
             {
                 // Find an existing entry
                 var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == researchProjectDef.defName )
+                    ( h.keyDef == researchProjectDef )
                 ) );
 
                 if( helpDef == null )
@@ -393,7 +393,7 @@ namespace CommunityCoreLibrary
             {
                 // Find an existing entry
                 var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == advancedResearchDef.defName )
+                    ( h.keyDef == advancedResearchDef )
                 ) );
 
                 if( helpDef == null )
@@ -440,7 +440,7 @@ namespace CommunityCoreLibrary
         {
             var helpDef = new HelpDef();
             helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
-            helpDef.keyDef = buildableDef.defName;
+            helpDef.keyDef = buildableDef;
             helpDef.label = buildableDef.label;
             helpDef.category = category;
 
@@ -760,7 +760,7 @@ namespace CommunityCoreLibrary
         static HelpDef                      HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
             var helpDef = new HelpDef();
-            helpDef.keyDef = thingDef.defName +"_" + recipeDef.defName;
+            helpDef.keyDef = recipeDef;
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
             helpDef.label = recipeDef.label;
             helpDef.category = category;
@@ -881,7 +881,7 @@ namespace CommunityCoreLibrary
         {
             var helpDef = new HelpDef();
             helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
-            helpDef.keyDef = researchProjectDef.defName;
+            helpDef.keyDef = researchProjectDef;
             helpDef.label = researchProjectDef.label;
             helpDef.category = category;
 
@@ -956,7 +956,7 @@ namespace CommunityCoreLibrary
         {
             var helpDef = new HelpDef();
             helpDef.defName = advancedResearchDef.defName + "_AdvancedResearchDef_Help";
-            helpDef.keyDef = advancedResearchDef.defName;
+            helpDef.keyDef = advancedResearchDef;
             helpDef.label = advancedResearchDef.label;
             if( advancedResearchDef.helpCategoryDef == null )
             {
