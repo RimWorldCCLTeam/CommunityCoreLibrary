@@ -39,34 +39,44 @@ namespace CommunityCoreLibrary
         #region Gizmos
 
         ChangeColor                 _GizmoChangeColor;
-        ChangeColor                 GizmoChangeColor {
-            get{
+        ChangeColor                 GizmoChangeColor
+        {
+            get
+            {
                 if( _GizmoChangeColor == null )
+                {
                     _GizmoChangeColor = new ChangeColor(
                         this,
                         Icon.SelectLightColor
                     );
+                }
                 return _GizmoChangeColor;
             }
         }
 
         TouchingByLinker            _GizmoTouchingByLinker;
-        TouchingByLinker            GizmoTouchingByLinker {
-            get {
+        TouchingByLinker            GizmoTouchingByLinker
+        {
+            get
+            {
                 if( _GizmoTouchingByLinker == null )
+                {
                     _GizmoTouchingByLinker = new TouchingByLinker(
                         parent,
                         Icon.ShareLightColor,
                         GroupColorChange,
                         GroupColorChange
                     );
+                }
                 return _GizmoTouchingByLinker;
             }
         }
 
         DefOrThingCompInRoom        _GizmoDefOrThingCompInRoom;
-        DefOrThingCompInRoom        GizmoDefOrThingCompInRoom {
-            get {
+        DefOrThingCompInRoom        GizmoDefOrThingCompInRoom
+        {
+            get
+            {
                 if( _GizmoDefOrThingCompInRoom == null )
                 {
                     _GizmoDefOrThingCompInRoom = new DefOrThingCompInRoom(
@@ -173,7 +183,7 @@ namespace CommunityCoreLibrary
                     yield return GizmoDefOrThingCompInRoom;
                 }
             }
-            
+
             // Has a link flag
             if( parent.def.graphicData.linkFlags != LinkFlags.None )
             {
@@ -247,8 +257,10 @@ namespace CommunityCoreLibrary
                     int otherColor = otherLight.GetColorByName( ColorProps.color[ ColorIndex ].name );
 
                     // If it does, check it's research
-                    if( ( otherColor > -1 )&&
-                        ( DefDatabase< ResearchProjectDef >.GetNamed( otherLight.ColorProps.requiredResearch ).IsFinished ) )
+                    if(
+                        ( otherColor > -1 )&&
+                        ( DefDatabase< ResearchProjectDef >.GetNamed( otherLight.ColorProps.requiredResearch ).IsFinished )
+                    )
                     {    // Change it's color
                         otherLight.ChangeColor( otherColor );
                     }
@@ -318,10 +330,13 @@ namespace CommunityCoreLibrary
             Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
 
             // Turn light on if appropriate
-            newGlower.Lit |= ( wasLit ) && ( PowerTrader.PowerOn );
+            newGlower.Lit |= (
+                ( wasLit )&&
+                ( PowerTrader.PowerOn )
+            );
         }
 
         #endregion
-   }
+    }
 
 }

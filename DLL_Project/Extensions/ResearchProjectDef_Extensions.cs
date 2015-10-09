@@ -64,7 +64,7 @@ namespace CommunityCoreLibrary
         }
 
         #endregion
-        
+
         #region Lists of affected data
 
         public static List< Def >           GetResearchRequirements( this ResearchProjectDef researchProjectDef )

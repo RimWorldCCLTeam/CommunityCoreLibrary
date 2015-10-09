@@ -40,7 +40,7 @@ namespace CommunityCoreLibrary
             var d = obj as HelpDef;
             return d != null
                 ? d.label.CompareTo(label) * -1
-                : 1;
+                    : 1;
         }
 
         #endregion
@@ -72,7 +72,7 @@ namespace CommunityCoreLibrary
 
         public bool MatchesFilter(string filter)
         {
-           return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
+            return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
 
         }
 

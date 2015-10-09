@@ -11,34 +11,34 @@ using Verse;         // RimWorld universal objects are here
 
 namespace CommunityCoreLibrary
 {
-    
-	public class Alert_HopperNeedsBuilding : Alert_High
+
+    public class Alert_HopperNeedsBuilding : Alert_High
     {
 
-        public override AlertReport Report
+        public override AlertReport         Report
         {
             get
             {
-				var buildings =
-					Find.ListerBuildings.allBuildingsColonist
-						.Where( b => (
-							( b.def.IsHopper() )
-						) ).ToList();
+                var buildings =
+                    Find.ListerBuildings.allBuildingsColonist
+                        .Where( b => (
+                            ( b.def.IsHopper() )
+                        ) ).ToList();
 
                 foreach( var building in buildings )
                 {
-					var hopperComp = building.GetComp<CompHopper>();
-					if( hopperComp.FindHopperUser() == null )
+                    var hopperComp = building.GetComp<CompHopper>();
+                    if( hopperComp.FindHopperUser() == null )
                     {
                         this.baseExplanation = "Alert_HopperNeedsBuilding_Description".Translate( building.def.label );
-						return AlertReport.CulpritIs( building );
+                        return AlertReport.CulpritIs( building );
                     }
                 }
                 return AlertReport.Inactive;
             }
         }
 
-		public Alert_HopperNeedsBuilding()
+        public Alert_HopperNeedsBuilding()
         {
             this.baseLabel = "Alert_HopperNeedsBuilding_Label".Translate();
         }

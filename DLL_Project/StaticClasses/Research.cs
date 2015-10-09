@@ -7,7 +7,7 @@ namespace CommunityCoreLibrary
 
     public static class Research
     {
-        
+
         public static ResearchProjectDef    Locker
         {
             get

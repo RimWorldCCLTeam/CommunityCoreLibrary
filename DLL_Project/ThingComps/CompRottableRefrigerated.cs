@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
 
         // TODO:  Alpha 13 API change
         //public override bool Inject()
-        public override void Inject()
+        public override void                Inject()
         {
             // Replace CompRottable on ThingDefs
             var thingDefs = DefDatabase< ThingDef >.AllDefsListForReading;
@@ -41,15 +41,15 @@ namespace CommunityCoreLibrary
 
     public class CompRottableRefrigerated : CompRottable
     {
-        private CompProperties_Rottable PropsRot
+        private CompProperties_Rottable     PropsRot
         {
             get
             {
-                return (CompProperties_Rottable) this.props;
+                return props as CompProperties_Rottable;
             }
         }
 
-        private CompRefrigerated CompRefrigerated
+        private CompRefrigerated            CompRefrigerated
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private CompPowerTrader PowerTraderFor( CompRefrigerated refrigerator )
+        private CompPowerTrader             PowerTraderFor( CompRefrigerated refrigerator )
         {
             if( refrigerator != null )
             {
@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary
             return null;
         }
 
-        private bool InRefrigerator
+        private bool                        InRefrigerator
         {
             get
             {
@@ -92,76 +92,74 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override void CompTickRare()
+        public override void                CompTickRare()
         {
-            if( this.InRefrigerator )
+            if( InRefrigerator )
             {
                 return;
             }
-            float num = this.rotProgress;
-            this.rotProgress += (float) Mathf.RoundToInt(1f * GenTemperature.RotRateAtTemperature(GenTemperature.GetTemperatureForCell(this.parent.Position)) * 250f);
-            if (this.Stage == RotStage.Rotting && this.PropsRot.rotDestroys)
+            float num = rotProgress;
+            rotProgress += (float) Mathf.RoundToInt( 1f * GenTemperature.RotRateAtTemperature( GenTemperature.GetTemperatureForCell( parent.Position ) ) * 250f );
+            if(
+                ( Stage == RotStage.Rotting )&&
+                ( PropsRot.rotDestroys )
+            )
             {
-                this.parent.Destroy(DestroyMode.Vanish);
+                parent.Destroy( DestroyMode.Vanish );
             }
             else
             {
-                if (this.Stage != RotStage.Rotting || this.PropsRot.rotDamagePerDay <= 0 || Mathf.FloorToInt(num / 30000f) == Mathf.FloorToInt(this.rotProgress / 30000f))
+                if(
+                    ( Stage != RotStage.Rotting )||
+                    ( PropsRot.rotDamagePerDay <= 0 )||
+                    ( Mathf.FloorToInt( num / 30000f ) == Mathf.FloorToInt( rotProgress / 30000f ) )
+                )
+                {
                     return;
-                this.parent.TakeDamage(new DamageInfo(DamageDefOf.Rotting, this.PropsRot.rotDamagePerDay, (Thing) null, new BodyPartDamageInfo?(), (ThingDef) null));
+                }
+                parent.TakeDamage( new DamageInfo( DamageDefOf.Rotting, PropsRot.rotDamagePerDay, (Thing) null, new BodyPartDamageInfo?(), (ThingDef) null ) );
             }
         }
 
-        public override string CompInspectStringExtra()
+        public override string              CompInspectStringExtra()
         {
-            StringBuilder stringBuilder1 = new StringBuilder();
-            switch (this.Stage)
+            var stringBuilder = new StringBuilder();
+            switch( Stage )
             {
             case RotStage.Fresh:
-                stringBuilder1.AppendLine(Translator.Translate("RotStateFresh"));
+                stringBuilder.AppendLine( "RotStateFresh".Translate() );
                 break;
             case RotStage.Rotting:
-                stringBuilder1.AppendLine(Translator.Translate("RotStateRotting"));
+                stringBuilder.AppendLine( "RotStateRotting".Translate() );
                 break;
             case RotStage.Dessicated:
-                stringBuilder1.AppendLine(Translator.Translate("RotStateDessicated"));
+                stringBuilder.AppendLine( "RotStateDessicated".Translate() );
                 break;
             }
-            if ( InRefrigerator )
+            if( InRefrigerator )
             {
-                stringBuilder1.AppendLine("RefrigeratedStorage".Translate());
+                stringBuilder.AppendLine( "RefrigeratedStorage".Translate() );
             }
-            else if ((double) ((float) this.PropsRot.TicksToRotStart - this.rotProgress) > 0.0)
+            else if( (double) ((float) PropsRot.TicksToRotStart - rotProgress) > 0.0 )
             {
-                float num = GenTemperature.RotRateAtTemperature((float) Mathf.RoundToInt(GenTemperature.GetTemperatureForCell(this.parent.Position)));
-                int rotAtCurrentTemp = this.TicksUntilRotAtCurrentTemp;
-                if ((double) num < 1.0 / 1000.0 )
-                    stringBuilder1.AppendLine(Translator.Translate("CurrentlyFrozen"));
-                else if ( (double) num < 0.999000012874603 )
+                float num = GenTemperature.RotRateAtTemperature( (float) Mathf.RoundToInt( GenTemperature.GetTemperatureForCell( parent.Position ) ) );
+                int rotAtCurrentTemp = TicksUntilRotAtCurrentTemp;
+                if( (double) num < 1.0 / 1000.0 )
                 {
-                    StringBuilder stringBuilder2 = stringBuilder1;
-                    string key = "CurrentlyRefrigerated";
-                    object[] objArray = new object[1];
-                    int index = 0;
-                    string str1 = GenDate.TicksToDaysExtendedString(rotAtCurrentTemp);
-                    objArray[index] = (object) str1;
-                    string str2 = Translator.Translate(key, objArray);
-                    stringBuilder2.AppendLine(str2);
+                    stringBuilder.AppendLine( "CurrentlyFrozen".Translate() );
+                }
+                else if( (double) num < 0.999000012874603 )
+                {
+                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.TicksToDaysExtendedString() ) );
                 }
                 else
                 {
-                    StringBuilder stringBuilder2 = stringBuilder1;
-                    string key = "NotRefrigerated";
-                    object[] objArray = new object[1];
-                    int index = 0;
-                    string str1 = GenDate.TicksToDaysExtendedString(rotAtCurrentTemp);
-                    objArray[index] = (object) str1;
-                    string str2 = Translator.Translate(key, objArray);
-                    stringBuilder2.AppendLine(str2);
+                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.TicksToDaysExtendedString() ) );
                 }
             }
-            return stringBuilder1.ToString();
+            return stringBuilder.ToString();
         }
 
     }
+
 }

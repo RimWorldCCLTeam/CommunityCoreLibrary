@@ -9,7 +9,9 @@ namespace CommunityCoreLibrary
 {
     public class CompProperties_HopperUser : CompProperties
     {
-        public ThingFilter resources;
+
+        public ThingFilter                  resources;
+
     }
 
 }

@@ -34,8 +34,10 @@ namespace CommunityCoreLibrary
         public static void                  Cooldown( int ticks = 1 )
         {
             cooldownTicks -= ticks;
-            if( ( cooldownTicks <= 0 )&&
-                ( destroyedThings.Count > 0 ) )
+            if(
+                ( cooldownTicks <= 0 )&&
+                ( destroyedThings.Count > 0 )
+            )
             {
                 destroyedThings.Clear();
             }

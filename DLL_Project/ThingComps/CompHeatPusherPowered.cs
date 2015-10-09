@@ -3,10 +3,10 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class CompHeatPusherPowered : ThingComp
     {
-        
+
         CompPowerTrader                     CompPowerTrader
         {
             get
@@ -44,7 +44,7 @@ namespace CommunityCoreLibrary
 
         }
 #endif
-        
+
         public override void                CompTick()
         {
             base.CompTick();
@@ -59,7 +59,7 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            
+
             // If it's in low power mode, abort
             if( CompPowerLowIdleDraw.LowPowerMode )
             {

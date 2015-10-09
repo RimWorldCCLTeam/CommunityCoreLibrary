@@ -390,7 +390,7 @@ namespace CommunityCoreLibrary
             foreach ( var compSet in ThingComps )
             {
                 var defsByName = DefDatabase<ThingDef>.AllDefs;
-                
+
                 foreach ( var targetName in compSet.targetDefs )
                 {
                     var def = defsByName.ToList().Find(s => s.defName == targetName);

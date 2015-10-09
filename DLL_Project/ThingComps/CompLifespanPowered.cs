@@ -66,7 +66,7 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            
+
             remainingTicks -= down;
             if( remainingTicks > 0 )
             {

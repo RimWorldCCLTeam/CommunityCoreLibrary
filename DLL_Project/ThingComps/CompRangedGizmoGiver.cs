@@ -2,6 +2,7 @@
 
 namespace CommunityCoreLibrary
 {
+    
     /// <summary>
     /// Override CompGetGizmosExtra() to add gizmos you want.
     /// </summary>
@@ -9,4 +10,5 @@ namespace CommunityCoreLibrary
     {
         public readonly bool                isRangedGiver = true;
     }
+
 }

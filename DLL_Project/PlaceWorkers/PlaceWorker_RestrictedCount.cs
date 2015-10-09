@@ -5,7 +5,7 @@ namespace CommunityCoreLibrary
 
     public class PlaceWorker_RestrictedCount : PlaceWorker
     {
-        
+
         public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
             var Restrictions = checkingDef.RestrictedPlacement_Properties();
@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
 
             return count < Restrictions.MaxCount
                 ? AcceptanceReport.WasAccepted
-                : "MessagePlacementCountRestricted".Translate(Restrictions.MaxCount);
+                    : "MessagePlacementCountRestricted".Translate( Restrictions.MaxCount );
 
         }
 

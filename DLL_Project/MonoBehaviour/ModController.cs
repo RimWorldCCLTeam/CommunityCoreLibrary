@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -49,7 +47,7 @@ namespace CommunityCoreLibrary
             InjectDesignators();
 
             // Validate advanced research defs
-            if ( ValidateResearch() )
+            if( ValidateResearch() )
             {
                 ResearchController.InitComponent();
             }
@@ -225,22 +223,22 @@ namespace CommunityCoreLibrary
                 }
             }
         }
-        
+
         #endregion
 
         #region ThingComp Injection
 
         void                                InjectThingComps()
         {
-            foreach (var ModHelperDef in ModHelperDefs)
+            foreach( var ModHelperDef in ModHelperDefs )
             {
-                if ( !ModHelperDef.ThingCompsInjected )
+                if( !ModHelperDef.ThingCompsInjected )
                 {
                     // TODO:  Alpha 13 API change
                     //if( ModHelperDef.InjectThingComps() )
 
                     ModHelperDef.InjectThingComps();
-                    if ( ModHelperDef.ThingCompsInjected )
+                    if( ModHelperDef.ThingCompsInjected )
                     {
                         CCL_Log.Message( "Injected ThingComps", ModHelperDef.ModName );
                     }
@@ -258,15 +256,15 @@ namespace CommunityCoreLibrary
 
         void                                InjectSpecials()
         {
-            foreach (var ModHelperDef in ModHelperDefs)
+            foreach( var ModHelperDef in ModHelperDefs )
             {
-                if ( !ModHelperDef.SpecialsInjected )
+                if( !ModHelperDef.SpecialsInjected )
                 {
                     // TODO:  Alpha 13 API change
                     //if( ModHelperDef.InjectSpecials() )
 
                     ModHelperDef.InjectSpecials();
-                    if ( ModHelperDef.SpecialsInjected )
+                    if( ModHelperDef.SpecialsInjected )
                     {
                         CCL_Log.Message( "Injected Specials", ModHelperDef.ModName );
                     }
@@ -292,7 +290,7 @@ namespace CommunityCoreLibrary
                     //if( ModHelperDef.InjectPostLoaders() )
 
                     ModHelperDef.InjectPostLoaders();
-                    if ( ModHelperDef.PostLoadersInjected )
+                    if( ModHelperDef.PostLoadersInjected )
                     {
                         CCL_Log.Message( "Injected Post Loaders", ModHelperDef.ModName );
                     }

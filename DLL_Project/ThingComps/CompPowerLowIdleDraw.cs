@@ -6,7 +6,7 @@ using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class CompPowerLowIdleDraw : ThingComp
     {
 
@@ -72,8 +72,10 @@ namespace CommunityCoreLibrary
             Scribe_Values.LookValue<float>( ref curPower, "curPower", 1f );
             Scribe_References.LookReference<Pawn>( ref curUser, "curUser" );
 
-            if( ( Scribe.mode == LoadSaveMode.LoadingVars )&&
-                ( curUser != null ) )
+            if(
+                ( Scribe.mode == LoadSaveMode.LoadingVars )&&
+                ( curUser != null )
+            )
             {
                 curJob = curUser.CurJob;
             }
@@ -159,8 +161,10 @@ namespace CommunityCoreLibrary
         public override void                ReceiveCompSignal( string signal )
         {
             // Asked to power down?
-            if( ( signal == "PowerTurnedOff" )||
-                ( signal == "PowerTurnedOn " ) )
+            if(
+                ( signal == "PowerTurnedOff" )||
+                ( signal == "PowerTurnedOn " )
+            )
             {
                 // Force toggle now
                 PowerLevelToggle( 1000000 );
@@ -201,9 +205,17 @@ namespace CommunityCoreLibrary
                     {
 
                         // Quickly check the last user is still using...
-                        if( ( curUser != null )&&( curUser.Position == scanPosition[0] ) ) {
+                        if(
+                            ( curUser != null )&&
+                            ( curUser.Position == scanPosition[0] )
+                        )
+                        {
                             // They're here...
-                            if( ( curUser.CurJob != null )&&( curUser.CurJob == curJob ) ) {
+                            if(
+                                ( curUser.CurJob != null )&&
+                                ( curUser.CurJob == curJob )
+                            )
+                            {
                                 // ...they're using!
                                 turnItOn = true;
                                 break;
@@ -222,21 +234,27 @@ namespace CommunityCoreLibrary
                                 // ...With a job!...
 
                                 // ...(checking targets)...
-                                if( ( pUser.CurJob.targetA != null )&&
+                                if(
+                                    ( pUser.CurJob.targetA != null )&&
                                     ( pUser.CurJob.targetA.Thing != null )&&
-                                    ( pUser.CurJob.targetA.Thing.def == parent.def ) )
+                                    ( pUser.CurJob.targetA.Thing.def == parent.def )
+                                )
                                 {
                                     turnItOn = true;
                                 }
-                                else if( ( pUser.CurJob.targetB != null )&&
+                                else if(
+                                    ( pUser.CurJob.targetB != null )&&
                                     ( pUser.CurJob.targetB.Thing != null )&&
-                                    ( pUser.CurJob.targetB.Thing.def == parent.def ) )
+                                    ( pUser.CurJob.targetB.Thing.def == parent.def )
+                                )
                                 {
                                     turnItOn = true;
                                 }
-                                else if( ( pUser.CurJob.targetC != null )&&
+                                else if(
+                                    ( pUser.CurJob.targetC != null )&&
                                     ( pUser.CurJob.targetC.Thing != null )&&
-                                    ( pUser.CurJob.targetC.Thing.def == parent.def ) )
+                                    ( pUser.CurJob.targetC.Thing.def == parent.def )
+                                )
                                 {
                                     turnItOn = true;
                                 }
@@ -265,7 +283,9 @@ namespace CommunityCoreLibrary
                     }
                     break;
                 }
-            }else{
+            }
+            else
+            {
                 // Full-power when any pawn is standing on any monitored cell...
                 foreach( IntVec3 curPos in scanPosition )
                 {
@@ -293,15 +313,17 @@ namespace CommunityCoreLibrary
                     keepOnTicks = IdleProps.cycleHighTicks;
                 }
             }
-            else if ( !LowPowerMode )
+            else if( !LowPowerMode )
             {
                 // ...Is not idle, go to idle mode
                 TogglePower();
             }
 
-            if( ( LowPowerMode )&&
+            if(
+                ( LowPowerMode )&&
                 ( CompGlower != null )&&
-                ( CompGlower.Lit ) )
+                ( CompGlower.Lit )
+            )
             {
                 // Glower on while idle???
                 ToggleGlower( false );
@@ -337,8 +359,10 @@ namespace CommunityCoreLibrary
 
         void                                ToggleGlower( bool turnItOn )
         {
-            if( ( IdleProps.operationalMode == LowIdleDrawMode.Cycle )&&
-                ( !turnItOn ) )
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.Cycle )&&
+                ( !turnItOn )
+            )
             {
                 // Cyclers don't toggle glowers, but let them turn it back on (old saves)
                 return;
@@ -465,8 +489,10 @@ namespace CommunityCoreLibrary
             // Look at each thing at this position and check it's passability
             foreach( Thing curThing in Find.ThingGrid.ThingsListAt( position ) )
             {
-                if( ( curThing.def.passability == Traversability.Impassable )||
-                    ( curThing.def.IsEdifice() ) )
+                if(
+                    ( curThing.def.passability == Traversability.Impassable )||
+                    ( curThing.def.IsEdifice() )
+                )
                 {
                     // Impassable cell, exit right meow!
                     return;

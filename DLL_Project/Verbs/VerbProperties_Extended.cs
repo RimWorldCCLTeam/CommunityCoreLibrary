@@ -2,10 +2,13 @@
 
 namespace CommunityCoreLibrary
 {
+    
     public class VerbProperties_Extended : VerbProperties
     {
+        
         public class VerbExperience
         {
+            
             public float                    min;
             public float                    mid;
             public float                    max;
@@ -23,4 +26,5 @@ namespace CommunityCoreLibrary
         public int                          pelletCount = 1;
         public VerbExperience               experienceGain = new VerbExperience();
     }
+
 }

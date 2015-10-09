@@ -4,7 +4,7 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public static class Common
     {
 

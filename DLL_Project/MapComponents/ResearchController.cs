@@ -165,7 +165,7 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Research Processing
-        
+
         static void                         SetInitialState( bool firstTimeRun = false )
         {   
             // Set the initial state of the advanced research

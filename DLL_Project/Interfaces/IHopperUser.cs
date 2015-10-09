@@ -12,15 +12,15 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public interface IHopperUser
-	{
-		// This property tells is the list of things to program the hopper with
-		ThingFilter						ResourceFilter
-		{
-			get;
-		}
+    public interface IHopperUser
+    {
+        // This property is the thing filter to program the hopper with
+        ThingFilter                         ResourceFilter
+        {
+            get;
+        }
 
-	}
+    }
 
 }
 

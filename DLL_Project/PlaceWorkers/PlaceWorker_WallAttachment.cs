@@ -2,10 +2,10 @@
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class PlaceWorker_WallAttachment : PlaceWorker
     {
-        
+
         public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
             IntVec3 c = loc - rot.FacingCell;
@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary
 
             return ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) != 0
                 ? AcceptanceReport.WasAccepted
-                : ( AcceptanceReport )( "MessagePlacementAgainstSupport".Translate() );
+                    : ( AcceptanceReport )( "MessagePlacementAgainstSupport".Translate() );
         }
 
     }

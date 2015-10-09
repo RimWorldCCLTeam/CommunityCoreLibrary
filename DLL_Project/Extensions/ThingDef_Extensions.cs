@@ -76,7 +76,7 @@ namespace CommunityCoreLibrary
             var recipeDef = thingDef.GetImplantRecipeDef();
             return recipeDef != null
                 ? recipeDef.addsHediff
-                : null;
+                    : null;
         }
 
         public static bool                  EverHasRecipes( this ThingDef thingDef )
@@ -90,7 +90,7 @@ namespace CommunityCoreLibrary
 
         public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
         {
-            
+
             return (
                 ( thingDef.GetRecipesCurrent().Contains( recipeDef ) )||
                 ( thingDef.GetRecipesUnlocked( ref nullDefs ).Contains( recipeDef ) )||

@@ -8,7 +8,7 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class Building_SunLampHeatController : Building
     {
 

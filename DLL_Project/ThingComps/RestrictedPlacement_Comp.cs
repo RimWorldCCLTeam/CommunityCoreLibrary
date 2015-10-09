@@ -7,7 +7,7 @@ namespace CommunityCoreLibrary
 
     public class RestrictedPlacement_Comp : ThingComp
     {
-        
+
         static int                          tickCount;
 
         List< PlaceWorker >                 PlaceWorkers
@@ -130,8 +130,10 @@ namespace CommunityCoreLibrary
             {
                 IntVec3 c = parent.Position - parent.Rotation.FacingCell;
                 Building support = c.GetEdifice();
-                if( ( support == null )||
-                    ( ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) == 0 ) )
+                if(
+                    ( support == null )||
+                    ( ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) == 0 )
+                )
                 {
                     DestroyParent();
                     return;
@@ -164,8 +166,10 @@ namespace CommunityCoreLibrary
                 bool foundThing = false;
                 foreach( Thing t in parent.Position.GetThingList() )
                 {
-                    if( ( Restrictions.RestrictedThing.Find( r => r == t.def ) != null )&&
-                        ( t.Position == parent.Position ) )
+                    if(
+                        ( Restrictions.RestrictedThing.Find( r => r == t.def ) != null )&&
+                        ( t.Position == parent.Position )
+                    )
                     {
                         foundThing = true;
                         break;

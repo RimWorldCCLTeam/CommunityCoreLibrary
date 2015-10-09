@@ -10,7 +10,7 @@ namespace CommunityCoreLibrary.Commands
 
     public class DefOrThingCompInRoom : Command
     {
-        
+
         readonly Type                       parentType;
         readonly Thing                      parentThing;
 

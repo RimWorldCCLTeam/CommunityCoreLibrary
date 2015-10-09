@@ -44,7 +44,7 @@ namespace CommunityCoreLibrary
         {
             return DesList == null
                 ? null
-                : DesList.FirstOrDefault( d => ( d.GetType() == designator ) );
+                    : DesList.FirstOrDefault( d => ( d.GetType() == designator ) );
         }
 
         public static void                  Remove( Type designator )

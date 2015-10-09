@@ -1164,32 +1164,6 @@ namespace CommunityCoreLibrary
             baseDescription.Append( s.ToString() );
         }
 
-        /*
-        static void BuildDefWithDefDescription( StringBuilder s, string prependDef1, string prependDef2, List< Def > defs1, List< Def > defs2 )
-        {
-            if( BuildDefDescription( s, prependDef1, defs1 ) )
-            {
-                BuildDefDescription( s, prependDef2, defs2 );
-            }
-        }
-
-        static void BuildDefWithStringDescription( StringBuilder s, string prependDefs, string prependStrings, List< Def > defs, List< string > strings )
-        {
-            if( BuildDefDescription( s, prependDefs, defs ) )
-            {
-                BuildStringDescription( s, prependStrings, strings );
-            }
-        }
-
-        static void BuildStringWithDefDescription( StringBuilder s, string prependStrings, string prependDefs, List< string > strings, List< Def > defs )
-        {
-            if( BuildStringDescription( s, prependStrings, strings ) )
-            {
-                BuildDefDescription( s, prependDefs, defs );
-            }
-        }
-        */
-
         #endregion
 
     }

@@ -93,7 +93,7 @@ namespace CommunityCoreLibrary
                 var isValid = true;
 
 #if DEBUG
-                
+
                 // Validate recipes
                 if( IsRecipeToggle )
                 {
@@ -170,7 +170,7 @@ namespace CommunityCoreLibrary
                 }
 
 #endif
-                
+
                 return isValid;
             }
         }
@@ -566,7 +566,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-            // Cache the callbacks in order
+                // Cache the callbacks in order
                 foreach( var researchMod in researchMods )
                 {
 

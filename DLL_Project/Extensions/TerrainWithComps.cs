@@ -6,14 +6,14 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
-	public class TerrainWithComps : TerrainDef
-	{
+
+    public class TerrainWithComps : TerrainDef
+    {
 
         #region XML Data
 
         public List< CompProperties >       comps = new List< CompProperties >();
-		
+
         #endregion
 
         //[Unsaved]
@@ -72,20 +72,20 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
-		public CompProperties               GetCompProperties( Type compType )
-		{
+        public CompProperties               GetCompProperties( Type compType )
+        {
             for( int i = 0; i < comps.Count; i++ )
             {
                 if( comps[ i ].compClass == compType )
                 {
                     return comps[ i ];
-				}
-			}
+                }
+            }
             return (CompProperties) null;
-		}
+        }
 
         #endregion
 
-	}
+    }
 
 }

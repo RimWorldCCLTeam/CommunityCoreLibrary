@@ -3,8 +3,10 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+    
     public class Verb_ShootExtended : Verb_LaunchProjectile
     {
+        
         private int                         pelletCount;
         private float                       expMin;
         private float                       expMid;
@@ -15,18 +17,21 @@ namespace CommunityCoreLibrary
 
         protected override int              ShotsPerBurst
         {
-            get { return verbProps.burstShotCount; }
+            get
+            {
+                return verbProps.burstShotCount;
+            }
         }
 
         // XML data into verb
         protected virtual void              TryGetProps()
         {
-            if (gotProps)
+            if( gotProps )
                 //Already done, pass
                 return;
 
             var props = verbProps as VerbProperties_Extended;
-            if (props == null)
+            if( props == null )
             {
                 CCL_Log.Error( "Extended properties not found!", "Verb_ShootExtended" );
                 pelletCount = 1;
@@ -49,27 +54,44 @@ namespace CommunityCoreLibrary
             TryGetProps();
 
             base.WarmupComplete();
-            if (!CasterIsPawn || CasterPawn.skills == null)
+            if(
+                ( !CasterIsPawn )||
+                ( CasterPawn.skills == null )
+            )
+            {
                 return;
+            }
 
             var xp = expMin;
-            if (currentTarget.Thing != null && currentTarget.Thing.def.category == ThingCategory.Pawn)
+            if(
+                ( currentTarget.Thing != null )&&
+                ( currentTarget.Thing.def.category == ThingCategory.Pawn )
+            )
             {
-                xp = currentTarget.Thing.HostileTo(caster) ? expMax : expMid;
+                xp = currentTarget.Thing.HostileTo( caster ) ? expMax : expMid;
             }
-            CasterPawn.skills.Learn(SkillDefOf.Shooting, xp);
+            CasterPawn.skills.Learn( SkillDefOf.Shooting, xp );
         }
 
         protected override bool             TryCastShot()
         {
-            if (!base.TryCastShot()) return false;
+            if( !base.TryCastShot() )
+            {
+                return false;
+            }
+
             var i = 1;
-            while (i < pelletCount && base.TryCastShot())
+            while(
+                ( i < pelletCount )&&
+                ( base.TryCastShot() )
+            )
             {
                 i++;
             }
-            MoteThrower.ThrowStatic(caster.Position, ThingDefOf.Mote_ShotFlash, 9f);
+            MoteThrower.ThrowStatic( caster.Position, ThingDefOf.Mote_ShotFlash, 9f );
             return true;
         }
+
     }
+
 }

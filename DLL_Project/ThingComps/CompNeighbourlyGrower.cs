@@ -90,16 +90,20 @@ namespace CommunityCoreLibrary
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
-            if( ( parent.Position.IsInRoom() )&&
-                ( parent.IsSameThingCompInRoom( GetType() ) ) )
+            if(
+                ( parent.Position.IsInRoom() )&&
+                ( parent.IsSameThingCompInRoom( GetType() ) )
+            )
             {
                 // In room by def or comp
                 yield return GizmoDefOrThingCompInRoom;
             }
 
             // Has a link flag
-            if( ( parent.def.graphicData.linkFlags != LinkFlags.None )&&
-                ( parent.IsSameGraphicLinkerTouching() ) )
+            if(
+                ( parent.def.graphicData.linkFlags != LinkFlags.None )&&
+                ( parent.IsSameGraphicLinkerTouching() )
+            )
             {
                 // Touching things by link
                 yield return GizmoTouchingByLinker;
