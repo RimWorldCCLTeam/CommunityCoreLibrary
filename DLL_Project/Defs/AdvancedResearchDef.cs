@@ -93,6 +93,13 @@ namespace CommunityCoreLibrary
                 var isValid = true;
 
 #if DEBUG
+                // Validate research
+                if( researchDefs.NullOrEmpty() )
+                {
+                    // Invalid project
+                    isValid = false;
+                    CCL_Log.Error( "AdvancedResearchDef requires at least one research project!", defName );
+                }
 
                 // Validate recipes
                 if( IsRecipeToggle )
@@ -477,7 +484,7 @@ namespace CommunityCoreLibrary
                         buildingDef.recipes.Remove( recipeDef );
 
                     }
-                    else
+                    else if( !buildingDef.recipes.Contains( recipeDef ) )
                     {
                         // Add recipe to the building
                         buildingDef.recipes.Add( recipeDef );
@@ -512,7 +519,7 @@ namespace CommunityCoreLibrary
                         // Hide plant
                         plantDef.plant.sowTags.Remove( sowTag );
                     }
-                    else
+                    else if( !plantDef.plant.sowTags.Contains( sowTag ) )
                     {
                         // Show the plant
                         plantDef.plant.sowTags.Add( sowTag );
