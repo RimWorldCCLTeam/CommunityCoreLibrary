@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary
                 return true;
             }
             // Advanced research unlocking it?
-            if( ResearchController.AdvancedResearch.Exists( a => (
+            if( ResearchController.AdvancedResearch.Any( a => (
                 ( a.IsBuildingToggle )&&
                 ( !a.HideDefs )&&
                 ( a.thingDefs.Contains( buildableDef as ThingDef ) )
@@ -46,9 +46,9 @@ namespace CommunityCoreLibrary
 
             // Check for an advanced research unlock
             return
-                ResearchController.AdvancedResearch.Exists( a => (
+                ResearchController.AdvancedResearch.Any( a => (
                     ( a.IsBuildingToggle )&&
-                    ( !a.HideDefs )||
+                    ( !a.HideDefs )&&
                     ( a.thingDefs.Contains( buildableDef as ThingDef ) )
                 ) );
         }
@@ -71,12 +71,15 @@ namespace CommunityCoreLibrary
                 {
                     var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
                         ( a.IsBuildingToggle )&&
-                        ( !a.HideDefs )||
+                        ( !a.HideDefs )&&
                         ( a.thingDefs.Contains( buildableDef as ThingDef ) )
                     ) ).ToList();
-                    foreach( var advancedResearchDef in advancedResearchDefs )
+                    if( !advancedResearchDefs.NullOrEmpty() )
                     {
-                        researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+                        foreach( var advancedResearchDef in advancedResearchDefs )
+                        {
+                            researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+                        }
                     }
                 }
             }
