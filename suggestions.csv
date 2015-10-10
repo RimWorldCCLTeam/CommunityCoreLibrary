@@ -1,6 +1,6 @@
 "Suggestion","Implemented As","Person","Forum Link"
 ,,,
-"On smoothed floor","","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146383#msg146383"
+"On smoothed floor","IncludeSmoothStone & IncludeRoughStone for [Not/Only]OnTerrain","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146383#msg146383"
 "On terrain","PlaceWorler_OnlyOnTerrain/NotOnTerrain","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146402#msg146402"
 "Restricted Count","PlaceWorker_RestrictedCount","mipen","https://ludeon.com/forums/index.php?topic=14172.msg146866#msg146866"
 "AR Hide buildings/recipes","AdvancedResearchDef.HideDefs","mrofa","via pm"
