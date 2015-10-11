@@ -906,6 +906,14 @@ namespace CommunityCoreLibrary
                 BuildDefDescription( s, "AutoHelpListResearchRequired".Translate(), researchDefs.ConvertAll<Def>( def =>(Def)def ) );
             }
 
+            // Add research unlocked
+            //CCL_Log.Message(researchProjectDef.label, "getting unlocked research");
+            researchDefs = researchProjectDef.GetResearchUnlocked();
+            if (!researchDefs.NullOrEmpty())
+            {
+                BuildDefDescription(s, "AutoHelpListResearchLeadsTo".Translate(), researchDefs.ConvertAll<Def>(def => (Def)def));
+            }
+
             // Add buildings it unlocks
             var thingDefs = researchProjectDef.GetThingsUnlocked();
             if( !thingDefs.NullOrEmpty() )

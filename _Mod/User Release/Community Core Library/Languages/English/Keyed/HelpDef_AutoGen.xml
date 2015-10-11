@@ -33,6 +33,7 @@
     <AutoHelpListRecipesOnThingsUnlocked>Available on:</AutoHelpListRecipesOnThingsUnlocked>
     <AutoHelpListResearchBy>After research:</AutoHelpListResearchBy>
     <AutoHelpListResearchRequired>Required research:</AutoHelpListResearchRequired>
+    <AutoHelpListResearchLeadsTo>Leads to research:</AutoHelpListResearchLeadsTo>
     <AutoHelpListResearchLockout>Disabled by research:</AutoHelpListResearchLockout>
     <AutoHelpListStuffCategories>Potential stuff:</AutoHelpListStuffCategories>
     <AutoHelpListPlantsLocked>Disables planting:</AutoHelpListPlantsLocked>

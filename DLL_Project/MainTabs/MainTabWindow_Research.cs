@@ -239,9 +239,11 @@ namespace CommunityCoreLibrary
                (hd.keyDef == SelectedProject)
             ));
 
-            // if either is null - something is badly wrong.
+            // if either is null - something is badly wrong, might as well just return to avoid further errors.
+            // TODO: more gracious error handling.
             if (SelectedProject == null || helpDef == null)
             {
+                Log.Message("project: " + SelectedProject?.LabelCap + ", help: " + helpDef?.LabelCap);
                 return;
             }
 
@@ -321,12 +323,12 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-            Rect progressRect = new Rect(_buttonSize.x + _margin.x, _buttonSize.y, controlRect.width, _buttonSize.x);
+            Rect progressRect = new Rect(_margin.x, _buttonSize.y + _margin.y, controlRect.width - 2 * _margin.x, _buttonSize.y);
             Widgets.FillableBar(progressRect, SelectedProject.PercentComplete, BarFillTex, BarBgTex, true);
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(progressRect, SelectedProject.ProgressNumbersString);
             Text.Anchor = TextAnchor.UpperLeft;
-
+            GUI.EndGroup();
             #endregion
 
         }
