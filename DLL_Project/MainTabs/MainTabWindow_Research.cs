@@ -12,29 +12,30 @@ namespace CommunityCoreLibrary
     public class MainTabWindow_Research : MainTabWindow
     {
         // UI settings
-        private const float LeftAreaWidth = 330f;
-        private const int ProjectIntervalY = 25;
-        private Vector2 _projectListScrollPosition = Vector2.zero;
-        private Vector2 _contentScrollPos = Vector2.zero;
-        private Vector2 _margin = new Vector2(6f, 6f);
-        private Vector2 _buttonSize = new Vector2(100f, 50f);
+        private const float     LeftAreaWidth               = 330f;
+        private const int       ProjectIntervalY            = 25;
+        private Vector2         _projectListScrollPosition  = Vector2.zero;
+        private Vector2         _contentScrollPos           = Vector2.zero;
+        private Vector2         _margin                     = new Vector2(6f, 6f);
+        private Vector2         _buttonSize                 = new Vector2(100f, 50f);
 
-        // Core toggles and resources
+        // toggles and resources
         protected ResearchProjectDef SelectedProject;
-        private ShowResearch _showResearchedProjects = ShowResearch.Available;
-        private bool _noBenchWarned;
+        private ShowResearch    _showResearchedProjects     = ShowResearch.Available;
+        private bool            _noBenchWarned;
+        private string _descText;
 
         // Progress bar textures
-        private static readonly Texture2D BarFillTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.2f, 0.8f, 0.85f));
-        private static readonly Texture2D BarBgTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.1f, 0.1f, 0.1f));
+        private static readonly Texture2D BarFillTex        = SolidColorMaterials.NewSolidColorTexture(new Color(0.2f, 0.8f, 0.85f));
+        private static readonly Texture2D BarBgTex          = SolidColorMaterials.NewSolidColorTexture(new Color(0.1f, 0.1f, 0.1f));
 
         // Filter toggles and resources
         private IEnumerable<ResearchProjectDef> _source;
-        private SortOptions _sortBy = SortOptions.Cost;
-        private bool _asc = true;
-        private string _filter = "";
-        private string _oldFilter;
-        private bool _helpDefLogged;
+        private SortOptions     _sortBy                     = SortOptions.Cost;
+        private bool            _asc                        = true;
+        private string          _filter                     = "";
+        private string          _oldFilter;
+        private bool            _helpDefLogged;
 
         // enums
         private enum ShowResearch
@@ -241,10 +242,19 @@ namespace CommunityCoreLibrary
 
             // if either is null - something is badly wrong, might as well just return to avoid further errors.
             // TODO: more gracious error handling.
-            if (SelectedProject == null || helpDef == null)
+            if (SelectedProject == null)
             {
-                Log.Message("project: " + SelectedProject?.LabelCap + ", help: " + helpDef?.LabelCap);
                 return;
+            }
+
+            // get best available description
+            if (helpDef == null)
+            {
+                _descText = SelectedProject.DescriptionDiscovered;
+            }
+            else
+            {
+                _descText = helpDef.description;
             }
 
             // Set up rects
@@ -266,7 +276,7 @@ namespace CommunityCoreLibrary
             var outRect = rect.AtZero().ContractedBy(_margin.x);
             outRect.yMin += titleRect.height;
 
-            float height = Text.CalcHeight(helpDef.description, outRect.width - 16f);
+            float height = Text.CalcHeight(_descText, outRect.width - 16f);
 
             var viewRect = new Rect(
                 outRect.x, outRect.y,
@@ -274,7 +284,7 @@ namespace CommunityCoreLibrary
             );
 
             Widgets.BeginScrollView(outRect, ref _contentScrollPos, viewRect);
-            Widgets.Label(viewRect, helpDef.description);
+            Widgets.Label(viewRect, _descText);
             Widgets.EndScrollView();
 
             GUI.EndGroup();

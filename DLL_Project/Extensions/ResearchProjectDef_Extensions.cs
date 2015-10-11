@@ -105,12 +105,12 @@ namespace CommunityCoreLibrary
 
             if (!researchProjectDef.prerequisites.Contains(Research.Locker))
             {
-                CCL_Log.Message("Normal");
+                //CCL_Log.Message("Normal");
                 researchDefs.AddRange(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(rd => rd.prerequisites.Contains(researchProjectDef)).ToList().ConvertAll<Def>(def => (Def) def));
             }
             else
             {
-                CCL_Log.Message("Advanced");
+                //CCL_Log.Message("Advanced");
                 // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
                 var advancedResearchDefs = ResearchController.AdvancedResearch.Where(a => (
                    (a.IsResearchToggle) &&
