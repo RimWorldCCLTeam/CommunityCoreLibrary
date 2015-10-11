@@ -20,7 +20,10 @@ namespace CommunityCoreLibrary
         {
             typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic ).SetValue( thingDef, null );
 
-            if( !validateBills )
+            if(
+                ( !validateBills )||
+                ( Game.Mode != GameMode.MapPlaying )
+            )
             {
                 return;
             }

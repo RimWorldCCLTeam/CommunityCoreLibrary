@@ -81,7 +81,7 @@ namespace CommunityCoreLibrary
                         isValid = false;
                     }
 
-                    if ( modVersion > ModController.CCLVersion )
+                    if( modVersion > ModController.CCLVersion )
                     {
                         errors += "\n\tVersion requirement: v" + modVersion;
                         isValid = false;
@@ -95,7 +95,7 @@ namespace CommunityCoreLibrary
                 }
 
 #if DEBUG
-                if ( !MapComponents.NullOrEmpty() )
+                if( !MapComponents.NullOrEmpty() )
                 {
                     foreach( var componentType in MapComponents )
                     {
@@ -111,9 +111,9 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-                if ( !Designators.NullOrEmpty() )
+                if( !Designators.NullOrEmpty() )
                 {
-                    foreach ( var data in Designators )
+                    foreach( var data in Designators )
                     {
                         var designatorType = data.designatorClass;
                         if(
@@ -143,23 +143,23 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-                if ( !ThingComps.NullOrEmpty() )
+                if( !ThingComps.NullOrEmpty() )
                 {
-                    foreach ( var compSet in ThingComps )
+                    foreach( var compSet in ThingComps )
                     {
-                        if ( compSet.targetDefs.NullOrEmpty() )
+                        if( compSet.targetDefs.NullOrEmpty() )
                         {
                             errors += "\n\tNull or no targetDefs in ThingComps";
                             isValid = false;
                         }
                         /*
                         var targDef = ThingDef.Named( comp.targetDef );
-                        if ( targDef == null )
+                        if( targDef == null )
                         {
                             errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\" in ThingComps";
                             isValid = false;
                         }*/
-                        if ( compSet.compProps == null )
+                        if( compSet.compProps == null )
                         {
                             errors += "\n\tNull compProps in ThingComps";
                             isValid = false;
@@ -175,7 +175,7 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-                if ( !SpecialInjectors.NullOrEmpty() )
+                if( !SpecialInjectors.NullOrEmpty() )
                 {
                     foreach( var injectorType in SpecialInjectors )
                     {
@@ -190,7 +190,7 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-                if ( !PostLoadInjectors.NullOrEmpty() )
+                if( !PostLoadInjectors.NullOrEmpty() )
                 {
                     foreach( var injectorType in PostLoadInjectors )
                     {
@@ -206,7 +206,7 @@ namespace CommunityCoreLibrary
                 }
 #endif
 
-                if ( !isValid )
+                if( !isValid )
                 {
                     CCL_Log.Error( errors, "Mod Dependency :: " + ModName );
                 }
@@ -226,10 +226,10 @@ namespace CommunityCoreLibrary
 
                 var colonyMapComponents = Find.Map.components;
 
-                foreach ( var mapComponentType in MapComponents )
+                foreach( var mapComponentType in MapComponents )
                 {
                     //var mapComponentType = Type.GetType( mapComponent );
-                    if ( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType ) )
+                    if( !colonyMapComponents.Exists(c => c.GetType() == mapComponentType ) )
                     {
                         return false;
                     }
@@ -243,20 +243,23 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( (Designators == null) ||
-                    (Designators.Count == 0) )
+                if( Designators.NullOrEmpty() )
                 {
+                    // No designators to inject
                     return true;
                 }
-                foreach ( var data in Designators )
+
+                foreach( var data in Designators )
                 {
                     var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
-                    if ( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
+                    if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                     {
+                        // This designator hasn't been injected yet
                         return false;
                     }
                 }
 
+                // All designators injected
                 return true;
             }
         }
@@ -265,17 +268,17 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( ThingComps.NullOrEmpty() )
+                if( ThingComps.NullOrEmpty() )
                 {
                     return true;
                 }
 
-                foreach ( var compSet in ThingComps )
+                foreach( var compSet in ThingComps )
                 {
-                    foreach ( var targetName in compSet.targetDefs )
+                    foreach( var targetName in compSet.targetDefs )
                     {
                         var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                        if ( targetDef != null && !targetDef.comps.Exists(s => s.compClass == compSet.compProps.compClass) )
+                        if( targetDef != null && !targetDef.comps.Exists(s => s.compClass == compSet.compProps.compClass) )
                         {
                             return false;
                         }
@@ -289,7 +292,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( SpecialInjectors.NullOrEmpty() )
+                if( SpecialInjectors.NullOrEmpty() )
                 {
                     return true;
                 }
@@ -302,7 +305,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if ( PostLoadInjectors.NullOrEmpty() )
+                if( PostLoadInjectors.NullOrEmpty() )
                 {
                     return true;
                 }
@@ -321,13 +324,13 @@ namespace CommunityCoreLibrary
         {
             var colonyMapComponents = Find.Map.components;
 
-            foreach ( var mapComponentType in MapComponents )
+            foreach( var mapComponentType in MapComponents )
             {
                 // Get the component type
                 //var mapComponentType = Type.GetType( mapComponent );
 
                 // Does it exist in the map?
-                if ( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
+                if( !colonyMapComponents.Exists( c => c.GetType() == mapComponentType ) )
                 {
                     // Create the new map component
                     var mapComponentObject = (MapComponent) Activator.CreateInstance( mapComponentType );
@@ -345,17 +348,24 @@ namespace CommunityCoreLibrary
         //public bool                         InjectDesignators()
         public void                         InjectDesignators()
         {
-            foreach ( var data in Designators )
+            // Instatiate designators and add them to the resolved list, also add the
+            // the designator class to the list of designator classes as a saftey net
+            // in case another mod resolves the designation categories which would
+            // remove the instatiated designators.
+            foreach( var data in Designators )
             {
+                // Get the category
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false );
-                if ( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
+
+                // First instatiate and inject the designator into the list of resolved designators
+                if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == data.designatorClass ) )
                 {
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( data.designatorClass );
 
                     if( data.designatorNextTo == null )
                     {
-                        // Inject the designator at the end
+                        // Inject the designator
                         designationCategory.resolvedDesignators.Add( designatorObject );
                     }
                     else
@@ -364,6 +374,7 @@ namespace CommunityCoreLibrary
                         var designatorIndex = designationCategory.resolvedDesignators.FindIndex( d => (
                             ( d.GetType() == data.designatorNextTo )
                         ) );
+
                         if( designatorIndex < 0 )
                         {
                             // Other designator doesn't exist (yet?)
@@ -377,6 +388,33 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
+
+                // Now inject the designator class into the list of classes as a saftey net for another mod resolving the category
+                if( !designationCategory.specialDesignatorClasses.Exists( s => s == data.designatorClass ) )
+                {
+                    if( data.designatorNextTo == null )
+                    {
+                        // Inject the designator class at the end of the list
+                        designationCategory.specialDesignatorClasses.Add( data.designatorClass );
+                    }
+                    else
+                    {
+                        // Prefers to be beside a specific designator
+                        var designatorIndex = designationCategory.specialDesignatorClasses.FindIndex( s => s == data.designatorNextTo );
+
+                        if( designatorIndex < 0 )
+                        {
+                            // Can't find desired designator class
+                            // Inject the designator at the end
+                            designationCategory.specialDesignatorClasses.Add( data.designatorClass );
+                        }
+                        else
+                        {
+                            // Inject beside desired designator class
+                            designationCategory.specialDesignatorClasses.Insert( designatorIndex + 1, data.designatorClass );
+                        }
+                    }
+                }
             }
 
             // TODO:  Alpha 13 API change
@@ -387,15 +425,15 @@ namespace CommunityCoreLibrary
         //public bool                         InjectThingComps()
         public void                         InjectThingComps()
         {
-            foreach ( var compSet in ThingComps )
+            foreach( var compSet in ThingComps )
             {
                 var defsByName = DefDatabase<ThingDef>.AllDefs;
 
-                foreach ( var targetName in compSet.targetDefs )
+                foreach( var targetName in compSet.targetDefs )
                 {
-                    var def = defsByName.ToList().Find(s => s.defName == targetName);
+                    var def = defsByName.ToList().Find( s => s.defName == targetName );
                     var compProperties = compSet.compProps;
-                    def.comps.Add(compProperties);
+                    def.comps.Add( compProperties );
                 }
             }
 

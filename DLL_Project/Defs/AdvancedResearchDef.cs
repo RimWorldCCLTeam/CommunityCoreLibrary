@@ -93,6 +93,13 @@ namespace CommunityCoreLibrary
                 var isValid = true;
 
 #if DEBUG
+                // Validate research
+                if( researchDefs.NullOrEmpty() )
+                {
+                    // Invalid project
+                    isValid = false;
+                    CCL_Log.Error( "AdvancedResearchDef requires at least one research project!", defName );
+                }
 
                 // Validate recipes
                 if( IsRecipeToggle )
@@ -477,7 +484,7 @@ namespace CommunityCoreLibrary
                         buildingDef.recipes.Remove( recipeDef );
 
                     }
-                    else
+                    else if( !buildingDef.recipes.Contains( recipeDef ) )
                     {
                         // Add recipe to the building
                         buildingDef.recipes.Add( recipeDef );
@@ -512,7 +519,7 @@ namespace CommunityCoreLibrary
                         // Hide plant
                         plantDef.plant.sowTags.Remove( sowTag );
                     }
-                    else
+                    else if( !plantDef.plant.sowTags.Contains( sowTag ) )
                     {
                         // Show the plant
                         plantDef.plant.sowTags.Add( sowTag );
@@ -661,19 +668,26 @@ namespace CommunityCoreLibrary
             var thingdefs = new List<ThingDef>();
 
             // Look at this def
-            if( ( !HideDefs )&&
-                ( IsBuildingToggle ) )
+            if(
+                ( !HideDefs )&&
+                ( IsBuildingToggle )
+            )
             {
                 thingdefs.AddRange( thingDefs );
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( !a.HideDefs )&&
-                    ( a.IsBuildingToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    thingdefs.AddRange( a.thingDefs );
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsBuildingToggle )
+                    )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
                 }
             }
 
@@ -691,19 +705,26 @@ namespace CommunityCoreLibrary
             var thingdefs = new List<ThingDef>();
 
             // Look at this def
-            if( ( HideDefs )&&
-                ( IsBuildingToggle ) )
+            if(
+                ( HideDefs )&&
+                ( IsBuildingToggle )
+            )
             {
                 thingdefs.AddRange( thingDefs );
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( a.HideDefs )&&
-                    ( a.IsBuildingToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    thingdefs.AddRange( a.thingDefs );
+                    if(
+                        ( a.HideDefs )&&
+                        ( a.IsBuildingToggle )
+                    )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
                 }
             }
 
@@ -725,8 +746,10 @@ namespace CommunityCoreLibrary
             }
 
             // Look at this def
-            if( ( !HideDefs )&&
-                ( IsRecipeToggle ) )
+            if(
+                ( !HideDefs )&&
+                ( IsRecipeToggle )
+            )
             {
                 recipedefs.AddRange( recipeDefs );
                 if( thingdefs != null )
@@ -736,15 +759,20 @@ namespace CommunityCoreLibrary
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( !a.HideDefs )&&
-                    ( a.IsRecipeToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    recipedefs.AddRange( a.recipeDefs );
-                    if( thingdefs != null )
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsRecipeToggle )
+                    )
                     {
-                        thingdefs.AddRange( a.thingDefs );
+                        recipedefs.AddRange( a.recipeDefs );
+                        if( thingdefs != null )
+                        {
+                            thingdefs.AddRange( a.thingDefs );
+                        }
                     }
                 }
             }
@@ -767,8 +795,10 @@ namespace CommunityCoreLibrary
             }
 
             // Look at this def
-            if( ( HideDefs )&&
-                ( IsRecipeToggle ) )
+            if(
+                ( HideDefs )&&
+                ( IsRecipeToggle )
+            )
             {
                 recipedefs.AddRange( recipeDefs );
                 if( thingdefs != null )
@@ -780,8 +810,10 @@ namespace CommunityCoreLibrary
             // Look in matching research
             foreach( var a in MatchingAdvancedResearch )
             {
-                if( ( a.HideDefs )&&
-                    ( a.IsRecipeToggle ) )
+                if(
+                    ( a.HideDefs )&&
+                    ( a.IsRecipeToggle )
+                )
                 {
                     recipedefs.AddRange( a.recipeDefs );
                     if( thingdefs != null )
@@ -809,8 +841,10 @@ namespace CommunityCoreLibrary
             }
 
             // Look at this def
-            if( ( !HideDefs )&&
-                ( IsPlantToggle ) )
+            if(
+                ( !HideDefs )&&
+                ( IsPlantToggle )
+            )
             {
                 sowtags.AddRange( sowTags );
                 if( thingdefs != null )
@@ -820,15 +854,20 @@ namespace CommunityCoreLibrary
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( !a.HideDefs )&&
-                    ( a.IsPlantToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    sowtags.AddRange( a.sowTags );
-                    if( thingdefs != null )
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsPlantToggle )
+                    )
                     {
-                        thingdefs.AddRange( a.thingDefs );
+                        sowtags.AddRange( a.sowTags );
+                        if( thingdefs != null )
+                        {
+                            thingdefs.AddRange( a.thingDefs );
+                        }
                     }
                 }
             }
@@ -851,8 +890,10 @@ namespace CommunityCoreLibrary
             }
 
             // Look at this def
-            if( ( HideDefs )&&
-                ( IsPlantToggle ) )
+            if(
+                ( HideDefs )&&
+                ( IsPlantToggle )
+            )
             {
                 sowtags.AddRange( sowTags );
                 if( thingdefs != null )
@@ -862,15 +903,20 @@ namespace CommunityCoreLibrary
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( a.HideDefs )&&
-                    ( a.IsPlantToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    sowtags.AddRange( a.sowTags );
-                    if( thingdefs != null )
+                    if(
+                        ( a.HideDefs )&&
+                        ( a.IsPlantToggle )
+                    )
                     {
-                        thingdefs.AddRange( a.thingDefs );
+                        sowtags.AddRange( a.sowTags );
+                        if( thingdefs != null )
+                        {
+                            thingdefs.AddRange( a.thingDefs );
+                        }
                     }
                 }
             }
@@ -889,19 +935,26 @@ namespace CommunityCoreLibrary
             var researchdefs = new List<Def>();
 
             // Look at this def
-            if( ( !HideDefs )&&
-                ( IsResearchToggle ) )
+            if(
+                ( !HideDefs )&&
+                ( IsResearchToggle )
+            )
             {
                 researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( !a.HideDefs )&&
-                    ( a.IsResearchToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsResearchToggle )
+                    )
+                    {
+                        researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    }
                 }
             }
 
@@ -919,19 +972,26 @@ namespace CommunityCoreLibrary
             var researchdefs = new List<Def>();
 
             // Look at this def
-            if( ( HideDefs )&&
-                ( IsResearchToggle ) )
+            if(
+                ( HideDefs )&&
+                ( IsResearchToggle )
+            )
             {
                 researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
             }
 
             // Look in matching research
-            foreach( var a in MatchingAdvancedResearch )
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
             {
-                if( ( a.HideDefs )&&
-                    ( a.IsResearchToggle ) )
+                foreach( var a in MatchingAdvancedResearch )
                 {
-                    researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    if(
+                        ( a.HideDefs )&&
+                        ( a.IsResearchToggle )
+                    )
+                    {
+                        researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    }
                 }
             }
 

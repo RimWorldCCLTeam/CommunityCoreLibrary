@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
         public static bool                  IsLockedOut( this RecipeDef recipeDef )
         {
             // Advanced research unlocking it?
-            if( ResearchController.AdvancedResearch.Exists( a => (
+            if( ResearchController.AdvancedResearch.Any( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.recipeDefs.Contains( recipeDef ) )
@@ -26,12 +26,15 @@ namespace CommunityCoreLibrary
                 return false;
             }
             // Is the research parent locked out?
-            if( recipeDef.researchPrerequisite.IsLockedOut() )
+            if(
+                ( recipeDef.researchPrerequisite != null )&&
+                ( recipeDef.researchPrerequisite.IsLockedOut() )
+            )
             {
                 return true;
             }
             // Assigned to things which are all locked out?
-            if( !DefDatabase< ThingDef >.AllDefsListForReading.Exists( t => (
+            if( !DefDatabase< ThingDef >.AllDefsListForReading.Any( t => (
                 ( t.AllRecipes != null )&&
                 ( !t.IsLockedOut() )&&
                 ( t.AllRecipes.Contains( recipeDef ) )
@@ -53,9 +56,9 @@ namespace CommunityCoreLibrary
             }
 
             // Check for an advanced research unlock
-            if( ResearchController.AdvancedResearch.Exists( a => (
+            if( ResearchController.AdvancedResearch.Any( a => (
                 ( a.IsRecipeToggle )&&
-                ( !a.HideDefs )||
+                ( !a.HideDefs )&&
                 ( a.recipeDefs.Contains( recipeDef ) )
             ) ) )
             {
@@ -68,14 +71,27 @@ namespace CommunityCoreLibrary
                 ( !t.IsLockedOut() )&&
                 ( t.recipes.Contains( recipeDef ) )
             ) ).ToList();
-            thingsOn.AddRange( recipeDef.recipeUsers );
-            foreach( var a in ResearchController.AdvancedResearch.Where( a => (
+
+            if( thingsOn == null )
+            {
+                thingsOn = new List<ThingDef>();
+            }
+            else
+            {
+                thingsOn.AddRange( recipeDef.recipeUsers );
+            }
+
+            var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.recipeDefs.Contains( recipeDef ) )
-            ) ).ToList() )
+            ) ).ToList();
+            if( !advancedResearchDefs.NullOrEmpty() )
             {
-                thingsOn.AddRange( a.thingDefs );
+                foreach( var a in advancedResearchDefs )
+                {
+                    thingsOn.AddRange( a.thingDefs );
+                }
             }
             // Now check for an absolute requirement
             return ( thingsOn.All( t => t.HasResearchRequirement() ) );
@@ -95,25 +111,34 @@ namespace CommunityCoreLibrary
                 researchDefs.Add( recipeDef.researchPrerequisite );
 
                 // Advanced requirement
-                foreach( var a in ResearchController.AdvancedResearch.Where( a => (
+                var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
                     ( a.IsRecipeToggle )&&
                     ( !a.HideDefs )&&
                     ( a.recipeDefs.Contains( recipeDef ) )
-                ) ).ToList() )
+                ) ).ToList();
+
+                if( !advancedResearchDefs.NullOrEmpty() )
                 {
-                    researchDefs.Add( a );
+                    foreach( var a in advancedResearchDefs )
+                    {
+                        researchDefs.Add( a );
+                    }
                 }
 
             }
 
             // Get list of things recipe is used on
             var thingsOn = new List< ThingDef >();
-
-            thingsOn.AddRange( DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
+            var recipeThings = DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
                 ( t.recipes != null )&&
                 ( !t.IsLockedOut() )&&
                 ( t.recipes.Contains( recipeDef ) )
-            ) ) );
+            ) ).ToList();
+
+            if( !recipeThings.NullOrEmpty() )
+            {
+                thingsOn.AddRange( recipeThings );
+            }
 
             // Add those linked via the recipe
             if( !recipeDef.recipeUsers.NullOrEmpty() )
@@ -122,7 +147,10 @@ namespace CommunityCoreLibrary
             }
 
             // Make sure they all have hard requirements
-            if( thingsOn.All( t => t.HasResearchRequirement() ) )
+            if(
+                ( !thingsOn.NullOrEmpty() )&&
+                ( thingsOn.All( t => t.HasResearchRequirement() ) )
+            )
             {
                 foreach( var t in thingsOn )
                 {
@@ -138,12 +166,16 @@ namespace CommunityCoreLibrary
         {
             // Things it is currently on
             var thingsOn = new List<ThingDef>();
-
-            thingsOn.AddRange( DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
+            var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( t.AllRecipes != null )&&
                 ( !t.IsLockedOut() )&&
                 ( t.AllRecipes.Contains( recipeDef ) )
-            ) ).ToList() );
+            ) ).ToList();
+
+            if( !recipeThings.NullOrEmpty() )
+            {
+                thingsOn.AddRange( recipeThings );
+            }
 
             return thingsOn;
         }
@@ -174,21 +206,24 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate advanced research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                thingDefs.AddRange( a.thingDefs );
-
-                if( researchDefs != null )
+                foreach( var a in advancedResearch )
                 {
-                    if( a.researchDefs.Count == 1 )
+                    thingDefs.AddRange( a.thingDefs );
+
+                    if( researchDefs != null )
                     {
-                        // If it's a single research project, add that
-                        researchDefs.Add( a.researchDefs[ 0 ] );
-                    }
-                    else
-                    {
-                        // Add the advanced project instead
-                        researchDefs.Add( a );
+                        if( a.researchDefs.Count == 1 )
+                        {
+                            // If it's a single research project, add that
+                            researchDefs.Add( a.researchDefs[ 0 ] );
+                        }
+                        else
+                        {
+                            // Add the advanced project instead
+                            researchDefs.Add( a );
+                        }
                     }
                 }
             }

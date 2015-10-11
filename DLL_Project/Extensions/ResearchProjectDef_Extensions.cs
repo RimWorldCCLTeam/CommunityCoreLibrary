@@ -25,7 +25,7 @@ namespace CommunityCoreLibrary
                         // Self-prerequisite means potential lock-out
 
                         // Check for possible unlock
-                        if( !ResearchController.AdvancedResearch.Exists( a => (
+                        if( !ResearchController.AdvancedResearch.Any( a => (
                             ( a.IsResearchToggle )&&
                             ( !a.HideDefs )&&
                             ( a.effectedResearchDefs.Contains( researchProjectDef ) )
@@ -56,9 +56,9 @@ namespace CommunityCoreLibrary
 
             // Check for an advanced research unlock
             return
-                ResearchController.AdvancedResearch.Exists( a => (
+                ResearchController.AdvancedResearch.Any( a => (
                     ( a.IsResearchToggle )&&
-                    ( !a.HideDefs )||
+                    ( !a.HideDefs )&&
                     ( a.effectedResearchDefs.Contains( researchProjectDef ) )
                 ) );
         }
@@ -81,12 +81,16 @@ namespace CommunityCoreLibrary
                 {
                     var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
                         ( a.IsResearchToggle )&&
-                        ( !a.HideDefs )||
+                        ( !a.HideDefs )&&
                         ( a.effectedResearchDefs.Contains( researchProjectDef ) )
                     ) ).ToList();
-                    foreach( var advancedResearchDef in advancedResearchDefs )
+
+                    if( !advancedResearchDefs.NullOrEmpty() )
                     {
-                        researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                        foreach( var advancedResearchDef in advancedResearchDefs )
+                        {
+                            researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                        }
                     }
                 }
             }
@@ -132,11 +136,16 @@ namespace CommunityCoreLibrary
                 ( a.HideDefs )&&
                 ( a.effectedResearchDefs.Contains( researchProjectDef ) )
             ) ).ToList();
+
             // Aggregate research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                researchDefs.AddRange( a.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                foreach( var a in advancedResearch )
+                {
+                    researchDefs.AddRange( a.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                }
             }
+
             return researchDefs;
         }
 
@@ -144,11 +153,17 @@ namespace CommunityCoreLibrary
         {
             // Buildings it unlocks
             var thingsOn = new List<ThingDef>();
-            thingsOn.AddRange( DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
+            var researchThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( !t.IsLockedOut() )&&
                 ( t.researchPrerequisite != null )&&
                 ( t.researchPrerequisite == researchProjectDef )
-            ) ).ToList() );
+            ) ).ToList();
+
+            if( !researchThings.NullOrEmpty() )
+            {
+                thingsOn.AddRange( researchThings );
+            }
+
             // Look in advanced research too
             var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
                 ( a.IsBuildingToggle )&&
@@ -156,11 +171,16 @@ namespace CommunityCoreLibrary
                 ( a.researchDefs.Count == 1 )&&
                 ( a.researchDefs.Contains( researchProjectDef ) )
             ) ).ToList();
+
             // Aggregate research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                thingsOn.AddRange( a.thingDefs );
+                foreach( var a in advancedResearch )
+                {
+                    thingsOn.AddRange( a.thingDefs );
+                }
             }
+
             return thingsOn;
         }
 
@@ -174,9 +194,14 @@ namespace CommunityCoreLibrary
             }
 
             // Add all recipes using this research projects
-            recipes.AddRange( DefDatabase<RecipeDef>.AllDefsListForReading.Where( d => (
+            var researchRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where( d => (
                 ( d.researchPrerequisite == researchProjectDef )
-            ) ).ToList() );
+            ) ).ToList();
+
+            if( !researchRecipes.NullOrEmpty() )
+            {
+                recipes.AddRange( researchRecipes );
+            }
 
             if( thingDefs != null )
             {
@@ -196,12 +221,15 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                recipes.AddRange( a.recipeDefs );
-                if( thingDefs != null )
+                foreach( var a in advancedResearch )
                 {
-                    thingDefs.AddRange( a.thingDefs );
+                    recipes.AddRange( a.recipeDefs );
+                    if( thingDefs != null )
+                    {
+                        thingDefs.AddRange( a.thingDefs );
+                    }
                 }
             }
 
@@ -226,12 +254,15 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                recipes.AddRange( a.recipeDefs );
-                if( thingDefs != null )
+                foreach( var a in advancedResearch )
                 {
-                    thingDefs.AddRange( a.thingDefs );
+                    recipes.AddRange( a.recipeDefs );
+                    if( thingDefs != null )
+                    {
+                        thingDefs.AddRange( a.thingDefs );
+                    }
                 }
             }
 
@@ -255,12 +286,15 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate advanced research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                sowTags.AddRange( a.sowTags );
-                if( thingDefs != null )
+                foreach( var a in advancedResearch )
                 {
-                    thingDefs.AddRange( a.thingDefs );
+                    sowTags.AddRange( a.sowTags );
+                    if( thingDefs != null )
+                    {
+                        thingDefs.AddRange( a.thingDefs );
+                    }
                 }
             }
 
@@ -284,12 +318,15 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate advanced research
-            foreach( var a in advancedResearch )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                sowTags.AddRange( a.sowTags );
-                if( thingDefs != null )
+                foreach( var a in advancedResearch )
                 {
-                    thingDefs.AddRange( a.thingDefs );
+                    sowTags.AddRange( a.sowTags );
+                    if( thingDefs != null )
+                    {
+                        thingDefs.AddRange( a.thingDefs );
+                    }
                 }
             }
 
