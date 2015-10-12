@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Text;
 using Verse;
 
 namespace CommunityCoreLibrary
@@ -57,6 +58,26 @@ namespace CommunityCoreLibrary
                 "\n------\n" +
                 description +
                 "\n------\n";
+        }
+
+        #endregion
+
+        #region Help details
+
+        public List< HelpDetailSection > HelpDetailSections = new List<HelpDetailSection>();
+
+        public string Description
+        {
+            get
+            {
+                StringBuilder s = new StringBuilder();
+                s.AppendLine(description);
+                foreach (HelpDetailSection section in HelpDetailSections)
+                {
+                    s.AppendLine(section.GetString);
+                }
+                return s.ToString();
+            }
         }
 
         #endregion

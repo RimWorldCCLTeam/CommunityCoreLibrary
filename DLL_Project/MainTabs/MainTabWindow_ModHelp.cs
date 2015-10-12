@@ -281,7 +281,7 @@ namespace CommunityCoreLibrary
             var outRect = rect.AtZero().ContractedBy( Margin );
             outRect.yMin += titleRect.height;
 
-            float height = Text.CalcHeight( SelectedHelpDef.description, outRect.width - 16f );
+            float height = Text.CalcHeight( SelectedHelpDef.Description, outRect.width - 16f );
 
             var viewRect = new Rect(
                 outRect.x, outRect.y,
@@ -289,7 +289,7 @@ namespace CommunityCoreLibrary
             );
 
             Widgets.BeginScrollView( outRect, ref displayScrollPos, viewRect );
-            Widgets.Label( viewRect, SelectedHelpDef.description );
+            Widgets.Label( viewRect, SelectedHelpDef.Description );
             Widgets.EndScrollView();
 
             GUI.EndGroup();
