@@ -336,7 +336,6 @@ namespace CommunityCoreLibrary
 
         void                                DrawSelectionArea( Rect rect )
         {
-            // TODO: inset scrollbar a few pts.
             // TODO: adapt buttons to text height.
             Widgets.DrawMenuSection( rect );
             GUI.BeginGroup( rect );
@@ -356,6 +355,7 @@ namespace CommunityCoreLibrary
 
             Rect outRect = rect.AtZero();
             outRect.yMin += 40f;
+            outRect.xMax -= 2f;
             float height = _cachedHelpCategories.Where( mc => mc.ShouldDraw ).Sum( c => c.DrawHeight );
             var viewRect = new Rect(
                 0f, 0f,
