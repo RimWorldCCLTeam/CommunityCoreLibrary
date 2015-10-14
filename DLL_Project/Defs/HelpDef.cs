@@ -74,7 +74,7 @@ namespace CommunityCoreLibrary
                 s.AppendLine(description);
                 foreach (HelpDetailSection section in HelpDetailSections)
                 {
-                    s.AppendLine(section.GetString);
+                    s.AppendLine(section.GetString());
                 }
                 return s.ToString();
             }

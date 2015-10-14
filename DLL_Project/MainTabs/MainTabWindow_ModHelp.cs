@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.InteropServices;
+using CommunityCoreLibrary.StaticClasses;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -17,20 +18,26 @@ namespace CommunityCoreLibrary
         protected static List<ModCategory>  _cachedHelpCategories;
         protected HelpDef                   SelectedHelpDef;
 
-        public const float                  Margin = 6f; // 15 is way too much.
-        public const float                  EntryHeight = 30f;
-        public const float                  EntryIndent = 15f;
+        public const float                  Margin                  = 6f; // 15 is way too much.
+        public const float                  EntryHeight             = 30f;
+        public const float                  EntryIndent             = 15f;
 
         protected Rect                      SelectionRect;
         protected Rect                      DisplayRect;
-        protected static Vector2            ArrowImageSize = new Vector2(10f, 10f);
+        protected static Vector2            ArrowImageSize          = new Vector2(10f, 10f);
 
-        protected Vector2                   selectionScrollPos = default(Vector2);
-        protected Vector2                   displayScrollPos = default(Vector2);
+        protected Vector2                   selectionScrollPos      = default(Vector2);
+        protected Vector2                   displayScrollPos        = default(Vector2);
 
-        public const float                  MinWidth = 600f;
-        public const float                  MinHeight = 400f;
-        public const float                  MinListWidth = 200f;
+        public const float                  MinWidth                = 600f;
+        public const float                  MinHeight               = 400f;
+        public const float                  MinListWidth            = 200f;
+        public float                        ActualHeight            = 9999f;
+
+        private static string               _filterString           = "";
+        private string                      _lastFilterString       = "";
+        private int                         _lastFilterTick;
+        private bool                        _filtered;
 
         public override MainTabWindowAnchor Anchor
         {
@@ -200,11 +207,6 @@ namespace CommunityCoreLibrary
 
         #region Filter
 
-        private static string               _filterString = "";
-        private string                      _lastFilterString = "";
-        private int                         _lastFilterTick;
-        private bool                        _filtered;
-
         private void                        _filterUpdate()
         {
             // filter after a short delay.
@@ -262,6 +264,9 @@ namespace CommunityCoreLibrary
 
         void                                DrawDisplayArea( Rect rect )
         {
+            float paragraphMargin = 8f;
+            float inset = 30f;
+
             Widgets.DrawMenuSection( rect );
 
             if( SelectedHelpDef == null )
@@ -269,34 +274,70 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            GUI.BeginGroup( rect );
-
-            var titleRect = new Rect( 0f, 0f, rect.width, 60f );
+            var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
+            Widgets.Label(titleRect, SelectedHelpDef.LabelCap);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
-            var outRect = rect.AtZero().ContractedBy( Margin );
-            outRect.yMin += titleRect.height;
+            Rect outRect = rect.ContractedBy(Margin);
+            outRect.yMin += 60f;
+            Rect viewRect = outRect;
+            viewRect.width -= 16f;
+            viewRect.height = ActualHeight;
 
-            float height = Text.CalcHeight( SelectedHelpDef.Description, outRect.width - 16f );
+            GUI.BeginGroup(outRect);
+            Widgets.BeginScrollView(outRect.AtZero(), ref displayScrollPos, viewRect.AtZero());
 
-            var viewRect = new Rect(
-                outRect.x, outRect.y,
-                outRect.width - 16f, height
-            );
+            Vector2 cur = Vector2.zero;
 
-            Widgets.BeginScrollView( outRect, ref displayScrollPos, viewRect );
-            Widgets.Label( viewRect, SelectedHelpDef.Description );
+            HelpDetailSectionHelper.DrawText(ref cur, viewRect, SelectedHelpDef.description);
+
+            cur.y += paragraphMargin;
+
+            foreach (HelpDetailSection section in SelectedHelpDef.HelpDetailSections)
+            {
+                cur.x = 0f;
+                if (!string.IsNullOrEmpty(section.Label))
+                {
+                    HelpDetailSectionHelper.DrawText(ref cur, viewRect, section.Label);
+                    cur.x = inset;
+                }
+                if (section.StringDescs != null)
+                {
+                    foreach (string s in section.StringDescs)
+                    {
+                        HelpDetailSectionHelper.DrawText(ref cur, viewRect, s);
+                    }
+                }
+                if (section.KeyDefs != null)
+                {
+                    foreach (DefStringTriplet defStringTriplet in section.KeyDefs)
+                    {
+                        if (HelpDetailSectionHelper.DrawDefLink(ref cur, viewRect, defStringTriplet))
+                        {
+                            // bit ugly, but since the helper can't return true if the helpdef doesn't exist, we can fetch it again here.
+                            // TODO: better way of passing along helpdef. Perhaps make a resolve references step to add helpdef so we don't have to find it in realtime?
+                            // TODO: open categories in selection area and scroll to correct position.
+                            SelectedHelpDef =
+                                DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
+                        }
+                    }
+                }
+                cur.y += paragraphMargin;
+            }
+
+            ActualHeight = cur.y + 60f;
+
             Widgets.EndScrollView();
-
             GUI.EndGroup();
         }
 
         void                                DrawSelectionArea( Rect rect )
         {
+            // TODO: inset scrollbar a few pts.
+            // TODO: adapt buttons to text height.
             Widgets.DrawMenuSection( rect );
             GUI.BeginGroup( rect );
 

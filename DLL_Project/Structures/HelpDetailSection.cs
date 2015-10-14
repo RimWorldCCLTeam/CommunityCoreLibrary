@@ -1,94 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using CommunityCoreLibrary.StaticClasses;
-using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
     public struct HelpDetailSection
     {
-        // TODO: drawer with link resolver.
+        public string                   Label;
+        public string[]                 StringDescs;
+        public string                   InsetString;
+        public float                    Inset;
+        private const string            DefaultInsetString  = "\t";
+        private const float             DefaultInset        = 30f;
+        public List<DefStringTriplet>   KeyDefs;
+
         public HelpDetailSection(string label, List<DefStringTriplet> keyDefs = null, string[] stringDescs = null)
         {
-            this.label = label;
+            Label = label;
             KeyDefs = keyDefs;
-            this.stringDescs = stringDescs;
+            StringDescs = stringDescs;
+            if (label != null)
+            {
+                InsetString = DefaultInsetString;
+                Inset = DefaultInset;
+            }
+            else
+            {
+                InsetString = string.Empty;
+                Inset = 0f;
+            }
         }
 
         public HelpDetailSection(string label, string[] stringDescs = null)
         {
-            this.label = label;
+            Label = label;
             KeyDefs = null;
-            this.stringDescs = stringDescs;
+            StringDescs = stringDescs;
+            if (label != null)
+            {
+                InsetString = DefaultInsetString;
+                Inset = DefaultInset;
+            }
+            else
+            {
+                InsetString = string.Empty;
+                Inset = 0f;
+            }
         }
 
         public HelpDetailSection(string label, List<DefStringTriplet> keyDefs = null)
         {
-            this.label = label;
+            Label = label;
             KeyDefs = keyDefs;
-            stringDescs = null;
+            StringDescs = null;
+            if (label != null)
+            {
+                InsetString = DefaultInsetString;
+                Inset = DefaultInset;
+            }
+            else
+            {
+                InsetString = string.Empty;
+                Inset = 0f;
+            }
         }
 
         public HelpDetailSection(string label, List<Def> keyDefs, string[] prefixes = null, string[] suffixes = null)
         {
-            this.label = label;
-            if (keyDefs != null)
+            Label = label;
+            KeyDefs = keyDefs != null ? HelpDetailSectionHelper.BuildDefStringTripletList(keyDefs, prefixes, suffixes) : null;
+            StringDescs = null;
+            if (label != null)
             {
-                KeyDefs = HelpDetailSectionHelper.BuildDefStringTripletList(keyDefs, prefixes, suffixes);
+                InsetString = DefaultInsetString;
+                Inset = DefaultInset;
             }
-            else KeyDefs = null;
-            stringDescs = null;
-        }
-
-        public string label;
-
-        public static string inset = "\t";
-
-        public string[] stringDescs;
-
-        public List<DefStringTriplet> KeyDefs;
-
-        public string GetString
-        {
-            get
+            else
             {
-                StringBuilder s = new StringBuilder();
-                if (label != null)
-                {
-                    inset = "\t";
-                    s.AppendLine(label.CapitalizeFirst() + ":");
-                }
-                else
-                {
-                    inset = String.Empty;
-                }
-
-                if (stringDescs != null)
-                {
-                    foreach (string stringDesc in stringDescs)
-                    {
-                        s.Append(inset);
-                        s.AppendLine(stringDesc);
-                    }
-                }
-
-                if (KeyDefs != null)
-                {
-                    foreach (DefStringTriplet def in KeyDefs)
-                    {
-                        s.Append(inset);
-#if DEBUG
-                        // show that this could potentially be a linked def.
-                        s.Append("*");
-#endif
-                        s.AppendLine(def.ToString());
-                    }
-                }
-
-                return s.ToString();
+                InsetString = string.Empty;
+                Inset = 0f;
             }
         }
     }

@@ -35,7 +35,7 @@ namespace CommunityCoreLibrary
         private bool            _asc                        = true;
         private string          _filter                     = "";
         private string          _oldFilter;
-        private bool            _helpDefLogged;
+        //private bool            _helpDefLogged;
 
         // enums
         private enum ShowResearch
