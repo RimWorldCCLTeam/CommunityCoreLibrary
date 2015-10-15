@@ -46,6 +46,7 @@
 
     <AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>
 
+    <AutoHelpCost>Cost</AutoHelpCost>
     <AutoHelpStuffCost>Stuff cost ({0})</AutoHelpStuffCost>
     <AutoHelpThingCost>Cost to build</AutoHelpThingCost>
     <AutoHelpTotalCost>Total cost: {0}</AutoHelpTotalCost>

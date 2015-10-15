@@ -34,22 +34,7 @@ namespace CommunityCoreLibrary
                 return _cachedHelpDefs;
             }
         }
-
-        public float DrawHeight
-        {
-            get
-            {
-                if (Expanded)
-                {
-                    return MainTabWindow_ModHelp.EntryHeight + HelpDefs.Count(hd => hd.ShouldDraw) * MainTabWindow_ModHelp.EntryHeight;
-                }
-                else
-                {
-                    return MainTabWindow_ModHelp.EntryHeight;
-                }
-            }
-        }
-
+        
         public bool ShouldDraw { get; set; }
 
         public bool Expanded { get; set; }

@@ -582,7 +582,7 @@ namespace CommunityCoreLibrary
                 if (!thingDef.costList.NullOrEmpty())
                 {
                     HelpDetailSection costs = new HelpDetailSection(
-                        "Cost".Translate(),
+                        "AutoHelpCost".Translate(),
                         thingDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                         null,
                         thingDef.costList.Select(tc => ": " + tc.count.ToString()).ToArray());
@@ -1108,9 +1108,8 @@ namespace CommunityCoreLibrary
                 ( !thingDefs.NullOrEmpty() )
             )
             {
-                // TODO: translatable string
                 HelpDetailSection recipesLocked = new HelpDetailSection(
-                    "Prevents recipes:", recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
+                    "AutoHelpListRecipesLocked".Translate(), recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
 
                 helpDef.HelpDetailSections.Add(recipesLocked);
 
@@ -1149,7 +1148,7 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Array Cleaners
-        // TODO: implement the cleaners in the new stringbuilders
+        // TODO: implement the cleaners in the new stringbuilders. Doesn't seem necessary atm though. -Fluffy.
         //static List< Def >                  TidyDefs( List< Def > defs )
         //{
         //    if( defs == null )

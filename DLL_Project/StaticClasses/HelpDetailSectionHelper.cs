@@ -133,7 +133,12 @@ namespace CommunityCoreLibrary.StaticClasses
             }
             else
             {
+                // make information that could potentially be a helpdef italic in debug mode.
+#if DEBUG
                 GUI.Label(labelRect, "<i>" + def.Def.LabelCap + "</i>");
+#else
+                GUI.Label(labelRect, def.Def.LabelCap);
+#endif
             }
 
             if (suffixNewline)
@@ -167,6 +172,6 @@ namespace CommunityCoreLibrary.StaticClasses
 
 
 
-        #endregion
+#endregion
     }
 }
