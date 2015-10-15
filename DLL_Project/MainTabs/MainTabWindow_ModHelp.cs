@@ -49,19 +49,19 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override Vector2             RequestedTabSize
+        public override Vector2 RequestedTabSize
         {
             get
             {
-                if (TabDef != null)
+                if( TabDef != null )
                 {
-                    return new Vector2(TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
+                    return new Vector2( TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight );
                 }
-                return new Vector2(MinWidth, MinHeight);
+                return new Vector2( MinWidth, MinHeight );
             }
         }
 
-        private MainTab_HelpMenuDef         TabDef
+        private MainTab_HelpMenuDef TabDef
         {
             get
             {
@@ -100,42 +100,42 @@ namespace CommunityCoreLibrary
                 ModName = modName;
             }
 
-            public List<HelpCategoryDef>    HelpCategories
+            public List<HelpCategoryDef> HelpCategories
             {
                 get
                 {
-                    return helpCategories.OrderBy(a => a.label).ToList();
+                    return helpCategories.OrderBy( a => a.label ).ToList();
                 }
             }
 
-            public bool                     ShouldDraw
+            public bool ShouldDraw
             {
                 get;
                 set;
             }
 
-            public bool                     MatchesFilter( string filter )
+            public bool MatchesFilter( string filter )
             {
                 return (
-                    ( filter == "" )||
-                    ( ModName.ToUpper().Contains( filter.ToUpper() ) )
+                    (filter == "") ||
+                    (ModName.ToUpper().Contains( filter.ToUpper() ))
                 );
             }
 
-            public bool                     ThisOrAnyChildMatchesFilter( string filter )
+            public bool ThisOrAnyChildMatchesFilter( string filter )
             {
                 return (
-                    ( MatchesFilter( filter ) )||
-                    ( HelpCategories.Any( hc => hc.ThisOrAnyChildMatchesFilter( filter ) ) )
+                    (MatchesFilter( filter )) ||
+                    (HelpCategories.Any( hc => hc.ThisOrAnyChildMatchesFilter( filter ) ))
                 );
             }
 
-            public void                     Filter( string filter )
+            public void Filter( string filter )
             {
                 ShouldDraw = ThisOrAnyChildMatchesFilter( filter );
                 Expanded = (
-                    ( filter != "" )&&
-                    ( ThisOrAnyChildMatchesFilter( filter ) )
+                    (filter != "") &&
+                    (ThisOrAnyChildMatchesFilter( filter ))
                 );
 
                 foreach( HelpCategoryDef hc in HelpCategories )
@@ -143,8 +143,8 @@ namespace CommunityCoreLibrary
                     hc.Filter( filter, MatchesFilter( filter ) );
                 }
             }
-           
-            public void                     AddCategory( HelpCategoryDef def )
+
+            public void AddCategory( HelpCategoryDef def )
             {
                 if( !helpCategories.Contains( def ) )
                 {
@@ -157,7 +157,7 @@ namespace CommunityCoreLibrary
 
         #region Category Cache Control
 
-        public override void                PreOpen()
+        public override void PreOpen()
         {
             base.PreOpen();
 
@@ -175,7 +175,7 @@ namespace CommunityCoreLibrary
             Filter();
         }
 
-        public static void                  Recache()
+        public static void Recache()
         {
             _cachedHelpCategories = new List<ModCategory>();
             foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefs )
@@ -200,7 +200,7 @@ namespace CommunityCoreLibrary
 
         #region Filter
 
-        private void                        _filterUpdate()
+        private void _filterUpdate()
         {
             // filter after a short delay.
             // Log.Message(_filterString + " | " + _lastFilterTick + " | " + _filtered);
@@ -220,7 +220,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         Filter()
+        public void Filter()
         {
             foreach( ModCategory mc in _cachedHelpCategories )
             {
@@ -240,7 +240,7 @@ namespace CommunityCoreLibrary
 
         #region OTab Rendering
 
-        public override void                DoWindowContents( Rect rect )
+        public override void DoWindowContents( Rect rect )
         {
             base.DoWindowContents( rect );
 
@@ -261,7 +261,7 @@ namespace CommunityCoreLibrary
             GUI.EndGroup();
         }
 
-        void                                DrawDisplayArea( Rect rect )
+        void DrawDisplayArea( Rect rect )
         {
             float paragraphMargin = 8f;
             float inset = 30f;
@@ -276,7 +276,7 @@ namespace CommunityCoreLibrary
             var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(titleRect, SelectedHelpDef.LabelCap);
+            Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
@@ -286,41 +286,41 @@ namespace CommunityCoreLibrary
             viewRect.width -= 16f;
             viewRect.height = ContentHeight;
 
-            GUI.BeginGroup(outRect);
-            Widgets.BeginScrollView(outRect.AtZero(), ref displayScrollPos, viewRect.AtZero());
+            GUI.BeginGroup( outRect );
+            Widgets.BeginScrollView( outRect.AtZero(), ref displayScrollPos, viewRect.AtZero() );
 
             Vector2 cur = Vector2.zero;
 
-            HelpDetailSectionHelper.DrawText(ref cur, viewRect, SelectedHelpDef.description);
+            HelpDetailSectionHelper.DrawText( ref cur, viewRect, SelectedHelpDef.description );
 
             cur.y += paragraphMargin;
 
-            foreach (HelpDetailSection section in SelectedHelpDef.HelpDetailSections)
+            foreach( HelpDetailSection section in SelectedHelpDef.HelpDetailSections )
             {
                 cur.x = 0f;
-                if (!string.IsNullOrEmpty(section.Label))
+                if( !string.IsNullOrEmpty( section.Label ) )
                 {
-                    HelpDetailSectionHelper.DrawText(ref cur, viewRect, section.Label);
+                    HelpDetailSectionHelper.DrawText( ref cur, viewRect, section.Label );
                     cur.x = inset;
                 }
-                if (section.StringDescs != null)
+                if( section.StringDescs != null )
                 {
-                    foreach (string s in section.StringDescs)
+                    foreach( string s in section.StringDescs )
                     {
-                        HelpDetailSectionHelper.DrawText(ref cur, viewRect, s);
+                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s );
                     }
                 }
-                if (section.KeyDefs != null)
+                if( section.KeyDefs != null )
                 {
-                    foreach (DefStringTriplet defStringTriplet in section.KeyDefs)
+                    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
                     {
-                        if (HelpDetailSectionHelper.DrawDefLink(ref cur, viewRect, defStringTriplet))
+                        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
                         {
                             // bit ugly, but since the helper can't return true if the helpdef doesn't exist, we can fetch it again here -Fluffy.
                             // TODO: better way of passing along helpdef. Perhaps make a resolve references step to add helpdef so we don't have to find it in realtime?
                             HelpDef def = DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
                             SelectedHelpDef = def;
-                            JumpToDef(def);
+                            JumpToDef( def );
                         }
                     }
                 }
@@ -333,10 +333,10 @@ namespace CommunityCoreLibrary
             GUI.EndGroup();
         }
 
-        void                                DrawSelectionArea( Rect rect )
+        void DrawSelectionArea( Rect rect )
         {
             Widgets.DrawMenuSection( rect );
-            
+
             _filterUpdate();
             Rect filterRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, rect.width - 3 * Margin - 30f, 30f );
             Rect clearRect = new Rect( filterRect.xMax + Margin + 3f, rect.yMin + Margin + 3f, 24f, 24f );
@@ -349,7 +349,7 @@ namespace CommunityCoreLibrary
                     Filter();
                 }
             }
-            
+
             Rect outRect = rect;
             outRect.yMin += 40f;
             outRect.xMax -= 2f; // some spacing around the scrollbar
@@ -357,7 +357,7 @@ namespace CommunityCoreLibrary
             float viewWidth = SelectionHeight > outRect.height ? outRect.width - 16f : outRect.width;
             var viewRect = new Rect( 0f, 0f, viewWidth, SelectionHeight );
 
-            GUI.BeginGroup(outRect);
+            GUI.BeginGroup( outRect );
             Widgets.BeginScrollView( outRect.AtZero(), ref selectionScrollPos, viewRect );
 
             if( _cachedHelpCategories.Count( mc => mc.ShouldDraw ) < 1 )
@@ -371,10 +371,10 @@ namespace CommunityCoreLibrary
 
                 foreach( ModCategory mc in _cachedHelpCategories.Where( mc => mc.ShouldDraw ) )
                 {
-                    DrawModEntry(ref cur, 0, viewRect, mc);
+                    DrawModEntry( ref cur, 0, viewRect, mc );
 
                     cur.x += EntryIndent;
-                    if (mc.Expanded)
+                    if( mc.Expanded )
                     {
                         foreach( HelpCategoryDef hc in mc.HelpCategories.Where( hc => hc.ShouldDraw ) )
                         {
@@ -417,29 +417,29 @@ namespace CommunityCoreLibrary
         /// <param name="label">Label to show</param>
         /// <param name="state">State of collapsing icon to show</param>
         /// <returns></returns>
-        public bool DrawEntry(ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false)
+        public bool DrawEntry( ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false )
         {
             cur.x = nestLevel * EntryIndent;
             float iconOffset = ArrowImageSize.x + 2 * Margin;
             float width = view.width - cur.x - iconOffset;
             float height = EntryHeight;
 
-            if (Text.CalcHeight(label, width) > EntryHeight)
+            if( Text.CalcHeight( label, width ) > EntryHeight )
             {
                 Text.Font = GameFont.Tiny;
                 float height2 = Text.CalcHeight(label, width);
-                height = Mathf.Max(height, height2);
+                height = Mathf.Max( height, height2 );
             }
 
-            if (state != State.Leaf)
+            if( state != State.Leaf )
             {
                 Rect iconRect = new Rect(cur.x + Margin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y);
-                GUI.DrawTexture(iconRect, state == State.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight);
+                GUI.DrawTexture( iconRect, state == State.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight );
             }
 
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect labelRect = new Rect(cur.x + iconOffset, cur.y, width, height);
-            Widgets.Label(labelRect, label);
+            Widgets.Label( labelRect, label );
             Text.Anchor = TextAnchor.UpperLeft;
             Text.Font = GameFont.Small;
 
@@ -449,52 +449,52 @@ namespace CommunityCoreLibrary
             cur.y += height;
             buttonRect.yMax = cur.y;
             GUI.color = Color.grey;
-            Widgets.DrawLineHorizontal(view.xMin, cur.y, view.width);
+            Widgets.DrawLineHorizontal( view.xMin, cur.y, view.width );
             GUI.color = Color.white;
-            if (selected)
+            if( selected )
             {
-                Widgets.DrawHighlightSelected(buttonRect);
+                Widgets.DrawHighlightSelected( buttonRect );
             }
             else
             {
-                Widgets.DrawHighlightIfMouseover(buttonRect);
+                Widgets.DrawHighlightIfMouseover( buttonRect );
             }
-            return Widgets.InvisibleButton(buttonRect);
+            return Widgets.InvisibleButton( buttonRect );
         }
 
-        public void DrawModEntry(ref Vector2 cur, int nestLevel, Rect view, ModCategory mc)
+        public void DrawModEntry( ref Vector2 cur, int nestLevel, Rect view, ModCategory mc )
         {
             State curState = mc.Expanded ? State.Expanded : State.Closed;
-            if (DrawEntry(ref cur, nestLevel, view, mc.ModName, curState))
+            if( DrawEntry( ref cur, nestLevel, view, mc.ModName, curState ) )
             {
                 mc.Expanded = !mc.Expanded;
             }
         }
 
-        public void DrawCatEntry(ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef def)
+        public void DrawCatEntry( ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef def )
         {
             State curState = def.Expanded ? State.Expanded : State.Closed;
-            if (DrawEntry(ref cur, nestLevel, view, def.LabelCap, curState))
+            if( DrawEntry( ref cur, nestLevel, view, def.LabelCap, curState ) )
             {
                 def.Expanded = !def.Expanded;
             }
         }
 
-        public void DrawHelpEntry(ref Vector2 cur, int nestLevel, Rect view, HelpDef def)
+        public void DrawHelpEntry( ref Vector2 cur, int nestLevel, Rect view, HelpDef def )
         {
             bool selected = SelectedHelpDef == def;
-            if (selected && _jump)
+            if( selected && _jump )
             {
                 selectionScrollPos.y = cur.y;
                 _jump = false;
             }
-            if (DrawEntry(ref cur, nestLevel, view, def.LabelCap, State.Leaf, selected))
+            if( DrawEntry( ref cur, nestLevel, view, def.LabelCap, State.Leaf, selected ) )
             {
                 SelectedHelpDef = def;
             }
         }
 
-        public void JumpToDef(HelpDef def)
+        public void JumpToDef( HelpDef def )
         {
             ResetFilter();
             _jump = true;
