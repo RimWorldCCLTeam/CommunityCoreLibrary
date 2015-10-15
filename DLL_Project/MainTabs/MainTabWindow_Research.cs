@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using CommunityCoreLibrary;
+using CommunityCoreLibrary.StaticClasses;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -18,6 +19,7 @@ namespace CommunityCoreLibrary
         private Vector2         _contentScrollPos           = Vector2.zero;
         private Vector2         _margin                     = new Vector2(6f, 6f);
         private Vector2         _buttonSize                 = new Vector2(100f, 50f);
+        private float           ContentHeight               = 9999f;
 
         // toggles and resources
         protected ResearchProjectDef SelectedProject;
@@ -240,8 +242,6 @@ namespace CommunityCoreLibrary
                (hd.keyDef == SelectedProject)
             ));
 
-            // if either is null - something is badly wrong, might as well just return to avoid further errors.
-            // TODO: more gracious error handling.
             if (SelectedProject == null)
             {
                 return;
@@ -258,35 +258,83 @@ namespace CommunityCoreLibrary
             }
 
             // Set up rects
+            // TODO: description and info is awfully close to the edges, add some more margin.
             Rect descRect = rect.ContractedBy(_margin.x);
             descRect.height -= _buttonSize.y * 2 + _margin.y * 2;
             Rect controlRect = rect.ContractedBy(_margin.x);
             controlRect.yMin = descRect.yMax + _margin.y;
 
             #region description
-            GUI.BeginGroup(descRect);
+            float paragraphMargin = 8f;
+            float inset = 30f;
 
-            var titleRect = new Rect(0f, 0f, rect.width, 60f);
+            var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(titleRect, SelectedProject.LabelCap);
+            Widgets.Label( titleRect, SelectedProject.LabelCap );
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
-            var outRect = rect.AtZero().ContractedBy(_margin.x);
-            outRect.yMin += titleRect.height;
+            Rect outRect = rect.ContractedBy(_margin.x);
+            outRect.yMin += 60f;
+            Rect viewRect = outRect;
+            viewRect.width -= 16f;
+            viewRect.height = ContentHeight;
 
-            float height = Text.CalcHeight(_descText, outRect.width - 16f);
+            GUI.BeginGroup( outRect );
+            Widgets.BeginScrollView( outRect.AtZero(), ref _contentScrollPos, viewRect.AtZero() );
 
-            var viewRect = new Rect(
-                outRect.x, outRect.y,
-                outRect.width - 16f, height
-            );
+            Vector2 cur = Vector2.zero;
 
-            Widgets.BeginScrollView(outRect, ref _contentScrollPos, viewRect);
-            Widgets.Label(viewRect, _descText);
+            HelpDetailSectionHelper.DrawText( ref cur, viewRect, SelectedProject.description );
+
+            cur.y += paragraphMargin;
+
+            if (helpDef != null)
+            {
+                foreach (HelpDetailSection section in helpDef.HelpDetailSections)
+                {
+                    cur.x = 0f;
+                    if (!string.IsNullOrEmpty(section.Label))
+                    {
+                        HelpDetailSectionHelper.DrawText(ref cur, viewRect, section.Label);
+                        cur.x = inset;
+                    }
+                    if (section.StringDescs != null)
+                    {
+                        foreach (string s in section.StringDescs)
+                        {
+                            HelpDetailSectionHelper.DrawText(ref cur, viewRect, s);
+                        }
+                    }
+                    if (section.KeyDefs != null)
+                    {
+                        foreach (DefStringTriplet defStringTriplet in section.KeyDefs)
+                        {
+                            if (HelpDetailSectionHelper.DrawDefLink(ref cur, viewRect, defStringTriplet))
+                            {
+                                // Helper can only return true if helpDef exists.
+                                // If this is a research, helpDef and researchDef should both exist.
+                                if (defStringTriplet.Def is ResearchProjectDef)
+                                {
+                                    this._showResearchedProjects = ShowResearch.All;
+                                    RefreshSource();
+                                    SelectedProject = (ResearchProjectDef)defStringTriplet.Def;
+                                }
+                                else
+                                {
+                                    // TODO: Handle non-research links.
+                                }
+                            }
+                        }
+                    }
+                    cur.y += paragraphMargin;
+                }
+            }
+
+            ContentHeight = cur.y;
+
             Widgets.EndScrollView();
-
             GUI.EndGroup();
             #endregion
 
