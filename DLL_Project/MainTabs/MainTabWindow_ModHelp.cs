@@ -423,10 +423,10 @@ namespace CommunityCoreLibrary
         /// <returns></returns>
         public bool DrawEntry( ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false )
         {
-            cur.x = nestLevel * EntryIndent;
-            float iconOffset = ArrowImageSize.x + 2 * Margin;
-            float width = view.width - cur.x - iconOffset;
-            float height = EntryHeight;
+                    cur.x       = nestLevel * EntryIndent;
+            float   iconOffset  = ArrowImageSize.x + 2 * Margin;
+            float   width       = view.width - cur.x - iconOffset - Margin;
+            float   height      = EntryHeight;
 
             if( Text.CalcHeight( label, width ) > EntryHeight )
             {
