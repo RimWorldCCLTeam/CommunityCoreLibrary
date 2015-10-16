@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using CommunityCoreLibrary.StaticClasses;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -15,8 +12,8 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        protected static List<ModCategory>  _cachedHelpCategories;
-        protected HelpDef                   SelectedHelpDef;
+        protected static List<ModCategory>  CachedHelpCategories;
+        public HelpDef                      SelectedHelpDef;
 
         public const float                  Margin                  = 6f; // 15 is way too much.
         public const float                  EntryHeight             = 30f;
@@ -26,8 +23,8 @@ namespace CommunityCoreLibrary
         protected Rect                      DisplayRect;
         protected static Vector2            ArrowImageSize          = new Vector2(10f, 10f);
 
-        protected Vector2                   selectionScrollPos      = default(Vector2);
-        protected Vector2                   displayScrollPos        = default(Vector2);
+        protected Vector2                   SelectionScrollPos      = default(Vector2);
+        protected Vector2                   DisplayScrollPos        = default(Vector2);
 
         public const float                  MinWidth                = 600f;
         public const float                  MinHeight               = 400f;
@@ -39,7 +36,7 @@ namespace CommunityCoreLibrary
         private string                      _lastFilterString       = "";
         private int                         _lastFilterTick;
         private bool                        _filtered;
-        private bool                        _jump                   = false;
+        private bool                        _jump;
 
         public override MainTabWindowAnchor Anchor
         {
@@ -75,12 +72,12 @@ namespace CommunityCoreLibrary
 
         public MainTabWindow_ModHelp()
         {
-            this.layer = WindowLayer.GameUI;
-            this.soundAppear = null;
-            this.soundClose = null;
-            this.doCloseButton = false;
-            this.doCloseX = true;
-            this.closeOnEscapeKey = true;
+            layer = WindowLayer.GameUI;
+            soundAppear = null;
+            soundClose = null;
+            doCloseButton = false;
+            doCloseX = true;
+            closeOnEscapeKey = true;
         }
 
         #endregion
@@ -89,7 +86,7 @@ namespace CommunityCoreLibrary
 
         public class ModCategory
         {
-            readonly List<HelpCategoryDef>  helpCategories = new List<HelpCategoryDef>();
+            readonly List<HelpCategoryDef>  _helpCategories = new List<HelpCategoryDef>();
 
             public readonly string          ModName;
 
@@ -104,7 +101,7 @@ namespace CommunityCoreLibrary
             {
                 get
                 {
-                    return helpCategories.OrderBy( a => a.label ).ToList();
+                    return _helpCategories.OrderBy( a => a.label ).ToList();
                 }
             }
 
@@ -146,9 +143,9 @@ namespace CommunityCoreLibrary
 
             public void AddCategory( HelpCategoryDef def )
             {
-                if( !helpCategories.Contains( def ) )
+                if( !_helpCategories.Contains( def ) )
                 {
-                    helpCategories.Add( def );
+                    _helpCategories.Add( def );
                 }
             }
         }
@@ -165,7 +162,7 @@ namespace CommunityCoreLibrary
             // Not entirely sure why force pause warrants an xml setting? - Fluffy.
             if( TabDef != null )
             {
-                this.forcePause = TabDef.pauseGame;
+                forcePause = TabDef.pauseGame;
             }
 
             // Build the help system
@@ -177,20 +174,20 @@ namespace CommunityCoreLibrary
 
         public static void Recache()
         {
-            _cachedHelpCategories = new List<ModCategory>();
+            CachedHelpCategories = new List<ModCategory>();
             foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefs )
             {
                 // parent modcategory does not exist, create it.
-                if( _cachedHelpCategories.All( t => t.ModName != helpCategory.ModName ) )
+                if( CachedHelpCategories.All( t => t.ModName != helpCategory.ModName ) )
                 {
                     var mCat = new ModCategory( helpCategory.ModName );
                     mCat.AddCategory( helpCategory );
-                    _cachedHelpCategories.Add( mCat );
+                    CachedHelpCategories.Add( mCat );
                 }
                 // add to existing modcategory
                 else
                 {
-                    var mCat = _cachedHelpCategories.Find( t => t.ModName == helpCategory.ModName );
+                    var mCat = CachedHelpCategories.Find( t => t.ModName == helpCategory.ModName );
                     mCat.AddCategory( helpCategory );
                 }
             }
@@ -222,7 +219,7 @@ namespace CommunityCoreLibrary
 
         public void Filter()
         {
-            foreach( ModCategory mc in _cachedHelpCategories )
+            foreach( ModCategory mc in CachedHelpCategories )
             {
                 mc.Filter( _filterString );
             }
@@ -287,7 +284,7 @@ namespace CommunityCoreLibrary
             viewRect.height = ContentHeight;
 
             GUI.BeginGroup( outRect );
-            Widgets.BeginScrollView( outRect.AtZero(), ref displayScrollPos, viewRect.AtZero() );
+            Widgets.BeginScrollView( outRect.AtZero(), ref DisplayScrollPos, viewRect.AtZero() );
 
             Vector2 cur = Vector2.zero;
 
@@ -318,9 +315,9 @@ namespace CommunityCoreLibrary
                         {
                             // bit ugly, but since the helper can't return true if the helpdef doesn't exist, we can fetch it again here -Fluffy.
                             // TODO: better way of passing along helpdef. Perhaps make a resolve references step to add helpdef so we don't have to find it in realtime?
-                            HelpDef def = DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
-                            SelectedHelpDef = def;
-                            JumpToDef( def );
+                            HelpDef helpDef = DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
+                            SelectedHelpDef = helpDef;
+                            JumpToDef( helpDef );
                         }
                     }
                 }
@@ -358,9 +355,9 @@ namespace CommunityCoreLibrary
             var viewRect = new Rect( 0f, 0f, viewWidth, SelectionHeight );
 
             GUI.BeginGroup( outRect );
-            Widgets.BeginScrollView( outRect.AtZero(), ref selectionScrollPos, viewRect );
+            Widgets.BeginScrollView( outRect.AtZero(), ref SelectionScrollPos, viewRect );
 
-            if( _cachedHelpCategories.Count( mc => mc.ShouldDraw ) < 1 )
+            if( CachedHelpCategories.Count( mc => mc.ShouldDraw ) < 1 )
             {
                 Rect messageRect = outRect.AtZero();
                 Widgets.Label( messageRect, "NoHelpDefs".Translate() );
@@ -369,7 +366,12 @@ namespace CommunityCoreLibrary
             {
                 Vector2 cur = Vector2.zero;
 
-                foreach( ModCategory mc in _cachedHelpCategories.Where( mc => mc.ShouldDraw ) )
+                // This works fine for the current artificial three levels of helpdefs. 
+                // Can easily be adapted by giving each category a list of subcategories, 
+                // and migrating the responsibility for drawing them and the helpdefs to DrawCatEntry().
+                // Would also require some minor adaptations to the filter methods, but nothing major.
+                // - Fluffy.
+                foreach( ModCategory mc in CachedHelpCategories.Where( mc => mc.ShouldDraw ) )
                 {
                     DrawModEntry( ref cur, 0, viewRect, mc );
 
@@ -413,9 +415,11 @@ namespace CommunityCoreLibrary
         /// Generic method for drawing the squares. 
         /// </summary>
         /// <param name="cur">Current x,y vector</param>
+        /// <param name="nestLevel">Level of nesting for indentation</param>
         /// <param name="view">Size of viewing area (assumed vertically scrollable)</param>
         /// <param name="label">Label to show</param>
         /// <param name="state">State of collapsing icon to show</param>
+        /// <param name="selected">For leaf entries, is this entry selected?</param>
         /// <returns></returns>
         public bool DrawEntry( ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false )
         {
@@ -471,37 +475,37 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void DrawCatEntry( ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef def )
+        public void DrawCatEntry( ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef catDef )
         {
-            State curState = def.Expanded ? State.Expanded : State.Closed;
-            if( DrawEntry( ref cur, nestLevel, view, def.LabelCap, curState ) )
+            State curState = catDef.Expanded ? State.Expanded : State.Closed;
+            if( DrawEntry( ref cur, nestLevel, view, catDef.LabelCap, curState ) )
             {
-                def.Expanded = !def.Expanded;
+                catDef.Expanded = !catDef.Expanded;
             }
         }
 
-        public void DrawHelpEntry( ref Vector2 cur, int nestLevel, Rect view, HelpDef def )
+        public void DrawHelpEntry( ref Vector2 cur, int nestLevel, Rect view, HelpDef helpDef )
         {
-            bool selected = SelectedHelpDef == def;
+            bool selected = SelectedHelpDef == helpDef;
             if( selected && _jump )
             {
-                selectionScrollPos.y = cur.y;
+                SelectionScrollPos.y = cur.y;
                 _jump = false;
             }
-            if( DrawEntry( ref cur, nestLevel, view, def.LabelCap, State.Leaf, selected ) )
+            if( DrawEntry( ref cur, nestLevel, view, helpDef.LabelCap, State.Leaf, selected ) )
             {
-                SelectedHelpDef = def;
+                SelectedHelpDef = helpDef;
             }
         }
 
-        public void JumpToDef( HelpDef def )
+        public void JumpToDef( HelpDef helpDef )
         {
             ResetFilter();
             _jump = true;
             HelpCategoryDef cat =
-                DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(def));
+                DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
             cat.Expanded = true;
-            ModCategory mod = _cachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
+            ModCategory mod = CachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
             mod.Expanded = true;
         }
         #endregion

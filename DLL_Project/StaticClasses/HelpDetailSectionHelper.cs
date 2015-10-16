@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using RimWorld;
 using Verse;
 using UnityEngine;
 
-namespace CommunityCoreLibrary.StaticClasses
+namespace CommunityCoreLibrary
 {
     class HelpDetailSectionHelper
     {
@@ -84,6 +81,8 @@ namespace CommunityCoreLibrary.StaticClasses
                 }
             }
 
+            // TODO: Align (prefix + label) and suffix in two columns, so they look neater. -Fluffy.
+            
             // determine available size and how we can fill it.
             if (hasPrefix)
             {
@@ -133,12 +132,15 @@ namespace CommunityCoreLibrary.StaticClasses
             }
             else
             {
-                // make information that could potentially be a helpdef italic in debug mode.
-#if DEBUG
-                GUI.Label(labelRect, "<i>" + def.Def.LabelCap + "</i>");
-#else
-                GUI.Label(labelRect, def.Def.LabelCap);
-#endif
+                if (!string.IsNullOrEmpty(def.Def.description))
+                {
+                    GUI.Label(labelRect, "<i>" + def.Def.LabelCap + "</i>");
+                    TooltipHandler.TipRegion(labelRect, def.Def.description);
+                }
+                else
+                {
+                    GUI.Label( labelRect, def.Def.LabelCap );
+                }
             }
 
             if (suffixNewline)

@@ -29,6 +29,26 @@ namespace CommunityCoreLibrary
             ResolveMeals();
             ResolveWeapons();
 
+            // TODO: Add stuff categories
+            // TODO: Add biomes
+            // TODO: Add plants
+            // TODO: Add animals
+            // TODO: Add workTypes
+            // TODO: Add capacities
+            // TODO: Add skills
+
+            // The below are low priority  (as considered by Fluffy)
+            // TODO: Add needs
+            // TODO: Add building resources
+            // TODO: Add factions
+            // TODO: Add hediffs
+
+            // The below are really low priority (as considered by Fluffy)
+            // TODO: Add traders
+            // TODO: Add tradertags
+
+
+
             // Buildings
             ResolveBuildings();
             ResolveMinifiableOnly();
@@ -465,7 +485,6 @@ namespace CommunityCoreLibrary
             {
 
                 #region Ingestible Stats
-                // TODO: Add raw food helpDefs?
                 // Look at base stats
                 if( thingDef.IsNutritionSource )
                 {
@@ -498,7 +517,6 @@ namespace CommunityCoreLibrary
                     #endregion
 
                     #region Capacities
-                    // TODO: add capacity helpdefs?
                     if( (!hediffDef.stages.NullOrEmpty()) &&
                         (hediffDef.stages.Exists( stage => (
                            (!stage.capMods.NullOrEmpty())
@@ -561,7 +579,6 @@ namespace CommunityCoreLibrary
                     #endregion
 
                     #region Body part fixed or replaced
-                    // TODO: bodypart helddefs
                     var recipeDef = thingDef.GetImplantRecipeDef();
                     if( !recipeDef.appliedOnFixedBodyParts.NullOrEmpty() )
                     {

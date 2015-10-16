@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CommunityCoreLibrary.StaticClasses;
 using Verse;
 
 namespace CommunityCoreLibrary
