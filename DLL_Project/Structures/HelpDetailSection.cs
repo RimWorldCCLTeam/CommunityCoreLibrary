@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace CommunityCoreLibrary
@@ -34,7 +35,8 @@ namespace CommunityCoreLibrary
         {
             Label = label;
             KeyDefs = null;
-            StringDescs = stringDescs;
+            // filter out duplicates
+            StringDescs = stringDescs.Distinct().ToArray();
             if (label != null)
             {
                 InsetString = DefaultInsetString;
