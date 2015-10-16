@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Verse;
 using UnityEngine;
@@ -32,10 +33,23 @@ namespace CommunityCoreLibrary
                 suf = true;
             }
 
-            List<DefStringTriplet> ret = new List<DefStringTriplet>();
+            // prepare list of unique indices, filter out duplicates.
+            List< Def > seen = new List<Def>();
+            List< int > unique = new List<int>();
+
             for (int i = 0; i < defs.Count; i++)
             {
-                ret.Add(new DefStringTriplet(defs[i], pre ? prefixes[i] : null, suf ? suffixes[i] : null));
+                if (seen.Count(def => def == defs[i]) == 0)
+                {
+                    unique.Add(i);
+                    seen.Add(defs[i]);
+                }
+            }
+
+            List<DefStringTriplet> ret = new List<DefStringTriplet>();
+            foreach (int i in unique)
+            {
+                ret.Add( new DefStringTriplet( defs[i], pre ? prefixes[i] : null, suf ? suffixes[i] : null ) );
             }
 
             return ret;
