@@ -20,7 +20,7 @@ namespace CommunityCoreLibrary
 
         #region Process State
 
-        public static void                  Initialize()
+        public static void Initialize()
         {
             // Items
             ResolveApparel();
@@ -28,6 +28,26 @@ namespace CommunityCoreLibrary
             ResolveDrugs();
             ResolveMeals();
             ResolveWeapons();
+
+            // TODO: Add stuff categories
+            // TODO: Add biomes
+            // TODO: Add plants
+            // TODO: Add animals
+            // TODO: Add workTypes
+            // TODO: Add capacities
+            // TODO: Add skills
+
+            // The below are low priority  (as considered by Fluffy)
+            // TODO: Add needs
+            // TODO: Add building resources
+            // TODO: Add factions
+            // TODO: Add hediffs
+
+            // The below are really low priority (as considered by Fluffy)
+            // TODO: Add traders
+            // TODO: Add tradertags
+
+
 
             // Buildings
             ResolveBuildings();
@@ -46,9 +66,9 @@ namespace CommunityCoreLibrary
             CCL_Log.Message( "Initialized", "Help System" );
         }
 
-        static void                         ResolveReferences()
+        static void ResolveReferences()
         {
-            foreach( var helpCategory in DefDatabase< HelpCategoryDef >.AllDefsListForReading )
+            foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefsListForReading )
             {
                 helpCategory.Recache();
             }
@@ -59,7 +79,7 @@ namespace CommunityCoreLibrary
 
         #region Item Resolvers
 
-        static void                         ResolveApparel()
+        static void ResolveApparel()
         {
             // Get list of things
             var thingDefs =
@@ -82,7 +102,7 @@ namespace CommunityCoreLibrary
             );
         }
 
-        static void                         ResolveBodyParts()
+        static void ResolveBodyParts()
         {
             // Get list of things
             var thingDefs =
@@ -109,7 +129,7 @@ namespace CommunityCoreLibrary
             );
         }
 
-        static void                         ResolveDrugs()
+        static void ResolveDrugs()
         {
             // Get list of things
             var thingDefs =
@@ -133,7 +153,7 @@ namespace CommunityCoreLibrary
             );
         }
 
-        static void                         ResolveMeals()
+        static void ResolveMeals()
         {
             // Get list of things
             var thingDefs =
@@ -157,10 +177,10 @@ namespace CommunityCoreLibrary
             );
         }
 
-        static void                         ResolveWeapons()
+        static void ResolveWeapons()
         {
             // Get list of things
-            var thingDefs = 
+            var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
                     ( t.IsWeapon )&&
                     ( t.category == ThingCategory.Item )
@@ -185,10 +205,10 @@ namespace CommunityCoreLibrary
 
         #region Building Resolvers
 
-        static void                         ResolveBuildings()
+        static void ResolveBuildings()
         {
             // Go through buildings by designation categories
-            foreach( var designationCategoryDef in DefDatabase< DesignationCategoryDef >.AllDefsListForReading )
+            foreach( var designationCategoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
             {
                 // Get list of things
                 var thingDefs =
@@ -211,10 +231,10 @@ namespace CommunityCoreLibrary
             }
         }
 
-        static void                         ResolveMinifiableOnly()
+        static void ResolveMinifiableOnly()
         {
             // Get list of things
-            var thingDefs = 
+            var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
                     ( t.Minifiable )&&
                     (
@@ -245,7 +265,7 @@ namespace CommunityCoreLibrary
 
         #region ThingDef Resolver
 
-        static void                         ResolveThingDefList( List< ThingDef > thingDefs, HelpCategoryDef category )
+        static void ResolveThingDefList( List<ThingDef> thingDefs, HelpCategoryDef category )
         {
             // Get help database
             var helpDefs = DefDatabase< HelpDef >.AllDefsListForReading;
@@ -255,7 +275,7 @@ namespace CommunityCoreLibrary
             {
                 // Find an existing entry
                 var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == thingDef.defName )
+                    ( h.keyDef == thingDef )
                 ) );
 
                 if( helpDef == null )
@@ -267,7 +287,7 @@ namespace CommunityCoreLibrary
                     // Inject the def
                     if( helpDef != null )
                     {
-                        DefDatabase< HelpDef >.Add( helpDef );
+                        DefDatabase<HelpDef>.Add( helpDef );
                     }
                 }
 
@@ -278,7 +298,7 @@ namespace CommunityCoreLibrary
 
         #region Recipe Resolvers
 
-        static void                         ResolveRecipes()
+        static void ResolveRecipes()
         {
             // Get the thing database of things which ever have recipes
             var thingDefs =
@@ -302,7 +322,7 @@ namespace CommunityCoreLibrary
                 {
                     // Find an existing entry
                     var helpDef = helpDefs.Find( h => (
-                        ( h.keyDef == thingDef.defName + "_" + recipeDef.defName )
+                        ( h.keyDef == recipeDef )
                     ) );
 
                     if( helpDef == null )
@@ -325,7 +345,7 @@ namespace CommunityCoreLibrary
 
         #region Research Resolvers
 
-        static void                         ResolveResearch()
+        static void ResolveResearch()
         {
             // Get research database
             var researchProjectDefs =
@@ -349,7 +369,7 @@ namespace CommunityCoreLibrary
             {
                 // Find an existing entry
                 var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == researchProjectDef.defName )
+                    ( h.keyDef == researchProjectDef )
                 ) );
 
                 if( helpDef == null )
@@ -368,7 +388,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        static void                         ResolveAdvancedResearch()
+        static void ResolveAdvancedResearch()
         {
             // Get advanced research database
             var advancedResearchDefs =
@@ -393,7 +413,7 @@ namespace CommunityCoreLibrary
             {
                 // Find an existing entry
                 var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == advancedResearchDef.defName )
+                    ( h.keyDef == advancedResearchDef )
                 ) );
 
                 if( helpDef == null )
@@ -416,7 +436,7 @@ namespace CommunityCoreLibrary
 
         #region Help Makers
 
-        static HelpCategoryDef              HelpCategoryForKey( string key, string label, string modname )
+        static HelpCategoryDef HelpCategoryForKey( string key, string label, string modname )
         {
             // Get help category
             var helpCategoryDef = DefDatabase< HelpCategoryDef >.GetNamed( key, false );
@@ -430,38 +450,32 @@ namespace CommunityCoreLibrary
                 helpCategoryDef.label = label;
                 helpCategoryDef.ModName = modname;
 
-                DefDatabase< HelpCategoryDef >.Add( helpCategoryDef );
+                DefDatabase<HelpCategoryDef>.Add( helpCategoryDef );
             }
 
             return helpCategoryDef;
         }
 
-        static HelpDef                      HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
+        static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
         {
             var helpDef = new HelpDef();
             helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
-            helpDef.keyDef = buildableDef.defName;
+            helpDef.keyDef = buildableDef;
             helpDef.label = buildableDef.label;
             helpDef.category = category;
-
-            var s = new StringBuilder();
-
-            s.AppendLine( buildableDef.description );
-            s.AppendLine();
+            helpDef.description = buildableDef.description;
 
             #region Base Stats
 
             // Look at base stats
-            if( !buildableDef.statBases.NullOrEmpty() )
-            {
-                foreach( var stat in buildableDef.statBases )
-                {
-                    s.Append( stat.stat.LabelCap );
-                    s.Append( " : " );
-                    s.AppendLine( stat.stat.ValueToString( stat.value, stat.stat.toStringNumberSense ) );
-                }
-                s.AppendLine();
-            }
+            HelpDetailSection baseStats = new HelpDetailSection(
+                null,
+                buildableDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
+                null,
+                buildableDef.statBases.Select(sb => sb.stat.ValueToString(sb.value, sb.stat.toStringNumberSense)).ToArray());
+
+            helpDef.HelpDetailSections.Add( baseStats );
+
             #endregion
 
             #region ThingDef Specific
@@ -471,32 +485,25 @@ namespace CommunityCoreLibrary
             {
 
                 #region Ingestible Stats
-
                 // Look at base stats
                 if( thingDef.IsNutritionSource )
                 {
-                    if( thingDef.ingestible.nutrition > 0.0001f )
+                    string[] ingestibleStats =
                     {
-                        s.Append( "Nutrition".Translate() );
-                        s.Append( " : " );
-                        s.AppendLine( thingDef.ingestible.nutrition.ToString( "0.###" ) );
-                    }
-                    if( thingDef.ingestible.joy > 0.0001f )
-                    {
-                        s.Append( "Joy".Translate() );
-                        s.Append( " : " );
-                        s.AppendLine( thingDef.ingestible.joy.ToString( "0.###" ) );
-                    }
-                    s.AppendLine();
+                        "Nutrition".Translate() + ": " + thingDef.ingestible.nutrition.ToString( "0.###" ),
+                        "Joy".Translate() + ": " + thingDef.ingestible.joy.ToString( "0.###" )
+                    };
+
+                    helpDef.HelpDetailSections.Add( new HelpDetailSection( null, ingestibleStats ) );
                 }
 
                 #endregion
 
                 #region Body Part Stats
 
-                if( ( !thingDef.thingCategories.NullOrEmpty() )&&
-                    ( thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyPartsAndImplants ) )&&
-                    ( thingDef.IsImplant() ) )
+                if( (!thingDef.thingCategories.NullOrEmpty()) &&
+                    (thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyPartsAndImplants )) &&
+                    (thingDef.IsImplant()) )
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
 
@@ -504,52 +511,44 @@ namespace CommunityCoreLibrary
 
                     if( hediffDef.addedPartProps != null )
                     {
-                        s.Append( "BodyPartEfficiency".Translate() );
-                        s.Append( " : " );
-                        s.AppendLine( hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) );
-                        s.AppendLine();
+                        helpDef.HelpDetailSections.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
                     }
 
                     #endregion
 
                     #region Capacities
-
-                    if( ( !hediffDef.stages.NullOrEmpty() )&&
-                        ( hediffDef.stages.Exists( stage => (
-                            ( !stage.capMods.NullOrEmpty() )
-                        ) ) )
+                    if( (!hediffDef.stages.NullOrEmpty()) &&
+                        (hediffDef.stages.Exists( stage => (
+                           (!stage.capMods.NullOrEmpty())
+                       ) ))
                     )
                     {
-                        foreach( var hediffStage in hediffDef.stages )
-                        {
-                            if( !hediffStage.capMods.NullOrEmpty() )
-                            {
-                                foreach( var c in hediffStage.capMods )
-                                {
-                                    s.Append( c.capacity.LabelCap );
-                                    if( c.offset > 0 )
-                                    {
-                                        s.Append( " : +" );
-                                    }
-                                    else
-                                    {
-                                        s.Append( " : " );
-                                    }
-                                    s.AppendLine( c.offset.ToString( "P0" ) );
-                                }
-                            }
-                        }
-                        s.AppendLine();
+                        HelpDetailSection capacityMods = new HelpDetailSection(
+                            "CapacityModifiers".Translate(),
+                            hediffDef.stages.Where(s => !s.capMods.NullOrEmpty())
+                                            .SelectMany(s => s.capMods)
+                                            .Select(cm => cm.capacity)
+                                            .ToList()
+                                            .ConvertAll(def => (Def)def),
+                            null,
+                            hediffDef.stages
+                                     .Where(s => !s.capMods.NullOrEmpty())
+                                     .SelectMany(s => s.capMods)
+                                     .Select(
+                                        cm => (cm.offset > 0 ? ": +" : ": ") + cm.offset.ToString("P0"))
+                                     .ToArray());
+
+                        helpDef.HelpDetailSections.Add( capacityMods );
                     }
 
                     #endregion
 
                     #region Components (Melee attack)
 
-                    if( ( !hediffDef.comps.NullOrEmpty() )&&
-                        ( hediffDef.comps.Exists( p => (
-                            ( p.compClass == typeof( HediffComp_VerbGiver ) )
-                        ) ) )
+                    if( (!hediffDef.comps.NullOrEmpty()) &&
+                        (hediffDef.comps.Exists( p => (
+                           (p.compClass == typeof( HediffComp_VerbGiver ))
+                       ) ))
                     )
                     {
                         foreach( var comp in hediffDef.comps )
@@ -562,16 +561,14 @@ namespace CommunityCoreLibrary
                                     {
                                         if( verb.verbClass == typeof( Verb_MeleeAttack ) )
                                         {
-                                            s.AppendLine( "MeleeAttack".Translate( verb.meleeDamageDef.label ) );
-                                            s.Append( "\t" );
-                                            s.Append( "MeleeWarmupTime".Translate() );
-                                            s.Append( " : " );
-                                            s.AppendLine( verb.defaultCooldownTicks.ToString() );
-                                            s.Append( "\t" );
-                                            s.Append( "StatsReport_MeleeDamage".Translate() );
-                                            s.Append( " : " );
-                                            s.AppendLine( verb.meleeDamageBaseAmount.ToString() );
-                                            s.AppendLine();
+                                            helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                                    "MeleeAttack".Translate( verb.meleeDamageDef.label ),
+                                                    new[]
+                                                    {
+                                                        "MeleeWarmupTime".Translate() + verb.defaultCooldownTicks,
+                                                        "StatsReport_MeleeDamage".Translate() + verb.meleeDamageBaseAmount
+                                                    }
+                                                ) );
                                         }
                                     }
                                 }
@@ -582,36 +579,16 @@ namespace CommunityCoreLibrary
                     #endregion
 
                     #region Body part fixed or replaced
-
                     var recipeDef = thingDef.GetImplantRecipeDef();
                     if( !recipeDef.appliedOnFixedBodyParts.NullOrEmpty() )
                     {
-                        s.Append( "AutoHelpSurgeryFixOrReplace".Translate() );
-                        s.AppendLine( ":" );
-                        foreach( var b in recipeDef.appliedOnFixedBodyParts )
-                        {
-                            s.Append( "\t" );
-                            s.AppendLine( b.LabelCap );
-                        }
-                        s.AppendLine();
+                        helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                            "AutoHelpSurgeryFixOrReplace".Translate(),
+                            recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll( def => (Def)def ) ) );
                     }
 
                     #endregion
 
-                }
-
-                #endregion
-
-                #region Stuff Cost
-
-                // What stuff can it be made from?
-                if(
-                    ( thingDef.costStuffCount > 0 )&&
-                    ( !thingDef.stuffCategories.NullOrEmpty() )
-                )
-                {
-                    s.AppendLine( "AutoHelpStuffCost".Translate( thingDef.costStuffCount.ToString() ) );
-                    BuildDefDescription( s, "AutoHelpListStuffCategories".Translate(), thingDef.stuffCategories.ConvertAll<Def>( def => (Def)def ) );
                 }
 
                 #endregion
@@ -621,16 +598,28 @@ namespace CommunityCoreLibrary
                 // What other things are required?
                 if( !thingDef.costList.NullOrEmpty() )
                 {
-                    s.Append( "AutoHelpThingCost".Translate() );
-                    s.AppendLine( ":" );
-                    foreach( var tc in thingDef.costList )
-                    {
-                        s.Append( "\t" );
-                        s.Append( tc.thingDef.LabelCap );
-                        s.Append( " : " );
-                        s.AppendLine( tc.count.ToString() );
-                    }
-                    s.AppendLine();
+                    HelpDetailSection costs = new HelpDetailSection(
+                        "AutoHelpCost".Translate(),
+                        thingDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
+                        null,
+                        thingDef.costList.Select(tc => ": " + tc.count.ToString()).ToArray());
+
+                    helpDef.HelpDetailSections.Add( costs );
+                }
+
+                #endregion
+
+                #region Stuff Cost
+
+                // What stuff can it be made from?
+                if(
+                    (thingDef.costStuffCount > 0) &&
+                    (!thingDef.stuffCategories.NullOrEmpty())
+                )
+                {
+                    helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                        "AutoHelpStuffCost".Translate( thingDef.costStuffCount.ToString() ),
+                        thingDef.stuffCategories.ToList().ConvertAll( def => (Def)def ) ) );
                 }
 
                 #endregion
@@ -641,36 +630,54 @@ namespace CommunityCoreLibrary
                 var recipeDefs = thingDef.AllRecipes;
                 if( !recipeDefs.NullOrEmpty() )
                 {
-                    BuildDefDescription( s, "AutoHelpListRecipes".Translate(), recipeDefs.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection recipes = new HelpDetailSection(
+                        "AutoHelpListRecipes".Translate(),
+                        recipeDefs.ConvertAll(def => (Def)def));
+                    helpDef.HelpDetailSections.Add( recipes );
                 }
 
                 // Add list of required research
                 var researchDefs = buildableDef.GetResearchRequirements();
                 if( !researchDefs.NullOrEmpty() )
                 {
-                    BuildDefDescription( s, "AutoHelpListResearchRequired".Translate(), researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection reqResearch = new HelpDetailSection(
+                        "AutoHelpListResearchRequired".Translate(),
+                        researchDefs.ConvertAll(def => (Def)def));
+                    helpDef.HelpDetailSections.Add( reqResearch );
                 }
 
                 // Build help for unlocked recipes associated with building
                 recipeDefs = thingDef.GetRecipesUnlocked( ref researchDefs );
                 if(
-                    ( !recipeDefs.NullOrEmpty() )&&
-                    ( !researchDefs.NullOrEmpty() )
+                    (!recipeDefs.NullOrEmpty()) &&
+                    (!researchDefs.NullOrEmpty())
                 )
                 {
-                    BuildDefDescription( s, "AutoHelpListRecipesUnlocked".Translate(), recipeDefs.ConvertAll<Def>( def => (Def)def ) );
-                    BuildDefDescription( s, "AutoHelpListResearchBy".Translate(), researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection unlockRecipes = new HelpDetailSection(
+                        "AutoHelpListRecipesUnlocked".Translate(),
+                        recipeDefs.ConvertAll<Def>(def => (Def)def));
+                    HelpDetailSection researchBy = new HelpDetailSection(
+                        "AutoHelpListResearchBy".Translate(),
+                        researchDefs.ConvertAll<Def>(def => (Def)def));
+                    helpDef.HelpDetailSections.Add( unlockRecipes );
+                    helpDef.HelpDetailSections.Add( researchBy );
                 }
 
                 // Build help for locked recipes associated with building
                 recipeDefs = thingDef.GetRecipesLocked( ref researchDefs );
                 if(
-                    ( !recipeDefs.NullOrEmpty() )&&
-                    ( !researchDefs.NullOrEmpty() )
+                    (!recipeDefs.NullOrEmpty()) &&
+                    (!researchDefs.NullOrEmpty())
                 )
                 {
-                    BuildDefDescription( s, "AutoHelpListRecipesLocked".Translate(), recipeDefs.ConvertAll<Def>( def => (Def)def ) );
-                    BuildDefDescription( s, "AutoHelpListResearchBy".Translate(), researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection unlockRecipes = new HelpDetailSection(
+                        "AutoHelpListRecipesUnlocked".Translate(),
+                        recipeDefs.ConvertAll<Def>(def => (Def)def));
+                    HelpDetailSection researchBy = new HelpDetailSection(
+                        "AutoHelpListResearchBy".Translate(),
+                        researchDefs.ConvertAll<Def>(def => (Def)def));
+                    helpDef.HelpDetailSections.Add( unlockRecipes );
+                    helpDef.HelpDetailSections.Add( researchBy );
                 }
 
                 #endregion
@@ -679,10 +686,12 @@ namespace CommunityCoreLibrary
 
                 // Get list of facilities that effect it
                 var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
-                if( ( affectedBy != null )&&
-                    ( !affectedBy.linkableFacilities.NullOrEmpty() ) )
+                if( (affectedBy != null) &&
+                    (!affectedBy.linkableFacilities.NullOrEmpty()) )
                 {
-                    BuildDefDescription( s, "AutoHelpListFacilitiesAffecting".Translate(), affectedBy.linkableFacilities.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection facilitiesAffecting = new HelpDetailSection(
+                        "AutoHelpListFacilitiesAffecting".Translate(),
+                        affectedBy.linkableFacilities.ConvertAll<Def>(def => (Def)def));
                 }
 
                 // Get list of buildings effected by it
@@ -699,18 +708,26 @@ namespace CommunityCoreLibrary
                     {
                         var facilityProperties = thingDef.GetCompProperties( typeof( CompFacility ) );
 
-                        s.AppendLine( "AutoHelpMaximumAffected".Translate( facilityProperties.maxSimultaneous.ToString() ) );
+                        List<string> facilityStats = new List<string>();
+                        facilityStats.Add(
+                            "AutoHelpMaximumAffected".Translate( facilityProperties.maxSimultaneous.ToString() ) );
 
                         // Look at stats modifiers
                         foreach( var stat in facilityProperties.statOffsets )
                         {
-                            s.Append( stat.stat.LabelCap );
-                            s.Append( " : " );
-                            s.AppendLine( stat.stat.ValueToString( stat.value, stat.stat.toStringNumberSense ) );
+                            facilityStats.Add( stat.stat.LabelCap + ": " + stat.stat.ValueToString( stat.value, stat.stat.toStringNumberSense ) );
                         }
-                        s.AppendLine();
 
-                        BuildDefDescription( s, "AutoHelpListFacilitiesAffected".Translate(), effectsBuildings.ConvertAll<Def>( def => (Def)def ) );
+                        HelpDetailSection facilityDetailSection = new HelpDetailSection(
+                            "AutoHelpFacilityStats".Translate(),
+                            facilityStats.ToArray());
+
+                        HelpDetailSection facilitiesAffected = new HelpDetailSection(
+                            "AutoHelpListFacilitiesAffected".Translate(),
+                            effectsBuildings.ConvertAll<Def>(def => (Def)def));
+
+                        helpDef.HelpDetailSections.Add( facilityDetailSection );
+                        helpDef.HelpDetailSections.Add( facilitiesAffected );
                     }
                 }
 
@@ -727,24 +744,24 @@ namespace CommunityCoreLibrary
 
                 if( !joyGiverDefs.NullOrEmpty() )
                 {
-                    s.AppendLine( "AutoHelpListJoyActivities".Translate() );
+                    List<string> joyStats = new List<string>();
                     foreach( var joyGiverDef in joyGiverDefs )
                     {
                         // Get job driver stats
-                        s.Append( "\t" );
-                        s.AppendLine( joyGiverDef.jobDef.reportString );
-                        s.Append( "\t" );
-                        s.AppendLine( "AutoHelpMaximumParticipants".Translate( joyGiverDef.jobDef.joyMaxParticipants.ToString() ) );
-                        s.Append( "\t" );
-                        s.AppendLine( "AutoHelpJoyKind".Translate( joyGiverDef.jobDef.joyKind.LabelCap ) );
-
+                        joyStats.Add( joyGiverDef.jobDef.reportString );
+                        joyStats.Add( "AutoHelpMaximumParticipants".Translate( joyGiverDef.jobDef.joyMaxParticipants.ToString() ) );
+                        joyStats.Add( "AutoHelpJoyKind".Translate( joyGiverDef.jobDef.joyKind.LabelCap ) );
                         if( joyGiverDef.jobDef.joySkill != null )
                         {
-                            s.Append( "\t" );
-                            s.AppendLine( "AutoHelpJoySkill".Translate( joyGiverDef.jobDef.joySkill.LabelCap ) );
+                            joyStats.Add( "AutoHelpJoySkill".Translate( joyGiverDef.jobDef.joySkill.LabelCap ) );
                         }
                     }
-                    s.AppendLine();
+
+                    HelpDetailSection joyDetailSection = new HelpDetailSection(
+                        "AutoHelpListJoyActivities".Translate(),
+                        joyStats.ToArray());
+
+                    helpDef.HelpDetailSections.Add( joyDetailSection );
                 }
 
                 #endregion
@@ -753,27 +770,22 @@ namespace CommunityCoreLibrary
 
             #endregion
 
-            helpDef.description = s.ToString();
             return helpDef;
         }
 
-        static HelpDef                      HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
+        static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
             var helpDef = new HelpDef();
-            helpDef.keyDef = thingDef.defName +"_" + recipeDef.defName;
+            helpDef.keyDef = recipeDef;
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
             helpDef.label = recipeDef.label;
             helpDef.category = category;
+            helpDef.description = recipeDef.description;
 
-            var s = new StringBuilder();
-
-            s.AppendLine( recipeDef.description );
-            s.AppendLine();
 
             #region Base Stats
 
-            s.AppendLine( "WorkAmount".Translate() + " : " + GenText.ToStringWorkAmount( recipeDef.WorkAmountTotal( (ThingDef) null ) ) );
-            s.AppendLine();
+            helpDef.HelpDetailSections.Add( new HelpDetailSection( null, new[] { "WorkAmount".Translate() + " : " + recipeDef.WorkAmountTotal( (ThingDef)null ).ToStringWorkAmount() } ) );
 
             #endregion
 
@@ -781,16 +793,11 @@ namespace CommunityCoreLibrary
 
             if( !recipeDef.skillRequirements.NullOrEmpty() )
             {
-                s.AppendLine( "MinimumSkills".Translate() );
-                foreach( var sr in recipeDef.skillRequirements )
-                {
-                    s.Append( "\t" );
-                    s.AppendLine( "BillRequires".Translate( new object[] {
-                        sr.minLevel.ToString( "####0" ),
-                        sr.skill.label.ToLower()
-                    } ) );
-                }
-                s.AppendLine();
+                helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                    "MinimumSkills".Translate(),
+                    recipeDef.skillRequirements.Select( sr => sr.skill ).ToList().ConvertAll( sd => (Def)sd ),
+                    null,
+                    recipeDef.skillRequirements.Select( sr => sr.minLevel.ToString( "####0" ) ).ToArray() ) );
             }
 
             #endregion
@@ -800,17 +807,12 @@ namespace CommunityCoreLibrary
             // List of ingredients
             if( !recipeDef.ingredients.NullOrEmpty() )
             {
-                s.Append( "Ingredients".Translate() );
-                s.AppendLine( ":" );
-                foreach( var ing in recipeDef.ingredients )
-                {
-                    if( !ing.filter.Summary.NullOrEmpty() )
-                    {
-                        s.Append( "\t" );
-                        s.AppendLine( recipeDef.IngredientValueGetter.BillRequirementsDescription( ing ) );
-                    }
-                }
-                s.AppendLine();
+                // TODO: find the actual thingDefs of ingredients so we can use defs instead of strings.
+                HelpDetailSection ingredients = new HelpDetailSection(
+                    "Ingredients".Translate(),
+                    recipeDef.ingredients.Select(ic => recipeDef.IngredientValueGetter.BillRequirementsDescription( ic )).ToArray());
+
+                helpDef.HelpDetailSections.Add( ingredients );
             }
 
             #endregion
@@ -820,15 +822,12 @@ namespace CommunityCoreLibrary
             // List of products
             if( !recipeDef.products.NullOrEmpty() )
             {
-                s.AppendLine( "AutoHelpListRecipeProducts".Translate() );
-                foreach( var ing in recipeDef.products )
-                {
-                    s.Append( "\t" );
-                    s.Append( ing.thingDef.LabelCap );
-                    s.Append( " : " );
-                    s.AppendLine( ing.count.ToString() );
-                }
-                s.AppendLine();
+                HelpDetailSection products = new HelpDetailSection(
+                    "AutoHelpListRecipeProducts".Translate(),
+                    recipeDef.products.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
+                    recipeDef.products.Select(tc => tc.count.ToString()).ToArray());
+
+                helpDef.HelpDetailSections.Add( products );
             }
 
             #endregion
@@ -839,24 +838,41 @@ namespace CommunityCoreLibrary
             var thingDefs = recipeDef.GetThingsCurrent();
             if( !thingDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListRecipesOnThings".Translate(), thingDefs.ConvertAll<Def>( def => (Def)def ) );
+                HelpDetailSection billgivers = new HelpDetailSection(
+                    "AutoHelpListRecipesOnThings".Translate(),
+                    thingDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( billgivers );
             }
 
             // Add research required
             var researchDefs = recipeDef.GetResearchRequirements();
             if( !researchDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListResearchRequired".Translate(), researchDefs );
+                HelpDetailSection requiredResearch = new HelpDetailSection(
+                    "AutoHelpListResearchRequired".Translate(),
+                    researchDefs);
+
+                helpDef.HelpDetailSections.Add( requiredResearch );
             }
 
             // What things is it on after research
             thingDefs = recipeDef.GetThingsUnlocked( ref researchDefs );
             if( !thingDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListRecipesOnThingsUnlocked".Translate(), thingDefs.ConvertAll<Def>( def => (Def)def ) );
+                HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
+                    "AutoHelpListRecipesOnThingsUnlocked".Translate(),
+                    thingDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( recipesOnThingsUnlocked );
+
                 if( !researchDefs.NullOrEmpty() )
                 {
-                    BuildDefDescription( s, "AutoHelpListResearchBy".Translate(), researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection researchBy = new HelpDetailSection(
+                        "AutoHelpListResearchBy".Translate(),
+                        researchDefs.ConvertAll<Def>(def => (Def)def));
+
+                    helpDef.HelpDetailSections.Add( researchBy );
                 }
             }
 
@@ -864,36 +880,40 @@ namespace CommunityCoreLibrary
             thingDefs = recipeDef.GetThingsLocked( ref researchDefs );
             if( !thingDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListRecipesOnThingsLocked".Translate(), thingDefs.ConvertAll<Def>( def => (Def)def ) );
+                HelpDetailSection recipesOnThingsLocked = new HelpDetailSection(
+                    "AutoHelpListRecipesOnThingsLocked".Translate(),
+                    thingDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( recipesOnThingsLocked );
+
                 if( !researchDefs.NullOrEmpty() )
                 {
-                    BuildDefDescription( s, "AutoHelpListResearchBy".Translate(), researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    HelpDetailSection researchBy = new HelpDetailSection(
+                        "AutoHelpListResearchBy".Translate(),
+                        researchDefs.ConvertAll<Def>(def => (Def)def));
+
+                    helpDef.HelpDetailSections.Add( researchBy );
                 }
             }
 
             #endregion
 
-            helpDef.description = s.ToString();
             return helpDef;
         }
 
-        static HelpDef                      HelpForResearch( ResearchProjectDef researchProjectDef, HelpCategoryDef category )
+        static HelpDef HelpForResearch( ResearchProjectDef researchProjectDef, HelpCategoryDef category )
         {
             var helpDef = new HelpDef();
             helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
-            helpDef.keyDef = researchProjectDef.defName;
+            helpDef.keyDef = researchProjectDef;
             helpDef.label = researchProjectDef.label;
             helpDef.category = category;
-
-            var s = new StringBuilder();
-
-            s.AppendLine( researchProjectDef.description );
-            s.AppendLine();
+            helpDef.description = researchProjectDef.description;
 
             #region Base Stats
 
-            s.AppendLine( "AutoHelpTotalCost".Translate( researchProjectDef.totalCost.ToString() ) );
-            s.AppendLine();
+            HelpDetailSection totalCost = new HelpDetailSection(null, new [] { "AutoHelpTotalCost".Translate(researchProjectDef.totalCost.ToString()) });
+            helpDef.HelpDetailSections.Add( totalCost );
 
             #endregion
 
@@ -903,36 +923,74 @@ namespace CommunityCoreLibrary
             var researchDefs = researchProjectDef.GetResearchRequirements();
             if( !researchDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListResearchRequired".Translate(), researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection researchRequirements = new HelpDetailSection(
+                    "AutoHelpListResearchRequired".Translate(),
+                    researchDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( researchRequirements );
+            }
+
+            // Add research unlocked
+            //CCL_Log.Message(researchProjectDef.label, "getting unlocked research");
+            researchDefs = researchProjectDef.GetResearchUnlocked();
+            if( !researchDefs.NullOrEmpty() )
+            {
+                HelpDetailSection reseachUnlocked = new HelpDetailSection(
+                    "AutoHelpListResearchLeadsTo".Translate(),
+                    researchDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( reseachUnlocked );
             }
 
             // Add buildings it unlocks
             var thingDefs = researchProjectDef.GetThingsUnlocked();
             if( !thingDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListThingsUnlocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection thingsUnlocked = new HelpDetailSection(
+                    "AutoHelpListThingsUnlocked".Translate(),
+                    thingDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( thingsUnlocked );
             }
 
             // Add recipes it unlocks
             var recipeDefs = researchProjectDef.GetRecipesUnlocked( ref thingDefs );
             if(
-                ( !recipeDefs.NullOrEmpty() )&&
-                ( !thingDefs.NullOrEmpty() )
+                (!recipeDefs.NullOrEmpty()) &&
+                (!thingDefs.NullOrEmpty())
             )
             {
-                BuildDefDescription( s, "AutoHelpListRecipesUnlocked".Translate(), recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
-                BuildDefDescription( s, "AutoHelpListRecipesOnThingsUnlocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection recipesUnlocked = new HelpDetailSection(
+                    "AutoHelpListRecipesUnlocked".Translate(),
+                    recipeDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( recipesUnlocked );
+
+                HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
+                    "AutoHelpListRecipesOnThingsUnlocked".Translate(),
+                    thingDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( recipesOnThingsUnlocked );
             }
 
             // Look in advanced research to add plants and sow tags it unlocks
             var sowTags = researchProjectDef.GetSowTagsUnlocked( ref thingDefs );
             if(
-                ( !sowTags.NullOrEmpty() )&&
-                ( !thingDefs.NullOrEmpty() )
+                (!sowTags.NullOrEmpty()) &&
+                (!thingDefs.NullOrEmpty())
             )
             {
-                BuildDefDescription( s, "AutoHelpListPlantsUnlocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
-                BuildStringDescription( s, "AutoHelpListPlantsIn".Translate(), sowTags );
+                HelpDetailSection plantsUnlocked = new HelpDetailSection(
+                    "AutoHelpListPlantsUnlocked".Translate(),
+                    thingDefs.ConvertAll<Def>( def =>(Def)def ));
+
+                helpDef.HelpDetailSections.Add( plantsUnlocked );
+
+                HelpDetailSection plantsIn = new HelpDetailSection(
+                    "AutoHelpListPlantsIn".Translate(),
+                    sowTags.ToArray());
+
+                helpDef.HelpDetailSections.Add( plantsIn );
             }
 
             #endregion
@@ -943,21 +1001,26 @@ namespace CommunityCoreLibrary
             researchDefs = researchProjectDef.GetResearchedLockedBy();
             if( !researchDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListResearchLockout".Translate(), researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection researchLockout = new HelpDetailSection(
+                    "AutoHelpListResearchLockout".Translate(),
+                    researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( researchLockout );
             }
 
             #endregion
 
-            helpDef.description = s.ToString();
             return helpDef;
         }
 
-        static HelpDef                      HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
+        static HelpDef HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
         {
             var helpDef = new HelpDef();
             helpDef.defName = advancedResearchDef.defName + "_AdvancedResearchDef_Help";
-            helpDef.keyDef = advancedResearchDef.defName;
+            helpDef.keyDef = advancedResearchDef;
             helpDef.label = advancedResearchDef.label;
+            helpDef.description = advancedResearchDef.description;
+
             if( advancedResearchDef.helpCategoryDef == null )
             {
                 advancedResearchDef.helpCategoryDef = category;
@@ -966,16 +1029,13 @@ namespace CommunityCoreLibrary
             {
                 helpDef.category = advancedResearchDef.helpCategoryDef;
             }
-
-            var s = new StringBuilder();
-
-            s.AppendLine( advancedResearchDef.description );
-            s.AppendLine();
-
             #region Base Stats
 
-            s.AppendLine( "AutoHelpTotalCost".Translate( advancedResearchDef.TotalCost.ToString() ) );
-            s.AppendLine();
+            HelpDetailSection totalCost = new HelpDetailSection(
+                null,
+                new [] {"AutoHelpTotalCost".Translate( advancedResearchDef.TotalCost.ToString() )});
+
+            helpDef.HelpDetailSections.Add( totalCost );
 
             #endregion
 
@@ -985,36 +1045,62 @@ namespace CommunityCoreLibrary
             var researchDefs = advancedResearchDef.GetResearchRequirements();
             if( !researchDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListResearchRequired".Translate(), researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection researchRequired = new HelpDetailSection(
+                    "AutoHelpListResearchRequired".Translate(),
+                    researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( researchRequired );
             }
 
             // Add buildings it unlocks
             var thingDefs = advancedResearchDef.GetThingsUnlocked();
             if( !thingDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListThingsUnlocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection thingsUnlocked = new HelpDetailSection(
+                    "AutoHelpListThingsUnlocked".Translate(),
+                    thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( thingsUnlocked );
             }
 
             // Add recipes it unlocks
             var recipeDefs = advancedResearchDef.GetRecipesUnlocked( ref thingDefs );
             if(
-                ( !recipeDefs.NullOrEmpty() )&&
-                ( !thingDefs.NullOrEmpty() )
+                (!recipeDefs.NullOrEmpty()) &&
+                (!thingDefs.NullOrEmpty())
             )
             {
-                BuildDefDescription( s, "AutoHelpListRecipesUnlocked".Translate(), recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
-                BuildDefDescription( s, "AutoHelpListRecipesOnThings".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection recipesUnlocked = new HelpDetailSection(
+                    "AutoHelpListRecipesUnlocked".Translate(),
+                    recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( recipesUnlocked );
+
+                HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
+                    "AutoHelpListRecipesOnThings".Translate(),
+                    thingDefs.ConvertAll<Def>(def => (Def)def));
+
+                helpDef.HelpDetailSections.Add( recipesOnThingsUnlocked );
             }
 
             // Add plants and sow tags it unlocks
             var sowTags = advancedResearchDef.GetSowTagsUnlocked( ref thingDefs );
             if(
-                ( !sowTags.NullOrEmpty() )&&
-                ( !thingDefs.NullOrEmpty() )
+                (!sowTags.NullOrEmpty()) &&
+                (!thingDefs.NullOrEmpty())
             )
             {
-                BuildDefDescription( s, "AutoHelpListPlantsUnlocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
-                BuildStringDescription( s, "AutoHelpListPlantsIn".Translate(), sowTags );
+                HelpDetailSection plantsUnlocked = new HelpDetailSection(
+                    "AutoHelpListPlantsUnlocked".Translate(),
+                    thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( plantsUnlocked );
+
+                HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
+                    "AutoHelpListPlantsIn".Translate(),
+                    sowTags.ToArray() );
+
+                helpDef.HelpDetailSections.Add( recipesOnThingsUnlocked );
             }
 
             #endregion
@@ -1025,34 +1111,53 @@ namespace CommunityCoreLibrary
             thingDefs = advancedResearchDef.GetThingsLocked();
             if( !thingDefs.NullOrEmpty() )
             {
-                BuildDefDescription( s, "AutoHelpListThingsLocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection thingsLocked = new HelpDetailSection(
+                    "AutoHelpListThingsLocked".Translate(),
+                    thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( thingsLocked );
             }
 
             // Add recipes it locks
             recipeDefs = advancedResearchDef.GetRecipesLocked( ref thingDefs );
             if(
-                ( !recipeDefs.NullOrEmpty() )&&
-                ( !thingDefs.NullOrEmpty() )
+                (!recipeDefs.NullOrEmpty()) &&
+                (!thingDefs.NullOrEmpty())
             )
             {
-                BuildDefDescription( s, "Prevents recipes:", recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
-                BuildDefDescription( s, "AutoHelpListRecipesOnThings".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+                HelpDetailSection recipesLocked = new HelpDetailSection(
+                    "AutoHelpListRecipesLocked".Translate(), recipeDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( recipesLocked );
+
+                HelpDetailSection recipesOnThings = new HelpDetailSection(
+                    "AutoHelpListRecipesOnThings".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( recipesOnThings );
             }
 
             // Add plants and sow tags it locks
             sowTags = advancedResearchDef.GetSowTagsLocked( ref thingDefs );
             if(
-                ( !sowTags.NullOrEmpty() )&&
-                ( !thingDefs.NullOrEmpty() )
+                (!sowTags.NullOrEmpty()) &&
+                (!thingDefs.NullOrEmpty())
             )
             {
-                BuildDefDescription( s, "AutoHelpListPlantsLocked".Translate(), thingDefs.ConvertAll<Def>( def =>(Def)def ) );
-                BuildStringDescription( s, "AutoHelpListPlantsIn".Translate(), sowTags );
+                HelpDetailSection plantsLocked = new HelpDetailSection(
+                    "AutoHelpListPlantsLocked".Translate(),
+                    thingDefs.ConvertAll<Def>( def =>(Def)def ) );
+
+                helpDef.HelpDetailSections.Add( plantsLocked );
+
+                HelpDetailSection plantsIn = new HelpDetailSection(
+                    "AutoHelpListPlantsIn".Translate(),
+                    sowTags.ToArray() );
+
+                helpDef.HelpDetailSections.Add( plantsIn );
             }
 
             #endregion
 
-            helpDef.description = s.ToString();
             advancedResearchDef.HelpDef = helpDef;
             return helpDef;
         }
@@ -1060,109 +1165,109 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Array Cleaners
+        // TODO: implement the cleaners in the new stringbuilders. Doesn't seem necessary atm though. -Fluffy.
+        //static List< Def >                  TidyDefs( List< Def > defs )
+        //{
+        //    if( defs == null )
+        //    {
+        //        return null;
+        //    }
+        //    for( int i = 0; i < defs.Count; ++i )
+        //    {
+        //        if( defs[ i ] == null )
+        //        {
+        //            defs.RemoveAt( i );
+        //            --i;
+        //        }
+        //    }
+        //    if( defs.Count == 0 )
+        //    {
+        //        return null;
+        //    }
+        //    return defs;
+        //}
 
-        static List< Def >                  TidyDefs( List< Def > defs )
-        {
-            if( defs == null )
-            {
-                return null;
-            }
-            for( int i = 0; i < defs.Count; ++i )
-            {
-                if( defs[ i ] == null )
-                {
-                    defs.RemoveAt( i );
-                    --i;
-                }
-            }
-            if( defs.Count == 0 )
-            {
-                return null;
-            }
-            return defs;
-        }
-
-        static List< string >               TidyStrings( List< string > strings )
-        {
-            if( strings == null )
-            {
-                return null;
-            }
-            for( int i = 0; i < strings.Count; ++i )
-            {
-                if( strings[ i ] == null )
-                {
-                    strings.RemoveAt( i );
-                    --i;
-                }
-            }
-            if( strings.Count == 0 )
-            {
-                return null;
-            }
-            return strings;
-        }
+        //static List< string >               TidyStrings( List< string > strings )
+        //{
+        //    if( strings == null )
+        //    {
+        //        return null;
+        //    }
+        //    for( int i = 0; i < strings.Count; ++i )
+        //    {
+        //        if( strings[ i ] == null )
+        //        {
+        //            strings.RemoveAt( i );
+        //            --i;
+        //        }
+        //    }
+        //    if( strings.Count == 0 )
+        //    {
+        //        return null;
+        //    }
+        //    return strings;
+        //}
 
         #endregion
 
         #region String Builders
 
-        static void BuildDefDescription( StringBuilder baseDescription, string prependDefs, List< Def > defs )
-        {
-            defs = TidyDefs( defs );
-            if( defs.NullOrEmpty() )
-            {
-                return;
-            }
+        //static void BuildDefDescription( StringBuilder baseDescription, string prependDefs, List< Def > defs )
+        //{
+        //    defs = TidyDefs( defs );
+        //    if( defs.NullOrEmpty() )
+        //    {
+        //        return;
+        //    }
 
-            var labels = new List< string >();
-            var s = new StringBuilder();
+        //    var labels = new List< string >();
+        //    var s = new StringBuilder();
 
-            s.AppendLine( prependDefs );
+        //    s.AppendLine( prependDefs );
 
-            labels.Clear();
-            for( int i = 0, count = defs.Count - 1; i <= count; i++ ){
-                var d = defs[ i ];
-                if( !labels.Contains( d.label.ToLower() ) )
-                {
-                    labels.Add( d.label.ToLower() );
-                    s.Append( "\t" );
-                    s.AppendLine( d.LabelCap );
-                }
-            }
-            s.AppendLine();
+        //    labels.Clear();
+        //    for( int i = 0, count = defs.Count - 1; i <= count; i++ ){
+        //        var d = defs[ i ];
+        //        if( !labels.Contains( d.label.ToLower() ) )
+        //        {
+        //            labels.Add( d.label.ToLower() );
+        //            s.Append( "\t" );
+        //            s.AppendLine( d.LabelCap );
+        //        }
+        //    }
+        //    s.AppendLine();
 
-            //Log.Message( s.ToString() );
-            baseDescription.Append( s.ToString() );
-        }
+        //    //Log.Message( s.ToString() );
+        //    baseDescription.Append( s.ToString() );
+        //}
 
-        static void BuildStringDescription( StringBuilder baseDescription, string prependStrings, List< string > strings )
-        {
-            strings = TidyStrings( strings );
-            if( strings.NullOrEmpty() )
-            {
-                return;
-            }
+        //static void BuildStringDescription( StringBuilder baseDescription, string prependStrings, List< string > strings )
+        //{
+        //    strings = TidyStrings( strings );
+        //    if( strings.NullOrEmpty() )
+        //    {
+        //        return;
+        //    }
 
-            var labels = new List< string >();
-            var s = new StringBuilder();
+        //    var labels = new List< string >();
+        //    var s = new StringBuilder();
 
-            s.AppendLine( prependStrings );
-            labels.Clear();
-            for( int i = 0, count = strings.Count - 1; i <= count; i++ ){
-                var d = strings[ i ];
-                if( !labels.Contains( d.ToLower() ) )
-                {
-                    labels.Add( d.ToLower() );
-                    s.Append( "\t" );
-                    s.AppendLine( d );
-                }
-            }
-            s.AppendLine();
+        //    s.AppendLine( prependStrings );
+        //    labels.Clear();
+        //    for( int i = 0, count = strings.Count - 1; i <= count; i++ ){
+        //        var d = strings[ i ];
+        //        if( !labels.Contains( d.ToLower() ) )
+        //        {
+        //            labels.Add( d.ToLower() );
+        //            s.Append( "\t" );
+        //            s.AppendLine( d );
+        //        }
+        //    }
+        //    s.AppendLine();
 
-            //Log.Message( s.ToString() );
-            baseDescription.Append( s.ToString() );
-        }
+        //    //Log.Message( s.ToString() );
+        //    baseDescription.Append( s.ToString() );
+        //}
 
         #endregion
 

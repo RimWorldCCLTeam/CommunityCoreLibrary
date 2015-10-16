@@ -99,6 +99,32 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
+        public static List<Def> GetResearchUnlocked(this ResearchProjectDef researchProjectDef)
+        {
+            var researchDefs = new List<Def>();
+
+            if (!researchProjectDef.prerequisites.Contains(Research.Locker))
+            {
+                //CCL_Log.Message("Normal");
+                researchDefs.AddRange(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(rd => rd.prerequisites.Contains(researchProjectDef)).ToList().ConvertAll<Def>(def => (Def) def));
+            }
+            else
+            {
+                //CCL_Log.Message("Advanced");
+                // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
+                var advancedResearchDefs = ResearchController.AdvancedResearch.Where(a => (
+                   (a.IsResearchToggle) &&
+                   (!a.HideDefs) ||
+                   (a.researchDefs.Contains(researchProjectDef))
+               )).ToList();
+                foreach (var advancedResearchDef in advancedResearchDefs)
+                {
+                    researchDefs.AddRange(advancedResearchDef.effectedResearchDefs.ConvertAll<Def>(def => (Def)def));
+                }
+            }
+            return researchDefs;
+        } 
+
         public static List< Def >           GetResearchedLockedBy( this ResearchProjectDef researchProjectDef )
         {
             // Advanced Research that locks it

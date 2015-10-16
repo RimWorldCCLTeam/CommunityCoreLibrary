@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -14,23 +12,31 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        protected static List<ModCategory>  _cachedHelpCategories;
-        protected HelpDef                   SelectedHelpDef;
+        protected static List<ModCategory>  CachedHelpCategories;
+        public HelpDef                      SelectedHelpDef;
 
-        public const float                  Margin = 6f; // 15 is way too much.
-        public const float                  EntryHeight = 30f;
-        public const float                  EntryIndent = 15f;
+        public const float                  Margin                  = 6f; // 15 is way too much.
+        public const float                  EntryHeight             = 30f;
+        public const float                  EntryIndent             = 15f;
 
         protected Rect                      SelectionRect;
         protected Rect                      DisplayRect;
-        protected static Vector2            ArrowImageSize = new Vector2(10f, 10f);
+        protected static Vector2            ArrowImageSize          = new Vector2(10f, 10f);
 
-        protected Vector2                   selectionScrollPos = default(Vector2);
-        protected Vector2                   displayScrollPos = default(Vector2);
+        protected Vector2                   SelectionScrollPos      = default(Vector2);
+        protected Vector2                   DisplayScrollPos        = default(Vector2);
 
-        public const float                  MinWidth = 600f;
-        public const float                  MinHeight = 400f;
-        public const float                  MinListWidth = 200f;
+        public const float                  MinWidth                = 600f;
+        public const float                  MinHeight               = 400f;
+        public const float                  MinListWidth            = 200f;
+        public float                        ContentHeight           = 9999f;
+        public float                        SelectionHeight         = 9999f;
+
+        private static string               _filterString           = "";
+        private string                      _lastFilterString       = "";
+        private int                         _lastFilterTick;
+        private bool                        _filtered;
+        private bool                        _jump;
 
         public override MainTabWindowAnchor Anchor
         {
@@ -40,19 +46,19 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override Vector2             RequestedTabSize
+        public override Vector2 RequestedTabSize
         {
             get
             {
-                if (TabDef != null)
+                if( TabDef != null )
                 {
-                    return new Vector2(TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
+                    return new Vector2( TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight );
                 }
-                return new Vector2(MinWidth, MinHeight);
+                return new Vector2( MinWidth, MinHeight );
             }
         }
 
-        private MainTab_HelpMenuDef         TabDef
+        private MainTab_HelpMenuDef TabDef
         {
             get
             {
@@ -66,21 +72,21 @@ namespace CommunityCoreLibrary
 
         public MainTabWindow_ModHelp()
         {
-            this.layer = WindowLayer.GameUI;
-            this.soundAppear = null;
-            this.soundClose = null;
-            this.doCloseButton = false;
-            this.doCloseX = true;
-            this.closeOnEscapeKey = true;
+            layer = WindowLayer.GameUI;
+            soundAppear = null;
+            soundClose = null;
+            doCloseButton = false;
+            doCloseX = true;
+            closeOnEscapeKey = true;
         }
 
         #endregion
 
         #region Category Cache Object
 
-        protected class ModCategory
+        public class ModCategory
         {
-            readonly List<HelpCategoryDef>  helpCategories = new List<HelpCategoryDef>();
+            readonly List<HelpCategoryDef>  _helpCategories = new List<HelpCategoryDef>();
 
             public readonly string          ModName;
 
@@ -91,42 +97,42 @@ namespace CommunityCoreLibrary
                 ModName = modName;
             }
 
-            public List<HelpCategoryDef>    HelpCategories
+            public List<HelpCategoryDef> HelpCategories
             {
                 get
                 {
-                    return helpCategories.OrderBy(a => a.label).ToList();
+                    return _helpCategories.OrderBy( a => a.label ).ToList();
                 }
             }
 
-            public bool                     ShouldDraw
+            public bool ShouldDraw
             {
                 get;
                 set;
             }
 
-            public bool                     MatchesFilter( string filter )
+            public bool MatchesFilter( string filter )
             {
                 return (
-                    ( filter == "" )||
-                    ( ModName.ToUpper().Contains( filter.ToUpper() ) )
+                    (filter == "") ||
+                    (ModName.ToUpper().Contains( filter.ToUpper() ))
                 );
             }
 
-            public bool                     ThisOrAnyChildMatchesFilter( string filter )
+            public bool ThisOrAnyChildMatchesFilter( string filter )
             {
                 return (
-                    ( MatchesFilter( filter ) )||
-                    ( HelpCategories.Any( hc => hc.ThisOrAnyChildMatchesFilter( filter ) ) )
+                    (MatchesFilter( filter )) ||
+                    (HelpCategories.Any( hc => hc.ThisOrAnyChildMatchesFilter( filter ) ))
                 );
             }
 
-            public void                     Filter( string filter )
+            public void Filter( string filter )
             {
                 ShouldDraw = ThisOrAnyChildMatchesFilter( filter );
                 Expanded = (
-                    ( filter != "" )&&
-                    ( ThisOrAnyChildMatchesFilter( filter ) )
+                    (filter != "") &&
+                    (ThisOrAnyChildMatchesFilter( filter ))
                 );
 
                 foreach( HelpCategoryDef hc in HelpCategories )
@@ -135,21 +141,11 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            public float                    DrawHeight
+            public void AddCategory( HelpCategoryDef def )
             {
-                get
+                if( !_helpCategories.Contains( def ) )
                 {
-                    return Expanded
-                        ? MainTabWindow_ModHelp.EntryHeight + HelpCategories.Where( hc => hc.ShouldDraw ).Sum( hc => hc.DrawHeight )
-                            : EntryHeight;
-                }
-            }
-
-            public void                     AddCategory( HelpCategoryDef def )
-            {
-                if( !helpCategories.Contains( def ) )
-                {
-                    helpCategories.Add( def );
+                    _helpCategories.Add( def );
                 }
             }
         }
@@ -158,14 +154,15 @@ namespace CommunityCoreLibrary
 
         #region Category Cache Control
 
-        public override void                PreOpen()
+        public override void PreOpen()
         {
             base.PreOpen();
 
             //Set whether the window forces a pause
+            // Not entirely sure why force pause warrants an xml setting? - Fluffy.
             if( TabDef != null )
             {
-                this.forcePause = TabDef.pauseGame;
+                forcePause = TabDef.pauseGame;
             }
 
             // Build the help system
@@ -175,22 +172,22 @@ namespace CommunityCoreLibrary
             Filter();
         }
 
-        public static void                  Recache()
+        public static void Recache()
         {
-            _cachedHelpCategories = new List<ModCategory>();
+            CachedHelpCategories = new List<ModCategory>();
             foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefs )
             {
                 // parent modcategory does not exist, create it.
-                if( _cachedHelpCategories.All( t => t.ModName != helpCategory.ModName ) )
+                if( CachedHelpCategories.All( t => t.ModName != helpCategory.ModName ) )
                 {
                     var mCat = new ModCategory( helpCategory.ModName );
                     mCat.AddCategory( helpCategory );
-                    _cachedHelpCategories.Add( mCat );
+                    CachedHelpCategories.Add( mCat );
                 }
                 // add to existing modcategory
                 else
                 {
-                    var mCat = _cachedHelpCategories.Find( t => t.ModName == helpCategory.ModName );
+                    var mCat = CachedHelpCategories.Find( t => t.ModName == helpCategory.ModName );
                     mCat.AddCategory( helpCategory );
                 }
             }
@@ -200,12 +197,7 @@ namespace CommunityCoreLibrary
 
         #region Filter
 
-        private static string               _filterString = "";
-        private string                      _lastFilterString = "";
-        private int                         _lastFilterTick;
-        private bool                        _filtered;
-
-        private void                        _filterUpdate()
+        private void _filterUpdate()
         {
             // filter after a short delay.
             // Log.Message(_filterString + " | " + _lastFilterTick + " | " + _filtered);
@@ -225,21 +217,27 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         Filter()
+        public void Filter()
         {
-            foreach( ModCategory mc in _cachedHelpCategories )
+            foreach( ModCategory mc in CachedHelpCategories )
             {
                 mc.Filter( _filterString );
             }
             _filtered = true;
         }
 
-        #endregion
+        public void ResetFilter()
+        {
+            _filterString = "";
+            _lastFilterString = "";
+            Filter();
+        }
 
+        #endregion
 
         #region OTab Rendering
 
-        public override void                DoWindowContents( Rect rect )
+        public override void DoWindowContents( Rect rect )
         {
             base.DoWindowContents( rect );
 
@@ -260,8 +258,11 @@ namespace CommunityCoreLibrary
             GUI.EndGroup();
         }
 
-        void                                DrawDisplayArea( Rect rect )
+        void DrawDisplayArea( Rect rect )
         {
+            float paragraphMargin = 8f;
+            float inset = 30f;
+
             Widgets.DrawMenuSection( rect );
 
             if( SelectedHelpDef == null )
@@ -269,40 +270,73 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            GUI.BeginGroup( rect );
-
-            var titleRect = new Rect( 0f, 0f, rect.width, 60f );
+            var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
 
-            var outRect = rect.AtZero().ContractedBy( Margin );
-            outRect.yMin += titleRect.height;
+            Rect outRect = rect.ContractedBy(Margin);
+            outRect.yMin += 60f;
+            Rect viewRect = outRect;
+            viewRect.width -= 16f;
+            viewRect.height = ContentHeight;
 
-            float height = Text.CalcHeight( SelectedHelpDef.description, outRect.width - 16f );
+            GUI.BeginGroup( outRect );
+            Widgets.BeginScrollView( outRect.AtZero(), ref DisplayScrollPos, viewRect.AtZero() );
 
-            var viewRect = new Rect(
-                outRect.x, outRect.y,
-                outRect.width - 16f, height
-            );
+            Vector2 cur = Vector2.zero;
 
-            Widgets.BeginScrollView( outRect, ref displayScrollPos, viewRect );
-            Widgets.Label( viewRect, SelectedHelpDef.description );
+            HelpDetailSectionHelper.DrawText( ref cur, viewRect, SelectedHelpDef.description );
+
+            cur.y += paragraphMargin;
+
+            foreach( HelpDetailSection section in SelectedHelpDef.HelpDetailSections )
+            {
+                cur.x = 0f;
+                if( !string.IsNullOrEmpty( section.Label ) )
+                {
+                    HelpDetailSectionHelper.DrawText( ref cur, viewRect, section.Label );
+                    cur.x = inset;
+                }
+                if( section.StringDescs != null )
+                {
+                    foreach( string s in section.StringDescs )
+                    {
+                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s );
+                    }
+                }
+                if( section.KeyDefs != null )
+                {
+                    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
+                    {
+                        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
+                        {
+                            // bit ugly, but since the helper can't return true if the helpdef doesn't exist, we can fetch it again here -Fluffy.
+                            // TODO: better way of passing along helpdef. Perhaps make a resolve references step to add helpdef so we don't have to find it in realtime?
+                            HelpDef helpDef = DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
+                            SelectedHelpDef = helpDef;
+                            JumpToDef( helpDef );
+                        }
+                    }
+                }
+                cur.y += paragraphMargin;
+            }
+
+            ContentHeight = cur.y;
+
             Widgets.EndScrollView();
-
             GUI.EndGroup();
         }
 
-        void                                DrawSelectionArea( Rect rect )
+        void DrawSelectionArea( Rect rect )
         {
             Widgets.DrawMenuSection( rect );
-            GUI.BeginGroup( rect );
 
             _filterUpdate();
-            Rect filterRect = new Rect( Margin, Margin, rect.width - 3 * Margin - 30f, 30f );
-            Rect clearRect = new Rect( filterRect.xMax + Margin + 3f, Margin + 3f, 24f, 24f );
+            Rect filterRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, rect.width - 3 * Margin - 30f, 30f );
+            Rect clearRect = new Rect( filterRect.xMax + Margin + 3f, rect.yMin + Margin + 3f, 24f, 24f );
             _filterString = Widgets.TextField( filterRect, _filterString );
             if( _filterString != "" )
             {
@@ -313,201 +347,167 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            Rect outRect = rect.AtZero();
+            Rect outRect = rect;
             outRect.yMin += 40f;
-            float height = _cachedHelpCategories.Where( mc => mc.ShouldDraw ).Sum( c => c.DrawHeight );
-            var viewRect = new Rect(
-                0f, 0f,
-                ( height > outRect.height ? outRect.width - 16f : outRect.width ), height
-            );
+            outRect.xMax -= 2f; // some spacing around the scrollbar
 
-            Widgets.BeginScrollView( outRect, ref selectionScrollPos, viewRect );
-            if( _cachedHelpCategories.Count( mc => mc.ShouldDraw ) < 1 )
+            float viewWidth = SelectionHeight > outRect.height ? outRect.width - 16f : outRect.width;
+            var viewRect = new Rect( 0f, 0f, viewWidth, SelectionHeight );
+
+            GUI.BeginGroup( outRect );
+            Widgets.BeginScrollView( outRect.AtZero(), ref SelectionScrollPos, viewRect );
+
+            if( CachedHelpCategories.Count( mc => mc.ShouldDraw ) < 1 )
             {
                 Rect messageRect = outRect.AtZero();
                 Widgets.Label( messageRect, "NoHelpDefs".Translate() );
             }
             else
             {
-                float curY = 0f;
-                float curX = 0f;
-                foreach( var mc in _cachedHelpCategories.Where( mc => mc.ShouldDraw ) )
+                Vector2 cur = Vector2.zero;
+
+                // This works fine for the current artificial three levels of helpdefs. 
+                // Can easily be adapted by giving each category a list of subcategories, 
+                // and migrating the responsibility for drawing them and the helpdefs to DrawCatEntry().
+                // Would also require some minor adaptations to the filter methods, but nothing major.
+                // - Fluffy.
+                foreach( ModCategory mc in CachedHelpCategories.Where( mc => mc.ShouldDraw ) )
                 {
-                    var entryRect = new Rect( 0f, curY, viewRect.width, mc.DrawHeight );
-                    DrawModCategory( entryRect, curX, mc );
-                    GUI.color = Color.gray;
-                    Widgets.DrawLineHorizontal( 0f, curY, viewRect.width );
-                    GUI.color = Color.white;
-                    curY += mc.DrawHeight;
+                    DrawModEntry( ref cur, 0, viewRect, mc );
+
+                    cur.x += EntryIndent;
+                    if( mc.Expanded )
+                    {
+                        foreach( HelpCategoryDef hc in mc.HelpCategories.Where( hc => hc.ShouldDraw ) )
+                        {
+                            DrawCatEntry( ref cur, 1, viewRect, hc );
+
+                            if( hc.Expanded )
+                            {
+                                foreach( HelpDef hd in hc.HelpDefs.Where( hd => hd.ShouldDraw ) )
+                                {
+                                    DrawHelpEntry( ref cur, 1, viewRect, hd );
+                                }
+                            }
+                        }
+                    }
                 }
-                GUI.color = Color.gray;
-                Widgets.DrawLineHorizontal( 0f, curY, viewRect.width );
-                GUI.color = Color.white;
+
+                SelectionHeight = cur.y;
             }
 
             Widgets.EndScrollView();
             GUI.EndGroup();
         }
 
-        void                                DrawModCategory( Rect entryRect, float curX, ModCategory mc )
-        {
-            GUI.BeginGroup( entryRect );
+        #endregion
 
-            float curY = 0f;
-            var modRect = new Rect( 0f, 0f, entryRect.width, EntryHeight );
-            DrawModRow( modRect, curX, mc );
-            curY += EntryHeight;
-            if( mc.Expanded )
-            {
-                foreach( var hc in mc.HelpCategories.Where( hc => hc.ShouldDraw ) )
-                {
-                    var catRect = new Rect( 0f, curY, entryRect.width, hc.DrawHeight );
-                    DrawHelpCategory( catRect, curX + EntryIndent, hc );
-                    curY += hc.DrawHeight;
-                }
-            }
-            GUI.EndGroup();
+        #region list rect helper
+
+        public enum State
+        {
+            Expanded,
+            Closed,
+            Leaf
         }
 
-        void                                DrawModRow( Rect modRect, float curX, ModCategory mc )
+        /// <summary>
+        /// Generic method for drawing the squares. 
+        /// </summary>
+        /// <param name="cur">Current x,y vector</param>
+        /// <param name="nestLevel">Level of nesting for indentation</param>
+        /// <param name="view">Size of viewing area (assumed vertically scrollable)</param>
+        /// <param name="label">Label to show</param>
+        /// <param name="state">State of collapsing icon to show</param>
+        /// <param name="selected">For leaf entries, is this entry selected?</param>
+        /// <returns></returns>
+        public bool DrawEntry( ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false )
         {
-            GUI.BeginGroup( modRect );
+            cur.x = nestLevel * EntryIndent;
+            float iconOffset = ArrowImageSize.x + 2 * Margin;
+            float width = view.width - cur.x - iconOffset;
+            float height = EntryHeight;
 
-            if( Mouse.IsOver( modRect ) )
+            if( Text.CalcHeight( label, width ) > EntryHeight )
             {
-                Widgets.DrawHighlight( modRect );
+                Text.Font = GameFont.Tiny;
+                float height2 = Text.CalcHeight(label, width);
+                height = Mathf.Max( height, height2 );
             }
 
-            var imageRect = new Rect(
-                Margin + curX, modRect.height / 2f - ArrowImageSize.y / 2f,
-                ArrowImageSize.x, ArrowImageSize.y
-            );
-
-            Texture2D texture = mc.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight;
-            GUI.DrawTexture( imageRect, texture );
-
-            var labelRect = new Rect(
-                imageRect.xMax + Margin, 0f,
-                modRect.width - ArrowImageSize.x - Margin * 2 - curX, EntryHeight
-            );
+            if( state != State.Leaf )
+            {
+                Rect iconRect = new Rect(cur.x + Margin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y);
+                GUI.DrawTexture( iconRect, state == State.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight );
+            }
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            //GUI.color = Color.yellow;
-            Widgets.Label( labelRect, mc.ModName );
-            //GUI.color = Color.white;
+            Rect labelRect = new Rect(cur.x + iconOffset, cur.y, width, height);
+            Widgets.Label( labelRect, label );
             Text.Anchor = TextAnchor.UpperLeft;
+            Text.Font = GameFont.Small;
 
-            if( Widgets.InvisibleButton( modRect ) )
+            // full viewRect width for overlay and button
+            Rect buttonRect = view;
+            buttonRect.yMin = cur.y;
+            cur.y += height;
+            buttonRect.yMax = cur.y;
+            GUI.color = Color.grey;
+            Widgets.DrawLineHorizontal( view.xMin, cur.y, view.width );
+            GUI.color = Color.white;
+            if( selected )
+            {
+                Widgets.DrawHighlightSelected( buttonRect );
+            }
+            else
+            {
+                Widgets.DrawHighlightIfMouseover( buttonRect );
+            }
+            return Widgets.InvisibleButton( buttonRect );
+        }
+
+        public void DrawModEntry( ref Vector2 cur, int nestLevel, Rect view, ModCategory mc )
+        {
+            State curState = mc.Expanded ? State.Expanded : State.Closed;
+            if( DrawEntry( ref cur, nestLevel, view, mc.ModName, curState ) )
             {
                 mc.Expanded = !mc.Expanded;
             }
-            GUI.EndGroup();
         }
 
-        void                                DrawHelpCategory( Rect catRect, float curX, HelpCategoryDef hc )
+        public void DrawCatEntry( ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef catDef )
         {
-            GUI.BeginGroup( catRect );
-
-            var catRowRect = new Rect( 0f, 0f, catRect.width, EntryHeight );
-            DrawHelpCategoryRow( catRowRect, curX, hc );
-
-            if( hc.Expanded )
+            State curState = catDef.Expanded ? State.Expanded : State.Closed;
+            if( DrawEntry( ref cur, nestLevel, view, catDef.LabelCap, curState ) )
             {
-                float curY = EntryHeight;
-                foreach( var hd in hc.HelpDefs.Where( hd => hd.ShouldDraw ) )
-                {
-                    var helpRect = new Rect(
-                        0f, curY,
-                        catRect.width, EntryHeight
-                    );
-
-                    DrawHelpRow( helpRect, curX, hd );
-                    GUI.color = Color.gray;
-                    Widgets.DrawLineHorizontal( 0f, curY, catRect.width );
-                    GUI.color = Color.white;
-
-                    curY += EntryHeight;
-                }
+                catDef.Expanded = !catDef.Expanded;
             }
-
-            Text.Anchor = TextAnchor.UpperLeft;
-            GUI.EndGroup();
         }
 
-        void                                DrawHelpCategoryRow( Rect catRect, float curX, HelpCategoryDef hc )
+        public void DrawHelpEntry( ref Vector2 cur, int nestLevel, Rect view, HelpDef helpDef )
         {
-            GUI.BeginGroup( catRect );
-
-            if( Mouse.IsOver( catRect ) )
+            bool selected = SelectedHelpDef == helpDef;
+            if( selected && _jump )
             {
-                Widgets.DrawHighlight( catRect );
+                SelectionScrollPos.y = cur.y;
+                _jump = false;
             }
-
-            var imageRect = new Rect(
-                Margin + curX, catRect.height / 2f - ArrowImageSize.y / 2f,
-                ArrowImageSize.x, ArrowImageSize.y
-            );
-
-            Texture2D texture = hc.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight;
-            GUI.DrawTexture( imageRect, texture );
-
-            var labelRect = new Rect(
-                imageRect.xMax + Margin, 0f,
-                catRect.width - imageRect.width - Margin * 3 - curX, catRect.height
-            );
-
-            Text.Anchor = TextAnchor.MiddleLeft;
-
-            if( Text.CalcHeight( hc.LabelCap, labelRect.width ) > EntryHeight)
+            if( DrawEntry( ref cur, nestLevel, view, helpDef.LabelCap, State.Leaf, selected ) )
             {
-                Text.Font = GameFont.Tiny;
+                SelectedHelpDef = helpDef;
             }
-            Widgets.Label( labelRect, hc.LabelCap );
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.UpperLeft;
-
-            GUI.color = Color.gray;
-            Widgets.DrawLineHorizontal( 0f, 0f, catRect.width );
-            GUI.color = Color.white;
-
-            if( Widgets.InvisibleButton( catRect ) )
-            {
-                hc.Expanded = !hc.Expanded;
-            }
-
-            Text.Anchor = TextAnchor.UpperLeft;
-            GUI.EndGroup();
         }
 
-        void                                DrawHelpRow( Rect hRect, float curX, HelpDef hd )
+        public void JumpToDef( HelpDef helpDef )
         {
-            if( hd == SelectedHelpDef )
-            {
-                Widgets.DrawHighlightSelected( hRect );
-            }
-            else if( Mouse.IsOver( hRect ) )
-            {
-                Widgets.DrawHighlight( hRect );
-            }
-
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Rect labelRect = hRect;
-            labelRect.xMin += curX + Margin * 2 + ArrowImageSize.x;
-            labelRect.width -= curX + Margin * 2 + ArrowImageSize.x;
-            if( Text.CalcHeight( hd.LabelCap, labelRect.width ) > EntryHeight )
-            {
-                Text.Font = GameFont.Tiny;
-            }
-            Widgets.Label( labelRect, hd.LabelCap );
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.UpperLeft;
-
-            if( Widgets.InvisibleButton( hRect ) )
-            {
-                SelectedHelpDef = hd;
-            }
+            ResetFilter();
+            _jump = true;
+            HelpCategoryDef cat =
+                DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
+            cat.Expanded = true;
+            ModCategory mod = CachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
+            mod.Expanded = true;
         }
-
         #endregion
 
     }
