@@ -83,8 +83,10 @@ namespace CommunityCoreLibrary
             float       startX                  = cur.x;
 
             Vector2     prefixSize              = Vector2.zero;
-            Vector2     labelSize               = Text.CalcSize(def.Def.LabelCap);
+            Vector2     labelSize;
             Vector2     suffixSize              = Vector2.zero;
+
+            string      labelCap;
 
             if (useHelpDef)
             {
@@ -94,6 +96,21 @@ namespace CommunityCoreLibrary
                     defLinkResolves = false;
                 }
             }
+
+            // Fix last character cut-off on bold/italic text - E
+            if (defLinkResolves)
+            {
+                labelCap = "<b>" + def.Def.LabelCap + "</b>";
+            }
+            else if (!string.IsNullOrEmpty(def.Def.description))
+            {
+                labelCap = "<i>" + def.Def.LabelCap + "</i>";
+            }
+            else
+            {
+                labelCap = def.Def.LabelCap;
+            }
+            labelSize = Text.CalcSize( labelCap );
 
             // TODO: Align (prefix + label) and suffix in two columns, so they look neater. -Fluffy.
             
@@ -137,24 +154,17 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            prefixSize.y = Text.CalcHeight(def.Def.LabelCap, width);
+            prefixSize.y = Text.CalcHeight(labelCap, width);
             Rect labelRect = new Rect(cur.x, cur.y, labelSize.x, labelSize.y);
+            GUI.Label( labelRect, labelCap );
             if (defLinkResolves)
             {
-                GUI.Label(labelRect, "<b>" + def.Def.LabelCap + "</b>");
                 clicked = Widgets.InvisibleButton(labelRect);
+                TooltipHandler.TipRegion(labelRect, "JumpToTopic".Translate() );
             }
-            else
+            else if (!string.IsNullOrEmpty(def.Def.description))
             {
-                if (!string.IsNullOrEmpty(def.Def.description))
-                {
-                    GUI.Label(labelRect, "<i>" + def.Def.LabelCap + "</i>");
-                    TooltipHandler.TipRegion(labelRect, def.Def.description);
-                }
-                else
-                {
-                    GUI.Label( labelRect, def.Def.LabelCap );
-                }
+                TooltipHandler.TipRegion(labelRect, def.Def.description);
             }
 
             if (suffixNewline)
