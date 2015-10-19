@@ -108,9 +108,9 @@ namespace CommunityCoreLibrary
             //CCLVersion = assembly.GetName().Version;
             CCLVersion = new Version( "0.12.4" );
 #if DEBUG
-            Log.Message( "Community Core Library v" + CCLVersion + " (debug)" );
+            CCL_Log.Message( "v" + CCLVersion + " (debug)" );
 #else
-            Log.Message( "Community Core Library v" + CCLVersion );
+            CCL_Log.Message( "v" + CCLVersion );
 #endif
         }
 

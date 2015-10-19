@@ -42,7 +42,7 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        bool                                isEnabled;
+        ResearchEnableMode                  researchState;
         bool                                researchSorted;
 
         HelpDef                             helpDef;
@@ -56,11 +56,11 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
-        public bool                         IsEnabled
+        public ResearchEnableMode           ResearchState
         {
             get
             {
-                return isEnabled;
+                return researchState;
             }
         }
 
@@ -68,7 +68,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return HideUntilResearched ? isEnabled : true;
+                return !HideUntilResearched || researchState != ResearchEnableMode.Incomplete;
             }
         }
 
@@ -182,34 +182,41 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         CanEnable
+        public ResearchEnableMode           EnableMode
         {
             get
             {
-                // God mode, allow it
-                if( ( Game.GodMode )&&
-                    ( !isEnabled ) )
-                {
-                    return true;
-                }
-
-                if( isEnabled )
+                if( researchState == ResearchEnableMode.Complete )
                 {
                     // Already on
-                    return false;
+                    return researchState;
                 }
 
                 // Check individual research projects
+                var projects = researchDefs.Count;
+                var completed = 0;
                 foreach( var researchProject in researchDefs )
                 {
-                    if( !researchProject.IsFinished )
+                    if( researchProject.IsFinished )
                     {
-                        return false;
+                        // Project is finished
+                        completed++;
                     }
                 }
+                if( completed == projects )
+                {
+                    // All projects complete
+                    return ResearchEnableMode.Complete;
+                }
 
-                // All required research complete
-                return true;
+                // God mode, allow it anyway
+                if( Game.GodMode )
+                {
+                    return ResearchEnableMode.GodMode;
+                }
+
+                // One or more required research is incomplete
+                return ResearchEnableMode.Incomplete;
             }
         }
 
@@ -352,9 +359,11 @@ namespace CommunityCoreLibrary
 
         public void                         Disable( bool firstTimeRun = false )
         {
-            // Don't unset if not set
-            if( ( !isEnabled )&&
-                ( firstTimeRun == false ) )
+            // Don't disable if it's not the first run or not yet enabled
+            if(
+                ( researchState == ResearchEnableMode.Incomplete )&&
+                ( firstTimeRun == false )
+            )
             {
                 return;
             }
@@ -373,13 +382,18 @@ namespace CommunityCoreLibrary
                 // Building toggle
                 ToggleBuildings( true );
             }
-            if( IsResearchToggle )
+            if(
+                ( IsResearchToggle )&&
+                ( researchState != ResearchEnableMode.GodMode )
+            )
             {
                 // Research toggle
                 ToggleResearch( true );
             }
-            if( ( HasCallbacks )&&
-                ( !firstTimeRun ) )
+            if(
+                ( HasCallbacks )&&
+                ( !firstTimeRun )
+            )
             {
                 // Cache callbacks
                 ToggleCallbacks( true );
@@ -390,14 +404,26 @@ namespace CommunityCoreLibrary
                 ToggleHelp( true );
             }
             // Flag it as disabled
-            isEnabled = false;
+            researchState = ResearchEnableMode.Incomplete;
         }
 
-        public void                         Enable()
+        public void                         Enable( ResearchEnableMode mode )
         {
-            // Don't set if set
-            if( isEnabled )
+            // Don't enable if enabled
+            if( researchState != ResearchEnableMode.Incomplete )
             {
+                if(
+                    ( researchState == ResearchEnableMode.GodMode )&&
+                    ( mode != ResearchEnableMode.GodMode )&&
+                    ( IsResearchToggle )
+                )
+                {
+                    // Player completed research with god-mode on
+                    // Research toggle
+                    ToggleResearch();
+                    // Flag it as enabled by mode
+                    researchState = mode;
+                }
                 return;
             }
             if( IsRecipeToggle )
@@ -415,9 +441,12 @@ namespace CommunityCoreLibrary
                 // Building toggle
                 ToggleBuildings();
             }
-            if( IsResearchToggle )
+            if(
+                ( IsResearchToggle )&&
+                ( mode != ResearchEnableMode.GodMode )
+            )
             {
-                // Research toggle
+                // Research toggle, if it's not god mode
                 ToggleResearch();
             }
             if( HasCallbacks )
@@ -430,8 +459,8 @@ namespace CommunityCoreLibrary
                 // Build & toggle help
                 ToggleHelp();
             }
-            // Flag it as enabled
-            isEnabled = true;
+            // Flag it as enabled by mode
+            researchState = mode;
         }
 
         void                                SortResearch()
@@ -590,7 +619,7 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            bool Hide = !HideUntilResearched ? false : setInitialState;
+            bool Hide = HideUntilResearched && setInitialState;
 
             if( Hide )
             {
@@ -609,7 +638,7 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Aggegate Data
+        #region Aggregate Data
 
         List< AdvancedResearchDef >         MatchingAdvancedResearch
         {

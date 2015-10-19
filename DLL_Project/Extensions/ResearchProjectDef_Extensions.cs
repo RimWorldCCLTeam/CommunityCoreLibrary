@@ -15,14 +15,20 @@ namespace CommunityCoreLibrary
         public static bool                  IsLockedOut( this ResearchProjectDef researchProjectDef )
         {
             // Check for possible unlock
-            if( researchProjectDef != null )
+            if(
+                ( researchProjectDef != null )&&
+                ( !researchProjectDef.prerequisites.NullOrEmpty() )
+            )
             {
                 // Check each prerequisite
                 foreach( var p in researchProjectDef.prerequisites )
                 {
-                    if( p.defName == researchProjectDef.defName )
+                    if(
+                        ( p.defName == researchProjectDef.defName )||
+                        ( p.IsLockedOut() )
+                    )
                     {
-                        // Self-prerequisite means potential lock-out
+                        // Self-prerequisite or parent locked means potential lock-out
 
                         // Check for possible unlock
                         if( !ResearchController.AdvancedResearch.Any( a => (
@@ -34,11 +40,6 @@ namespace CommunityCoreLibrary
                             // No unlockers, always locked out
                             return true;
                         }
-                    }
-                    else if( p.IsLockedOut() )
-                    {
-                        // Any of the research parents locked out?
-                        return true;
                     }
                 }
             }

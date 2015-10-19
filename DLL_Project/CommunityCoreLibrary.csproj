@@ -91,7 +91,6 @@
     <Compile Include="StaticClasses\PlaceWorker_Restriction_Alert_Data.cs" />
     <Compile Include="Enumerations\LowIdleDrawMode.cs" />
     <Compile Include="Structures\ColorName.cs" />
-    <Compile Include="Structures\ResearchCompletePair.cs" />
     <Compile Include="Extensions\Thing_Extensions.cs" />
     <Compile Include="Extensions\ThingComp_Extensions.cs" />
     <Compile Include="Extensions\ThingDef_Extensions.cs" />
@@ -132,6 +131,7 @@
     <Compile Include="StaticClasses\HelpDetailSectionHelper.cs" />
     <Compile Include="Structures\DefStringTriplet.cs" />
     <Compile Include="Structures\HelpDetailSection.cs" />
+    <Compile Include="Enumerations\ResearchEnableMode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

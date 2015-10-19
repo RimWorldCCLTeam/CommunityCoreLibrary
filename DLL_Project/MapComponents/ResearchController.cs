@@ -25,7 +25,6 @@ namespace CommunityCoreLibrary
 
         // These are used to optimize the process so the same data
         // isn't constantly reprocessed with every itteration.
-        static readonly List< ResearchCompletePair > researchCache = new List< ResearchCompletePair >();
         public static readonly List< ThingDef >    buildingCache = new List< ThingDef >();
         public static readonly List< AdvancedResearchMod > researchModCache = new List< AdvancedResearchMod >();
         public static readonly List< HelpCategoryDef > helpCategoryCache = new List<HelpCategoryDef>();
@@ -54,19 +53,11 @@ namespace CommunityCoreLibrary
             firstRun = false;
             okToProcess = false;
 
-            if( ( AdvancedResearch == null )||
-                ( AdvancedResearch.Count == 0 ) )
+            if( AdvancedResearch.NullOrEmpty() )
             {
                 // No advanced research, hybernate
                 CCL_Log.Message( "No advanced research defined, hybernating...", "Advanced Research" );
                 return;
-            }
-
-            // Build research quick-reference
-            var researchProjects = DefDatabase< ResearchProjectDef >.AllDefsListForReading;
-            foreach( var researchProject in researchProjects )
-            {
-                researchCache.Add( new ResearchCompletePair( researchProject ) );
             }
 
             // Set the initial state
@@ -185,34 +176,16 @@ namespace CommunityCoreLibrary
 
         }
 
-        void                                CheckAdvancedResearch()
+        static void                         CheckAdvancedResearch()
         {
-            if( !Game.GodMode )
+            if(
+                ( !Game.GodMode )&&
+                ( wasGodMode )
+            )
             {
-                // Quick scan to see if anything changed and early out if nothing new is complete
-
-                if( wasGodMode )
-                {
-                    // Reset everything
-                    SetInitialState();
-                    wasGodMode = false;
-                }
-
-                // God mode is off, do a real check
-                bool Changed = false;
-                for( int i = 0; i < researchCache.Count; i++ ){
-                    var rcPair = researchCache[ i ];
-                    if( ( rcPair.researchProject.IsFinished ) && ( !rcPair.wasComplete ) ){
-                        rcPair.wasComplete = true;
-                        Changed = true;
-                    }
-                }
-
-                if( !Changed )
-                {
-                    // No new research complete
-                    return;
-                }
+                // Reset everything
+                SetInitialState();
+                wasGodMode = false;
             }
 
             // Prepare for some work
@@ -221,10 +194,14 @@ namespace CommunityCoreLibrary
             // Scan advanced research for newly completed projects
             foreach( var Advanced in AdvancedResearch )
             {
-                if( Advanced.CanEnable )
+                if( Advanced.ResearchState != ResearchEnableMode.Complete )
                 {
-                    // Enable this project
-                    Advanced.Enable();
+                    var enableMode = Advanced.EnableMode;
+                    if( enableMode != Advanced.ResearchState )
+                    {
+                        // Enable this project
+                        Advanced.Enable( enableMode );
+                    }
                 }
             }
 

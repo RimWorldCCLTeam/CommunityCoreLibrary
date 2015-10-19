@@ -6,8 +6,9 @@
     <targetVersion>Community Core Library v0.12.0</targetVersion>
     <description>
 	This is an example of how to lock and unlock buildings as new research is complete.
-    
+
 	Demonstrates:
 	AdvancedResearchDef to lock and unlock buildings
+	Creating automatic help menu entries for advanced research
     </description>
 </ModMetaData>
