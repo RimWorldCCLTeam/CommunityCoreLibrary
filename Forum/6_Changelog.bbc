@@ -1,0 +1,15 @@
+[size=12pt][color=orange]Changelog[/color][/size]
+
+For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/32]commit log[/url].  This section is just for convenience sake.
+
+[code]v0.12.4 - Many, many bugs fixed, help menu overhaul, research menu overhaul, new comp & property.
+v0.12.3b - Fixes Advanced Research Def to recognizes plants using plants with an override class.
+v0.12.3 - Bug fixes, Ice boxes (CompRefrigerated no longer *requires* CompPowerTrader but will respect it), Post Load Injectors, removes research requirement from Xerigium.
+v0.12.2 - Alpha 12d update.  Refactors CompRefrigerated, fixes several bugs, graphics by mrofa.  See the commit log for full detail.
+v0.12.1 - Alpha 12c update and bug-fixes.  First release with AutoGen Help!
+v0.12.0 - Alpha 12 update.  Adds menu help system and mod helper system.  Separates vanilla tweaks from core.
+v0.11.4 - Fixes CompRefrigerated save/load issue, fixes lights and growers not sharing through link type properly sometimes, move repository to a team organization.
+v0.11.3 - Better placement restriction support.  Now handles destroying things and alerting the player.
+v0.11.2 - Additional place workers, you can build on steam geysers, PlantGrowers can program other PlantGrowers, Lights can change other lights.
+v0.11.1 - Advanced research can now lock or unlock recipes and buildings.  Adds Action callbacks to advanced research.  Additional PlaceWorker restrictions.
+v0.11.0 - Initial public release[/code]
