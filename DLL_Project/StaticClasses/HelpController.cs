@@ -668,7 +668,7 @@ namespace CommunityCoreLibrary
                 )
                 {
                     HelpDetailSection unlockRecipes = new HelpDetailSection(
-                        "AutoHelpListRecipesUnlocked".Translate(),
+                        "AutoHelpListRecipesLocked".Translate(),
                         recipeDefs.ConvertAll<Def>(def => (Def)def));
                     HelpDetailSection researchBy = new HelpDetailSection(
                         "AutoHelpListResearchBy".Translate(),
@@ -1026,6 +1026,7 @@ namespace CommunityCoreLibrary
             {
                 helpDef.category = advancedResearchDef.helpCategoryDef;
             }
+
             #region Base Stats
 
             HelpDetailSection totalCost = new HelpDetailSection(

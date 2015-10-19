@@ -127,6 +127,11 @@
     <Compile Include="ThingComps\CompHopper.cs" />
     <Compile Include="ThingComps\CompHopperUser.cs" />
     <Compile Include="WorkGivers\WorkGiver_FillHopper.cs" />
+    <Compile Include="Extensions\HelpDetailSection_Extentsions.cs" />
+    <Compile Include="MainTabs\MainTabWindow_Research.cs" />
+    <Compile Include="StaticClasses\HelpDetailSectionHelper.cs" />
+    <Compile Include="Structures\DefStringTriplet.cs" />
+    <Compile Include="Structures\HelpDetailSection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
