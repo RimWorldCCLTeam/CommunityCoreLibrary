@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef Name="BasePawn" Abstract="True">
+        <thingClass>Pawn</thingClass>
+        <category>Pawn</category>
+        <selectable>true</selectable>
+        <tickerType>Normal</tickerType>
+        <altitudeLayer>Pawn</altitudeLayer>
+        <useHitPoints>false</useHitPoints>
+        <hasTooltip>true</hasTooltip>
+        <soundImpactDefault>BulletImpactFlesh</soundImpactDefault>
+        <inspectorTabs>
+            <li>ITab_Pawn_Health</li>
+            <li>ITab_Pawn_Needs</li>
+            <li>ITab_Pawn_Character</li>
+            <li>ITab_Pawn_Training</li>
+            <li>ITab_Pawn_Gear</li>
+            <li>ITab_Pawn_Guest</li>
+            <li>ITab_Pawn_Prisoner</li>
+        </inspectorTabs>
+        <comps>
+            <li>
+                <compClass>CompAttachBase</compClass>
+            </li>
+        </comps>
+        <drawGUIOverlay>true</drawGUIOverlay>
+    </ThingDef>
+
+    <ThingDef ParentName="BasePawn" Name="BaseAnimal" Abstract="True">
+        <statBases>
+            <Flammability>1.0</Flammability>
+            <LeatherAmount>20</LeatherAmount>
+        </statBases>
+        <race>
+            <thinkTree>Animal</thinkTree>
+            <minFoodPreferability>Plant</minFoodPreferability>
+            <isFlesh>true</isFlesh>
+            <hasGenders>true</hasGenders>
+            <nameGenerator>NamerAnimalGeneric</nameGenerator>
+            <manhunterOnDamageChance>0.0125</manhunterOnDamageChance>
+            <nameOnNuzzleChance>0.5</nameOnNuzzleChance>
+            <hediffGiverSets>
+                <li>OrganicStandard</li>
+            </hediffGiverSets>
+        </race>
+    </ThingDef>
+
+    <!-- ====================================================== -->
+
+
+    <ThingDef ParentName="BaseAnimal">
+        <defName>Boomalope</defName>
+        <label>boomalope</label>
+        <description>Engineered for chemicals production, the boomalope grows a large sac of volatile chemicals on its back. Though it is weak and fragile for its size, other animals have learned to avoid it because of the huge explosion it produces when it dies.</description>
+        <statBases>
+            <MoveSpeed>2.15</MoveSpeed>
+            <ComfyTemperatureMin>-15</ComfyTemperatureMin>
+            <MarketValue>290</MarketValue>
+        </statBases>
+        <comps>
+            <li Class="CommunityCoreLibrary.CompProperties_ShearableRenameable">
+                <compClass>CommunityCoreLibrary.CompShearableRenameable</compClass>
+                <growthLabel>Chemical fullness</growthLabel>
+                <woolDef>BoomalopeGas</woolDef>
+                <shearIntervalDays>10</shearIntervalDays>
+                <woolAmount>1</woolAmount>
+            </li>
+        </comps>
+        <verbs>
+            <li>
+                <verbClass>Verb_MeleeAttack</verbClass>
+                <defaultCooldownTicks>100</defaultCooldownTicks>
+                <meleeDamageBaseAmount>9</meleeDamageBaseAmount>
+                <meleeDamageDef>Blunt</meleeDamageDef>
+                <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
+            </li>
+        </verbs>
+        <race>
+            <body>QuadrupedAnimalWithHoovesAndHump</body>
+            <deathActionWorkerClass>DeathActionWorker_BigExplosion</deathActionWorkerClass>
+            <executionRange>5</executionRange>
+            <herdAnimal>true</herdAnimal>
+            <baseBodySize>1.5</baseBodySize>
+            <baseHungerRate>1</baseHungerRate>
+            <baseHealthScale>0.65</baseHealthScale>
+            <diet>Herbivorous</diet>
+            <leatherColor>(219,205,182)</leatherColor>
+            <leatherInsulation>1.5</leatherInsulation>
+            <leatherMarketValue>10.0</leatherMarketValue>
+            <wildness>0.6</wildness>
+            <nuzzleChancePerHour>0.01</nuzzleChancePerHour>
+            <gestationPeriodDays>60</gestationPeriodDays>
+            <lifeExpectancy>15</lifeExpectancy>
+            <lifeStageAges>
+                <li>
+                    <def>AnimalBaby</def>
+                    <minAge>0</minAge>
+                </li>
+                <li>
+                    <def>AnimalJuvenile</def>
+                    <minAge>0.25</minAge>
+                </li>
+                <li>
+                    <def>AnimalAdult</def>
+                    <minAge>1</minAge>
+                    <soundWounded>Pawn_Muffalo_Wounded</soundWounded>
+                    <soundDeath>Pawn_Muffalo_Death</soundDeath>
+                    <soundCall>Pawn_Muffalo_Call</soundCall>
+                    <soundAngry>Pawn_Muffalo_Angry</soundAngry>
+                </li>
+            </lifeStageAges>
+            <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+            <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+            <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+        </race>
+    </ThingDef>
+
+</Defs>

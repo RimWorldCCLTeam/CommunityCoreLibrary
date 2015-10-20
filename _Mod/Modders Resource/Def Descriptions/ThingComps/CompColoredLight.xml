@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompColoredLight
+    
+    Requires:   CompProperties_ColoredLight
+                CompPowerTrader
+                CompGlower
+    
+    Using CompColoredLight allows you to reduce the amount of redundant build options available
+    to the user.  This comp allows a building to dynamically switch it's glower color through the
+    use of user-presented gizmo buttons on the building, saving time and tab clutter.  The comp
+    supports using the default list of light colors or defining unique colors specific to the
+    building.  The gizmos that share colors to other buildings with this comp use name matching
+    so two buildings can define the same named colour but with different colour values but will
+    be a match when the user uses the gizmos.  eg, "red" (192,0,0,0) and "red" (227,15,15,0)
+    will be accepted as the same color based on the name "red."  When using this comp on
+    different buildings with different research requirements to change color, the requirement
+    of each building is respected so that lights won't change on buildings which don't have the
+    prerequisite tech researched.
+    
+    XML Data:
+    
+    type (default)  tag                 Details
+    
+    string          requiredResearch    [optional] Research required to change light color
+       (ColoredLights)
+    int (0)         Default             [optional] Default initial color index
+    ColorName (*)   color               [optional] List of color names and values
+    
+    * This is a list of names and colors, the default internal list is as follows:
+        
+        name        value
+        white       (217,217,217,0)
+        red         (217,0,0,0)
+        green       (0,217,0,0)
+        blue        (0,0,217,0)
+        yellow      (217,217,43,0)
+        orange      (255,132,0,0)
+        purple      (185,61,205,0)
+        
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li>
+                <compClass>CompGlower</compClass>
+                ...
+            </li>
+            
+            <li Class="CommunityCoreLibrary.CompProperties_ColoredLight">
+                <compClass>CommunityCoreLibrary.CompColoredLight</compClass>
+                
+                <requiredResearch>ColoredLights</requiredResearch>
+                
+                <Default>0</Default>
+                
+                <color>
+                    <li>
+                        <name>white</name>
+                        <value>(217,217,217,0)</value>
+                    </li>
+                    <li>
+                        <name>red</name>
+                        <value>(217,0,0,0)</value>
+                    </li>
+                    <li>
+                        <name>green</name>
+                        <valud>(0,217,0,0)</value>
+                    </li>
+                    <li>
+                        <name>blue</name>
+                        <value>(0,0,217,0)</value>
+                    </li>
+                    <li>
+                        <name>yellow</name>
+                        <value>(217,217,43,0)</value>
+                    </li>
+                    <li>
+                        <name>orange</name>
+                        <value>(255,132,0,0)</value>
+                    </li>
+                    <li>
+                        <name>purple</name>
+                        <value>(185,61,205,0)</value>
+                    </li>
+                </color>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

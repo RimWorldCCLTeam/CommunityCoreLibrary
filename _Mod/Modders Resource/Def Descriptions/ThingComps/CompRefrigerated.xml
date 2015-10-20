@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompRefrigerated
+    
+    Requires:   CompPowerTrader
+    
+    This comp flags a storage building as protecting rottable items from exposure and,
+    in short, that the item is refrigerated which carries all the benefits of being frozen.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompRefrigerated</compClass>
+                ...
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

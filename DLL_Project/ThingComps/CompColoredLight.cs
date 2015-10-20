@@ -39,29 +39,52 @@ namespace CommunityCoreLibrary
         #region Gizmos
 
         ChangeColor                 _GizmoChangeColor;
-        ChangeColor                 GizmoChangeColor {
-            get{
+        ChangeColor                 GizmoChangeColor
+        {
+            get
+            {
                 if( _GizmoChangeColor == null )
-                    _GizmoChangeColor = new ChangeColor( this );
+                {
+                    _GizmoChangeColor = new ChangeColor(
+                        this,
+                        Icon.SelectLightColor
+                    );
+                }
                 return _GizmoChangeColor;
             }
         }
 
         TouchingByLinker            _GizmoTouchingByLinker;
-        TouchingByLinker            GizmoTouchingByLinker {
-            get {
+        TouchingByLinker            GizmoTouchingByLinker
+        {
+            get
+            {
                 if( _GizmoTouchingByLinker == null )
-                    _GizmoTouchingByLinker = new TouchingByLinker( parent, GroupColorChange, GroupColorChange );
+                {
+                    _GizmoTouchingByLinker = new TouchingByLinker(
+                        parent,
+                        Icon.ShareLightColor,
+                        GroupColorChange,
+                        GroupColorChange
+                    );
+                }
                 return _GizmoTouchingByLinker;
             }
         }
 
         DefOrThingCompInRoom        _GizmoDefOrThingCompInRoom;
-        DefOrThingCompInRoom        GizmoDefOrThingCompInRoom {
-            get {
+        DefOrThingCompInRoom        GizmoDefOrThingCompInRoom
+        {
+            get
+            {
                 if( _GizmoDefOrThingCompInRoom == null )
                 {
-                    _GizmoDefOrThingCompInRoom = new DefOrThingCompInRoom( parent, GetType(), "CommandChangeRoommateColorLabel".Translate() );
+                    _GizmoDefOrThingCompInRoom = new DefOrThingCompInRoom(
+                        parent,
+                        GetType(),
+                        "CommandChangeRoommateColorLabel".Translate(),
+                        Icon.ShareLightColor
+                    );
                     _GizmoDefOrThingCompInRoom.LabelByDef = Translator.Translate( "CommandChangeRoommateColorLClick", parent.def.label );
                     _GizmoDefOrThingCompInRoom.ClickByDef = GroupColorChange;
                     _GizmoDefOrThingCompInRoom.LabelByThingComp = "CommandChangeRoommateColorRClick".Translate();
@@ -78,7 +101,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostExposeData()
         {
-            //Log.Message( def.defName + " - ExposeData()" );
             base.PostExposeData();
 
             Scribe_Values.LookValue<int>( ref ColorIndex, "ColorIndex", -1 );
@@ -86,7 +108,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostSpawnSetup()
         {
-            //Log.Message( def.defName + " - SpawnSetup()" );
             base.PostSpawnSetup();
 
             // Get power comp
@@ -94,7 +115,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( PowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompColoredLight requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 #endif
@@ -103,7 +124,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( CompGlower == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompGlower!" );
+                CCL_Log.Error( "CompColoredLight requires CompGlower!", parent.def.defName );
                 return;
             }
 #endif
@@ -113,7 +134,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( ColorProps == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " requires CompProperties_ColoredLight!" );
+                CCL_Log.Error( "CompColoredLight requires CompProperties_ColoredLight!", parent.def.defName );
                 return;
             }
 #endif
@@ -162,7 +183,7 @@ namespace CommunityCoreLibrary
                     yield return GizmoDefOrThingCompInRoom;
                 }
             }
-            
+
             // Has a link flag
             if( parent.def.graphicData.linkFlags != LinkFlags.None )
             {
@@ -236,8 +257,10 @@ namespace CommunityCoreLibrary
                     int otherColor = otherLight.GetColorByName( ColorProps.color[ ColorIndex ].name );
 
                     // If it does, check it's research
-                    if( ( otherColor > -1 )&&
-                        ( DefDatabase< ResearchProjectDef >.GetNamed( otherLight.ColorProps.requiredResearch ).IsFinished ) )
+                    if(
+                        ( otherColor > -1 )&&
+                        ( DefDatabase< ResearchProjectDef >.GetNamed( otherLight.ColorProps.requiredResearch ).IsFinished )
+                    )
                     {    // Change it's color
                         otherLight.ChangeColor( otherColor );
                     }
@@ -263,7 +286,7 @@ namespace CommunityCoreLibrary
             var newGlower = new CompGlower();
             if( newGlower == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to create new CompGlower!" );
+                CCL_Log.Error( "CompColoredLight unable to create new CompGlower!", parent.def.defName );
                 return;
             }
             newGlower.parent = parent;
@@ -272,7 +295,7 @@ namespace CommunityCoreLibrary
             var newProps = new CompProperties();
             if( newProps == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to create new CompProperties!" );
+                CCL_Log.Error( "CompColoredLight unable to create new CompProperties!", parent.def.defName );
                 return;
             }
             newProps.compClass = typeof( CompGlower );
@@ -286,7 +309,7 @@ namespace CommunityCoreLibrary
             var allComps = parent.GetComps();
             if( allComps == null )
             {
-                Log.Error( "Community Core Library :: CompColoredLight :: " + parent.def.defName + " unable to get list of comps!" );
+                CCL_Log.Error( "CompColoredLight unable to get list of comps!", parent.def.defName );
                 return;
             }
 
@@ -307,10 +330,13 @@ namespace CommunityCoreLibrary
             Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
 
             // Turn light on if appropriate
-            newGlower.Lit |= ( wasLit ) && ( PowerTrader.PowerOn );
+            newGlower.Lit |= (
+                ( wasLit )&&
+                ( PowerTrader.PowerOn )
+            );
         }
 
         #endregion
-   }
+    }
 
 }

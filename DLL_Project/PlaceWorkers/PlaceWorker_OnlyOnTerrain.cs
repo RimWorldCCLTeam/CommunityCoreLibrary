@@ -5,23 +5,14 @@ namespace CommunityCoreLibrary
 
     public class PlaceWorker_OnlyOnTerrain : PlaceWorker
     {
-        
+
         public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
-            var thingDef = checkingDef as ThingDef;
-#if DEBUG
-            if( thingDef == null )
-            {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: OnlyOnTerrain - Unable to cast BuildableDef to ThingDef!" );
-                return AcceptanceReport.WasRejected;
-            }
-#endif
-
-            var Restrictions = thingDef.RestrictedPlacement_Properties();
+            var Restrictions = checkingDef.RestrictedPlacement_Properties();
 #if DEBUG
             if( Restrictions == null )
             {
-                Log.Error( "Community Core Library :: Restricted PlaceWorker :: OnlyOnTerrain - Unable to get properties!" );
+                CCL_Log.Error( "PlaceWorker_OnlyOnTerrain unable to get properties!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
 #endif
@@ -35,7 +26,7 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return (AcceptanceReport)"MessagePlacementNotOn".Translate() + terrainDef.label;
+            return "MessagePlacementNotOn".Translate( terrainDef.label );
         }
 
     }

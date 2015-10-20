@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using RimWorld;
 using Verse;
@@ -21,162 +23,511 @@ namespace CommunityCoreLibrary
         // Research requirement
         public List< ResearchProjectDef >   researchDefs;
 
+
         // These are optionally defined in xml
+
+        public bool                         ConsolidateHelp;
+        public HelpCategoryDef              helpCategoryDef;
+        public bool                         HideUntilResearched;
+
         public List< RecipeDef >            recipeDefs;
         public List< string >               sowTags;
         public List< ThingDef >             thingDefs;
         public List< ResearchProjectDef >   effectedResearchDefs;
-        public List< ResearchMod >          researchMods;
+        public List< AdvancedResearchMod >  researchMods;
 
         #endregion
 
-        #region Instance Data
         [Unsaved]
 
-        public bool                         isEnabled;
+        #region Instance Data
+
+        ResearchEnableMode                  researchState;
+        bool                                researchSorted;
+
+        HelpDef                             helpDef;
+
+        List< AdvancedResearchDef >         matchingAdvancedResearch;
+        AdvancedResearchDef                 researchConsolidator;
+
+        float                               totalCost = -1;
 
         #endregion
 
         #region Query State
 
-        public bool                         ResearchComplete()
+        public ResearchEnableMode           ResearchState
         {
-            // God mode, allow it
-            if( Game.GodMode )
+            get
             {
-                return true;
+                return researchState;
+            }
+        }
+
+        public bool                         IsHelpEnabled
+        {
+            get
+            {
+                return !HideUntilResearched || researchState != ResearchEnableMode.Incomplete;
+            }
+        }
+
+        public bool                         IsLockedOut()
+        {
+            foreach( var p in researchDefs )
+            {
+                if( p.IsLockedOut() )
+                {
+                    // Any of the research parents locked out?
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool                         IsValid
+        {
+            get
+            {
+                // Hopefully...
+                var isValid = true;
+
+#if DEBUG
+                // Validate research
+                if( researchDefs.NullOrEmpty() )
+                {
+                    // Invalid project
+                    isValid = false;
+                    CCL_Log.Error( "AdvancedResearchDef requires at least one research project!", defName );
+                }
+
+                // Validate recipes
+                if( IsRecipeToggle )
+                {
+                    // Make sure thingDefs are of the appropriate type (has ITab_Bills)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must implement \"IBillGiver\"", defName );
+                        }
+                    }
+
+                }
+
+                // Validate plant sowTags
+                if( IsPlantToggle )
+                {
+                    // Make sure things are of the appropriate class (Plant)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( thingDef.thingClass != typeof( Plant ) && !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must be <thingClass> \"Plant\"", defName );
+                        }
+                    }
+
+                    // Make sure sowTags are valid (!null or empty)
+                    for( int i = 0; i < sowTags.Count; i++ )
+                    {
+                        var sowTag = sowTags[ i ];
+                        if( string.IsNullOrEmpty( sowTag ) )
+                        {
+                            CCL_Log.Error( "sowTags( index = " + i + " ) resolved to null", defName );
+                        }
+                    }
+                }
+
+                // Validate buildings
+                if( IsBuildingToggle )
+                {
+                    // Make sure thingDefs are of the appropriate type (has proper designationCategory)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( ( string.IsNullOrEmpty( thingDef.designationCategory ) )||
+                            ( thingDef.designationCategory.ToLower() == "none" ) )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, <designationCategory> must not be null or \"None\"", defName );
+                        }
+                    }
+                }
+
+                // Validate help
+                if( ( HasHelp )&&
+                    ( ResearchConsolidator == this ) )
+                {
+                    if( string.IsNullOrEmpty( label ) )
+                    {
+                        // Error processing data
+                        isValid = false;
+                        CCL_Log.Error( "Def is help consolidator but missing label!", defName );
+                    }
+                    if( string.IsNullOrEmpty( description ) )
+                    {
+                        // Error processing data
+                        isValid = false;
+                        CCL_Log.Error( "Def is help consolidator but missing description!", defName );
+                    }
+                }
+
+#endif
+
+                return isValid;
+            }
+        }
+
+        public ResearchEnableMode           EnableMode
+        {
+            get
+            {
+                if( researchState == ResearchEnableMode.Complete )
+                {
+                    // Already on
+                    return researchState;
+                }
+
+                // Check individual research projects
+                var projects = researchDefs.Count;
+                var completed = 0;
+                foreach( var researchProject in researchDefs )
+                {
+                    if( researchProject.IsFinished )
+                    {
+                        // Project is finished
+                        completed++;
+                    }
+                }
+                if( completed == projects )
+                {
+                    // All projects complete
+                    return ResearchEnableMode.Complete;
+                }
+
+                // God mode, allow it anyway
+                if( Game.GodMode )
+                {
+                    return ResearchEnableMode.GodMode;
+                }
+
+                // One or more required research is incomplete
+                return ResearchEnableMode.Incomplete;
+            }
+        }
+
+        public bool                         IsRecipeToggle
+        {
+            get
+            {
+                // Determine if this def toggles recipes
+                return (
+                    ( !recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
+                    ( !thingDefs.NullOrEmpty() )
+                );
+            }
+        }
+
+        public bool                         IsPlantToggle
+        {
+            get
+            {
+                // Determine if this def toggles plant sow tags
+                return (
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( !sowTags.NullOrEmpty() )&&
+                    ( !thingDefs.NullOrEmpty() )
+                );
+            }
+        }
+
+        public bool                         IsBuildingToggle
+        {
+            get
+            {
+                // Determine if this def toggles buildings
+                return (
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
+                    ( !thingDefs.NullOrEmpty() )
+                );
+            }
+        }
+
+        public bool                         IsResearchToggle
+        {
+            get
+            {
+                // Determine if this def toggles research
+                return (
+                    ( !effectedResearchDefs.NullOrEmpty() )
+                );
+            }
+        }
+
+        public bool                         HasCallbacks
+        {
+            get
+            {
+                // Determine if this def has callbacks
+                return (
+                    ( !researchMods.NullOrEmpty() )
+                );
+            }
+        }
+
+        public bool                         HasHelp
+        {
+            get
+            {
+                return 
+                    ( ConsolidateHelp )||
+                    (
+                        ( ResearchConsolidator != null )&&
+                        ( ResearchConsolidator.ConsolidateHelp )
+                    );
+            }
+        }
+
+        bool                                HasMatchingResearch( AdvancedResearchDef other )
+        {
+            if( researchDefs.Count != other.researchDefs.Count )
+            {
+                return false;
             }
 
-            // No god mode, check it
-            foreach( var researchProject in researchDefs )
+            SortResearch();
+            other.SortResearch();
+
+            for( int i = 0; i < researchDefs.Count; ++ i )
             {
-                if( !researchProject.IsFinished )
+                if( researchDefs[ i ] != other.researchDefs[ i ] )
                 {
                     return false;
                 }
             }
-
-            // All done
             return true;
         }
 
-        public bool                         IsRecipeToggle()
+        public float                        TotalCost
         {
-            // Determine if this def toggles recipes
-            return (
-                ( ( recipeDefs != null )&&( recipeDefs.Count > 0 ) )&&
-                ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
-                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
-            );
+            get
+            {
+                if( totalCost < 0 )
+                {
+                    totalCost = 0;
+                    foreach( var r in researchDefs )
+                    {
+                        totalCost += r.totalCost;
+                    }
+                }
+                return totalCost;
+            }
         }
 
-        public bool                         IsPlantToggle()
+        public AdvancedResearchDef          ResearchConsolidator
         {
-            // Determine if this def toggles plant sow tags
-            return (
-                ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
-                ( ( sowTags != null )&&( sowTags.Count > 0 ) )&&
-                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
-            );
-        }
-
-        public bool                         IsBuildingToggle()
-        {
-            // Determine if this def toggles buildings
-            return (
-                ( ( recipeDefs == null )||( ( recipeDefs != null )&&( recipeDefs.Count == 0 ) ) )&&
-                ( ( sowTags == null )||( ( sowTags != null )&&( sowTags.Count == 0 ) ) )&&
-                ( ( thingDefs != null )&&( thingDefs.Count > 0 ) )
-            );
-        }
-
-        public bool                         HasCallbacks()
-        {
-            // Determine if this def has callbacks
-            return (
-                ( ( researchMods != null )&&( researchMods.Count > 0 ) )
-            );
-        }
-
-        public bool                         IsResearchToggle()
-        {
-            // Determine if this def toggles research
-            return (
-                ( ( effectedResearchDefs != null )&&( effectedResearchDefs.Count > 0 ) )
-            );
+            get
+            {
+                if( ConsolidateHelp )
+                {
+                    return this;
+                }
+                if( researchConsolidator == null )
+                {
+                    var matching = ModController.AdvancedResearch.Where( a => (
+                        ( HasMatchingResearch( a ) )
+                    ) ).ToList();
+                    researchConsolidator = matching.FirstOrDefault( a => ( a.ConsolidateHelp ) );
+                    if( researchConsolidator == null )
+                    {
+                        researchConsolidator = matching.FirstOrDefault();
+                    }
+                }
+                return researchConsolidator;
+            }
         }
 
         #endregion
 
         #region Process State
 
-        public void                         ToggleRecipes( List< ThingDef > buildingCache, bool SetInitialState = false )
+        public void                         Disable( bool firstTimeRun = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            // Don't disable if it's not the first run or not yet enabled
+            if(
+                ( researchState == ResearchEnableMode.Incomplete )&&
+                ( firstTimeRun == false )
+            )
+            {
+                return;
+            }
+            if( IsRecipeToggle )
+            {
+                // Recipe toggle
+                ToggleRecipes( true );
+            }
+            if( IsPlantToggle )
+            {
+                // Plant toggle
+                TogglePlants( true );
+            }
+            if( IsBuildingToggle )
+            {
+                // Building toggle
+                ToggleBuildings( true );
+            }
+            if(
+                ( IsResearchToggle )&&
+                ( researchState != ResearchEnableMode.GodMode )
+            )
+            {
+                // Research toggle
+                ToggleResearch( true );
+            }
+            if(
+                ( HasCallbacks )&&
+                ( !firstTimeRun )
+            )
+            {
+                // Cache callbacks
+                ToggleCallbacks( true );
+            }
+            if( HasHelp )
+            {
+                // Build & toggle help
+                ToggleHelp( true );
+            }
+            // Flag it as disabled
+            researchState = ResearchEnableMode.Incomplete;
+        }
+
+        public void                         Enable( ResearchEnableMode mode )
+        {
+            // Don't enable if enabled
+            if( researchState != ResearchEnableMode.Incomplete )
+            {
+                if(
+                    ( researchState == ResearchEnableMode.GodMode )&&
+                    ( mode != ResearchEnableMode.GodMode )&&
+                    ( IsResearchToggle )
+                )
+                {
+                    // Player completed research with god-mode on
+                    // Research toggle
+                    ToggleResearch();
+                    // Flag it as enabled by mode
+                    researchState = mode;
+                }
+                return;
+            }
+            if( IsRecipeToggle )
+            {
+                // Recipe toggle
+                ToggleRecipes();
+            }
+            if( IsPlantToggle )
+            {
+                // Plant toggle
+                TogglePlants();
+            }
+            if( IsBuildingToggle )
+            {
+                // Building toggle
+                ToggleBuildings();
+            }
+            if(
+                ( IsResearchToggle )&&
+                ( mode != ResearchEnableMode.GodMode )
+            )
+            {
+                // Research toggle, if it's not god mode
+                ToggleResearch();
+            }
+            if( HasCallbacks )
+            {
+                // Cache callbacks
+                ToggleCallbacks();
+            }
+            if( HasHelp )
+            {
+                // Build & toggle help
+                ToggleHelp();
+            }
+            // Flag it as enabled by mode
+            researchState = mode;
+        }
+
+        void                                SortResearch()
+        {
+            if( researchSorted )
+            {
+                return;
+            }
+            researchDefs.Sort( delegate( ResearchProjectDef x, ResearchProjectDef y )
+                {
+                    return x.defName.CompareTo(y.defName) * -1;
+                }
+            );
+            researchSorted = true;
+        }
+
+        #endregion
+
+        #region Toggle States
+
+        void                                ToggleRecipes( bool setInitialState = false )
+        {
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each building
             foreach( var buildingDef in thingDefs )
             {
 
+                // Make sure the thing has a recipe list
+                if( buildingDef.recipes == null )
+                {
+                    buildingDef.recipes = new List< RecipeDef >();
+                }
+
                 // Go through each recipe
                 foreach( var recipeDef in recipeDefs )
                 {
-
-                    // Make sure recipe has user list
-                    if( recipeDef.recipeUsers == null )
-                    {
-                        recipeDef.recipeUsers = new List<ThingDef>();
-                    }
 
                     if( Hide )
                     {
                         // Hide recipe
 
                         // Remove building from recipe
-                        if( recipeDef.recipeUsers.IndexOf( buildingDef ) >= 0 )
+                        if( recipeDef.recipeUsers!= null )
                         {
                             recipeDef.recipeUsers.Remove( buildingDef );
                         }
 
                         // Remove recipe from building
-                        if( ( buildingDef.recipes != null )&&
-                            ( buildingDef.recipes.IndexOf( recipeDef ) >= 0 ) )
-                        {
-                            buildingDef.recipes.Remove( recipeDef );
-                        }
-
-                        // Remove bill on any table of this def using this recipe
-                        var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( buildingDef );
-                        foreach( var building in buildings )
-                        {
-                            var BillGiver = building as IBillGiver;
-                            for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
-                            {
-                                var bill = BillGiver.BillStack[ i ];
-                                if( bill.recipe == recipeDef )
-                                {
-                                    BillGiver.BillStack.Delete( bill );
-                                    continue;
-                                }
-                            }
-                        }
+                        buildingDef.recipes.Remove( recipeDef );
 
                     }
-                    else
+                    else if( !buildingDef.recipes.Contains( recipeDef ) )
                     {
-                        // Add building to recipe
-                        recipeDef.recipeUsers.Add( buildingDef );
+                        // Add recipe to the building
+                        buildingDef.recipes.Add( recipeDef );
                     }
                 }
 
                 // Add this building to the list to recache
-                buildingCache.Add( buildingDef );
+                ResearchController.buildingCache.Add( buildingDef );
             }
         }
 
-        public void                         TogglePlants( bool SetInitialState = false )
+        void                                TogglePlants( bool setInitialState = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each plant
             foreach( var plantDef in thingDefs )
@@ -197,7 +548,7 @@ namespace CommunityCoreLibrary
                         // Hide plant
                         plantDef.plant.sowTags.Remove( sowTag );
                     }
-                    else
+                    else if( !plantDef.plant.sowTags.Contains( sowTag ) )
                     {
                         // Show the plant
                         plantDef.plant.sowTags.Add( sowTag );
@@ -206,9 +557,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         ToggleBuildings( bool SetInitialState = false )
+        void                                ToggleBuildings( bool setInitialState = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each building
             foreach( var buildingDef in thingDefs )
@@ -217,9 +568,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         ToggleResearch( bool SetInitialState = false )
+        void                                ToggleResearch( bool setInitialState = false )
         {
-            bool Hide = !SetInitialState ? HideDefs : !HideDefs;
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             // Go through each research project to be effected
             foreach( var researchProject in effectedResearchDefs )
@@ -232,6 +583,474 @@ namespace CommunityCoreLibrary
                 {
                     // Lock research
                     researchProject.prerequisites.Add( Research.Locker );
+                }
+            }
+        }
+
+        void                                ToggleCallbacks( bool setInitialState = false )
+        {
+            bool Hide = !setInitialState ? HideDefs : !HideDefs;
+
+            if( Hide )
+            {
+                // Cache the callbacks in reverse order when hiding
+                for( int i = researchMods.Count - 1; i >= 0; i-- ){
+                    var researchMod = researchMods[ i ];
+                    // Add the advanced research mod to the cache
+                    ResearchController.researchModCache.Add( researchMod );
+                }
+            }
+            else
+            {
+                // Cache the callbacks in order
+                foreach( var researchMod in researchMods )
+                {
+
+                    // Add the advanced research mod to the cache
+                    ResearchController.researchModCache.Add( researchMod );
+                }
+            }
+        }
+
+        public void                         ToggleHelp( bool setInitialState = false )
+        {
+            if( ( !ConsolidateHelp )||
+                ( HelpDef == null ) )
+            {
+                return;
+            }
+            bool Hide = HideUntilResearched && setInitialState;
+
+            if( Hide )
+            {
+                // Hide it from the help system
+                HelpDef.category = (HelpCategoryDef)null;
+            }
+            else
+            {
+                // Show it to the help system
+                HelpDef.category = helpCategoryDef;
+            }
+
+            // Queue for recache
+            ResearchController.helpCategoryCache.Add( helpCategoryDef );
+        }
+
+        #endregion
+
+        #region Aggregate Data
+
+        List< AdvancedResearchDef >         MatchingAdvancedResearch
+        {
+            get
+            {
+                if( ( matchingAdvancedResearch == null )&&
+                    ( ResearchConsolidator == this )  )
+                {
+                    // Matching advanced research (by requirements)
+                    var matching  = ModController.AdvancedResearch.FindAll( a => (
+                        ( HasMatchingResearch( a ) )
+                    ) );
+                    // Find this research as the consolidator
+                    researchConsolidator = matching.First( a => ( a.ConsolidateHelp ) );
+                    if( researchConsolidator == null )
+                    {
+                        // Find the highest priority one instead
+                        researchConsolidator = matching.First();   
+                    }
+                    if( researchConsolidator == this )
+                    {
+                        // This is the final consolidator
+                        matching.Remove( this );
+                        // Set reference to help consolidator
+                        foreach( var a in matching )
+                        {
+                            a.researchConsolidator = this;
+                        }
+                        matchingAdvancedResearch = matching;
+                    }
+                }
+                // return the matching research or null
+                return matchingAdvancedResearch;
+            }
+        }
+
+        public List< Def >                  GetResearchRequirements()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetResearchRequirements();
+            }
+
+            // Return the list of research required
+            return researchDefs.ConvertAll<Def>( def => (Def)def );
+        }
+
+        public List< ThingDef >             GetThingsUnlocked()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetThingsUnlocked();
+            }
+
+            // Buildings it unlocks
+            var thingdefs = new List<ThingDef>();
+
+            // Look at this def
+            if(
+                ( !HideDefs )&&
+                ( IsBuildingToggle )
+            )
+            {
+                thingdefs.AddRange( thingDefs );
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsBuildingToggle )
+                    )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
+                }
+            }
+
+            return thingdefs;
+        }
+
+        public List< ThingDef >             GetThingsLocked()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetThingsLocked();
+            }
+
+            // Buildings it locks
+            var thingdefs = new List<ThingDef>();
+
+            // Look at this def
+            if(
+                ( HideDefs )&&
+                ( IsBuildingToggle )
+            )
+            {
+                thingdefs.AddRange( thingDefs );
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( a.HideDefs )&&
+                        ( a.IsBuildingToggle )
+                    )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
+                }
+            }
+
+            return thingdefs;
+        }
+
+        public List< RecipeDef >            GetRecipesUnlocked( ref List< ThingDef > thingdefs )
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetRecipesUnlocked( ref thingdefs );
+            }
+
+            // Recipes on buildings it unlocks
+            var recipedefs = new List<RecipeDef>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
+
+            // Look at this def
+            if(
+                ( !HideDefs )&&
+                ( IsRecipeToggle )
+            )
+            {
+                recipedefs.AddRange( recipeDefs );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsRecipeToggle )
+                    )
+                    {
+                        recipedefs.AddRange( a.recipeDefs );
+                        if( thingdefs != null )
+                        {
+                            thingdefs.AddRange( a.thingDefs );
+                        }
+                    }
+                }
+            }
+
+            return recipedefs;
+        }
+
+        public List< RecipeDef >            GetRecipesLocked( ref List< ThingDef > thingdefs )
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetRecipesLocked( ref thingdefs );
+            }
+
+            // Recipes on buildings it locks
+            var recipedefs = new List<RecipeDef>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
+
+            // Look at this def
+            if(
+                ( HideDefs )&&
+                ( IsRecipeToggle )
+            )
+            {
+                recipedefs.AddRange( recipeDefs );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
+            }
+
+            // Look in matching research
+            foreach( var a in MatchingAdvancedResearch )
+            {
+                if(
+                    ( a.HideDefs )&&
+                    ( a.IsRecipeToggle )
+                )
+                {
+                    recipedefs.AddRange( a.recipeDefs );
+                    if( thingdefs != null )
+                    {
+                        thingdefs.AddRange( a.thingDefs );
+                    }
+                }
+            }
+
+            return recipedefs;
+        }
+
+        public List< string >               GetSowTagsUnlocked( ref List< ThingDef > thingdefs )
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetSowTagsUnlocked( ref thingdefs );
+            }
+
+            // Sow tags on plants it unlocks
+            var sowtags = new List<string>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
+
+            // Look at this def
+            if(
+                ( !HideDefs )&&
+                ( IsPlantToggle )
+            )
+            {
+                sowtags.AddRange( sowTags );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsPlantToggle )
+                    )
+                    {
+                        sowtags.AddRange( a.sowTags );
+                        if( thingdefs != null )
+                        {
+                            thingdefs.AddRange( a.thingDefs );
+                        }
+                    }
+                }
+            }
+
+            return sowtags;
+        }
+
+        public List< string >               GetSowTagsLocked( ref List< ThingDef > thingdefs )
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetSowTagsLocked( ref thingdefs );
+            }
+
+            // Sow tags on plants it unlocks
+            var sowtags = new List<string>();
+            if( thingdefs != null )
+            {
+                thingdefs.Clear();
+            }
+
+            // Look at this def
+            if(
+                ( HideDefs )&&
+                ( IsPlantToggle )
+            )
+            {
+                sowtags.AddRange( sowTags );
+                if( thingdefs != null )
+                {
+                    thingdefs.AddRange( thingDefs );
+                }
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( a.HideDefs )&&
+                        ( a.IsPlantToggle )
+                    )
+                    {
+                        sowtags.AddRange( a.sowTags );
+                        if( thingdefs != null )
+                        {
+                            thingdefs.AddRange( a.thingDefs );
+                        }
+                    }
+                }
+            }
+
+            return sowtags;
+        }
+
+        public List< Def >                  GetResearchUnlocked()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetResearchUnlocked();
+            }
+
+            // Research it unlocks
+            var researchdefs = new List<Def>();
+
+            // Look at this def
+            if(
+                ( !HideDefs )&&
+                ( IsResearchToggle )
+            )
+            {
+                researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( !a.HideDefs )&&
+                        ( a.IsResearchToggle )
+                    )
+                    {
+                        researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    }
+                }
+            }
+
+            return researchdefs;
+        }
+
+        public List< Def >                  GetResearchLocked()
+        {
+            if( ResearchConsolidator != this )
+            {
+                return ResearchConsolidator.GetResearchLocked();
+            }
+
+            // Research it locks
+            var researchdefs = new List<Def>();
+
+            // Look at this def
+            if(
+                ( HideDefs )&&
+                ( IsResearchToggle )
+            )
+            {
+                researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+            }
+
+            // Look in matching research
+            if( !MatchingAdvancedResearch.NullOrEmpty() )
+            {
+                foreach( var a in MatchingAdvancedResearch )
+                {
+                    if(
+                        ( a.HideDefs )&&
+                        ( a.IsResearchToggle )
+                    )
+                    {
+                        researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    }
+                }
+            }
+
+            return researchdefs;
+        }
+
+        #endregion
+
+        #region Help Def
+
+        public HelpDef                      HelpDef
+        {
+            get
+            {
+                if( helpDef != null )
+                {
+                    return helpDef;
+                }
+
+                if( ResearchConsolidator != null )
+                {
+                    return ResearchConsolidator.helpDef;
+                }
+                return null;
+            }
+            set
+            {
+                if( ConsolidateHelp )
+                {
+                    helpDef = value;
                 }
             }
         }

@@ -8,7 +8,7 @@ namespace CommunityCoreLibrary
 
     public class Alert_NeedBatteries : RimWorld.Alert_NeedBatteries
     {
-        
+
         static bool                         CheckThing( Thing thing )
         {
             var p = thing.TryGetComp< CompPowerTrader >();

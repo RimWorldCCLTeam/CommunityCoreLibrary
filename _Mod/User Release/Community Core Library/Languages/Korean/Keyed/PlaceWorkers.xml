@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- PlaceWorkers -->
+    <!--<MessagePlacementItemSurface>Must be placed on an item surface!</MessagePlacementItemSurface>-->
+    <MessagePlacementMustBeUnderRoof>지붕 아래 배치되어야 합니다.</MessagePlacementMustBeUnderRoof>
+    <MessagePlacementAgainstSupport>지지대 역할을 할 물체를 향해 배치되어야 합니다.</MessagePlacementAgainstSupport>
+    <MessagePlacementCountRestricted>{0}개 이상 만들 수 없습니다.</MessagePlacementCountRestricted>
+    <MessagePlacementNotOn>{0} 위에 배치할 수 없습니다.</MessagePlacementNotOn>
+    <MessagePlacementNotHere>여기 배치할 수 없습니다.</MessagePlacementNotHere>
+    <AlertPlaceWorkerRestrictionSupportRemovedLabel>지지대 없어짐</AlertPlaceWorkerRestrictionSupportRemovedLabel>
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>지지대가 없어졌거나 제거되어 다음 물건들이 파괴되었습니다.\n\n</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+
+</LanguageData>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_OnlyOnTerrain
+    
+    Requires:   RestrictedPlacement_Comp
+                ThingWithComps or TerrainWithComps
+    
+    This place worker restricts the building or terrain to being placed only on one of the
+    filtered TerrainDefs.
+    
+    Comp Properties:
+    
+    type (default)  tag                 Details
+    
+    bool (false)    IncludeRoughStone   [optional] Auto-add all rough stone terrain defs to list
+    bool (false)    IncludeSmoothStone  [optional] Auto-add all smooth stone terrain defs to list
+    
+    TerrainDefs     terrainDefs         [required] List of terrain to do allow placement on
+        (null)
+    
+    Usage:
+    
+    <Def>
+        ...
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                
+                <terrainDefs>
+                    <li>Soil</li>
+                    <li>SoilRich</li>
+                </terrainDefs>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </Def>
+    
+    -->
+
+</Defs>

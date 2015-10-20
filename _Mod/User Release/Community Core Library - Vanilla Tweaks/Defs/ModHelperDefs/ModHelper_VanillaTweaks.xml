@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>CommunityCoreLibraryVanillaTweaks</defName>
+        
+        <ModName>Community Core Library - Vanilla Tweaks</ModName>
+        
+        <version>0.12.4</version>
+        
+    </ModHelperDef>
+
+</Defs>

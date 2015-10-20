@@ -1,36 +1,100 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Text;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class HelpDef : Def, IComparable
     {
-        
+
         #region XML Data
 
-        public HelpCategoryDef              category;
+        public HelpCategoryDef category;
+
+        #endregion
+
+        [Unsaved]
+
+        #region Instance Data
+
+        public Def                   keyDef;
 
         #endregion
 
         #region Process State
 
-        public override void                ResolveReferences()
+#if DEBUG
+        public override void ResolveReferences()
         {
             base.ResolveReferences();
             if( category == null )
             {
-                Log.Error( "Community Core Library :: Help Tab :: category resolved to null in HelpDef( " + defName + " )" );
+                CCL_Log.Error( "Category resolved to null", defName );
             }
         }
+#endif
 
-        public int                          CompareTo( object obj )
+        public int CompareTo(object obj)
         {
             var d = obj as HelpDef;
             return d != null
-                ? d.label.CompareTo( label )
-                : 1;
+                ? d.label.CompareTo(label) * -1
+                    : 1;
+        }
+
+        #endregion
+
+        #region Log Dump
+
+        public string LogDump()
+        {
+            return 
+                "HelpDef: " + defName +
+                "\n\t" + keyDef +
+                "\n\t" + category.LabelCap +
+                "\n\t" + LabelCap +
+                "\n------\n" +
+                description +
+                "\n------\n";
+        }
+
+        #endregion
+
+        #region Help details
+
+        public List< HelpDetailSection > HelpDetailSections = new List<HelpDetailSection>();
+
+        public string Description
+        {
+            get
+            {
+                StringBuilder s = new StringBuilder();
+                s.AppendLine(description);
+                foreach (HelpDetailSection section in HelpDetailSections)
+                {
+                    s.AppendLine(section.GetString());
+                }
+                return s.ToString();
+            }
+        }
+
+        #endregion
+
+        #region Filter
+
+        public bool ShouldDraw { get; set; }
+
+        public void Filter(string filter, bool force = false)
+        {
+            ShouldDraw = force || MatchesFilter(filter);
+        }
+
+        public bool MatchesFilter(string filter)
+        {
+            return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
+
         }
 
         #endregion

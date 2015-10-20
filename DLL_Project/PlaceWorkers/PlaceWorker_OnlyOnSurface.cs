@@ -2,10 +2,10 @@
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class PlaceWorker_OnlyOnSurface : PlaceWorker
     {
-        
+
         public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
         {
             foreach( Thing curThing in loc.GetThingList() )
@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
                 }
             }
 
-            return (AcceptanceReport)"MessagePlacementItemSurface".Translate();
+            return (AcceptanceReport)( "MessagePlacementItemSurface".Translate() );
         }
 
     }

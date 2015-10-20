@@ -1,6 +1,6 @@
 "Suggestion","Implemented As","Person","Forum Link"
 ,,,
-"On smoothed floor","","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146383#msg146383"
+"On smoothed floor","IncludeSmoothStone & IncludeRoughStone for [Not/Only]OnTerrain","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146383#msg146383"
 "On terrain","PlaceWorler_OnlyOnTerrain/NotOnTerrain","skyarkhangel","https://ludeon.com/forums/index.php?topic=14172.msg146402#msg146402"
 "Restricted Count","PlaceWorker_RestrictedCount","mipen","https://ludeon.com/forums/index.php?topic=14172.msg146866#msg146866"
 "AR Hide buildings/recipes","AdvancedResearchDef.HideDefs","mrofa","via pm"
@@ -11,7 +11,7 @@
 "Copy bills between work tables",,"mrofa","via pm"
 "Restrict to neighbouring building",,"mrofa","via pm"
 "Event logger",,"mrofa","via pm"
-"A “lite” version of the mod with minimal vanilla edits","CCL_Lite_vX.Y.Z.zip","mrofa","via pm"
+"A “lite” version of the mod with minimal vanilla edits","Vanilla Tweaks","mrofa","via pm"
 "Restrict proximity, in row/column",,"skyarkhangel","via pm"
 "Designator rclick for different building types",,"jacob814","via pm"
 "Unlocking growable plants via research","AdvancedResearchDef.sowTags","skyarkhangel","via pm"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    <HelpCategoryDef>
+
+        <defName>string</defName>       [required] Some unique identifier in class
+
+        <ModName>string</ModName>       [required] Name of associated mod
+
+        <label>string</label>           [required] Title of help section within mod
+
+    </HelpCategoryDef>
+
+    -->
+
+</Defs>

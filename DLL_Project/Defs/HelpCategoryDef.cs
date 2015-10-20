@@ -5,89 +5,93 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class HelpCategoryDef : Def
     {
 
         #region XML Data
 
-        public string                       ModName;
+        public string                   ModName;
 
         #endregion
 
-        #region Instance Data
         [Unsaved]
 
-        readonly List<HelpDef>              _cachedHelpDefs = new List<HelpDef>();
+        #region Instance Data
+
+        readonly List<HelpDef>          _cachedHelpDefs = new List<HelpDef>();
+
+        public string                   keyDef;
 
         #endregion
 
         #region Query State
 
-        public List<HelpDef>                HelpDefs
+        public List<HelpDef> HelpDefs
         {
             get
             {
                 return _cachedHelpDefs;
             }
         }
+        
+        public bool ShouldDraw { get; set; }
 
-        public float                        DrawHeight
+        public bool Expanded { get; set; }
+
+        public bool MatchesFilter(string filter)
         {
-            get
+            return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
+        }
+
+        public bool ThisOrAnyChildMatchesFilter(string filter)
+        {
+            return MatchesFilter(filter) || HelpDefs.Any(hd => hd.MatchesFilter(filter));
+        }
+
+        public void Filter(string filter, bool force = false)
+        {
+            ShouldDraw = force || ThisOrAnyChildMatchesFilter(filter);
+            Expanded = filter != "" && (force || ThisOrAnyChildMatchesFilter(filter));
+            foreach (HelpDef hd in HelpDefs)
             {
-                if( Expanded )
-                {
-                    return OTab_ModHelp.EntryHeight + HelpDefs.Count * OTab_ModHelp.EntryHeight;
-                }
-                else
-                {
-                    return OTab_ModHelp.EntryHeight;
-                }
+                hd.Filter(filter, force || MatchesFilter(filter));
             }
         }
 
-        public bool                         ShouldDraw
-        {
-            get
-            {
-                return HelpDefs.Count > 0;
-            }
-        }
 
-        public bool                         Expanded { get; set; }
 
         #endregion
 
         #region Process State
 
-        public override void                ResolveReferences()
+        public override void ResolveReferences()
         {
             base.ResolveReferences();
             Recache();
         }
 
 #if DEBUG
-        public override void                PostLoad()
+        public override void PostLoad()
         {
             base.PostLoad();
 
             if( ModName.NullOrEmpty() )
             {
-                Log.Error( "Community Core Library :: Help Tab :: ModName resolved to null in HelpCategoryDef( " + defName + " )" );
+                CCL_Log.Error( "ModName resolved to null", defName );
             }
         }
 #endif
 
-        void                                Recache()
+        public void Recache()
         {
             _cachedHelpDefs.Clear();
-            foreach( var def in (
+            foreach (var def in (
                 from t in DefDatabase<HelpDef>.AllDefs
                 where t.category == this
-                select t ) )
+                select t))
             {
-                _cachedHelpDefs.Add( def );
+                _cachedHelpDefs.Add(def);
             }
             _cachedHelpDefs.Sort();
         }

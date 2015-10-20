@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+  <!-- UI Elements -->
+
+  <CompColorLightInspect>색: </CompColorLightInspect>
+
+  <CommandChangeColorLabel>색 변경</CommandChangeColorLabel>
+  <CommandChangeColorDesc>왼쪽 클릭 - {0}\n오른쪽 클릭 - {1}</CommandChangeColorDesc>
+
+  <CommandChangeRoommateColorLabel>같은 방 조명 색 동기화</CommandChangeRoommateColorLabel>
+  <CommandChangeRoommateColorLClick>왼쪽 클릭 - {0}만</CommandChangeRoommateColorLClick>
+  <CommandChangeRoommateColorRClick>오른쪽 클릭 - 모든 조명</CommandChangeRoommateColorRClick>
+
+  <CommandChangeTouchingPlantLabel>인접 재배기 동기화</CommandChangeTouchingPlantLabel>
+  <CommandChangeRoommatePlantLabel>같은 방 재배기 동기화</CommandChangeRoommatePlantLabel>
+  <CommandChangeRoommatePlantLClick>왼쪽 클릭 - {0}만</CommandChangeRoommatePlantLClick>
+  <CommandChangeRoommatePlantRClick>오른쪽 클릭 - 모든 재배기</CommandChangeRoommatePlantRClick>
+
+  <CommandGroupOfThingsLClick>왼쪽 클릭 - 같은 방</CommandGroupOfThingsLClick>
+  <CommandGroupOfThingsRClick>오른쪽 클릭 - 지도 전체</CommandGroupOfThingsRClick>
+
+  <CommandGroupOfThingsByDefLabel>인접 {0} 동기화</CommandGroupOfThingsByDefLabel>
+  <CommandGroupOfThingsByLinkerLabel>연결된 {0} 동기화</CommandGroupOfThingsByLinkerLabel>
+
+  <CommandGroupOfThingsByDefInRoomLabel>같은 방 {0} 동기화</CommandGroupOfThingsByDefInRoomLabel>
+  <CommandGroupOfThingsByLinkerInRoomLabel>같은 방의 연결된 {0} 동기화</CommandGroupOfThingsByLinkerInRoomLabel>
+
+  <HelpOTabTitle>모드 도움말</HelpOTabTitle>
+  <NoHelpDefs>도움말 정의를 찾을 수 없음</NoHelpDefs>
+
+  <RefrigeratedStorage>냉장 보관</RefrigeratedStorage>
+
+</LanguageData>

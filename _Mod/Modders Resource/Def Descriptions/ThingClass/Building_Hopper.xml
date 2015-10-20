@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingClass: Building_Hopper
+    
+    Requires:   CompHopper
+    
+    Optional:   PlaceWorker_HopperUserMagnifier
+    
+    This is the base building class for generic hoppers.
+
+    See:        /Def Descriptions/ThingComps/CompHopper.xml
+    
+    -->
+
+</Defs>

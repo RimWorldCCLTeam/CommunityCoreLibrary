@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingClass: Building_SunLampHeatController
+    
+    tickerType: Rare
+    
+    Building_SunLampHeatController (UV lamp), is a combination of two different buildings,
+    RimWorld.Building_SunLamp (sunlamp) and RimWorld.Building_Heater (heater).  Being both
+    a sunlamp and a heater, it offers both buildings controls and functionality into one
+    unit.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <thingClass>CommunityCoreLibrary.Building_SunLampHeatController</thingClass>
+        
+        <tickerType>Rare</tickerType>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

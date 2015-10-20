@@ -8,7 +8,7 @@ namespace CommunityCoreLibrary
 
     public class Alert_PlaceWorker_Restriction : Alert_Critical
     {
-        
+
         public override AlertReport         Report
         {
             get
@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
                 // Alert the player that something got destroyed
                 return !PlaceWorker_Restriction_Alert_Data.AlertPlayer
                     ? AlertReport.Inactive
-                    : AlertReport.CulpritIs( PlaceWorker_Restriction_Alert_Data.DestroyedThings.RandomElement() );
+                        : AlertReport.CulpritIs( PlaceWorker_Restriction_Alert_Data.DestroyedThings.RandomElement() );
             }
         }
 
@@ -25,12 +25,11 @@ namespace CommunityCoreLibrary
             get
             {
                 var msg = new StringBuilder();
-                msg.AppendLine( "AlertPlaceWorkerRestrictionSupportRemovedDesc".Translate() );
                 foreach( var t in PlaceWorker_Restriction_Alert_Data.DestroyedThings )
                 {
                     msg.AppendLine( "   " + t.def.defName );
                 }
-                return msg.ToString();
+                return "AlertPlaceWorkerRestrictionSupportRemovedDesc".Translate(msg.ToString());
             }
         }
 

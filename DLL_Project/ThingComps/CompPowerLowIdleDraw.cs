@@ -6,10 +6,14 @@ using Verse.AI;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class CompPowerLowIdleDraw : ThingComp
     {
-        
+
+        [Unsaved]
+
+        #region Instance Data
+
         CompPowerTrader                     PowerTrader;
         List<IntVec3>                       scanPosition;
         Pawn                                curUser;
@@ -25,6 +29,10 @@ namespace CommunityCoreLibrary
         int                                 keepOnTicks;
 
         CompProperties_LowIdleDraw          IdleProps;
+
+        #endregion
+
+        #region Comp Getters
 
         CompGlower                          CompGlower
         {
@@ -42,6 +50,10 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
+        #region Query State
+
         public bool                         LowPowerMode
         {
             get
@@ -50,18 +62,20 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
         public override void                PostExposeData()
         {
-
-            //Log.Message( parent.def.defName + " - PostExposeData()" );
             base.PostExposeData();
 
             Scribe_Values.LookValue<int>( ref keepOnTicks, "keepOnTicks", 30 );
             Scribe_Values.LookValue<float>( ref curPower, "curPower", 1f );
             Scribe_References.LookReference<Pawn>( ref curUser, "curUser" );
 
-            if( ( Scribe.mode == LoadSaveMode.LoadingVars )&&
-                ( curUser != null ) )
+            if(
+                ( Scribe.mode == LoadSaveMode.LoadingVars )&&
+                ( curUser != null )
+            )
             {
                 curJob = curUser.CurJob;
             }
@@ -69,7 +83,6 @@ namespace CommunityCoreLibrary
 
         public override void                PostSpawnSetup()
         {
-            //Log.Message( parent.def.defName + " - PostSpawnSetup()" );
             base.PostSpawnSetup();
 
             // Get the power comp
@@ -77,7 +90,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( PowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompPowerLowIdleDraw :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompPowerLowIdleDraw requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 #endif
@@ -87,7 +100,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( IdleProps == null )
             {
-                Log.Message( "Community Core Library :: CompPowerLowIdleDraw :: " + parent.def.defName + " requires CompProperties_LowIdleDraw!" );
+                CCL_Log.Error( "CompPowerLowIdleDraw requires CompProperties_LowIdleDraw!", parent.def.defName );
                 return;
             }
 #endif
@@ -101,7 +114,6 @@ namespace CommunityCoreLibrary
             {
                 idlePower = minIdleDraw;
             }
-            //Log.Message( parent.def.defName + " - " + idlePower + " - " + PowerTrader.props.basePowerConsumption + " - " + IdleProps.idlePowerFactor );
 
             // Initial state...
 
@@ -117,8 +129,12 @@ namespace CommunityCoreLibrary
 
         public override void                CompTick()
         {
-            //Log.Message( parent.def.defName + " :: CompTick" );
             base.CompTick();
+
+            if( !CompPowerTrader.PowerOn )
+            {
+                return;
+            }
 
             if( !parent.IsHashIntervalTick( 30 ) )
             {
@@ -131,8 +147,12 @@ namespace CommunityCoreLibrary
 
         public override void                CompTickRare()
         {
-            //Log.Message( parent.def.defName + " :: CompTickRare" );
             base.CompTickRare();
+
+            if( !CompPowerTrader.PowerOn )
+            {
+                return;
+            }
 
             // keepOnTicks -= 250;
             PowerLevelToggle( 250 );
@@ -141,8 +161,10 @@ namespace CommunityCoreLibrary
         public override void                ReceiveCompSignal( string signal )
         {
             // Asked to power down?
-            if( ( signal == "PowerTurnedOff" )||
-                ( signal == "PowerTurnedOn " ) )
+            if(
+                ( signal == "PowerTurnedOff" )||
+                ( signal == "PowerTurnedOn " )
+            )
             {
                 // Force toggle now
                 PowerLevelToggle( 1000000 );
@@ -157,8 +179,6 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-
-            //Log.Message( parent.def.defName + " - PowerLevelToggle" );
 
             // Basic decision, turn on if someone is on it, only if it turns
             // on when someone is on it (duh?), otherwise turn on if someone is
@@ -185,9 +205,17 @@ namespace CommunityCoreLibrary
                     {
 
                         // Quickly check the last user is still using...
-                        if( ( curUser != null )&&( curUser.Position == scanPosition[0] ) ) {
+                        if(
+                            ( curUser != null )&&
+                            ( curUser.Position == scanPosition[0] )
+                        )
+                        {
                             // They're here...
-                            if( ( curUser.CurJob != null )&&( curUser.CurJob == curJob ) ) {
+                            if(
+                                ( curUser.CurJob != null )&&
+                                ( curUser.CurJob == curJob )
+                            )
+                            {
                                 // ...they're using!
                                 turnItOn = true;
                                 break;
@@ -206,21 +234,27 @@ namespace CommunityCoreLibrary
                                 // ...With a job!...
 
                                 // ...(checking targets)...
-                                if( ( pUser.CurJob.targetA != null )&&
+                                if(
+                                    ( pUser.CurJob.targetA != null )&&
                                     ( pUser.CurJob.targetA.Thing != null )&&
-                                    ( pUser.CurJob.targetA.Thing.def == parent.def ) )
+                                    ( pUser.CurJob.targetA.Thing.def == parent.def )
+                                )
                                 {
                                     turnItOn = true;
                                 }
-                                else if( ( pUser.CurJob.targetB != null )&&
+                                else if(
+                                    ( pUser.CurJob.targetB != null )&&
                                     ( pUser.CurJob.targetB.Thing != null )&&
-                                    ( pUser.CurJob.targetB.Thing.def == parent.def ) )
+                                    ( pUser.CurJob.targetB.Thing.def == parent.def )
+                                )
                                 {
                                     turnItOn = true;
                                 }
-                                else if( ( pUser.CurJob.targetC != null )&&
+                                else if(
+                                    ( pUser.CurJob.targetC != null )&&
                                     ( pUser.CurJob.targetC.Thing != null )&&
-                                    ( pUser.CurJob.targetC.Thing.def == parent.def ) )
+                                    ( pUser.CurJob.targetC.Thing.def == parent.def )
+                                )
                                 {
                                     turnItOn = true;
                                 }
@@ -228,7 +262,6 @@ namespace CommunityCoreLibrary
                                 if( turnItOn )
                                 {
                                     // ..Using this building!...
-                                    //Log.Message( parent.def.defName + " - New User" );
                                     curUser = pUser;
                                     curJob = pUser.CurJob;
                                 }
@@ -242,7 +275,6 @@ namespace CommunityCoreLibrary
                     break;
                 case LowIdleDrawMode.Cycle :
                     // Power cycler
-                   // Log.Message( parent.def.defName + " is power cycling" );
 
                     if( LowPowerMode )
                     {
@@ -251,14 +283,15 @@ namespace CommunityCoreLibrary
                     }
                     break;
                 }
-            }else{
+            }
+            else
+            {
                 // Full-power when any pawn is standing on any monitored cell...
                 foreach( IntVec3 curPos in scanPosition )
                 {
                     if( Find.ThingGrid.ThingAt<Pawn>( curPos ) != null )
                     {
                         // Found a pawn, turn it on and early out
-                        //Log.Message( parent.def.defName + " - A pawn upon" );
                         turnItOn = true;
                         break;
                     }
@@ -280,15 +313,17 @@ namespace CommunityCoreLibrary
                     keepOnTicks = IdleProps.cycleHighTicks;
                 }
             }
-            else if ( !LowPowerMode )
+            else if( !LowPowerMode )
             {
                 // ...Is not idle, go to idle mode
                 TogglePower();
             }
 
-            if( ( LowPowerMode )&&
+            if(
+                ( LowPowerMode )&&
                 ( CompGlower != null )&&
-                ( CompGlower.Lit ) )
+                ( CompGlower.Lit )
+            )
             {
                 // Glower on while idle???
                 ToggleGlower( false );
@@ -324,7 +359,15 @@ namespace CommunityCoreLibrary
 
         void                                ToggleGlower( bool turnItOn )
         {
-            //Log.Message( parent.def.defName + " - Toggle glower" );
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.Cycle )&&
+                ( !turnItOn )
+            )
+            {
+                // Cyclers don't toggle glowers, but let them turn it back on (old saves)
+                return;
+            }
+
             // If no state change, abort
             if( turnItOn == CompGlower.Lit )
             {
@@ -340,7 +383,6 @@ namespace CommunityCoreLibrary
 
         void                                BuildScanList()
         {
-            //Log.Message( parent.def.defName + " - BuildScanlist" );
             // Default to interaction cell only, is also means that a pawn must
             // be using the building so star-gazers aren't turning the stove on.
             onIfOn = false;
@@ -356,10 +398,8 @@ namespace CommunityCoreLibrary
 
                 if( IdleProps.cycleHighTicks < 0 )
                 {
-                    IdleProps.cycleLowTicks = 500;
+                    IdleProps.cycleHighTicks = 500;
                 }
-
-                //Log.Message( parent.def.defName + " is power cycler " + IdleProps.cycleLowTicks + ":" + IdleProps.cycleHighTicks );
 
                 return;
             }
@@ -371,7 +411,6 @@ namespace CommunityCoreLibrary
             if( parent.def.hasInteractionCell )
             {
                 // Force-add interaction cell
-                //Log.Message( parent.def.defName + " - Force-add InteractionCell" );
                 scanPosition.Add( parent.InteractionCell );
 
                 switch( IdleProps.operationalMode )
@@ -450,8 +489,10 @@ namespace CommunityCoreLibrary
             // Look at each thing at this position and check it's passability
             foreach( Thing curThing in Find.ThingGrid.ThingsListAt( position ) )
             {
-                if( ( curThing.def.passability == Traversability.Impassable )||
-                    ( curThing.def.IsEdifice() ) )
+                if(
+                    ( curThing.def.passability == Traversability.Impassable )||
+                    ( curThing.def.IsEdifice() )
+                )
                 {
                     // Impassable cell, exit right meow!
                     return;
@@ -459,7 +500,6 @@ namespace CommunityCoreLibrary
             }
             // All things are passable, add cell
             scanPosition.Add( position );
-            //Log.Message( parent.def.defName + " - Add Cell " + position.ToString() );
         }
 
     }

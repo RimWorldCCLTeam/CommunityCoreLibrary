@@ -6,7 +6,15 @@ namespace CommunityCoreLibrary
 
     public class CompLifespanPowered : ThingComp
     {
-        
+
+        [Unsaved]
+
+        #region Instance Data
+
+        public int                          remainingTicks = -1;
+
+        #endregion
+
         CompPowerTrader                     CompPowerTrader
         {
             get
@@ -14,8 +22,6 @@ namespace CommunityCoreLibrary
                 return parent.TryGetComp< CompPowerTrader >();
             }
         }
-
-        public int                          remainingTicks = -1;
 
         public override void                PostSpawnSetup()
         {
@@ -25,7 +31,7 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( CompPowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompHeatPusherPowered :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompHeatPusherPowered requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 #endif
@@ -60,7 +66,7 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            
+
             remainingTicks -= down;
             if( remainingTicks > 0 )
             {

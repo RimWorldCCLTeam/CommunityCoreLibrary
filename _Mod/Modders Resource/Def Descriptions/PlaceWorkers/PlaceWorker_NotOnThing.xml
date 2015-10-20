@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_NotOnThing
+    
+    Requires:   RestrictedPlacement_Comp
+                ThingWithComps
+    
+    This place worker restricts the building from being placed on any of the filtered ThingDefs.
+    
+    Comp Properties:
+    
+    type (default)  tag                 Details
+    
+    ThingDefs       thingDefs           [required] List of things to disallow placement on.
+        (null)
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                
+                <thingDefs>
+                    <li>ChunkGranite</li>
+                    <li>ChunkSandstone</li>
+                    <li>ChunkLimestone</li>
+                    <li>ChunkSlate</li>
+                    <li>ChunkMarble</li>
+                    <li>ChunkSlagSteel</li>
+                </thingDefs>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_NotOnThing</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

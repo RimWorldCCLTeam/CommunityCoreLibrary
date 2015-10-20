@@ -5,7 +5,7 @@ namespace CommunityCoreLibrary
 
     public struct ColorName
     {
-        
+
         public string                       name;
         public ColorInt                     value;
 

@@ -4,10 +4,10 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public static class Light
     {
-        
+
         public static List< ColorName >     Color = new List< ColorName > {
             new ColorName( "colorWhite".Translate() , new ColorInt( 217, 217, 217,   0 ) ),
             new ColorName( "colorRed".Translate()   , new ColorInt( 217,   0,   0,   0 ) ),

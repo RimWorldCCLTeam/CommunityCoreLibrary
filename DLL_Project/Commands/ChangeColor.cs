@@ -9,7 +9,7 @@ namespace CommunityCoreLibrary.Commands
 
     public class ChangeColor : Command
     {
-        
+
         readonly CompColoredLight           parentLight;
 
         public override string              Desc
@@ -22,7 +22,7 @@ namespace CommunityCoreLibrary.Commands
                     "CommandChangeColorDesc".Translate(), 
                     parentLight.NextColorName(), 
                     parentLight.PrevColorName() );
-                
+
                 return stringBuilder.ToString();
             }
         }
@@ -35,10 +35,13 @@ namespace CommunityCoreLibrary.Commands
             }
         }
 
-        public                              ChangeColor( CompColoredLight light )
+        public                              ChangeColor(
+            CompColoredLight light,
+            Texture2D designatorIcon
+        )
         {
             parentLight = light;
-            icon = Icon.NextButton;
+            icon = designatorIcon;
             defaultLabel = "CommandChangeColorLabel".Translate();
         }
 

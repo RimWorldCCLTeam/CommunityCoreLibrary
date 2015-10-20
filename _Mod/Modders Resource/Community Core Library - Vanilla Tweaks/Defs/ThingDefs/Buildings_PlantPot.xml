@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef Name="BuildingBase" Abstract="True">
+        <category>Building</category>
+        <thingClass>Building</thingClass>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <selectable>true</selectable>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <repairEffect>Repair</repairEffect>
+        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <filthLeaving>BuildingRubble</filthLeaving>
+    </ThingDef>
+
+    <ThingDef Name="FurnitureBase" ParentName="BuildingBase" Abstract="True">
+        <comps>
+            <li>
+                <compClass>CompQuality</compClass>
+            </li>
+        </comps>
+        <DesignationCategory>Furniture</DesignationCategory>
+        <minifiedDef>MinifiedFurniture</minifiedDef>
+    </ThingDef>
+
+    <ThingDef ParentName="FurnitureBase">
+        <defName>PlantPot</defName>
+        <label>plant pot</label>
+        <thingClass>CommunityCoreLibrary.Building_Hydroponic</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Furniture/PlantPot</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowData>
+                <volume>(0.3, 0.6, 0.3)</volume>
+            </shadowData>
+        </graphicData>
+        <altitudeLayer>Waist</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <fillPercent>0.20</fillPercent>
+        <statBases>
+            <MaxHitPoints>100</MaxHitPoints>
+            <WorkToMake>495</WorkToMake>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <stuffCategories>
+            <li>Metallic</li>
+            <li>Woody</li>
+            <li>Stony</li>
+        </stuffCategories>
+        <costStuffCount>15</costStuffCount>
+        <inspectorTabs>
+            <li>ITab_Growing</li>
+        </inspectorTabs>
+        <description>Plant decorative flowers here to improve the mood of people nearby.</description>
+        <comps>
+            <li>
+                <compClass>CompForbiddable</compClass>
+            </li>
+            <li>
+                <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
+            </li>
+        </comps>
+        <fertility>1.0</fertility>
+        <designationHotKey>P</designationHotKey>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <building>
+            <defaultPlantToGrow>PlantDaylily</defaultPlantToGrow>
+            <plantsDestroyWithMe>true</plantsDestroyWithMe>
+            <sowTag>Decorative</sowTag>
+        </building>
+        <tickerType>Rare</tickerType>
+        <rotatable>false</rotatable>
+    </ThingDef>
+
+</Defs>

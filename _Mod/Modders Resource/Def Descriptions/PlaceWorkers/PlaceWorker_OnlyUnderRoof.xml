@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_OnlyUnderRoof
+    
+    Requires:   RestrictedPlacement_Comp
+                ThingWithComps or TerrainWithComps
+    
+    tickerType: Normal or Rare
+    
+    Only under roof (PlaceWorker_OnlyUnderRoof) restricts placement of a new thing to cells where
+    there is an existing roof.  Should the roof be removed for up to 250 normal ticks (one rare
+    tick), the thing will be destroyed and an alert will be raised for the player.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Normal or Rare</tickerType>
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyUnderRoof</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

@@ -32,6 +32,7 @@ namespace CommunityCoreLibrary
                             parent,
                             GetType(),
                             "CommandChangeTouchingPlantLabel".Translate(),
+                            Icon.ShareSowTag,
                             GroupPlantChange,
                             GroupPlantChange
                         );
@@ -50,6 +51,7 @@ namespace CommunityCoreLibrary
                     _GizmoTouchingByLinker =
                         new TouchingByLinker(
                             parent,
+                            Icon.ShareSowTag,
                             GroupPlantChange,
                             GroupPlantChange
                         );
@@ -69,7 +71,8 @@ namespace CommunityCoreLibrary
                         new DefOrThingCompInRoom(
                             parent,
                             GetType(),
-                            "CommandChangeRoommatePlantLabel".Translate()
+                            "CommandChangeRoommatePlantLabel".Translate(),
+                            Icon.ShareSowTag
                         );
                     _GizmoDefOrThingCompInRoom.LabelByDef = "CommandChangeRoommatePlantLClick".Translate( parent.def.label );
                     _GizmoDefOrThingCompInRoom.ClickByDef = GroupPlantChange;
@@ -87,16 +90,20 @@ namespace CommunityCoreLibrary
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
-            if( ( parent.Position.IsInRoom() )&&
-                ( parent.IsSameThingCompInRoom( GetType() ) ) )
+            if(
+                ( parent.Position.IsInRoom() )&&
+                ( parent.IsSameThingCompInRoom( GetType() ) )
+            )
             {
                 // In room by def or comp
                 yield return GizmoDefOrThingCompInRoom;
             }
 
             // Has a link flag
-            if( ( parent.def.graphicData.linkFlags != LinkFlags.None )&&
-                ( parent.IsSameGraphicLinkerTouching() ) )
+            if(
+                ( parent.def.graphicData.linkFlags != LinkFlags.None )&&
+                ( parent.IsSameGraphicLinkerTouching() )
+            )
             {
                 // Touching things by link
                 yield return GizmoTouchingByLinker;
@@ -123,24 +130,44 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( thisGrower == null )
             {
-                Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + parent.def.defName + " unable to resolve to Building_PlantGrower!" );
+                CCL_Log.Error( "CompNeighbourlyGrower unable to resolve parent to Building_PlantGrower!", parent.def.defName );
                 return;
             }
 #endif
-            
+            // Get plant to grow
+            var plantDef = thisGrower.GetPlantDefToGrow();
+            if(
+                ( plantDef == null )||
+                ( plantDef.plant == null )||
+                ( plantDef.plant.sowTags.NullOrEmpty() )
+            )
+            {
+                // "Plant" doesn't contain the required information
+                CCL_Log.Error( "CompNeighbourlyGrower unable to resolve to plant def to grow!", parent.def.defName );
+                return;
+            }
+
             // Now set their plant
             foreach( Thing g in things )
             {
                 // Should be a Building_PlantGrower
                 var grower = g as Building_PlantGrower;
 #if DEBUG
-                if( grower == null )
+                if(
+                    ( grower == null )||
+                    ( grower.def.building == null )||
+                    ( string.IsNullOrEmpty( grower.def.building.sowTag ) )
+                )
                 {
-                    Log.Error( "Community Core Library :: CompNeighbourlyGrower :: " + g.def.defName + " unable to resolve to Building_PlantGrower!" );
+                    CCL_Log.Error( "CompNeighbourlyGrower unable to resolve other building to Building_PlantGrower!", g.def.defName );
                     return;
                 }
 #endif
-                grower.SetPlantDefToGrow( thisGrower.GetPlantDefToGrow() );
+                // Only set if the sow tags match
+                if( plantDef.plant.sowTags.Contains( grower.def.building.sowTag ) )
+                {
+                    grower.SetPlantDefToGrow( plantDef );
+                }
             }
         }
 

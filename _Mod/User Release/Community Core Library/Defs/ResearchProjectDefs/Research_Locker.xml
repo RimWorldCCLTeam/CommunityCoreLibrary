@@ -3,13 +3,17 @@
 
     <ResearchProjectDef>
         <defName>CommunityCoreLibraryResearchLocker</defName>
-        <label>this should be hidden</label>
-        <description>This should never be seen.</description>
-        <descriptionDiscovered>How did it come to this?</descriptionDiscovered>
+
+        <label>.</label>
+        <description>.</description>
+        <descriptionDiscovered>?</descriptionDiscovered>
+
         <totalCost>1</totalCost>
+
         <prerequisites>
             <li>CommunityCoreLibraryResearchLocker</li>
         </prerequisites>
+
     </ResearchProjectDef>
 
 </Defs>

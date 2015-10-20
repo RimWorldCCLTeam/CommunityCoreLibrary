@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompHopperUser
+    
+    Reguired:   ModHelperDef.UsesGenericHoppers
+                CompProperties_HopperUser, OR;
+                IHopperUser
+    
+    Optional:   PlaceWorker_HopperMagnifier
+    
+    If making a building which wants to utilize the generic hopper system supplied with CCL, the
+    building must use CompHopperUser.  This comp contains all the methods required to interact
+    with the generic hoppers including discovery of hoppers and resources and resource management
+    without having to write code to do this yourself.
+    
+    If you also use PlaceWorker_HopperMagnifier, your building will highlight the hoppers which
+    the building will connect to when players are placing the blueprint for construction.  It is
+    highly recommended that you use this.
+    
+    By properly implementing this system, when your building connects to a hopper it will automatically
+    program the hoppers storage settings with the ThingFilter supplied either through
+    CompProperties_HopperUser or the IHopperUser interface.
+    
+    Notes:
+    
+    When making a building using the generic hopper system, remember that the hoppers supplied with
+    CCL are hidden by default.  To enable them you must use the <UsesGenericHoppers> tag set to
+    "true" in ModHelperDefs.
+    
+    RimWorld adds a lot of special filters to ThingFilters automatically.  These will be blocked
+    by the generic hopper system and must be explicitly added to the <specialFiltersToAllow> section
+    to be enabled if you want them.  These can be found in /Mods/Core/Defs/SpecialThingFilterDefs.
+    Any SpecialThingFilter with <allowedByDefault>true</allowedByDefault> is automatically blocked
+    by the hopper system and must be added to your ThingFilter if you want to allow them.
+    
+    XML Data (*):
+    
+    type (default)  tag                 Details
+    
+    ThingFilter     resources           [required] The filter to program connected hoppers with
+       (null)
+    
+    * If the building implements IHopperUser, which allows for programatically building your
+    ThingFilter, CompProperties_HopperUser does not have to be specified and is ignored if it is.
+    
+    Usage (CompProperties_HopperUser):
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
+                <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+                
+                <resources>
+                    
+                    <thingDefs>
+                        <li>Steel</li>
+                        <li>Plasteel</li>
+                    </thingDefs>
+                    
+                </resources>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    Usage (IHopperUser):
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

@@ -3,10 +3,10 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
+
     public class CompHeatPusherPowered : ThingComp
     {
-        
+
         CompPowerTrader                     CompPowerTrader
         {
             get
@@ -26,26 +26,25 @@ namespace CommunityCoreLibrary
 #if DEBUG
         public override void                PostSpawnSetup()
         {
-            //Log.Message( def.defName + " - SpawnSetup()" );
             base.PostSpawnSetup();
 
             // Check power comp
             if( CompPowerTrader == null )
             {
-                Log.Error( "Community Core Library :: CompHeatPusherLowPowered :: " + parent.def.defName + " requires CompPowerTrader!" );
+                CCL_Log.Error( "CompHeatPusherLowPowered requires CompPowerTrader!", parent.def.defName );
                 return;
             }
 
             // Check idle power comp
             if( CompPowerLowIdleDraw == null )
             {
-                Log.Error( "Community Core Library :: CompHeatPusherLowPowered :: " + parent.def.defName + " requires CompPowerLowIdleDraw!" );
+                CCL_Log.Error( "CompHeatPusherLowPowered requires CompPowerLowIdleDraw!", parent.def.defName );
                 return;
             }
 
         }
 #endif
-        
+
         public override void                CompTick()
         {
             base.CompTick();
@@ -60,7 +59,7 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            
+
             // If it's in low power mode, abort
             if( CompPowerLowIdleDraw.LowPowerMode )
             {

@@ -1,0 +1,13 @@
+[size=12pt][color=orange]Known Issues[/color][/size]
+
+Changing languages requires RimWorld to be restarted.
+
+There is a lot going on when RimWorld starts as far as CCL is concerned.  The best practice is to restart RimWorld if you change any setting more complicated than the volume.
+
+
+
+[size=12pt][color=orange]Bug Reporting[/color][/size]
+
+Software of any complexity is bound to have bugs, CCL is no different.  Please report bug by using the github issues tracker.  This makes it faster and easier to get bugs fixed and they can be linked directly to the commit that fixes them.  We appreciate feedback and want a bug free library for all but, with multiple team members, sending a PM or using the forum to report bug is now becoming inefficient.
+
+[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/issues]Report a bug[/url]

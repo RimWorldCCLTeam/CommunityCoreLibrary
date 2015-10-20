@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <TerrainDef Name="FloorBase" Abstract="True" >
+        <layerable>true</layerable>
+        <affordances>
+            <li>Light</li>
+            <li>Heavy</li>
+            <li>SmoothHard</li>
+        </affordances>
+        <statBases>
+            <WorkToMake>10</WorkToMake>
+        </statBases>
+        <designationCategory>Floors</designationCategory>
+        <Fertility>0</Fertility>
+        <constructEffect>ConstructDirt</constructEffect>
+        <AcceptTerrainSourceFilth>True</AcceptTerrainSourceFilth>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    </TerrainDef>
+
+
+    <!-- ================= NotOnTerrain ================= -->
+
+    <TerrainDef ParentName="FloorBase" Class="CommunityCoreLibrary.TerrainWithComps">
+        <DefName>TerrainNotOnTerrain</DefName>
+        <label>terrain not on terrain test</label>
+        <RenderPrecedence>200</RenderPrecedence>
+        <Description>Can't place this on most terrain.</Description>
+        <texturePath>Terrain/Surfaces/GenericFloorTile</texturePath>
+        <color>(0.45, 0.45, 0.45)</color>
+        <CostList>
+            <Steel>1</Steel>
+        </CostList>
+        <constructEffect>ConstructMetal</constructEffect>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_NotOnTerrain</li>
+        </placeWorkers>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <IncludeRoughStone>true</IncludeRoughStone>
+                <IncludeSmoothStone>true</IncludeSmoothStone>
+                <terrainDefs>
+                    <li>MarshyTerrain</li>
+                    <li>Mud</li>
+                    <li>Marsh</li>
+                    <li>WaterDeep</li>
+                    <li>WaterShallow</li>
+                </terrainDefs>
+            </li>
+        </comps>
+    </TerrainDef>
+
+    <TerrainDef ParentName="FloorBase" Class="CommunityCoreLibrary.TerrainWithComps">
+        <DefName>TerrainOnlyOnTerrain</DefName>
+        <label>terrain only on terrain test</label>
+        <RenderPrecedence>199</RenderPrecedence>
+        <Description>Can only be placed on smoothed stone.</Description>
+        <texturePath>Terrain/Surfaces/GenericFloorTile</texturePath>
+        <color>(0.65, 0.65, 0.35)</color>
+        <CostList>
+            <Steel>1</Steel>
+        </CostList>
+        <constructEffect>ConstructMetal</constructEffect>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
+        </placeWorkers>
+        <comps>
+            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
+                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+                <IncludeSmoothStone>true</IncludeSmoothStone>
+            </li>
+        </comps>
+    </TerrainDef>
+
+</Defs>

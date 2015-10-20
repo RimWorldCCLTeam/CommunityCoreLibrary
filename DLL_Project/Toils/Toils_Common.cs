@@ -5,7 +5,7 @@ namespace CommunityCoreLibrary
 {
     public static class Toils_Common
     {
-        
+
         public static Toil                  SpawnThingDefOfCountAt( ThingDef of, int count, IntVec3 at )
         {
             return new Toil

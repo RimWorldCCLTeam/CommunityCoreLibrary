@@ -47,10 +47,15 @@ namespace CommunityCoreLibrary.Commands
             }
         }
 
-        public                              TouchingByLinker( Thing parent, Action_OnThings LeftClick = null, Action_OnThings RightClick = null )
+        public                              TouchingByLinker(
+            Thing parent,
+            Texture2D designatorIcon,
+            Action_OnThings LeftClick = null,
+            Action_OnThings RightClick = null
+        )
         {
             parentThing = parent;
-            icon = Icon.NextButton;
+            icon = designatorIcon;
 
             ClickLeft = LeftClick;
             ClickRight = RightClick;
