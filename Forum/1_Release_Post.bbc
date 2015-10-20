@@ -1,0 +1,49 @@
+[center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
+v0.12.4[/center]
+
+
+
+[size=12pt][color=orange]Basic Description[/color][/size]
+
+This is a basic set of functions which modders can use to enhance their RimWorld mods. Most of the library can be used from xml without any additional C# skill or requirement.
+
+If you are a user which has a mod using CCL, you only need to download the latest CCL release zip.  Make sure it is enabled after the 'Core' mod and before any mod requiring CCL.
+
+If you are a modder, download the modders resource or the source package.
+
+
+
+[size=12pt][color=orange]Download[/color][/size]
+
+[size=12pt]Regular users download the "User Release" package.[/size]
+[list][li]Extract both the folders in the zip into your Mods folder.[/li]
+[li]Enable "Community Core Library" after "Core"[/li]
+[li]Enable "Community Core Library - Vanilla Tweaks" after "Community Core Library" - The vanilla tweaks is entirely optional but highly recommended.[/li][/list]
+
+[size=12pt]Modders download the "Modders Resource" package.[/size]
+[list][li]Do not unzip this into Mods.[/li]
+[li]Install the two mod folders ("Community Core Library" and "Community Core Library - Vanilla Tweaks") into your Mods directory and enable them as usual.[/li]
+[li]Check your output_log.txt!  It will contain valuable information if CCL encounters errors when handling your mod!  This will help you fix those trivial bugs.[/li]
+[li]Always refer to "Def Descriptions" and "Examples" for how to use this library.[/li]
+[li]If something is not covered, please ask a question.  Be ready to be given a polite "rtfm" if it is covered in the docs. ;)[/li][/list]
+
+[size=12pt]C# Developers[/size]
+[list][li]If you are simply wanting to mod and take advantage of CCL, use the source download or fork from the master branch.[/li]
+[li]If you want to contribute, bug fix, nitpick, etc, you should fork from the unstable development branch and propose changes through pull requests.[/li][/list]
+
+[size=12pt]Download[/size]
+[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases/latest]From github[/url]
+
+
+
+[size=12pt][color=orange]Background[/color][/size]
+
+This project started in Alpha 9, continued to be developed in Alpha 10 (some ideas had to be dropped due to complexity) and is finally available for Alpha 11.  Ideas and suggestions plus a lot of help came from the RimWorld community on the Ludeon Forums.  If you have an idea which fits into the context of CCL, please leave feedback or better, develop your idea and submit code!  CCL and it's team could always be fleshed out with additional talent!
+
+
+
+[size=12pt][color=orange]Final Notes[/color][/size]
+
+If all else fails, [i]read[/i] [b]all[/b] of the above, don't skim over anything.  Especially read "note" sections.
+
+Always do a "clean" install.  Delete the old version from /mods/ before copying the new version.  Do [i]not[/i] overwrite an existing copy.

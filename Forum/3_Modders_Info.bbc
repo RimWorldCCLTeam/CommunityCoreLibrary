@@ -1,0 +1,73 @@
+[size=12pt][color=orange]As a modder, you will be interested in[/color][/size]
+
+[size=10pt][color=orange]New Defs[/color][/size]
+[list][li][color=orange]Advanced Research[/color] - Allows recipes and buildings to be locked and unlocked by multiple research requirements.[/li]
+[li][color=orange]Mod Helper[/color] - Define MapComponents, Designators and ThingComps to be injected as well as minimum CCL version dependency.[/li]
+[li][color=orange]Help [Category][/color] - Define in-game help which is accessible from the main tab beside research (by default).[/li][/list]
+
+[size=10pt][color=orange]Def Extensions[/color][/size]
+[list][li][color=orange]Terrain With Comps[/color] - Allows usage of special place workers with terrain.[/li][/list]
+
+[size=10pt][color=orange]New Buildings[/color][/size]
+[list][li][color=orange]Hopper[/color] - A powerful hopper system which allows a generic hopper to be programmed with the items the machine (user) accepts and wants.  This is the base building for hoppers.  CCL provides two hoppers already (refrigerated and unrefrigerated).[/li]
+[li][color=orange]Hydroponics[/color] - Building_PlantGrower doesn't call base.TickRare(), this does.  Useful if you have comps which need ticking.[/li]
+[li][color=orange]SunLamp Heat Controller[/color] - It's a sun lamp, it's a heater, it's controllable.[/li][/list]
+
+[size=10pt][color=orange]New Comp Properties[/color][/size]
+[list][li][color=orange]Colored Lights[/color] - Used to define the available colors and research requirement for CompColoredLight.[/li]
+[li][color=orange]Hopper User[/color] - XML definition of resource thing filter for hopper storage.[/li]
+[li][color=orange]Low Idle Draw[/color] - Defines the settings for how CompPowerLowIdleDraw modifies the power usage of the building.[/li]
+[li][color=orange]Restricted Placement[/color] - Defines the restrictions for place workers.[/li]
+[li][color=orange]Shearable Renameable[/color] - Allows you to specify the string which will show up for shearable animals instead of the default "wool."[/li][/list]
+
+[size=10pt][color=orange]New Interfaces[/color] (C#)[/size]
+[list][li][color=orange]IHopperUser[/color] - A programatic interface for programming hoppers.  This allows for more powerful programming of a hoppers resource filter.[/li][/list]
+
+[size=10pt][color=orange]New ThingComps[/color][/size]
+[list][li][color=orange]Colored Lights[/color] - One building can have multiple glower colors defined (or it can use the default internal list of seven colors) and a button will be made available to the user to cycle through the options. The cycle button is hidden until the appropriate research is complete (by default "ColoredLights").  Additionally can program [i]other[/i] lights colors, respecting their own research.  Uses color matching by name so your "red" and my "red" don't have to be the same red but are accepted as "red."[/li]
+[li][color=orange]Heat Pusher Powered[/color] - Exactly the same as the vanilla except it's aware of Low Idle Power.[/li]
+[li][color=orange]Hopper[/color] - Used as part of the generic hopper system.  Provides hopper-side functions.[/li]
+[li][color=orange]Hopper User[/color] - Used as part of the generic hopper system.  Provides user-side functions.[/li][li][color=orange]Lifespan Powered[/color] - The same function as CompLifespan but, this will only count-down it's life while it is actively powered.[/li]
+[li][color=orange]Low Idle Power[/color] - Allows anything[sup][size=8pt]1[/size][/sup] with a CompPowerTrader to draw less depending on it's operational mode.  Current operational modes include "InUse", "WhenNear" and "Cycle."[/li]
+[li][color=orange]Neighbourly Grower[/color] - Adds gizmos to Building_PlantGrower derived buildings (such as Hydroponics) providing the user the ability to share growing information.[/li]
+[li][color=orange]Refrigeration[/color] - Flags any Building_Storage as preventing foods from rotting. Does not magically heal the food but prevents further decay so long as the building has power.[/li]
+[li][color=orange]Restricted Placement[/color] - Used to store settings for restricted place workers.[/li]
+[li][color=orange]Rottable Refrigerated[/color] [Internal] - Automatically replaces CompRottable and handles preventing foods from rotting when in a storage building flagged with CompRefrigerated.  Inspection string reflects proper state of item.[/li]
+[li][color=orange]Shearable Renameable[/color] - Specify the inspection string name for the resource gathered by shearing.[/li][/list]
+
+[size=10pt][color=orange]New PlaceWorkers[/color][/size]
+[list][li][color=orange]NotOnTerrain/OnlyOnTerrain[/color][sup][size=8pt]2[/size][/sup] - Restricts placement to a list of valid terrain.  Can be used to reject (Not) or accept (Only).[/li]
+[li][color=orange]NotOnThing/OnlyOnThing[/color][sup][size=8pt]2[/size][/sup] - Restricts placement to a list of valid things.  Can be used to reject (Not) or accept (Only[sup][size=8pt]3, 4[/size][/sup]).[/li]
+[li][color=orange]OnlyOnSurface[/color][sup][size=8pt]2, 4[/size][/sup] - Only on an item surface.  Useful for things which would be "on" something but not so specific as to the thing it's on.[/li]
+[li][color=orange]OnlyUnderRoof[/color][sup][size=8pt]2, 4[/size][/sup] - Require that a roof exist in the cell.[/li]
+[li][color=orange]RestrictedCount[/color][sup][size=8pt]2[/size][/sup] - Restrict the amount of buildings of a given type in the world.[/li]
+[li][color=orange]WallAttachment[/color][sup][size=8pt]2, 4[/size][/sup] - Requires a supporting wall (natural or man-made) to build against.  If you want to build something in the same cell as a wall, use OnlyOnThing instead.[/li][/list]
+
+[size=10pt][color=orange]Notes[/color][/size]
+[sup][size=8pt]1[/size][/sup] Building's which directly control their own power are the obvious exception (eg: heaters, coolers, etc)
+[sup][size=8pt]2[/size][/sup] Requires RestrictedPlacement_Comp and RestrictedPlacement_Properties for information and/or support ticking.
+[sup][size=8pt]3[/size][/sup] Want to place that building [i]on[/i] (instead of [i]near[/i]) a steam geyser?  You can.  See the Geothermal Generator.
+[sup][size=8pt]4[/size][/sup] Depending on your needs, use a normal or rare ticker to fire the periodic check to make sure the supports still exist.  If the support is removed, the thing is destroyed and an alert is fired to inform the player.  Normal tickers only check every 250 ticks.
+
+
+
+[size=12pt][color=orange]IMPORTANT NOTE TO MODDERS[/color][/size]
+[list][li]Do [b]NOT[/b] include any of CCLs assets with your mod directly.[/li]
+[li]Do [b]NOT[/b] copy the dll to your mods assembly directory.[/li]
+[li]Do [b]NOT[/b] copy the xml, languages, textures, etc unless your are explicitly overriding them with new settings.  Doing so [b]WILL[/b] cause errors and will be the fault of the [i]modder[/i] who copies files they shouldn't.[/li][/list]
+If your mod needs CCL, then it needs CCL to be properly installed and loaded before your mod as a separate download, not included with.  This is true for all mods and "mod packs."  The only place users should be getting CCL from is the official github releases, any other place is not an "official" copy (although perfectly legitimate, see [url=http://unlicense.org/]the unlicense[/url]) or the [i]modder[/i] using CCL has made a colossal mistake by packaging CCL assets directly with their mod.
+
+
+
+[size=12pt][color=orange]CCL Badging[/color][/size]
+
+If you have a mod using CCL, linking back to this thread is the best way to keep users running with the latest updates.
+
+[color=orange]Powered By[/color]
+[url=https://ludeon.com/forums/index.php?topic=16599.0][img]http://tinyurl.com/pd78ovl[/img][/url]
+
+[code][color=orange]Powered By[/color]
+[url=https://ludeon.com/forums/index.php?topic=16599.0][img]http://tinyurl.com/pd78ovl[/img][/url][/code]
+
+CCL logo and badge courtesy of [url=https://ludeon.com/forums/index.php?action=profile;u=2507]mrofa[/url].
+
