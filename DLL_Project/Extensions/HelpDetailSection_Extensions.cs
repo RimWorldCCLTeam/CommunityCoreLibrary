@@ -7,7 +7,7 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    public static class HelpDetailSection_Extentsions
+    public static class HelpDetailSection_Extensions
     {
         /// <summary>
         /// Build the display string for a HelpDetailSection
