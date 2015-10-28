@@ -68,7 +68,7 @@ namespace CommunityCoreLibrary
             if(
                 ( Game.Mode != GameMode.MapPlaying )||
                 ( Find.Map == null )||
-                ( Find.Map.components != null )
+                ( Find.Map.components == null )
             )
             {
                 return;
@@ -106,7 +106,7 @@ namespace CommunityCoreLibrary
             // TODO:  Fix issue #30 so we can use proper assembly versioning
             //System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             //CCLVersion = assembly.GetName().Version;
-            CCLVersion = new Version( "0.12.4" );
+            CCLVersion = new Version( "0.12.5" );
 #if DEBUG
             CCL_Log.Message( "v" + CCLVersion + " (debug)" );
 #else
