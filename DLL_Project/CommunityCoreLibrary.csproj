@@ -133,6 +133,7 @@
     <Compile Include="Structures\DefStringTriplet.cs" />
     <Compile Include="Structures\HelpDetailSection.cs" />
     <Compile Include="Enumerations\ResearchEnableMode.cs" />
+    <Compile Include="Buildings\Building_HiddenStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
