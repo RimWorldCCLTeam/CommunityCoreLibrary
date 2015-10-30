@@ -11,54 +11,59 @@ namespace CommunityCoreLibrary
     public class Building_HiddenStorage : Building_Storage
     {
 
-        private static List<Thing>          listGroupHasGUIOverlay;
+        private readonly List<Thing>        knownItems = new List<Thing>();
 
-        public static List<Thing>           listHasGUIOverlay
+        private static List<Thing>          listHasGUIOverlay
         {
             get
             {
-                if( listGroupHasGUIOverlay == null )
-                {
-                    var listsByGroup = typeof( ListerThings ).GetField( "listsByGroup", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( Find.ListerThings ) as List<Thing>[];
-                    listGroupHasGUIOverlay = listsByGroup[ (int)ThingRequestGroup.HasGUIOverlay ];
-                }
-                return listGroupHasGUIOverlay;
+                return ThingRequestGroup.HasGUIOverlay.ListByGroup();
             }
         }
 
-        private List<Thing>                 knownItems = new List<Thing>();
-
-        public override void                Tick()
+        public void                         RecheckItems()
         {
-            if( this.IsHashIntervalTick( 120 ) )
+            var rect = this.OccupiedRect();
+            foreach( var cell in rect.Cells )
             {
-                var rect = this.OccupiedRect();
-                foreach( var cell in rect.Cells )
+                foreach( var item in cell.GetThingList() )
                 {
-                    foreach( var item in cell.GetThingList() )
+                    if(
+                        ( item.def.category == ThingCategory.Item )&&
+                        ( !knownItems.Contains( item ) )
+                    )
                     {
-                        if(
-                            ( item.def.category == ThingCategory.Item )&&
-                            ( !knownItems.Contains( item ) )
-                        )
-                        {
-                            Notify_ReceivedThing( item );
-                        }
-                    }
-                }
-                for( int i = 0; i < knownItems.Count; )
-                {
-                    var item = knownItems[ i ];
-                    if( !rect.Cells.Contains( item.PositionHeld ) )
-                    {
-                        Notify_LostThing( item );
-                    }
-                    else
-                    {
-                        i++;
+                        Notify_ReceivedThing( item );
                     }
                 }
             }
+            for( int i = 0; i < knownItems.Count; )
+            {
+                var item = knownItems[ i ];
+                if( !rect.Cells.Contains( item.PositionHeld ) )
+                {
+                    Notify_LostThing( item );
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+
+        public override void                Tick()
+        {
+            base.Tick();
+            if( this.IsHashIntervalTick( 120 ) )
+            {
+                RecheckItems();
+            }
+        }
+
+        public override void                TickRare()
+        {
+            base.TickRare();
+            RecheckItems();
         }
 
         public override void                Notify_ReceivedThing( Thing newItem )

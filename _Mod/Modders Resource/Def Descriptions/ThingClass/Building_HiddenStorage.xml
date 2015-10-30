@@ -7,7 +7,7 @@
     
     ThingClass: Building_HiddenStorage
     
-    tickerType: None or Normal*
+    tickerType: None, Normal or Rare*
     
     This is building is an extension to RimWorld.Building_Storage which will disable calling
     of the Draw() and DrawGUIOverlay() on items stored in the building.  This means the item
@@ -16,9 +16,12 @@
     
     * Ticking does not need to be performed when storing items which only have a stack count
     of one (1), such as weapons and apparel.  If storage of items with stack counts larger
-    than one is allowed then normal ticking should be performed to reset the hiden status of
-    the items render methods.  This needs to be done as the game will re-enable rendering if
-    a partial stack is removed.
+    than one is allowed then normal** or rare** ticking should be performed to reset the hiden
+    status of the items render methods.  This needs to be done as the game will re-enable
+    rendering if a partial stack is removed.
+    
+    ** Normal ticking only performs the check every 120 ticks, this is twice as fast as rare
+    ticking but won't cause lag.  Choose your ticking method based on your needs.
     
     Usage:
     
@@ -27,11 +30,8 @@
         
         <thingClass>CommunityCoreLibrary.Building_HiddenStorage</thingClass>
         
-        <tickerType>Normal*</tickerType>
-        
         ...
     </ThingDef>
-    
     
     -->
 
