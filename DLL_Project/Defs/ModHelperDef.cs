@@ -73,15 +73,15 @@ namespace CommunityCoreLibrary
 
                 try
                 {
-                    var modVersion = new Version( version );
+                    var modVersion = new System.Version( version );
 
-                    if( modVersion < ModController.CCLVersionMin )
+                    if( modVersion < Version.Minimum )
                     {
                         errors += "\n\tMinimum Version requirement: v" + modVersion;
                         isValid = false;
                     }
 
-                    if( modVersion > ModController.CCLVersion )
+                    if( modVersion > Version.Current )
                     {
                         errors += "\n\tVersion requirement: v" + modVersion;
                         isValid = false;

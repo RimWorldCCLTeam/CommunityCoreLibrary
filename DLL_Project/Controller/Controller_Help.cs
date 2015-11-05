@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.Controller
 {
 
-    public static class HelpController
+    public static class Help
     {
 
         //[Unsaved]
@@ -17,50 +18,65 @@ namespace CommunityCoreLibrary
 
         #region Process State
 
-        public static void Initialize()
+        public static bool Initialize()
         {
-            // Items
-            ResolveApparel();
-            ResolveBodyParts();
-            ResolveDrugs();
-            ResolveMeals();
-            ResolveWeapons();
-
-            // TODO: Add stuff categories
-            // TODO: Add biomes
-            // TODO: Add plants
-            // TODO: Add animals
-            // TODO: Add workTypes
-            // TODO: Add capacities
-            // TODO: Add skills
-
-            // The below are low priority  (as considered by Fluffy)
-            // TODO: Add needs
-            // TODO: Add building resources
-            // TODO: Add factions
-            // TODO: Add hediffs
-
-            // The below are really low priority (as considered by Fluffy)
-            // TODO: Add traders
-            // TODO: Add tradertags
+            try
+            {
+                // The only thing that will stop these from working is bad xml
+                // or bad programming logic.  Either way an exception will be thrown
+                // and caught.
 
 
+                // Items
+                ResolveApparel();
+                ResolveBodyParts();
+                ResolveDrugs();
+                ResolveMeals();
+                ResolveWeapons();
 
-            // Buildings
-            ResolveBuildings();
-            ResolveMinifiableOnly();
+                // TODO: Add stuff categories
+                // TODO: Add biomes
+                // TODO: Add plants
+                // TODO: Add animals
+                // TODO: Add workTypes
+                // TODO: Add capacities
+                // TODO: Add skills
 
-            // Recipes
-            ResolveRecipes();
+                // The below are low priority  (as considered by Fluffy)
+                // TODO: Add needs
+                // TODO: Add building resources
+                // TODO: Add factions
+                // TODO: Add hediffs
 
-            // Research
-            ResolveResearch();
-            ResolveAdvancedResearch();
+                // The below are really low priority (as considered by Fluffy)
+                // TODO: Add traders
+                // TODO: Add tradertags
 
-            // Rebuild help caches
-            ResolveReferences();
+
+
+                // Buildings
+                ResolveBuildings();
+                ResolveMinifiableOnly();
+
+                // Recipes
+                ResolveRecipes();
+
+                // Research
+                ResolveResearch();
+                ResolveAdvancedResearch();
+
+                // Rebuild help caches
+                ResolveReferences();
+            }
+            catch( Exception e )
+            {
+                // Ruh-ro, Raggy!
+                CCL_Log.Error( e.Message, "Help System" );
+                return false;
+            }
 
             CCL_Log.Message( "Initialized", "Help System" );
+            return true;
         }
 
         static void ResolveReferences()

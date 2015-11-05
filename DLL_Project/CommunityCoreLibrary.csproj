@@ -83,7 +83,6 @@
     <Compile Include="Defs\HelpCategoryDef.cs" />
     <Compile Include="Defs\HelpDef.cs" />
     <Compile Include="MainTabs\MainTabWindow_ModHelp.cs" />
-    <Compile Include="ITabs\ModInit.cs" />
     <Compile Include="Commands\ChangeColor.cs" />
     <Compile Include="Commands\DefOrThingCompInRoom.cs" />
     <Compile Include="Commands\TouchingByThingComp.cs" />
@@ -100,8 +99,6 @@
     <Compile Include="CompProperties\RestrictedPlacement_Properties.cs" />
     <Compile Include="ThingComps\RestrictedPlacement_Comp.cs" />
     <Compile Include="ThingComps\CompHeatPusherPowered.cs" />
-    <Compile Include="MonoBehaviour\ModController.cs" />
-    <Compile Include="MapComponents\ResearchController.cs" />
     <Compile Include="Defs\ModHelperDef.cs" />
     <Compile Include="Structures\DesignatorData.cs" />
     <Compile Include="Extensions\TerrainWithComps.cs" />
@@ -109,7 +106,6 @@
     <Compile Include="Verbs\VerbProperties_Extended.cs" />
     <Compile Include="Verbs\Verb_ShootExtended.cs" />
     <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
-    <Compile Include="StaticClasses\HelpController.cs" />
     <Compile Include="StaticClasses\HelpCategoryDefOf.cs" />
     <Compile Include="Extensions\RecipeDef_Extensions.cs" />
     <Compile Include="ThingComps\CompRottableRefrigerated.cs" />
@@ -135,6 +131,21 @@
     <Compile Include="Enumerations\ResearchEnableMode.cs" />
     <Compile Include="Buildings\Building_HiddenStorage.cs" />
     <Compile Include="Extensions\ListerThings_Extensions.cs" />
+    <Compile Include="Resources\Buildings_Hoppers.cs" />
+    <Compile Include="Resources\Injectors_PostLoad.cs" />
+    <Compile Include="Resources\Injectors_MapComponents.cs" />
+    <Compile Include="Resources\Injectors_Designators.cs" />
+    <Compile Include="Resources\Injectors_ThingComps.cs" />
+    <Compile Include="Resources\Injectors_Special.cs" />
+    <Compile Include="Validation\Validation_Mods.cs" />
+    <Compile Include="Validation\Validation_Research.cs" />
+    <Compile Include="Resources\Resources.cs" />
+    <Compile Include="Version\Version.cs" />
+    <Compile Include="Controller\Controller.cs" />
+    <Compile Include="Controller\Controller_Help.cs" />
+    <Compile Include="Controller\Controller_Research.cs" />
+    <Compile Include="Controller\Controller_MainMonoBehaviour.cs" />
+    <Compile Include="Controller\Controller_Loader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -149,5 +160,14 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="PostBuild.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Validation\" />
+    <Folder Include="MonoBehaviour\" />
+    <Folder Include="Version\" />
+    <Folder Include="MapComponents\" />
+    <Folder Include="ITabs\" />
+    <Folder Include="Controller\" />
   </ItemGroup>
 </Project>

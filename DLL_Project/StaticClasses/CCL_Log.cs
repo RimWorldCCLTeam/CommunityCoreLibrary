@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
         public static void                  Message( string content, string category = null )
         {
             var builder = new StringBuilder();
-            builder.Append( "Community Core Library :: " );
+            builder.Append( Controller.Data.UnityObjectName + " :: " );
 
             if( category != null )
             {
@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary
         public static void                  Error( string content, string category = null )
         {
             var builder = new StringBuilder();
-            builder.Append( "Community Core Library :: " );
+            builder.Append( Controller.Data.UnityObjectName + " :: " );
 
             if( category != null )
             {
