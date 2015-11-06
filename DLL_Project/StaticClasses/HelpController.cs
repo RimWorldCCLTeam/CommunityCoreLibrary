@@ -908,7 +908,7 @@ namespace CommunityCoreLibrary
             helpDef.description = researchProjectDef.description;
 
             #region Base Stats
-
+            // TODO: Total cost is misleading - it's just the cost of this project.
             HelpDetailSection totalCost = new HelpDetailSection(null, new [] { "AutoHelpTotalCost".Translate(researchProjectDef.totalCost.ToString()) });
             helpDef.HelpDetailSections.Add( totalCost );
 

@@ -101,7 +101,7 @@ namespace CommunityCoreLibrary
                 {
                     TabRecord AR = new TabRecord("AutoHelpSubCategoryAdvanced".Translate(), delegate
                     {
-                        this._showResearchedProjects = ShowResearch.Advanced;
+                        _showResearchedProjects = ShowResearch.Advanced;
                         RefreshSource();
                     }, _showResearchedProjects == ShowResearch.Advanced);
                     list.Add( AR );
@@ -311,6 +311,7 @@ namespace CommunityCoreLibrary
                 {
                     foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
                     {
+                        // deflink may return true if the defstringtriplet contains a valid linkable def and is clicked
                         if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
                         {
                             // Helper can only return true if helpDef exists, lets find it!
