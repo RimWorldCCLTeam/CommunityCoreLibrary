@@ -5,6 +5,17 @@ using System.Linq;
 using RimWorld;
 using Verse;
 
+/*
+    TODO:  Alpha 13 API change
+    
+    Can't change yet otherwise existing saves will get null errors for missing class
+    
+namespace CommunityCoreLibrary.Controller
+{
+    
+    public class Research : MapComponent
+*/
+
 namespace CommunityCoreLibrary
 {
 
@@ -25,7 +36,7 @@ namespace CommunityCoreLibrary
 
         // These are used to optimize the process so the same data
         // isn't constantly reprocessed with every itteration.
-        public static readonly List< ThingDef >    buildingCache = new List< ThingDef >();
+        public static readonly List< ThingDef > buildingCache = new List< ThingDef >();
         public static readonly List< AdvancedResearchMod > researchModCache = new List< AdvancedResearchMod >();
         public static readonly List< HelpCategoryDef > helpCategoryCache = new List<HelpCategoryDef>();
 
@@ -37,7 +48,7 @@ namespace CommunityCoreLibrary
             {
                 if( _advancedResearch == null )
                 {
-                    _advancedResearch = ModController.AdvancedResearch;
+                    _advancedResearch = Controller.Data.AdvancedResearchDefs;
                 }
                 return _advancedResearch;
             }
@@ -48,7 +59,7 @@ namespace CommunityCoreLibrary
             firstRun = true;
         }
 
-        public static void                  InitComponent()
+        public static bool                  Initialize()
         {
             firstRun = false;
             okToProcess = false;
@@ -57,7 +68,7 @@ namespace CommunityCoreLibrary
             {
                 // No advanced research, hybernate
                 CCL_Log.Message( "No advanced research defined, hybernating...", "Advanced Research" );
-                return;
+                return true;
             }
 
             // Set the initial state
@@ -68,13 +79,14 @@ namespace CommunityCoreLibrary
             okToProcess = true;
 
             CCL_Log.Message( "Initialized", "Advanced Research" );
+            return true;
         }
 
         void                                UpdateComponent()
         {
             if( firstRun )
             {
-                InitComponent();
+                Initialize();
             }
 
             if( !okToProcess )
@@ -94,6 +106,10 @@ namespace CommunityCoreLibrary
 
             CheckAdvancedResearch();
         }
+
+        #endregion
+
+        #region Core Callbacks
 
         public override void                MapComponentOnGUI()
         {

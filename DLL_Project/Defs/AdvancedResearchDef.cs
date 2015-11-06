@@ -330,7 +330,7 @@ namespace CommunityCoreLibrary
                 }
                 if( researchConsolidator == null )
                 {
-                    var matching = ModController.AdvancedResearch.Where( a => (
+                    var matching = Controller.Data.AdvancedResearchDefs.Where( a => (
                         ( HasMatchingResearch( a ) )
                     ) ).ToList();
                     researchConsolidator = matching.FirstOrDefault( a => ( a.ConsolidateHelp ) );
@@ -639,7 +639,7 @@ namespace CommunityCoreLibrary
                     ( ResearchConsolidator == this ) )
                 {
                     // Matching advanced research (by requirements)
-                    var matching  = ModController.AdvancedResearch.FindAll( a => (
+                    var matching  = Controller.Data.AdvancedResearchDefs.FindAll( a => (
                         ( HasMatchingResearch( a ) )
                     ) );
                     // Find this research as the consolidator
