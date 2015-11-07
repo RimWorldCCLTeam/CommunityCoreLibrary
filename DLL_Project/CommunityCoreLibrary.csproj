@@ -47,7 +47,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColourPicker\ColourWrapper.cs" />
+    <Compile Include="ColourPicker\Dialog_ColourPicker.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
+    <Compile Include="ColourPicker\HSV.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -162,12 +165,8 @@
     <None Include="PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="Validation\" />
-    <Folder Include="MonoBehaviour\" />
-    <Folder Include="Version\" />
-    <Folder Include="MapComponents\" />
     <Folder Include="ITabs\" />
-    <Folder Include="Controller\" />
+    <Folder Include="MapComponents\" />
+    <Folder Include="MonoBehaviour\" />
   </ItemGroup>
 </Project>
