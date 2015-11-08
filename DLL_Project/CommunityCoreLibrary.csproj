@@ -50,7 +50,7 @@
     <Compile Include="ColourPicker\ColourWrapper.cs" />
     <Compile Include="ColourPicker\Dialog_ColourPicker.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
-    <Compile Include="ColourPicker\HSV.cs" />
+    <Compile Include="ColourPicker\Helper_Colour.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

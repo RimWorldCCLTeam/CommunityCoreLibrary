@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Verse;
 using UnityEngine;
-using System.Globalization;
 
 namespace CommunityCoreLibrary.ColourPicker
 {
@@ -14,6 +14,46 @@ namespace CommunityCoreLibrary.ColourPicker
             alphaPicker,
             none
         }
+
+        public class ColourPresets
+        {
+            // share 'presets' across instances.
+            private static List<Color>             _presets  = new List<Color>();
+            private int                            _size     = 10;
+            private Dialog_ColourPicker            _parent;
+
+            public ColourPresets(Dialog_ColourPicker parent, int size = 10 )
+            {
+                _parent = parent;
+                _size   = size;
+            }
+
+            public void Add(Color col )
+            {
+                // First in, first out.
+                // add latest element to the back of the list
+                _presets.Add( col );
+
+                // pop elements from the front until the list is short enough (should really only be once).
+                while( _presets.Count > _size )
+                    _presets.RemoveAt( 0 );
+            }
+
+            // only allow read.
+            public List<Color> presets
+            {
+                get
+                {
+                    return _presets;
+                }
+            }
+
+            // draw presets and interactivity.
+            // TODO: need to get the parent class from the nested class in order for this to actually work this way.
+            
+        }
+
+
         private controls    _activeControl          = controls.none;
         private Texture2D   _colourPickerBG,
                             _huePickerBG,
@@ -25,11 +65,13 @@ namespace CommunityCoreLibrary.ColourPicker
                             _previewAlphaBG;
         private Color       _alphaBGColorA          = Color.white,
                             _alphaBGColorB          = new Color(.85f, .85f, .85f);
-        private int         _pickerSize             = 300,
-                            _sliderWidth            = 15,
-                            _alphaBGBlockSize       = 10,
-                            _previewSize            = 90, // odd multiple of alphaBGblocksize forces alternation of the background texture grid.
-                            _handleSize             = 10;
+        public static ColourPresets presets;
+        public int          numPresets              = 0,
+                            pickerSize              = 300,
+                            sliderWidth             = 15,
+                            alphaBGBlockSize        = 10,
+                            previewSize             = 90, // odd multiple of alphaBGblocksize forces alternation of the background texture grid.
+                            handleSize              = 10;
         private float       _margin                 = 6f,
                             _fieldHeight            = 30f,
                             _huePosition,
@@ -39,10 +81,14 @@ namespace CommunityCoreLibrary.ColourPicker
                             _S                      = 1f,
                             _V                      = 1f,
                             _A                      = 1f;
-        private Vector2     _position               = Vector2.zero;
+        private Vector2     _pickerPosition         = Vector2.zero;
+        public Vector2      initialPosition         = Vector2.zero,
+                            windowSize              = Vector2.zero;
         private string      _hexOut,
                             _hexIn;
         private Action      _callback;
+        private bool        _advControls            = true,
+                            _autoApply              = false;
 
         // reference type containing the in/out parameter
         private ColourWrapper _wrapper;
@@ -59,15 +105,18 @@ namespace CommunityCoreLibrary.ColourPicker
         /// </summary>
         /// <param name="colour"></param>
         /// <param name="callback"></param>
-        public Dialog_ColourPicker ( ColourWrapper colour, Action callback = null )
+        public Dialog_ColourPicker ( ColourWrapper colour, Action callback = null, bool advancedControls = true, bool autoApply = false )
         {
             // TODO: figure out if sliders and draggable = true can coexist.
             // using Event.current.Use() prevents further drawing of the tab and closes parent(s).
-            _wrapper = colour;
-            _callback = callback;
-            Colour = _wrapper.Color;
+            _wrapper        = colour;
+            _callback       = callback;
+            _advControls    = advancedControls;
+            _autoApply      = autoApply;
+            Colour          = _wrapper.Color;
+            tempColour      = _wrapper.Color;
 
-            NotifyRGBUpdated();
+            Notify_RGBUpdated();
         }
 
         public float UnitsPerPixel
@@ -75,7 +124,7 @@ namespace CommunityCoreLibrary.ColourPicker
             get
             {
                 if( _unitsPerPixel == 0.0f){
-                    _unitsPerPixel = 1f / _pickerSize;
+                    _unitsPerPixel = 1f / pickerSize;
                 }
                 return _unitsPerPixel;
             }
@@ -90,7 +139,7 @@ namespace CommunityCoreLibrary.ColourPicker
             set
             {
                 _H = Mathf.Clamp(value, 0f, 1f);
-                NotifyHSVUpdated();
+                Notify_HSVUpdated();
                 CreateColourPickerBG();
                 CreateAlphaPickerBG();
             }
@@ -105,7 +154,7 @@ namespace CommunityCoreLibrary.ColourPicker
             set
             {
                 _S = Mathf.Clamp( value, 0f, 1f );
-                NotifyHSVUpdated();
+                Notify_HSVUpdated();
                 CreateAlphaPickerBG();
             }
         }
@@ -119,7 +168,7 @@ namespace CommunityCoreLibrary.ColourPicker
             set
             {
                 _V = Mathf.Clamp( value, 0f, 1f );
-                NotifyHSVUpdated();
+                Notify_HSVUpdated();
                 CreateAlphaPickerBG();
             }
         }
@@ -133,39 +182,51 @@ namespace CommunityCoreLibrary.ColourPicker
             set
             {
                 _A = Mathf.Clamp( value, 0f, 1f );
-                NotifyHSVUpdated();
+                Notify_HSVUpdated();
                 CreateColourPickerBG();
             }
         }
 
-        public void NotifyHSVUpdated()
+        public void Notify_HSVUpdated()
         {
-            tempColour = HSV.ToRGBA( H, S, V );
+            tempColour = ColourHelper.HSVtoRGB( H, S, V );
             tempColour.a = A;
             _tempPreviewBG = CreatePreviewBG( tempColour );
-            _hexOut = _hexIn = RGBtoHex( tempColour );
+
+            if (_advControls)
+                _hexOut = _hexIn = ColourHelper.RGBtoHex( tempColour );
+
+            if( _autoApply )
+                Apply();
         }
 
-        public void NotifyRGBUpdated()
+        public void Notify_RGBUpdated()
         {
             // Set HSV from RGB
-            HSV.ToHSV( tempColour, out _H, out _S, out _V );
+            ColourHelper.RGBtoHSV( tempColour, out _H, out _S, out _V );
             _A = tempColour.a;
 
             // rebuild textures
             CreateColourPickerBG();
             CreateHuePickerBG();
-            CreateAlphaPickerBG();
+            if (_advControls)
+                CreateAlphaPickerBG();
 
             // set slider positions
             _huePosition = ( 1f - _H ) / UnitsPerPixel;
-            _position.x = _S / UnitsPerPixel;
-            _position.y = ( 1f - _V ) / UnitsPerPixel;
-            _alphaPosition = ( 1f - _A ) / UnitsPerPixel;
+            _pickerPosition.x = _S / UnitsPerPixel;
+            _pickerPosition.y = ( 1f - _V ) / UnitsPerPixel;
+            if (_advControls)
+                _alphaPosition = ( 1f - _A ) / UnitsPerPixel;
 
             // set the colour block and update hex fields
             _tempPreviewBG = CreatePreviewBG( tempColour );
-            _hexOut = _hexIn = RGBtoHex( tempColour );
+            if (_advControls)
+                _hexOut = _hexIn = ColourHelper.RGBtoHex( tempColour );
+
+            // call callback for auto-apply
+            if( _autoApply )
+                Apply();
         }
 
         public void SetColor()
@@ -240,7 +301,7 @@ namespace CommunityCoreLibrary.ColourPicker
             {
                 if( _pickerAlphaBG == null )
                 {
-                    _pickerAlphaBG = CreateAlphaBG( _pickerSize, _pickerSize );
+                    _pickerAlphaBG = CreateAlphaBG( pickerSize, pickerSize );
                 }
                 return _pickerAlphaBG;
             }
@@ -253,7 +314,7 @@ namespace CommunityCoreLibrary.ColourPicker
             {
                 if( _sliderAlphaBG == null )
                 {
-                    _sliderAlphaBG = CreateAlphaBG( _sliderWidth, _pickerSize );
+                    _sliderAlphaBG = CreateAlphaBG( sliderWidth, pickerSize );
                 }
                 return _sliderAlphaBG;
             }
@@ -265,7 +326,7 @@ namespace CommunityCoreLibrary.ColourPicker
             {
                 if( _previewAlphaBG == null )
                 {
-                    _previewAlphaBG = CreateAlphaBG( _previewSize, _previewSize );
+                    _previewAlphaBG = CreateAlphaBG( previewSize, previewSize );
                 }
                 return _previewAlphaBG;
             }
@@ -273,13 +334,14 @@ namespace CommunityCoreLibrary.ColourPicker
 
         private void CreateColourPickerBG()
         {
-            float S, V;
-            int w = _pickerSize;
-            int h = _pickerSize;
-            float wu = UnitsPerPixel;
-            float hu = UnitsPerPixel;
+            float       S,
+                        V;
+            int         w   = pickerSize;
+            int         h   = pickerSize;
+            float       wu  = UnitsPerPixel;
+            float       hu  = UnitsPerPixel;
 
-            Texture2D tex = new Texture2D( w, h );
+            Texture2D   tex = new Texture2D( w, h );
 
             // HSV colours, H in slider, S horizontal, V vertical.
             for( int x = 0; x < w; x++ )
@@ -288,15 +350,7 @@ namespace CommunityCoreLibrary.ColourPicker
                 {
                     S = x * wu;
                     V = y * hu;
-                    tex.SetPixel( x, y, HSV.ToRGBA( H, S, V, A ) );
-#if DEBUG
-                    if (x % 50 == 0 && y % 50 == 0 )
-                    {
-                        Color col = tex.GetPixel(x, y);
-                        Log.Message( "HSV > x: " + x + ", y: " + y + ", H: " + H + ", S: " + S + ", V:" + V );
-                        Log.Message( "RGB > x: " + x + ", y: " + y + ", R: " + col.r + ", G: " + col.g + ", B:" + col.b );
-                    }
-#endif
+                    tex.SetPixel( x, y, ColourHelper.HSVtoRGB( H, S, V, A ) );
                 }
             }
             tex.Apply();
@@ -306,15 +360,15 @@ namespace CommunityCoreLibrary.ColourPicker
 
         private void CreateHuePickerBG()
         {
-            Texture2D tex = new Texture2D(1, _pickerSize);
+            Texture2D tex = new Texture2D(1, pickerSize);
 
-            var h = _pickerSize;
-            var hu = 1f / h;
+            var h = pickerSize;
+            var hu = UnitsPerPixel;
 
             // HSV colours, S = V = 1
             for( int y = 0; y < h; y++ )
             {
-                tex.SetPixel( 0, y, HSV.ToRGBA( hu * y, 1f, 1f ) );
+                tex.SetPixel( 0, y, ColourHelper.HSVtoRGB( hu * y, 1f, 1f ) );
             }
             tex.Apply();
 
@@ -323,9 +377,13 @@ namespace CommunityCoreLibrary.ColourPicker
 
         private void CreateAlphaPickerBG()
         {
-            Texture2D tex = new Texture2D(1, _pickerSize);
+            // no need to do this if we're not using advanced controls.
+            if( !_advControls )
+                return;
 
-            var h = _pickerSize;
+            Texture2D tex = new Texture2D(1, pickerSize);
+
+            var h = pickerSize;
             var hu = 1f / h;
 
             // RGB color from cache, alternate a
@@ -343,20 +401,20 @@ namespace CommunityCoreLibrary.ColourPicker
             Texture2D tex = new Texture2D(width, height);
 
             // initialize color arrays for blocks
-            Color[] bgA = new Color[_alphaBGBlockSize * _alphaBGBlockSize];
+            Color[] bgA = new Color[alphaBGBlockSize * alphaBGBlockSize];
             for( int i = 0; i < bgA.Length; i++ ) bgA[i] = _alphaBGColorA;
-            Color[] bgB = new Color[_alphaBGBlockSize * _alphaBGBlockSize];
+            Color[] bgB = new Color[alphaBGBlockSize * alphaBGBlockSize];
             for( int i = 0; i < bgB.Length; i++ ) bgB[i] = _alphaBGColorB;
 
             // set blocks of pixels at a time
             // this also sets border blocks, meaning it'll try to set out of bounds pixels. 
             int row = 0;
-            for( int x = 0; x < width; x = x + _alphaBGBlockSize )
+            for( int x = 0; x < width; x = x + alphaBGBlockSize )
             {
                 int column = row;
-                for( int y = 0; y < height; y = y + _alphaBGBlockSize )
+                for( int y = 0; y < height; y = y + alphaBGBlockSize )
                 {
-                    tex.SetPixels( x, y, _alphaBGBlockSize, _alphaBGBlockSize, ( column % 2 == 0 ? bgA : bgB ) );
+                    tex.SetPixels( x, y, alphaBGBlockSize, alphaBGBlockSize, ( column % 2 == 0 ? bgA : bgB ) );
                     column++;
                 }
                 row++;
@@ -373,13 +431,14 @@ namespace CommunityCoreLibrary.ColourPicker
 
         public void PickerAction( Vector2 pos )
         {
-            // if we set S, V via properties these will be called twice. 
+            // if we set S, V via properties textures will be rebuilt twice.
             _S = UnitsPerPixel * pos.x;
             _V = 1 - UnitsPerPixel * pos.y;
 
+            // rebuild textures
             CreateAlphaPickerBG();
-            NotifyHSVUpdated();
-            _position = pos;
+            Notify_HSVUpdated();
+            _pickerPosition = pos;
         }
 
         public void HueAction( float pos )
@@ -395,94 +454,140 @@ namespace CommunityCoreLibrary.ColourPicker
             A = 1 - UnitsPerPixel * pos;
             _alphaPosition = pos;
         }
-
-        public override void PreOpen()
+        
+        public override void PostOpen()
         {
-            NotifyHSVUpdated();
+            // allow explicit setting of window position 
+            if ( initialPosition != Vector2.zero )
+            {
+                currentWindowRect.x = initialPosition.x;
+                currentWindowRect.y = initialPosition.y;
+            }
+
+            // set the windowsize
+            if ( windowSize == Vector2.zero ) // not specifically set in construction, calculate size from elements.
+            {
+                // default window size.
+                float width, height;
+                // size of main picker + the standard window margins.
+                width = height = pickerSize + Window.StandardMargin * 2;
+
+                // width of one slider (hue) + margin
+                width += sliderWidth + _margin;
+
+                if( _advControls )
+                {
+                    // extra slider, 2 preview rects 
+                    width += sliderWidth + _margin * 3 + previewSize * 2;
+                } else
+                {
+                    if (!_autoApply )
+                    {
+                        // if this is not auto applied, we need a place to but the buttons.
+                        height += _fieldHeight + _margin;
+                    }
+                }
+
+                // that should do it
+                SetWindowSize( new Vector2( width, height ) );
+            }
+            else
+            {
+                // allow explicit specification of window size
+                // NOTE: elements do not actually adapt to this size.
+                SetWindowSize( windowSize );
+            }
+
+            // init sliders 
+            Notify_RGBUpdated();
             _alphaPosition = Colour.a / UnitsPerPixel;
         }
 
-        public static string RGBtoHex( Color col )
+        public void SetWindowSize( Vector2 size )
         {
-            int r = (int)Mathf.Clamp(col.r * 256f, 0, 255);
-            int g = (int)Mathf.Clamp(col.g * 256f, 0, 255);
-            int b = (int)Mathf.Clamp(col.b * 256f, 0, 255);
-            int a = (int)Mathf.Clamp(col.a * 256f, 0, 255);
-
-            return "#" + r.ToString( "X2" ) + g.ToString( "X2" ) + b.ToString( "X2" ) + a.ToString( "X2" );
+            currentWindowRect.width = size.x;
+            currentWindowRect.height = size.y;
         }
 
-        public static bool TryGetColorFromHex( string hex, out Color col )
+        public void SetWindowLocation( Vector2 location )
         {
-            Color clr = new Color(0,0,0);
-            if( hex != null && hex.Length == 9 )
-            {
-                try
-                {
-                    string str = hex.Substring(1, hex.Length - 1);
-                    clr.r = int.Parse( str.Substring( 0, 2 ), NumberStyles.AllowHexSpecifier ) / 255.0f;
-                    clr.g = int.Parse( str.Substring( 2, 2 ), NumberStyles.AllowHexSpecifier ) / 255.0f;
-                    clr.b = int.Parse( str.Substring( 4, 2 ), NumberStyles.AllowHexSpecifier ) / 255.0f;
-                    if( str.Length == 8 )
-                        clr.a = int.Parse( str.Substring( 6, 2 ), NumberStyles.AllowHexSpecifier ) / 255.0f;
-                    else clr.a = 1.0f;
-                }
-                catch( Exception e )
-                {
-#if DEBUG
-                    Log.Message("Falied to convert from" + hex + "\n" + e);
-#endif
-                    col = Color.white;
-                    return false;
-                }
-                col = clr;
-                return true;
-            }
-            col = Color.white;
-            return false;
+            currentWindowRect.xMin = location.x;
+            currentWindowRect.yMin = location.y;
+        }
+
+        public void SetWindowRcet( Rect rect )
+        {
+            currentWindowRect = rect;
         }
 
         public override void DoWindowContents( Rect inRect )
         {
             // set up rects
-            Rect pickerRect = new Rect(inRect.xMin, inRect.yMin, _pickerSize, _pickerSize);
-            Rect hueRect = new Rect(pickerRect.xMax + _margin, inRect.yMin, _sliderWidth, _pickerSize);
-            Rect alphaRect = new Rect(hueRect.xMax + _margin, inRect.yMin, _sliderWidth, _pickerSize);
-            Rect previewRect = new Rect(alphaRect.xMax + _margin, inRect.yMin, _previewSize, _previewSize);
-            Rect previewOldRect = new Rect(previewRect.xMax, inRect.yMin, _previewSize, _previewSize);
-            Rect doneRect = new Rect(alphaRect.xMax + _margin, inRect.yMax - _fieldHeight, _previewSize * 2, _fieldHeight );
-            Rect setRect = new Rect(alphaRect.xMax + _margin, inRect.yMax - 2 * _fieldHeight - _margin, _previewSize - _margin / 2, _fieldHeight);
-            Rect cancelRect = new Rect(setRect.xMax + _margin, setRect.yMin, _previewSize - _margin / 2, _fieldHeight);
-            Rect hexRect = new Rect(alphaRect.xMax + _margin, inRect.yMax - 3 * _fieldHeight - 2 * _margin, _previewSize * 2, _fieldHeight);
+            // pickers & sliders
+            Rect pickerRect     = new Rect(inRect.xMin, inRect.yMin, pickerSize, pickerSize);
+            Rect hueRect        = new Rect(pickerRect.xMax + _margin, inRect.yMin, sliderWidth, pickerSize);
+            Rect alphaRect      = new Rect(hueRect.xMax + _margin, inRect.yMin, sliderWidth, pickerSize);
+
+            // previews
+            Rect previewRect    = new Rect(alphaRect.xMax + _margin, inRect.yMin, previewSize, previewSize);
+            Rect previewOldRect = new Rect(previewRect.xMax, inRect.yMin, previewSize, previewSize);
+
+            // buttons and textfields
+            Rect okRect         = new Rect(alphaRect.xMax + _margin, inRect.yMax - _fieldHeight, previewSize * 2, _fieldHeight );
+            Rect applyRect      = new Rect(alphaRect.xMax + _margin, inRect.yMax - 2 * _fieldHeight - _margin, previewSize - _margin / 2, _fieldHeight);
+            Rect cancelRect     = new Rect(applyRect.xMax + _margin, applyRect.yMin, previewSize - _margin / 2, _fieldHeight);
+            Rect hexRect        = new Rect(alphaRect.xMax + _margin, inRect.yMax - 3 * _fieldHeight - 2 * _margin, previewSize * 2, _fieldHeight);
+
+            // move ok/cancel buttons for the simple view with buttons
+            if( !_advControls && !_autoApply )
+            {
+                cancelRect = new Rect( inRect.xMin, pickerRect.yMax + _margin, ( pickerSize - _margin ) / 2, _fieldHeight );
+                okRect = cancelRect;
+                okRect.x += ( pickerSize + _margin ) / 2;
+            }
 
             // draw transparency backgrounds
             GUI.DrawTexture( pickerRect, PickerAlphaBG );
-            GUI.DrawTexture( alphaRect, SliderAlphaBG );
-            GUI.DrawTexture( previewRect, PreviewAlphaBG );
-            GUI.DrawTexture( previewOldRect, PreviewAlphaBG );
+            if( _advControls )
+            {
+                GUI.DrawTexture( previewRect, PreviewAlphaBG );
+                GUI.DrawTexture( previewOldRect, PreviewAlphaBG );
+                GUI.DrawTexture( alphaRect, SliderAlphaBG );
+            }
 
             // draw picker foregrounds
             GUI.DrawTexture( pickerRect, ColourPickerBG );
             GUI.DrawTexture( hueRect, HuePickerBG );
-            GUI.DrawTexture( alphaRect, AlphaPickerBG );
-            GUI.DrawTexture( previewRect, TempPreviewBG );
-            GUI.DrawTexture( previewOldRect, PreviewBG );
+            if( _advControls )
+            {
+                GUI.DrawTexture( alphaRect, AlphaPickerBG );
+                GUI.DrawTexture( previewRect, TempPreviewBG );
+                GUI.DrawTexture( previewOldRect, PreviewBG );
+            }
 
             // draw slider handles
-            // TODO: get HSV from RGB for init of handles.
-            Rect hueHandleRect = new Rect(hueRect.xMin - 3f , hueRect.yMin + _huePosition - _handleSize / 2, _sliderWidth + 6f, _handleSize);
-            Rect alphaHandleRect = new Rect(alphaRect.xMin - 3f, alphaRect.yMin + _alphaPosition - _handleSize / 2, _sliderWidth + 6f, _handleSize);
-            Rect pickerHandleRect = new Rect(pickerRect.xMin + _position.x - _handleSize / 2, pickerRect.yMin + _position.y - _handleSize / 2, _handleSize, _handleSize);
+            Rect hueHandleRect = new Rect(hueRect.xMin - 3f , hueRect.yMin + _huePosition - handleSize / 2, sliderWidth + 6f, handleSize);
+            Rect pickerHandleRect = new Rect(pickerRect.xMin + _pickerPosition.x - handleSize / 2, pickerRect.yMin + _pickerPosition.y - handleSize / 2, handleSize, handleSize);
             GUI.DrawTexture( hueHandleRect, TempPreviewBG );
-            GUI.DrawTexture( alphaHandleRect, TempPreviewBG );
             GUI.DrawTexture( pickerHandleRect, TempPreviewBG );
-
+            
+            // border on slider handles
             GUI.color = Color.gray;
             Widgets.DrawBox( hueHandleRect );
-            Widgets.DrawBox( alphaHandleRect );
             Widgets.DrawBox( pickerHandleRect );
             GUI.color = Color.white;
 
+            if( _advControls )
+            {
+                Rect alphaHandleRect = new Rect(alphaRect.xMin - 3f, alphaRect.yMin + _alphaPosition - handleSize / 2, sliderWidth + 6f, handleSize);
+                GUI.DrawTexture( alphaHandleRect, TempPreviewBG );
+
+                GUI.color = Color.gray;
+                Widgets.DrawBox( alphaHandleRect );
+                GUI.color = Color.white;
+            }
+
+            #region UI interactions
             // reset active control on mouseup
             if (Input.GetMouseButtonUp( 0 ) )
             {
@@ -515,7 +620,7 @@ namespace CommunityCoreLibrary.ColourPicker
                 if( Event.current.type == EventType.ScrollWheel )
                 {
                     H -= Event.current.delta.y * UnitsPerPixel;
-                    _huePosition = Mathf.Clamp(_huePosition + Event.current.delta.y, 0f, _pickerSize);
+                    _huePosition = Mathf.Clamp(_huePosition + Event.current.delta.y, 0f, pickerSize);
                     Event.current.Use();
                 }
                 if( _activeControl == controls.huePicker )
@@ -527,77 +632,90 @@ namespace CommunityCoreLibrary.ColourPicker
                 }
             }
 
-            // alpha picker interaction
-            if (Mouse.IsOver( alphaRect ) )
+            if( _advControls )
             {
-                if( Input.GetMouseButtonDown( 0 ) )
+                // alpha picker interaction
+                if( Mouse.IsOver( alphaRect ) )
                 {
-                    _activeControl = controls.alphaPicker;
-                }
-                if( Event.current.type == EventType.ScrollWheel )
-                {
-                    A -= Event.current.delta.y * UnitsPerPixel;
-                    _alphaPosition = Mathf.Clamp( _alphaPosition + Event.current.delta.y, 0f, _pickerSize );
-                    Event.current.Use();
-                }
-                if( _activeControl == controls.alphaPicker )
-                {
-                    float MousePosition = Event.current.mousePosition.y;
-                    float PositionInRect = MousePosition - alphaRect.yMin;
+                    if( Input.GetMouseButtonDown( 0 ) )
+                    {
+                        _activeControl = controls.alphaPicker;
+                    }
+                    if( Event.current.type == EventType.ScrollWheel )
+                    {
+                        A -= Event.current.delta.y * UnitsPerPixel;
+                        _alphaPosition = Mathf.Clamp( _alphaPosition + Event.current.delta.y, 0f, pickerSize );
+                        Event.current.Use();
+                    }
+                    if( _activeControl == controls.alphaPicker )
+                    {
+                        float MousePosition = Event.current.mousePosition.y;
+                        float PositionInRect = MousePosition - alphaRect.yMin;
 
-                    AlphaAction( PositionInRect );
+                        AlphaAction( PositionInRect );
+                    }
                 }
-            }
-
-            // buttons and text field
-            // for some reason scrolling sometimes changes text size
-            Text.Font = GameFont.Small;
-            if( Widgets.TextButton( doneRect, "OK" ) )
-            {
-                _wrapper.Color = tempColour;
-                if (_callback != null )
-                {
-                    _callback();
-                }
-                this.Close();
-            }
-            if( Widgets.TextButton( setRect, "Apply" ) )
-            {
-                _wrapper.Color = tempColour;
-                if( _callback != null )
-                {
-                    _callback();
-                }
-                SetColor();
-            }
-            if( Widgets.TextButton( cancelRect, "Cancel" ) )
-            {
-                this.Close();
             }
 
-            if( _hexIn != _hexOut )
+            if( !_autoApply )
             {
-                Color inputColor = tempColour;
-                if( TryGetColorFromHex( _hexIn, out inputColor ) )
+                // buttons and text field
+                // for some reason scrolling sometimes changes text size
+                Text.Font = GameFont.Small;
+                if( Widgets.TextButton( okRect, "OK" ) )
                 {
-                    tempColour = inputColor;
-                    NotifyRGBUpdated();
+                    Apply();
+                    this.Close();
                 }
-                else
+                if( Widgets.TextButton( applyRect, "Apply" ) )
                 {
-                    GUI.color = Color.red;
+                    Apply();
+                    SetColor();
+                }
+                if( Widgets.TextButton( cancelRect, "Cancel" ) )
+                {
+                    this.Close();
                 }
             }
-            _hexIn = Widgets.TextField( hexRect, _hexIn );
+            
+            if( _advControls )
+            {
+                if( _hexIn != _hexOut )
+                {
+                    if( ColourHelper.TryHexToRGB( _hexIn, ref tempColour ) )
+                    {
+                        Notify_RGBUpdated();
+                    }
+                    else
+                    {
+                        GUI.color = Color.red;
+                    }
+                }
+                _hexIn = Widgets.TextField( hexRect, _hexIn );
+            }
             GUI.color = Color.white;
+            #endregion
         }
 
-        public override Vector2 InitialWindowSize
+        public void Apply()
+        {
+            _wrapper.Color = tempColour;
+            if( _callback != null )
+            {
+                _callback();
+            }
+        }
+
+        public Vector2 WindowSize
         {
             get
             {
-                // calculate window size to accomodate all elements
-                return new Vector2( _pickerSize + 3 * _margin + 2 * _sliderWidth + 2 * _previewSize + Window.StandardMargin * 2, _pickerSize + Window.StandardMargin * 2 );
+                return windowSize;
+            }
+            set
+            {
+                windowSize = value;
+                SetWindowSize(windowSize);
             }
         }
     }
