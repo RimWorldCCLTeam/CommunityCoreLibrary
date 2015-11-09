@@ -18,8 +18,9 @@ namespace CommunityCoreLibrary.ColourPicker
         public class ColourPresets
         {
             // share 'presets' across instances.
-            private static List<Color>             _presets  = new List<Color>();
-            private int                            _size     = 10;
+            private static List<Color>             _presets         = new List<Color>();
+            private int                            _size            = 10;
+            private float                          _minimumBoxSize  = 10f;
             private Dialog_ColourPicker            _parent;
 
             public ColourPresets(Dialog_ColourPicker parent, int size = 10 )
@@ -49,7 +50,10 @@ namespace CommunityCoreLibrary.ColourPicker
             }
 
             // draw presets and interactivity.
-            // TODO: need to get the parent class from the nested class in order for this to actually work this way.
+            public void DrawPresetBoxes()
+            {
+                // TODO: this.
+            }
             
         }
 
