@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 
-namespace CommunityCoreLibrary.ColourPicker
+namespace CommunityCoreLibrary.ColorPicker
 {
     /// <summary>
     /// This class exists only to have a reference type for Color.
     /// </summary>
-    public class ColourWrapper
+    public class ColorWrapper
     {
         public Color Color { get; set; }
 
-        public ColourWrapper( Color color )
+        public ColorWrapper( Color color )
         {
             Color = color;
         }

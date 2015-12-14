@@ -479,7 +479,7 @@ namespace CommunityCoreLibrary
             {
                 sidebarRowInner.height = num2 + 3f;
             }
-            // give the label a colour if we're in the all tab.
+            // give the label a color if we're in the all tab.
             Color textColor = new Color( .8f, .85f, 1f ); ;
             if( def is ResearchProjectDef )
             {

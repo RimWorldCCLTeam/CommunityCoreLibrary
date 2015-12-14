@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Globalization;
 
-namespace CommunityCoreLibrary.ColourPicker
+namespace CommunityCoreLibrary.ColorPicker
 {
-    class ColourHelper
+    class ColorHelper
     {
         /// <summary>
         /// From http://answers.unity3d.com/questions/701956/hsv-to-rgb-without-editorguiutilityhsvtorgb.html
@@ -158,10 +158,10 @@ namespace CommunityCoreLibrary.ColourPicker
 
 
         /// <summary>
-        /// Attempt to get a numerical representation of an RGB(A) hexademical colour string.
+        /// Attempt to get a numerical representation of an RGB(A) hexademical color string.
         /// </summary>
         /// <param name="hex">7 or 9 long string (including hashtag)</param>
-        /// <param name="col">updated with the parsed colour on succes</param>
+        /// <param name="col">updated with the parsed color on succes</param>
         /// <returns>bool success</returns>
         public static bool TryHexToRGB( string hex, ref Color col )
         {

@@ -26,7 +26,7 @@
     <ThingDef ParentName="FurnitureBase">
         <defName>HiddenStorageRack</defName>
         <label>equipment rack (hidden)</label>
-        <thingClass>CommunityCoreLibrary.Building_HiddenStorage</thingClass>
+        <thingClass>Building_Storage</thingClass>
         <graphicData>
             <texPath>Things/Building/Furniture/EquipmentRack</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -68,6 +68,11 @@
                 </filter>
             </defaultStorageSettings>
         </building>
+        <comps>
+            <li>
+                <compClass>CommunityCoreLibrary.CompHideItem</compClass>
+            </li>
+        </comps>
         <inspectorTabs>
             <li>ITab_Storage</li>
         </inspectorTabs>

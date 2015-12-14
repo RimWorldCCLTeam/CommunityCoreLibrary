@@ -47,10 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColourPicker\ColourWrapper.cs" />
-    <Compile Include="ColourPicker\Dialog_ColourPicker.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
-    <Compile Include="ColourPicker\Helper_Colour.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -132,7 +129,6 @@
     <Compile Include="Structures\DefStringTriplet.cs" />
     <Compile Include="Structures\HelpDetailSection.cs" />
     <Compile Include="Enumerations\ResearchEnableMode.cs" />
-    <Compile Include="Buildings\Building_HiddenStorage.cs" />
     <Compile Include="Extensions\ListerThings_Extensions.cs" />
     <Compile Include="Resources\Buildings_Hoppers.cs" />
     <Compile Include="Resources\Injectors_PostLoad.cs" />
@@ -149,6 +145,12 @@
     <Compile Include="Controller\Controller_Research.cs" />
     <Compile Include="Controller\Controller_MainMonoBehaviour.cs" />
     <Compile Include="Controller\Controller_Loader.cs" />
+    <Compile Include="ColorPicker\ColorWrapper.cs" />
+    <Compile Include="ColorPicker\Dialog_ColorPicker.cs" />
+    <Compile Include="ColorPicker\Helper_Color.cs" />
+    <Compile Include="ThingComps\CompHideItem.cs" />
+    <Compile Include="MapComponents\HideItemManager.cs" />
+    <Compile Include="Extensions\Find_Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

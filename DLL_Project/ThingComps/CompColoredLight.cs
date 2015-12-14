@@ -155,7 +155,7 @@ namespace CommunityCoreLibrary
             // Get the glow radius
             lightRadius = CompGlower.props.glowRadius;
 
-            // Set the light colour
+            // Set the light color
             ChangeColor( ColorIndex );
         }
 
@@ -273,7 +273,7 @@ namespace CommunityCoreLibrary
         // same class.  We need to make a unique copy for the building.
         public void                         ChangeColor( int index )
         {
-            ColorInt colour = ColorProps.color[ index ].value;
+            ColorInt color = ColorProps.color[ index ].value;
             ColorIndex = index;
             GizmoChangeColor.defaultDesc = GizmoChangeColor.Desc;
 
@@ -296,7 +296,7 @@ namespace CommunityCoreLibrary
 
             // Set the new properties values
             newProps.compClass = typeof( CompGlower );
-            newProps.glowColor = colour;
+            newProps.glowColor = color;
             newProps.glowRadius = lightRadius;
 
             // Initialize comp with new properties
