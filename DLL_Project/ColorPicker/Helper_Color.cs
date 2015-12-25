@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace CommunityCoreLibrary.ColorPicker
 {
-    class ColorHelper
+    public class ColorHelper
     {
         /// <summary>
         /// From http://answers.unity3d.com/questions/701956/hsv-to-rgb-without-editorguiutilityhsvtorgb.html
