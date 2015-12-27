@@ -2,7 +2,7 @@
 [url=https://ludeon.com/forums/index.php?action=profile;u=32730]1000101[/url]
 [url=https://ludeon.com/forums/index.php?action=profile;u=8625]mipen[/url]
 [url=https://ludeon.com/forums/index.php?action=profile;u=35458]Latta[/url]
-[url=https://ludeon.com/forums/index.php?action=profile;u=12611]Fluffy (l2032)[/url]
+[url=https://ludeon.com/forums/index.php?action=profile;u=12611]Fluffy[/url]
 
 
 
@@ -15,7 +15,6 @@ isistoy
 noimageavailable
 
 
-
 [size=12pt][color=orange]Credit Where it's Due[/color][/size]
 [size=8pt](Excluding Tynan because it goes without saying.  Also, if you'd like to implement anything from this into RimWorld, you are welcome to all the code!)[/size]
 
@@ -26,4 +25,5 @@ soltysek for spending countless hours reviewing My Bad Code (tm)
 mrofa for wasting his time reading my help forum threads and his general ideas (of which there are lots!)
 Vas for CompLifespanPowered (requested in [url=https://ludeon.com/forums/index.php?topic=14249.0]here[/url])
 TheGentlmen (GENT) for tracking down and reporting many subtle bugs
+RawCode for figuring out unity4 / Mono x86 JIT method detouring, which is likely to be a gamechanger (pun intended).
 To anyone else may have been forgotten, you know who you are.
