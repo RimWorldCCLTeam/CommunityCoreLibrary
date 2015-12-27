@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -48,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Def_Extensions.cs" />
+    <Compile Include="StaticClasses\Detours.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,7 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ITabs\" />
-    <Folder Include="MapComponents\" />
     <Folder Include="MonoBehaviour\" />
   </ItemGroup>
 </Project>
