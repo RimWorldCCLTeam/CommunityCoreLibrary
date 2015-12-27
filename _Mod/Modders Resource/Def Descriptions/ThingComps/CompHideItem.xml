@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompHideItem
+    
+    This comp will disable calling of the Draw() and DrawGUIOverlay() on items in the same cells
+    as the building it is applied to.  This means the item(s) in the same cells as the building
+    will not be drawn nor will it's label.
+    
+    Ticking is not required for this component to work as the check is done in the comps PostDraw()
+    method every 20 ticks (hashed by the buildings hash code to prevent "lag spikes").  The items
+    are registered with a map component which will maintain the hiden status between saves and on
+    partial removal of item stacks (when a stack of items is split off and there are some remaining).
+    
+    The map component which maintains the hidden status will recheck all items registered every 20
+    ticks so the longest an item may be visible for is 40 ticks (2/3 of a second).  Items removed from
+    a cell the building occupied will remain hidden until the entire recheck cycle is complete which,
+    again, may take as long as 40 ticks.
+    
+    This comp can be applied to any building which could have items in the same cell as the building
+    it is applied to be it a storage building or work table.
+    
+    If used on a building extending the Building_Storage class, the new building class can call this
+    comps ReceivedThing() and LostThing() methods to improve the rate at which the items are hidden
+    and shown however, there will still be the map component delay of up to 20 ticks.
+    
+    By using the PostDraw() method of the comp to check for items, no unnecessary ticking is required
+    to handle edge cases (single stack items, partial stack removal, game load, etc).  Because of the
+    check being handled in the PostDraw() method, items can not be hidden and shown from within the
+    render call chain and a map component is used to maintain a master list of items and handles the
+    render state change in the ticking call chain.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompHideItem</compClass>
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

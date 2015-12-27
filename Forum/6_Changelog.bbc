@@ -1,8 +1,9 @@
 [size=12pt][color=orange]Changelog[/color][/size]
 
-For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/32]commit log[/url].  This section is just for convenience sake.
+For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/45]commit log[/url].  This section is just for convenience sake.
 
-[code]v0.12.4 - Many, many bugs fixed, help menu overhaul, research menu overhaul, new comp & property.
+[code]v0.12.5 - More bugs fixed, internal refactoring, hidden storage comp, colourpicker and method detouring.
+v0.12.4 - Many, many bugs fixed, help menu overhaul, research menu overhaul, new comp & property.
 v0.12.3b - Fixes Advanced Research Def to recognizes plants using plants with an override class.
 v0.12.3 - Bug fixes, Ice boxes (CompRefrigerated no longer *requires* CompPowerTrader but will respect it), Post Load Injectors, removes research requirement from Xerigium.
 v0.12.2 - Alpha 12d update.  Refactors CompRefrigerated, fixes several bugs, graphics by mrofa.  See the commit log for full detail.

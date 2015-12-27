@@ -155,7 +155,7 @@ namespace CommunityCoreLibrary
             // Get the glow radius
             lightRadius = CompGlower.props.glowRadius;
 
-            // Set the light colour
+            // Set the light color
             ChangeColor( ColorIndex );
         }
 
@@ -244,7 +244,7 @@ namespace CommunityCoreLibrary
         #region Gizmo callbacks
 
         // The list of things are all the lights we want to change
-        void                        GroupColorChange( List< Thing > things )
+        void                                GroupColorChange( List< Thing > things )
         {
             // Now set their color (if *their* research is complete)
             foreach( Thing l in things )
@@ -268,72 +268,47 @@ namespace CommunityCoreLibrary
             }
         }
 
+        // Replace the comp props with a new one with different values
+        // must replace comp props as comps share props for things of the
+        // same class.  We need to make a unique copy for the building.
         public void                         ChangeColor( int index )
         {
-            ColorInt colour = ColorProps.color[ index ].value;
+            ColorInt color = ColorProps.color[ index ].value;
             ColorIndex = index;
             GizmoChangeColor.defaultDesc = GizmoChangeColor.Desc;
 
-            var currentGlower = CompGlower;
+            // Get glower
+            var glower = CompGlower;
 
-            // Current lit state from existing glower
-            bool wasLit = currentGlower.Lit;
+            // Current lit state of glower
+            bool wasLit = glower.Lit;
 
             // Turn off glower
-            currentGlower.Lit = false;
+            glower.Lit = false;
 
-            // New glower
-            var newGlower = new CompGlower();
-            if( newGlower == null )
-            {
-                CCL_Log.Error( "CompColoredLight unable to create new CompGlower!", parent.def.defName );
-                return;
-            }
-            newGlower.parent = parent;
-
-            // Glower properties
+            // New glower properties
             var newProps = new CompProperties();
             if( newProps == null )
             {
                 CCL_Log.Error( "CompColoredLight unable to create new CompProperties!", parent.def.defName );
                 return;
             }
+
+            // Set the new properties values
             newProps.compClass = typeof( CompGlower );
-            newProps.glowColor = colour;
+            newProps.glowColor = color;
             newProps.glowRadius = lightRadius;
 
-            // Add properties to glower
-            newGlower.Initialize( newProps );
-
-            // Fetch the comps list
-            var allComps = parent.GetComps();
-            if( allComps == null )
-            {
-                CCL_Log.Error( "CompColoredLight unable to get list of comps!", parent.def.defName );
-                return;
-            }
-
-            // Remove existing glower
-            allComps.Remove( currentGlower );
-
-            // Add new glower
-            allComps.Add( newGlower );
-
-            // Store comps list
-            parent.SetComps( allComps );
-
+            // Initialize comp with new properties
+            glower.Initialize( newProps );
 
             // Update glow grid
-            newGlower.Lit = false;
             Find.GlowGrid.MarkGlowGridDirty( parent.Position );
             Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
             Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
 
             // Turn light on if appropriate
-            newGlower.Lit |= (
-                ( wasLit )&&
-                ( PowerTrader.PowerOn )
-            );
+            glower.Lit = wasLit;
         }
 
         #endregion

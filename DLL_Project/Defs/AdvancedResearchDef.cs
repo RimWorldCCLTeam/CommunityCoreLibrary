@@ -56,7 +56,7 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
-        public ResearchEnableMode           ResearchState
+        public ResearchEnableMode ResearchState
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         IsHelpEnabled
+        public bool IsHelpEnabled
         {
             get
             {
@@ -72,7 +72,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         IsLockedOut()
+        public bool IsLockedOut()
         {
             foreach( var p in researchDefs )
             {
@@ -85,7 +85,7 @@ namespace CommunityCoreLibrary
             return false;
         }
 
-        public bool                         IsValid
+        public bool IsValid
         {
             get
             {
@@ -182,7 +182,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public ResearchEnableMode           EnableMode
+        public ResearchEnableMode EnableMode
         {
             get
             {
@@ -192,20 +192,9 @@ namespace CommunityCoreLibrary
                     return researchState;
                 }
 
-                // Check individual research projects
-                var projects = researchDefs.Count;
-                var completed = 0;
-                foreach( var researchProject in researchDefs )
+                // Check if research projects are done
+                if (researchDefs.All(rd => rd.IsFinished))
                 {
-                    if( researchProject.IsFinished )
-                    {
-                        // Project is finished
-                        completed++;
-                    }
-                }
-                if( completed == projects )
-                {
-                    // All projects complete
                     return ResearchEnableMode.Complete;
                 }
 
@@ -220,46 +209,46 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         IsRecipeToggle
+        public bool IsRecipeToggle
         {
             get
             {
                 // Determine if this def toggles recipes
                 return (
-                    ( !recipeDefs.NullOrEmpty() )&&
-                    ( sowTags.NullOrEmpty() )&&
+                    ( !recipeDefs.NullOrEmpty() ) &&
+                    ( sowTags.NullOrEmpty() ) &&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
         }
 
-        public bool                         IsPlantToggle
+        public bool IsPlantToggle
         {
             get
             {
                 // Determine if this def toggles plant sow tags
                 return (
-                    ( recipeDefs.NullOrEmpty() )&&
-                    ( !sowTags.NullOrEmpty() )&&
+                    ( recipeDefs.NullOrEmpty() ) &&
+                    ( !sowTags.NullOrEmpty() ) &&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
         }
 
-        public bool                         IsBuildingToggle
+        public bool IsBuildingToggle
         {
             get
             {
                 // Determine if this def toggles buildings
                 return (
-                    ( recipeDefs.NullOrEmpty() )&&
-                    ( sowTags.NullOrEmpty() )&&
+                    ( recipeDefs.NullOrEmpty() ) &&
+                    ( sowTags.NullOrEmpty() ) &&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
         }
 
-        public bool                         IsResearchToggle
+        public bool IsResearchToggle
         {
             get
             {
@@ -270,7 +259,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         HasCallbacks
+        public bool HasCallbacks
         {
             get
             {
@@ -281,20 +270,20 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool                         HasHelp
+        public bool HasHelp
         {
             get
             {
-                return 
-                    ( ConsolidateHelp )||
+                return
+                    ( ConsolidateHelp ) ||
                     (
-                        ( ResearchConsolidator != null )&&
+                        ( ResearchConsolidator != null ) &&
                         ( ResearchConsolidator.ConsolidateHelp )
                     );
             }
         }
 
-        bool                                HasMatchingResearch( AdvancedResearchDef other )
+        bool HasMatchingResearch( AdvancedResearchDef other )
         {
             if( researchDefs.Count != other.researchDefs.Count )
             {
@@ -304,9 +293,9 @@ namespace CommunityCoreLibrary
             SortResearch();
             other.SortResearch();
 
-            for( int i = 0; i < researchDefs.Count; ++ i )
+            for( int i = 0; i < researchDefs.Count; ++i )
             {
-                if( researchDefs[ i ] != other.researchDefs[ i ] )
+                if( researchDefs[i] != other.researchDefs[i] )
                 {
                     return false;
                 }
@@ -314,23 +303,24 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public float                        TotalCost
+        /// <summary>
+        /// Total research cost of all required researches
+        /// </summary>
+        public float TotalCost
         {
             get
             {
                 if( totalCost < 0 )
                 {
-                    totalCost = 0;
-                    foreach( var r in researchDefs )
-                    {
-                        totalCost += r.totalCost;
-                    }
+                    totalCost = researchDefs.Sum(rd => rd.totalCost);
                 }
                 return totalCost;
             }
         }
 
-        public AdvancedResearchDef          ResearchConsolidator
+        
+
+        public AdvancedResearchDef ResearchConsolidator
         {
             get
             {
@@ -340,7 +330,7 @@ namespace CommunityCoreLibrary
                 }
                 if( researchConsolidator == null )
                 {
-                    var matching = ModController.AdvancedResearch.Where( a => (
+                    var matching = Controller.Data.AdvancedResearchDefs.Where( a => (
                         ( HasMatchingResearch( a ) )
                     ) ).ToList();
                     researchConsolidator = matching.FirstOrDefault( a => ( a.ConsolidateHelp ) );
@@ -357,11 +347,11 @@ namespace CommunityCoreLibrary
 
         #region Process State
 
-        public void                         Disable( bool firstTimeRun = false )
+        public void Disable( bool firstTimeRun = false )
         {
             // Don't disable if it's not the first run or not yet enabled
             if(
-                ( researchState == ResearchEnableMode.Incomplete )&&
+                ( researchState == ResearchEnableMode.Incomplete ) &&
                 ( firstTimeRun == false )
             )
             {
@@ -383,7 +373,7 @@ namespace CommunityCoreLibrary
                 ToggleBuildings( true );
             }
             if(
-                ( IsResearchToggle )&&
+                ( IsResearchToggle ) &&
                 ( researchState != ResearchEnableMode.GodMode )
             )
             {
@@ -391,7 +381,7 @@ namespace CommunityCoreLibrary
                 ToggleResearch( true );
             }
             if(
-                ( HasCallbacks )&&
+                ( HasCallbacks ) &&
                 ( !firstTimeRun )
             )
             {
@@ -407,14 +397,14 @@ namespace CommunityCoreLibrary
             researchState = ResearchEnableMode.Incomplete;
         }
 
-        public void                         Enable( ResearchEnableMode mode )
+        public void Enable( ResearchEnableMode mode )
         {
             // Don't enable if enabled
             if( researchState != ResearchEnableMode.Incomplete )
             {
                 if(
-                    ( researchState == ResearchEnableMode.GodMode )&&
-                    ( mode != ResearchEnableMode.GodMode )&&
+                    ( researchState == ResearchEnableMode.GodMode ) &&
+                    ( mode != ResearchEnableMode.GodMode ) &&
                     ( IsResearchToggle )
                 )
                 {
@@ -442,7 +432,7 @@ namespace CommunityCoreLibrary
                 ToggleBuildings();
             }
             if(
-                ( IsResearchToggle )&&
+                ( IsResearchToggle ) &&
                 ( mode != ResearchEnableMode.GodMode )
             )
             {
@@ -463,15 +453,15 @@ namespace CommunityCoreLibrary
             researchState = mode;
         }
 
-        void                                SortResearch()
+        void SortResearch()
         {
             if( researchSorted )
             {
                 return;
             }
-            researchDefs.Sort( delegate( ResearchProjectDef x, ResearchProjectDef y )
+            researchDefs.Sort( delegate ( ResearchProjectDef x, ResearchProjectDef y )
                 {
-                    return x.defName.CompareTo(y.defName) * -1;
+                    return x.defName.CompareTo( y.defName ) * -1;
                 }
             );
             researchSorted = true;
@@ -481,7 +471,7 @@ namespace CommunityCoreLibrary
 
         #region Toggle States
 
-        void                                ToggleRecipes( bool setInitialState = false )
+        void ToggleRecipes( bool setInitialState = false )
         {
             bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
@@ -492,7 +482,7 @@ namespace CommunityCoreLibrary
                 // Make sure the thing has a recipe list
                 if( buildingDef.recipes == null )
                 {
-                    buildingDef.recipes = new List< RecipeDef >();
+                    buildingDef.recipes = new List<RecipeDef>();
                 }
 
                 // Go through each recipe
@@ -504,7 +494,7 @@ namespace CommunityCoreLibrary
                         // Hide recipe
 
                         // Remove building from recipe
-                        if( recipeDef.recipeUsers!= null )
+                        if( recipeDef.recipeUsers != null )
                         {
                             recipeDef.recipeUsers.Remove( buildingDef );
                         }
@@ -525,7 +515,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        void                                TogglePlants( bool setInitialState = false )
+        void TogglePlants( bool setInitialState = false )
         {
             bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
@@ -557,7 +547,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        void                                ToggleBuildings( bool setInitialState = false )
+        void ToggleBuildings( bool setInitialState = false )
         {
             bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
@@ -568,7 +558,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        void                                ToggleResearch( bool setInitialState = false )
+        void ToggleResearch( bool setInitialState = false )
         {
             bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
@@ -587,14 +577,15 @@ namespace CommunityCoreLibrary
             }
         }
 
-        void                                ToggleCallbacks( bool setInitialState = false )
+        void ToggleCallbacks( bool setInitialState = false )
         {
             bool Hide = !setInitialState ? HideDefs : !HideDefs;
 
             if( Hide )
             {
                 // Cache the callbacks in reverse order when hiding
-                for( int i = researchMods.Count - 1; i >= 0; i-- ){
+                for( int i = researchMods.Count - 1; i >= 0; i-- )
+                {
                     var researchMod = researchMods[ i ];
                     // Add the advanced research mod to the cache
                     ResearchController.researchModCache.Add( researchMod );
@@ -612,9 +603,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         ToggleHelp( bool setInitialState = false )
+        public void ToggleHelp( bool setInitialState = false )
         {
-            if( ( !ConsolidateHelp )||
+            if( ( !ConsolidateHelp ) ||
                 ( HelpDef == null ) )
             {
                 return;
@@ -640,15 +631,15 @@ namespace CommunityCoreLibrary
 
         #region Aggregate Data
 
-        List< AdvancedResearchDef >         MatchingAdvancedResearch
+        List<AdvancedResearchDef> MatchingAdvancedResearch
         {
             get
             {
-                if( ( matchingAdvancedResearch == null )&&
-                    ( ResearchConsolidator == this )  )
+                if( ( matchingAdvancedResearch == null ) &&
+                    ( ResearchConsolidator == this ) )
                 {
                     // Matching advanced research (by requirements)
-                    var matching  = ModController.AdvancedResearch.FindAll( a => (
+                    var matching  = Controller.Data.AdvancedResearchDefs.FindAll( a => (
                         ( HasMatchingResearch( a ) )
                     ) );
                     // Find this research as the consolidator
@@ -656,7 +647,7 @@ namespace CommunityCoreLibrary
                     if( researchConsolidator == null )
                     {
                         // Find the highest priority one instead
-                        researchConsolidator = matching.First();   
+                        researchConsolidator = matching.First();
                     }
                     if( researchConsolidator == this )
                     {
@@ -675,7 +666,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public List< Def >                  GetResearchRequirements()
+        public List<Def> GetResearchRequirements()
         {
             if( ResearchConsolidator != this )
             {
@@ -686,7 +677,7 @@ namespace CommunityCoreLibrary
             return researchDefs.ConvertAll<Def>( def => (Def)def );
         }
 
-        public List< ThingDef >             GetThingsUnlocked()
+        public List<ThingDef> GetThingsUnlocked()
         {
             if( ResearchConsolidator != this )
             {
@@ -698,7 +689,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs )&&
+                ( !HideDefs ) &&
                 ( IsBuildingToggle )
             )
             {
@@ -711,7 +702,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs )&&
+                        ( !a.HideDefs ) &&
                         ( a.IsBuildingToggle )
                     )
                     {
@@ -723,7 +714,7 @@ namespace CommunityCoreLibrary
             return thingdefs;
         }
 
-        public List< ThingDef >             GetThingsLocked()
+        public List<ThingDef> GetThingsLocked()
         {
             if( ResearchConsolidator != this )
             {
@@ -735,7 +726,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs )&&
+                ( HideDefs ) &&
                 ( IsBuildingToggle )
             )
             {
@@ -748,7 +739,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs )&&
+                        ( a.HideDefs ) &&
                         ( a.IsBuildingToggle )
                     )
                     {
@@ -760,7 +751,7 @@ namespace CommunityCoreLibrary
             return thingdefs;
         }
 
-        public List< RecipeDef >            GetRecipesUnlocked( ref List< ThingDef > thingdefs )
+        public List<RecipeDef> GetRecipesUnlocked( ref List<ThingDef> thingdefs )
         {
             if( ResearchConsolidator != this )
             {
@@ -776,7 +767,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs )&&
+                ( !HideDefs ) &&
                 ( IsRecipeToggle )
             )
             {
@@ -793,7 +784,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs )&&
+                        ( !a.HideDefs ) &&
                         ( a.IsRecipeToggle )
                     )
                     {
@@ -809,7 +800,7 @@ namespace CommunityCoreLibrary
             return recipedefs;
         }
 
-        public List< RecipeDef >            GetRecipesLocked( ref List< ThingDef > thingdefs )
+        public List<RecipeDef> GetRecipesLocked( ref List<ThingDef> thingdefs )
         {
             if( ResearchConsolidator != this )
             {
@@ -825,7 +816,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs )&&
+                ( HideDefs ) &&
                 ( IsRecipeToggle )
             )
             {
@@ -840,7 +831,7 @@ namespace CommunityCoreLibrary
             foreach( var a in MatchingAdvancedResearch )
             {
                 if(
-                    ( a.HideDefs )&&
+                    ( a.HideDefs ) &&
                     ( a.IsRecipeToggle )
                 )
                 {
@@ -855,7 +846,7 @@ namespace CommunityCoreLibrary
             return recipedefs;
         }
 
-        public List< string >               GetSowTagsUnlocked( ref List< ThingDef > thingdefs )
+        public List<string> GetSowTagsUnlocked( ref List<ThingDef> thingdefs )
         {
             if( ResearchConsolidator != this )
             {
@@ -871,7 +862,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs )&&
+                ( !HideDefs ) &&
                 ( IsPlantToggle )
             )
             {
@@ -888,7 +879,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs )&&
+                        ( !a.HideDefs ) &&
                         ( a.IsPlantToggle )
                     )
                     {
@@ -904,7 +895,7 @@ namespace CommunityCoreLibrary
             return sowtags;
         }
 
-        public List< string >               GetSowTagsLocked( ref List< ThingDef > thingdefs )
+        public List<string> GetSowTagsLocked( ref List<ThingDef> thingdefs )
         {
             if( ResearchConsolidator != this )
             {
@@ -920,7 +911,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs )&&
+                ( HideDefs ) &&
                 ( IsPlantToggle )
             )
             {
@@ -937,7 +928,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs )&&
+                        ( a.HideDefs ) &&
                         ( a.IsPlantToggle )
                     )
                     {
@@ -953,7 +944,7 @@ namespace CommunityCoreLibrary
             return sowtags;
         }
 
-        public List< Def >                  GetResearchUnlocked()
+        public List<Def> GetResearchUnlocked()
         {
             if( ResearchConsolidator != this )
             {
@@ -965,7 +956,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs )&&
+                ( !HideDefs ) &&
                 ( IsResearchToggle )
             )
             {
@@ -978,7 +969,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs )&&
+                        ( !a.HideDefs ) &&
                         ( a.IsResearchToggle )
                     )
                     {
@@ -990,7 +981,7 @@ namespace CommunityCoreLibrary
             return researchdefs;
         }
 
-        public List< Def >                  GetResearchLocked()
+        public List<Def> GetResearchLocked()
         {
             if( ResearchConsolidator != this )
             {
@@ -1002,7 +993,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs )&&
+                ( HideDefs ) &&
                 ( IsResearchToggle )
             )
             {
@@ -1015,7 +1006,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs )&&
+                        ( a.HideDefs ) &&
                         ( a.IsResearchToggle )
                     )
                     {
@@ -1031,7 +1022,7 @@ namespace CommunityCoreLibrary
 
         #region Help Def
 
-        public HelpDef                      HelpDef
+        public HelpDef HelpDef
         {
             get
             {
@@ -1057,6 +1048,14 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        #region ResearchProjectDef 'interface'
+
+        public bool IsFinished
+        {
+            get { return ResearchState == ResearchEnableMode.Complete; }
+        }
+        
+        #endregion
     }
 
 }

@@ -104,25 +104,19 @@ namespace CommunityCoreLibrary
         {
             var researchDefs = new List<Def>();
 
-            if (!researchProjectDef.prerequisites.Contains(Research.Locker))
-            {
-                //CCL_Log.Message("Normal");
-                researchDefs.AddRange(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(rd => rd.prerequisites.Contains(researchProjectDef)).ToList().ConvertAll<Def>(def => (Def) def));
-            }
-            else
-            {
-                //CCL_Log.Message("Advanced");
-                // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
-                var advancedResearchDefs = ResearchController.AdvancedResearch.Where(a => (
-                   (a.IsResearchToggle) &&
-                   (!a.HideDefs) ||
-                   (a.researchDefs.Contains(researchProjectDef))
-               )).ToList();
-                foreach (var advancedResearchDef in advancedResearchDefs)
-                {
-                    researchDefs.AddRange(advancedResearchDef.effectedResearchDefs.ConvertAll<Def>(def => (Def)def));
-                }
-            }
+            //CCL_Log.Message("Normal");
+            researchDefs.AddRange(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(rd => rd.prerequisites.Contains(researchProjectDef)).ToList().ConvertAll<Def>(def => (Def) def));
+            
+            //CCL_Log.Message("Advanced");
+            // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
+            var advancedResearchDefs = ResearchController.AdvancedResearch.Where(a => (
+                (a.IsResearchToggle) &&
+                (!a.HideDefs) &&
+                (a.researchDefs.Contains(researchProjectDef))
+            )).ToList();
+
+            researchDefs.AddRange( advancedResearchDefs.SelectMany(ar => ar.effectedResearchDefs ).ToList().ConvertAll<Def>(Def => ( Def )Def ) );
+
             return researchDefs;
         } 
 
