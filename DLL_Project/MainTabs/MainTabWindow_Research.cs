@@ -10,11 +10,6 @@ namespace CommunityCoreLibrary
 {
     public class MainTabWindow_Research : MainTabWindow
     {
-        /** 
-        TODO: Remove tabs altogether and set up a filter system, the tabs are too small and overflowing. 
-        Filters would allow for more flexibility and clarity. -Fluffy
-        **/
-
         // UI settings
         private const float     LeftAreaWidth               = 330f;
         private const int       ProjectIntervalY            = 25;

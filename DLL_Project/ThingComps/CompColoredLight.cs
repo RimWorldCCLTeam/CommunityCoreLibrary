@@ -14,18 +14,9 @@ namespace CommunityCoreLibrary
 
         int                                 ColorIndex = -1;
         float                               lightRadius;
-
-        CompPowerTrader                     PowerTrader;
+        
         CompProperties_ColoredLight         ColorProps;
-
-        CompPowerTrader                     CompPowerTrader
-        {
-            get
-            {
-                return parent.TryGetComp< CompPowerTrader >();
-            }
-        }
-
+        
         CompGlower                          CompGlower
         {
             get
@@ -109,17 +100,7 @@ namespace CommunityCoreLibrary
         public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
-
-            // Get power comp
-            PowerTrader = CompPowerTrader;
-#if DEBUG
-            if( PowerTrader == null )
-            {
-                CCL_Log.Error( "CompColoredLight requires CompPowerTrader!", parent.def.defName );
-                return;
-            }
-#endif
-
+            
             // Get the default glower
 #if DEBUG
             if( CompGlower == null )
