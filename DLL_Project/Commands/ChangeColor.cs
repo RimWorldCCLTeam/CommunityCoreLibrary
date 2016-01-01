@@ -1,5 +1,6 @@
-﻿using System.Text;
-
+﻿using System;
+using System.Text;
+using CommunityCoreLibrary.ColorPicker;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,6 +12,7 @@ namespace CommunityCoreLibrary.Commands
     {
 
         readonly CompColoredLight           parentLight;
+        bool                                usePicker;
 
         public override string              Desc
         {
@@ -18,11 +20,17 @@ namespace CommunityCoreLibrary.Commands
             {
                 var stringBuilder = new StringBuilder();
 
-                stringBuilder.AppendFormat(
-                    "CommandChangeColorDesc".Translate(), 
-                    parentLight.NextColorName(), 
-                    parentLight.PrevColorName() );
-
+                if ( usePicker )
+                {
+                    stringBuilder.AppendFormat( "CommandChangeColorLabel".Translate() );
+                }
+                else
+                {
+                    stringBuilder.AppendFormat(
+                        "CommandChangeColorDesc".Translate(),
+                        parentLight.NextColorName(),
+                        parentLight.PrevColorName() );
+                }
                 return stringBuilder.ToString();
             }
         }
@@ -37,11 +45,13 @@ namespace CommunityCoreLibrary.Commands
 
         public                              ChangeColor(
             CompColoredLight light,
-            Texture2D designatorIcon
+            Texture2D designatorIcon,
+            bool usePicker = false
         )
         {
             parentLight = light;
             icon = designatorIcon;
+            this.usePicker = usePicker;
             defaultLabel = "CommandChangeColorLabel".Translate();
         }
 
@@ -49,16 +59,29 @@ namespace CommunityCoreLibrary.Commands
         {
             base.ProcessInput( ev );
 
-            if( ev.button == 0 )
+            if ( usePicker )
             {
-                parentLight.IncrementColorIndex();
+                Color col = parentLight.CompGlower.props.glowColor.ToColor;
+                // set alpha to 1 (lights use alpha zero, but that won't show in the picker)
+                ColorWrapper _color = new ColorWrapper( new Color( col.r, col.g, col.b ) );
+                
+                Find.WindowStack.Add( new Dialog_ColorPicker( _color, delegate
+                {
+                    
+                    parentLight.ChangeColor( _color.Color );
+                }, ev.button == 1, true ) );
             }
-            else if( ev.button == 1 )
+            else
             {
-                parentLight.DecrementColorIndex();
+                if( ev.button == 0 )
+                {
+                    parentLight.IncrementColorIndex();
+                }
+                else if( ev.button == 1 )
+                {
+                    parentLight.DecrementColorIndex();
+                }
             }
         }
-
     }
-
 }

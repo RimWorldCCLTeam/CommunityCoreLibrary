@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 using RimWorld;
 using Verse;
 using CommunityCoreLibrary.Commands;
+using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -16,8 +18,8 @@ namespace CommunityCoreLibrary
         float                               lightRadius;
         
         CompProperties_ColoredLight         ColorProps;
-        
-        CompGlower                          CompGlower
+
+        public CompGlower                          CompGlower
         {
             get
             {
@@ -38,7 +40,8 @@ namespace CommunityCoreLibrary
                 {
                     _GizmoChangeColor = new ChangeColor(
                         this,
-                        Icon.SelectLightColor
+                        Icon.SelectLightColor,
+                        ColorProps.useColorPicker
                     );
                 }
                 return _GizmoChangeColor;
@@ -149,6 +152,11 @@ namespace CommunityCoreLibrary
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
+            if ( ColorProps.hideGizmos )
+            {
+                yield break;
+            }
+            
             // Color change gizmo (only if research is complete)
             if( DefDatabase< ResearchProjectDef >.GetNamed( ColorProps.requiredResearch ).IsFinished )
             {
@@ -225,7 +233,7 @@ namespace CommunityCoreLibrary
         #region Gizmo callbacks
 
         // The list of things are all the lights we want to change
-        void                                GroupColorChange( List< Thing > things )
+        public void                                GroupColorChange( List< Thing > things )
         {
             // Now set their color (if *their* research is complete)
             foreach( Thing l in things )
@@ -239,25 +247,47 @@ namespace CommunityCoreLibrary
 
                     // If it does, check it's research
                     if(
-                        ( otherColor > -1 )&&
+                        ( otherColor > -1  || otherLight.ColorProps.useColorPicker && ColorProps.useColorPicker ) &&
                         ( DefDatabase< ResearchProjectDef >.GetNamed( otherLight.ColorProps.requiredResearch ).IsFinished )
                     )
-                    {    // Change it's color
-                        otherLight.ChangeColor( otherColor );
+                    {    
+                        // Change it's color
+                        if ( ColorProps.useColorPicker && otherLight.ColorProps.useColorPicker )
+                        {
+                            otherLight.ChangeColor( CompGlower.props.glowColor );
+                        }
+                        else
+                        {
+                            otherLight.ChangeColor( otherColor );
+                        }
                     }
                 }
             }
         }
 
-        // Replace the comp props with a new one with different values
-        // must replace comp props as comps share props for things of the
-        // same class.  We need to make a unique copy for the building.
         public void                         ChangeColor( int index )
         {
-            ColorInt color = ColorProps.color[ index ].value;
+            ColorInt color = ColorProps.color[index].value;
             ColorIndex = index;
             GizmoChangeColor.defaultDesc = GizmoChangeColor.Desc;
 
+            ChangeColor( color );
+        }
+
+        public void                         ChangeColor( Color color, bool zeroAlpha = true )
+        {
+            Color _color = color;
+            if ( zeroAlpha )
+            {
+                _color.a = 0f;
+            }
+            ChangeColor( new ColorInt( _color ) );
+        }
+
+        // Replace the comp props with a new one with different values
+        // must replace comp props as comps share props for things of the
+        // same class.  We need to make a unique copy for the building.
+        public void                         ChangeColor( ColorInt color ) { 
             // Get glower
             var glower = CompGlower;
 
