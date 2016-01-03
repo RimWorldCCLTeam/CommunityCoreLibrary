@@ -52,6 +52,8 @@ namespace CommunityCoreLibrary
 
         float                               totalCost = -1;
 
+        ModHelperDef                        modHelperDef;
+
         #endregion
 
         #region Query State
@@ -92,6 +94,17 @@ namespace CommunityCoreLibrary
                 // Hopefully...
                 var isValid = true;
 
+                var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
+                modHelperDef = Find_Extensions.ModHelperDefByMod( loadedMod );
+
+                if( modHelperDef == null )
+                {
+                    // Missing ModHelperDef
+                    isValid = false;
+                    CCL_Log.Error( "Missing ModHelperDef for mod '" + loadedMod.name + "'", "Advanced Research" );
+                    return false;
+                }
+
 #if DEBUG
                 // Validate research
                 if( researchDefs.NullOrEmpty() )
@@ -123,7 +136,7 @@ namespace CommunityCoreLibrary
                     // Make sure things are of the appropriate class (Plant)
                     foreach( var thingDef in thingDefs )
                     {
-                        if( thingDef.thingClass != typeof( Plant ) && !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
+                        if( thingDef.thingClass != typeof( Plant )&& !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
                         {
                             // Invalid project
                             isValid = false;
@@ -193,7 +206,7 @@ namespace CommunityCoreLibrary
                 }
 
                 // Check if research projects are done
-                if (researchDefs.All(rd => rd.IsFinished))
+                if( researchDefs.All( rd => rd.IsFinished ) )
                 {
                     return ResearchEnableMode.Complete;
                 }
@@ -215,8 +228,8 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles recipes
                 return (
-                    ( !recipeDefs.NullOrEmpty() ) &&
-                    ( sowTags.NullOrEmpty() ) &&
+                    ( !recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
@@ -228,8 +241,8 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles plant sow tags
                 return (
-                    ( recipeDefs.NullOrEmpty() ) &&
-                    ( !sowTags.NullOrEmpty() ) &&
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( !sowTags.NullOrEmpty() )&&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
@@ -241,8 +254,8 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles buildings
                 return (
-                    ( recipeDefs.NullOrEmpty() ) &&
-                    ( sowTags.NullOrEmpty() ) &&
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
@@ -275,9 +288,9 @@ namespace CommunityCoreLibrary
             get
             {
                 return
-                    ( ConsolidateHelp ) ||
+                    ( ConsolidateHelp )||
                     (
-                        ( ResearchConsolidator != null ) &&
+                        ( ResearchConsolidator != null )&&
                         ( ResearchConsolidator.ConsolidateHelp )
                     );
             }
@@ -312,7 +325,7 @@ namespace CommunityCoreLibrary
             {
                 if( totalCost < 0 )
                 {
-                    totalCost = researchDefs.Sum(rd => rd.totalCost);
+                    totalCost = researchDefs.Sum( rd => rd.totalCost );
                 }
                 return totalCost;
             }
@@ -351,12 +364,18 @@ namespace CommunityCoreLibrary
         {
             // Don't disable if it's not the first run or not yet enabled
             if(
-                ( researchState == ResearchEnableMode.Incomplete ) &&
+                ( researchState == ResearchEnableMode.Incomplete )&&
                 ( firstTimeRun == false )
             )
             {
                 return;
             }
+#if DEBUG
+            if( modHelperDef.Verbosity >= Verbosity.StateChanges )
+            {
+                CCL_Log.Message( "Disabling AdvancedResearchDef '" + defName + "'", modHelperDef.ModName );
+            }
+#endif
             if( IsRecipeToggle )
             {
                 // Recipe toggle
@@ -373,7 +392,7 @@ namespace CommunityCoreLibrary
                 ToggleBuildings( true );
             }
             if(
-                ( IsResearchToggle ) &&
+                ( IsResearchToggle )&&
                 ( researchState != ResearchEnableMode.GodMode )
             )
             {
@@ -381,7 +400,7 @@ namespace CommunityCoreLibrary
                 ToggleResearch( true );
             }
             if(
-                ( HasCallbacks ) &&
+                ( HasCallbacks )&&
                 ( !firstTimeRun )
             )
             {
@@ -403,8 +422,8 @@ namespace CommunityCoreLibrary
             if( researchState != ResearchEnableMode.Incomplete )
             {
                 if(
-                    ( researchState == ResearchEnableMode.GodMode ) &&
-                    ( mode != ResearchEnableMode.GodMode ) &&
+                    ( researchState == ResearchEnableMode.GodMode )&&
+                    ( mode != ResearchEnableMode.GodMode )&&
                     ( IsResearchToggle )
                 )
                 {
@@ -416,6 +435,12 @@ namespace CommunityCoreLibrary
                 }
                 return;
             }
+#if DEBUG
+            if( modHelperDef.Verbosity >= Verbosity.StateChanges )
+            {
+                CCL_Log.Message( "Enabling AdvancedResearchDef '" + defName + "'", modHelperDef.ModName );
+            }
+#endif
             if( IsRecipeToggle )
             {
                 // Recipe toggle
@@ -432,7 +457,7 @@ namespace CommunityCoreLibrary
                 ToggleBuildings();
             }
             if(
-                ( IsResearchToggle ) &&
+                ( IsResearchToggle )&&
                 ( mode != ResearchEnableMode.GodMode )
             )
             {
@@ -605,7 +630,7 @@ namespace CommunityCoreLibrary
 
         public void ToggleHelp( bool setInitialState = false )
         {
-            if( ( !ConsolidateHelp ) ||
+            if( ( !ConsolidateHelp )||
                 ( HelpDef == null ) )
             {
                 return;
@@ -635,7 +660,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if( ( matchingAdvancedResearch == null ) &&
+                if( ( matchingAdvancedResearch == null )&&
                     ( ResearchConsolidator == this ) )
                 {
                     // Matching advanced research (by requirements)
@@ -689,7 +714,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsBuildingToggle )
             )
             {
@@ -702,7 +727,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsBuildingToggle )
                     )
                     {
@@ -726,7 +751,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsBuildingToggle )
             )
             {
@@ -739,7 +764,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs ) &&
+                        ( a.HideDefs )&&
                         ( a.IsBuildingToggle )
                     )
                     {
@@ -767,7 +792,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsRecipeToggle )
             )
             {
@@ -784,7 +809,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsRecipeToggle )
                     )
                     {
@@ -816,7 +841,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsRecipeToggle )
             )
             {
@@ -831,7 +856,7 @@ namespace CommunityCoreLibrary
             foreach( var a in MatchingAdvancedResearch )
             {
                 if(
-                    ( a.HideDefs ) &&
+                    ( a.HideDefs )&&
                     ( a.IsRecipeToggle )
                 )
                 {
@@ -862,7 +887,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsPlantToggle )
             )
             {
@@ -879,7 +904,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsPlantToggle )
                     )
                     {
@@ -911,7 +936,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsPlantToggle )
             )
             {
@@ -928,7 +953,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs ) &&
+                        ( a.HideDefs )&&
                         ( a.IsPlantToggle )
                     )
                     {
@@ -956,7 +981,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsResearchToggle )
             )
             {
@@ -969,7 +994,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsResearchToggle )
                     )
                     {
@@ -993,7 +1018,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsResearchToggle )
             )
             {
@@ -1006,7 +1031,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs ) &&
+                        ( a.HideDefs )&&
                         ( a.IsResearchToggle )
                     )
                     {
@@ -1052,10 +1077,14 @@ namespace CommunityCoreLibrary
 
         public bool IsFinished
         {
-            get { return ResearchState == ResearchEnableMode.Complete; }
+            get
+            {
+                return ( ResearchState == ResearchEnableMode.Complete );
+            }
         }
         
         #endregion
+
     }
 
 }

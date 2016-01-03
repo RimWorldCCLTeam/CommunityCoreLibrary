@@ -21,10 +21,20 @@ namespace CommunityCoreLibrary
                 {
                     if( !Resources.Buildings.Hoppers.Enable() )
                     {
-                        CCL_Log.Error( "Unable to enable hoppers", ModHelperDef.ModName );
+#if DEBUG
+                        if( ModHelperDef.Verbosity >= Verbosity.NonFatalErrors )
+                        {
+                            CCL_Log.Error( "Unable to enable hoppers", ModHelperDef.ModName );
+                        }
+#endif
                         return false;
                     }
-                    CCL_Log.Message( "Enabling hoppers", ModHelperDef.ModName );
+#if DEBUG
+                    else if( ModHelperDef.Verbosity >= Verbosity.Injections )
+                    {
+                        CCL_Log.Message( "Enabling hoppers", ModHelperDef.ModName );
+                    }
+#endif
                 }
             }
             return true;

@@ -29,15 +29,22 @@ namespace CommunityCoreLibrary
                             //if( ModHelperDef.InjectDesignators() )
 
                             ModHelperDef.InjectDesignators();
-                            if( ModHelperDef.DesignatorsInjected )
+                            if( !ModHelperDef.DesignatorsInjected )
+                            {
+#if DEBUG
+                                if( ModHelperDef.Verbosity >= Verbosity.NonFatalErrors )
+                                {
+                                    CCL_Log.Error( "Error injecting Designators", ModHelperDef.ModName );
+                                }
+#endif
+                                return false;
+                            }
+#if DEBUG
+                            else if( ModHelperDef.Verbosity >= Verbosity.Injections )
                             {
                                 CCL_Log.Message( "Injected Designators", ModHelperDef.ModName );
                             }
-                            else
-                            {
-                                CCL_Log.Error( "Error injecting Designators", ModHelperDef.ModName );
-                                return false;
-                            }
+#endif
                         }
                     }
                     return true;

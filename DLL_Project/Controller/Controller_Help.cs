@@ -471,6 +471,20 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
         {
+#if DEBUG
+            var mod = Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName );
+            if( mod != null )
+            {
+                var modHelperDef = Find_Extensions.ModHelperDefByMod( mod );
+                if(
+                    ( modHelperDef != null )&&
+                    ( modHelperDef.Verbosity >= Verbosity.AutoGenCreation )
+                )
+                {
+                    CCL_Log.Message( "HelpForBuildable '" + buildableDef.defName + "'", modHelperDef.ModName );
+                }
+            }
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
             helpDef.keyDef = buildableDef;
@@ -788,6 +802,20 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
+#if DEBUG
+            var mod = Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName );
+            if( mod != null )
+            {
+                var modHelperDef = Find_Extensions.ModHelperDefByMod( mod );
+                if(
+                    ( modHelperDef != null )&&
+                    ( modHelperDef.Verbosity >= Verbosity.AutoGenCreation )
+                )
+                {
+                    CCL_Log.Message( "HelpForRecipe '" + recipeDef.defName + "'", modHelperDef.ModName );
+                }
+            }
+#endif
             var helpDef = new HelpDef();
             helpDef.keyDef = recipeDef;
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
@@ -916,6 +944,20 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForResearch( ResearchProjectDef researchProjectDef, HelpCategoryDef category )
         {
+#if DEBUG
+            var mod = Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName );
+            if( mod != null )
+            {
+                var modHelperDef = Find_Extensions.ModHelperDefByMod( mod );
+                if(
+                    ( modHelperDef != null )&&
+                    ( modHelperDef.Verbosity >= Verbosity.AutoGenCreation )
+                )
+                {
+                    CCL_Log.Message( "HelpForResearch '" + researchProjectDef.defName + "'", modHelperDef.ModName );
+                }
+            }
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
             helpDef.keyDef = researchProjectDef;
@@ -1028,6 +1070,20 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
         {
+#if DEBUG
+            var mod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( advancedResearchDef.defName );
+            if( mod != null )
+            {
+                var modHelperDef = Find_Extensions.ModHelperDefByMod( mod );
+                if(
+                    ( modHelperDef != null )&&
+                    ( modHelperDef.Verbosity >= Verbosity.AutoGenCreation )
+                )
+                {
+                    CCL_Log.Message( "HelpForAdvancedResearch '" + advancedResearchDef.defName + "'", modHelperDef.ModName );
+                }
+            }
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = advancedResearchDef.defName + "_AdvancedResearchDef_Help";
             helpDef.keyDef = advancedResearchDef;

@@ -48,8 +48,28 @@ namespace CommunityCoreLibrary
                         i--;
                         continue;
                     }
+
                 }
 
+#if DEBUG
+                if( rVal == true )
+                {
+                    var allMods = LoadedModManager.LoadedMods.ToList();
+                    foreach( var mod in allMods )
+                    {
+                        var modHelperDef = Find_Extensions.ModHelperDefByMod( mod );
+                        if(
+                            ( modHelperDef != null )&&
+                            ( modHelperDef.Verbosity >= Verbosity.Injections )&&
+                            ( Find_Extensions.DefSetOfModOfType<AdvancedResearchDef>( mod ) != null )
+                        )
+                        {
+                            CCL_Log.Message( "Advanced Research valid for mod", modHelperDef.ModName );
+                        }
+                    }
+                }
+#endif
+                
                 // Return true if no errors, false otherwise
                 return rVal;
             }
