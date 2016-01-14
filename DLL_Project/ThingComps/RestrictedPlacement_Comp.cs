@@ -65,7 +65,13 @@ namespace CommunityCoreLibrary
                 var properties = this.RestrictedPlacement_Properties();
                 if( properties == null )
                 {
-                    CCL_Log.Error( "PlaceWorker requires RestrictedPlacement_Comp with RestrictedPlacement_Properties!", parent.def.defName );
+                    CCL_Log.TraceMod(
+                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        Verbosity.FatalErrors,
+                        "Missing RestrictedPlacement_Properties",
+                        this.GetType().ToString(),
+                        parent.def
+                    );
                     return;
                 }
                 if(
@@ -73,14 +79,26 @@ namespace CommunityCoreLibrary
                     ( properties.RestrictedTerrain.NullOrEmpty() )
                 )
                 {
-                    CCL_Log.Error( "Restricted terrain PlaceWorker used with no terrainDefs!", parent.def.defName );
+                    CCL_Log.TraceMod(
+                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        Verbosity.FatalErrors,
+                        "Missing terrainDefs",
+                        this.GetType().ToString(),
+                        parent.def
+                    );
                 }
                 if(
                     ( IsThingRestriction )&&
                     ( properties.RestrictedThing.NullOrEmpty() )
                 )
                 {
-                    CCL_Log.Error( "Restricted thing PlaceWorker used with no thingDefs!", parent.def.defName );
+                    CCL_Log.TraceMod(
+                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        Verbosity.FatalErrors,
+                        "Missing thingDefs",
+                        this.GetType().ToString(),
+                        parent.def
+                    );
                 }
             }
 #endif

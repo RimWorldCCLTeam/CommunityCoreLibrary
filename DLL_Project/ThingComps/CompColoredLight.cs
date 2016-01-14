@@ -19,7 +19,7 @@ namespace CommunityCoreLibrary
         
         CompProperties_ColoredLight         ColorProps;
 
-        public CompGlower                          CompGlower
+        public CompGlower                   CompGlower
         {
             get
             {
@@ -31,8 +31,8 @@ namespace CommunityCoreLibrary
 
         #region Gizmos
 
-        ChangeColor                 _GizmoChangeColor;
-        ChangeColor                 GizmoChangeColor
+        ChangeColor                         _GizmoChangeColor;
+        ChangeColor                         GizmoChangeColor
         {
             get
             {
@@ -48,8 +48,8 @@ namespace CommunityCoreLibrary
             }
         }
 
-        TouchingByLinker            _GizmoTouchingByLinker;
-        TouchingByLinker            GizmoTouchingByLinker
+        TouchingByLinker                    _GizmoTouchingByLinker;
+        TouchingByLinker                    GizmoTouchingByLinker
         {
             get
             {
@@ -66,8 +66,8 @@ namespace CommunityCoreLibrary
             }
         }
 
-        DefOrThingCompInRoom        _GizmoDefOrThingCompInRoom;
-        DefOrThingCompInRoom        GizmoDefOrThingCompInRoom
+        DefOrThingCompInRoom                _GizmoDefOrThingCompInRoom;
+        DefOrThingCompInRoom                GizmoDefOrThingCompInRoom
         {
             get
             {
@@ -108,7 +108,13 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( CompGlower == null )
             {
-                CCL_Log.Error( "CompColoredLight requires CompGlower!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    Verbosity.FatalErrors,
+                    "Missing CompGlower",
+                    this.GetType().ToString(),
+                    parent.def
+                );
                 return;
             }
 #endif
@@ -118,7 +124,13 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( ColorProps == null )
             {
-                CCL_Log.Error( "CompColoredLight requires CompProperties_ColoredLight!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    Verbosity.FatalErrors,
+                    "Missing CompProperties_ColoredLight",
+                    this.GetType().ToString(),
+                    parent.def
+                );
                 return;
             }
 #endif

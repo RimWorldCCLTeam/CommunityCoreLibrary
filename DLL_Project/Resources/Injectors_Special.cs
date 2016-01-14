@@ -30,19 +30,19 @@ namespace CommunityCoreLibrary
                             ModHelperDef.InjectSpecials();
                             if( !ModHelperDef.SpecialsInjected )
                             {
-#if DEBUG
-                                if( ModHelperDef.Verbosity >= Verbosity.NonFatalErrors )
-                                {
-                                    CCL_Log.Error( "Error in Special Injections", ModHelperDef.ModName );
-                                }
-#endif
+                                CCL_Log.TraceMod(
+                                    ModHelperDef,
+                                    Verbosity.NonFatalErrors,
+                                    "Error injecting Special Injectors"
+                                );
                                 return false;
                             }
 #if DEBUG
-                            else if( ModHelperDef.Verbosity >= Verbosity.Injections )
-                            {
-                                CCL_Log.Message( "Injected Specials", ModHelperDef.ModName );
-                            }
+                            CCL_Log.TraceMod(
+                                ModHelperDef,
+                                Verbosity.Injections,
+                                "Special Injectors injected"
+                            );
 #endif
                         }
                     }

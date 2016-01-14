@@ -24,7 +24,7 @@ namespace CommunityCoreLibrary
                     desList = typeof( ReverseDesignatorDatabase ).GetField( "desList", BindingFlags.Static | BindingFlags.NonPublic ).GetValue( null ) as List<Designator>;
                     if( desList == null )
                     {
-                        CCL_Log.Error( "Reflection unable to get field \"desList\"", "ReverseDesignatorDatabase" );
+                        CCL_Log.Error( "Reflection unable to get field 'desList'", "ReverseDesignatorDatabase" );
                     }
                 }
                 return desList;

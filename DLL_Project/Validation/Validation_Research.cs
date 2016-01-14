@@ -54,17 +54,17 @@ namespace CommunityCoreLibrary
 #if DEBUG
                 if( rVal == true )
                 {
-                    var allMods = LoadedModManager.LoadedMods.ToList();
+                    var allMods = Controller.Data.Mods;
                     foreach( var mod in allMods )
                     {
-                        var modHelperDef = Find_Extensions.ModHelperDefByMod( mod );
-                        if(
-                            ( modHelperDef != null )&&
-                            ( modHelperDef.Verbosity >= Verbosity.Injections )&&
-                            ( Find_Extensions.DefSetOfModOfType<AdvancedResearchDef>( mod ) != null )
-                        )
+                        if( !Find_Extensions.DefListOfTypeForMod<AdvancedResearchDef>( mod ).NullOrEmpty() )
                         {
-                            CCL_Log.Message( "Advanced Research valid for mod", modHelperDef.ModName );
+                            CCL_Log.TraceMod(
+                                mod,
+                                Verbosity.Validation,
+                                "Passed validation",
+                                "Advanced Research"
+                            );
                         }
                     }
                 }

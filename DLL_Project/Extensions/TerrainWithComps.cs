@@ -43,7 +43,13 @@ namespace CommunityCoreLibrary
                         ( placeWorker != typeof( PlaceWorker_OnlyUnderRoof ) )
                     )
                     {
-                        CCL_Log.Error( "TerrainWithComps using invalid PlaceWorker \"" + placeWorker.FullName + "\"", defName );
+                        CCL_Log.TraceMod(
+                            Find_Extensions.ModByDefOfType<TerrainDef>( this.defName ),
+                            Verbosity.FatalErrors,
+                            "Unsupported placeworker :: " + placeWorker.GetType().ToString(),
+                            "TerrainWithComps",
+                            this
+                        );
                     }
                 }
             }
@@ -61,7 +67,13 @@ namespace CommunityCoreLibrary
                         ( compClass != typeof( RestrictedPlacement_Comp ) )
                     )
                     {
-                        CCL_Log.Error( "TerrainWithComps using invalid ThingComp \"" + compClass.FullName + "\"", defName );
+                        CCL_Log.TraceMod(
+                            Find_Extensions.ModByDefOfType<TerrainDef>( this.defName ),
+                            Verbosity.FatalErrors,
+                            "Unsupported ThingComp :: " + compClass.ToString(),
+                            "TerrainWithComps",
+                            this
+                        );
                     }
                 }
             }

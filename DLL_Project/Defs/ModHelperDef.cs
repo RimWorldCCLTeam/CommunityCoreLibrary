@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 
 using Verse;
 
@@ -59,12 +59,17 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
+        // Used to flag xml defined (false) and auto-generated (true) for logging
+        public bool                         dummy = false;
+
+        public LoadedMod                    mod;
+
         bool                                specialsInjected;
         bool                                postLoadersInjected;
 
         #endregion
 
-        #region Query State
+        #region Validation
 
         public bool                         IsValid
         {
@@ -75,13 +80,13 @@ namespace CommunityCoreLibrary
 
                 if( ModName.NullOrEmpty() )
                 {
-                    errors += "\n\tMissing ModName in ModHelperDef: '" + defName + "'";
+                    errors += "\n\tMissing ModName";
                     isValid = false;
                 }
 
                 if( version.NullOrEmpty() )
                 {
-                    errors += "\n\tNull or empty CCL version requirement in ModHelperDef";
+                    errors += "\n\tNull or empty CCL version requirement";
                     isValid = false;
                 }
                 else
@@ -224,12 +229,22 @@ namespace CommunityCoreLibrary
 
                 if( !isValid )
                 {
-                    CCL_Log.Error( errors, "Mod Dependency :: " + ModName );
+                    var builder = new StringBuilder();
+                    builder.Append( "ModHelperDef :: " ).Append( defName );
+                    if( !ModName.NullOrEmpty() )
+                    {
+                        builder.Append( " :: " ).Append( ModName );
+                    }
+                    CCL_Log.Error( errors, builder.ToString() );
                 }
 
                 return isValid;
             }
         }
+
+        #endregion
+
+        #region Query State
 
         public bool                         MapComponentsInjected
         {

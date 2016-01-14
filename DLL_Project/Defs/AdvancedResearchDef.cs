@@ -58,7 +58,7 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
-        public ResearchEnableMode ResearchState
+        public ResearchEnableMode           ResearchState
         {
             get
             {
@@ -66,131 +66,200 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool IsHelpEnabled
+        public bool                         IsHelpEnabled
         {
             get
             {
-                return !HideUntilResearched || researchState != ResearchEnableMode.Incomplete;
+                return (
+                    ( !HideUntilResearched )||
+                    ( researchState != ResearchEnableMode.Incomplete )
+                );
             }
         }
 
-        public bool IsLockedOut()
+        private bool                        isLockedOutChecked = false;
+        private bool                        isLockedOut;
+        public bool                         IsLockedOut()
         {
-            foreach( var p in researchDefs )
+            if( !isLockedOutChecked )
             {
-                if( p.IsLockedOut() )
+                isLockedOutChecked = true;
+                isLockedOut = false;
+                foreach( var p in researchDefs )
                 {
-                    // Any of the research parents locked out?
-                    return true;
+                    if( p.IsLockedOut() )
+                    {
+                        // Any of the research parents locked out?
+                        isLockedOut = true;
+                        break;
+                    }
                 }
             }
-            return false;
+            return isLockedOut;
         }
 
-        public bool IsValid
+        private bool                        isValidChecked = false;
+        private bool                        isValid;
+        public bool                         IsValid
         {
             get
             {
-                // Hopefully...
-                var isValid = true;
-
-                var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
-                modHelperDef = Find_Extensions.ModHelperDefByMod( loadedMod );
-
-                if( modHelperDef == null )
+                if( !isValidChecked )
                 {
-                    // Missing ModHelperDef
-                    isValid = false;
-                    CCL_Log.Error( "Missing ModHelperDef for mod '" + loadedMod.name + "'", "Advanced Research" );
-                    return false;
-                }
+                    // Hopefully...
+                    isValid = true;
+
+                    var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
+                    modHelperDef = Find_Extensions.ModHelperDefForMod( loadedMod );
+
+                    if(
+                        ( modHelperDef == null )||
+                        ( modHelperDef.dummy )
+                    )
+                    {
+                        // Missing ModHelperDef (not dummyable)
+                        isValid = false;
+                        CCL_Log.TraceMod(
+                            Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                            Verbosity.NonFatalErrors,
+                            "Requires ModHelperDef",
+                            "AdvancedResearchDef",
+                            this
+                        );
+                    }
 
 #if DEBUG
-                // Validate research
-                if( researchDefs.NullOrEmpty() )
-                {
-                    // Invalid project
-                    isValid = false;
-                    CCL_Log.Error( "AdvancedResearchDef requires at least one research project!", defName );
-                }
-
-                // Validate recipes
-                if( IsRecipeToggle )
-                {
-                    // Make sure thingDefs are of the appropriate type (has ITab_Bills)
-                    foreach( var thingDef in thingDefs )
+                    // Validate research
+                    if( researchDefs.NullOrEmpty() )
                     {
-                        if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
-                        {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must implement \"IBillGiver\"", defName );
-                        }
-                    }
-
-                }
-
-                // Validate plant sowTags
-                if( IsPlantToggle )
-                {
-                    // Make sure things are of the appropriate class (Plant)
-                    foreach( var thingDef in thingDefs )
-                    {
-                        if( thingDef.thingClass != typeof( Plant )&& !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
-                        {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must be <thingClass> \"Plant\"", defName );
-                        }
-                    }
-
-                    // Make sure sowTags are valid (!null or empty)
-                    for( int i = 0; i < sowTags.Count; i++ )
-                    {
-                        var sowTag = sowTags[ i ];
-                        if( string.IsNullOrEmpty( sowTag ) )
-                        {
-                            CCL_Log.Error( "sowTags( index = " + i + " ) resolved to null", defName );
-                        }
-                    }
-                }
-
-                // Validate buildings
-                if( IsBuildingToggle )
-                {
-                    // Make sure thingDefs are of the appropriate type (has proper designationCategory)
-                    foreach( var thingDef in thingDefs )
-                    {
-                        if( ( string.IsNullOrEmpty( thingDef.designationCategory ) )||
-                            ( thingDef.designationCategory.ToLower() == "none" ) )
-                        {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, <designationCategory> must not be null or \"None\"", defName );
-                        }
-                    }
-                }
-
-                // Validate help
-                if( ( HasHelp )&&
-                    ( ResearchConsolidator == this ) )
-                {
-                    if( string.IsNullOrEmpty( label ) )
-                    {
-                        // Error processing data
+                        // Invalid project
                         isValid = false;
-                        CCL_Log.Error( "Def is help consolidator but missing label!", defName );
+                        CCL_Log.TraceMod(
+                            Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                            Verbosity.FatalErrors,
+                            "Missing researchDefs",
+                            "AdvancedResearchDef",
+                            this
+                        );
                     }
-                    if( string.IsNullOrEmpty( description ) )
+
+                    // Validate recipes
+                    if( IsRecipeToggle )
                     {
-                        // Error processing data
-                        isValid = false;
-                        CCL_Log.Error( "Def is help consolidator but missing description!", defName );
+                        // Make sure thingDefs are of the appropriate type (has ITab_Bills)
+                        foreach( var thingDef in thingDefs )
+                        {
+                            if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
+                            {
+                                // Invalid project
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' does not implement IBillGiver",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+
                     }
-                }
+
+                    // Validate plant sowTags
+                    if( IsPlantToggle )
+                    {
+                        // Make sure things are of the appropriate class (Plant)
+                        foreach( var thingDef in thingDefs )
+                        {
+                            if(
+                                ( thingDef.thingClass != typeof( Plant ) )&&
+                                ( !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
+                            )
+                            {
+                                // Invalid plant
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' ThingClass is not Plant based",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+
+                        // Make sure sowTags are valid (!null or empty)
+                        for( int i = 0; i < sowTags.Count; i++ )
+                        {
+                            var sowTag = sowTags[ i ];
+                            if( sowTag.NullOrEmpty() )
+                            {
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "sowTag at index'" + i + "' is null or empty",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+                    }
+
+                    // Validate buildings
+                    if( IsBuildingToggle )
+                    {
+                        // Make sure thingDefs are of the appropriate type (has proper designationCategory)
+                        foreach( var thingDef in thingDefs )
+                        {
+                            if( ( thingDef.designationCategory.NullOrEmpty() )||
+                                ( thingDef.designationCategory.ToLower() == "none" ) )
+                            {
+                                // Invalid project
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+                    }
+
+                    // Validate help
+                    if( ( HasHelp )&&
+                        ( ResearchConsolidator == this ) )
+                    {
+                        if( label.NullOrEmpty() )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                Verbosity.FatalErrors,
+                                "Help Consolidator requires missing label",
+                                "AdvancedResearchDef",
+                                this
+                            );
+                        }
+                        if( description.NullOrEmpty() )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                Verbosity.FatalErrors,
+                                "Help Consolidator requires missing description",
+                                "AdvancedResearchDef",
+                                this
+                            );
+                        }
+                    }
 
 #endif
-
+                }
                 return isValid;
             }
         }
@@ -371,10 +440,12 @@ namespace CommunityCoreLibrary
                 return;
             }
 #if DEBUG
-            if( modHelperDef.Verbosity >= Verbosity.StateChanges )
-            {
-                CCL_Log.Message( "Disabling AdvancedResearchDef '" + defName + "'", modHelperDef.ModName );
-            }
+            CCL_Log.TraceMod(
+                modHelperDef,
+                Verbosity.StateChanges,
+                "Disabling '" + defName + "'",
+                "AdvancedResearchDef"
+            );
 #endif
             if( IsRecipeToggle )
             {
@@ -436,10 +507,12 @@ namespace CommunityCoreLibrary
                 return;
             }
 #if DEBUG
-            if( modHelperDef.Verbosity >= Verbosity.StateChanges )
-            {
-                CCL_Log.Message( "Enabling AdvancedResearchDef '" + defName + "'", modHelperDef.ModName );
-            }
+            CCL_Log.TraceMod(
+                modHelperDef,
+                Verbosity.StateChanges,
+                "Enabling '" + defName + "'",
+                "AdvancedResearchDef"
+            );
 #endif
             if( IsRecipeToggle )
             {

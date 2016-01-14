@@ -60,17 +60,21 @@
     </ModHelperDef>
 
     * Verbosity is an enumeration and works with named levels, each level adds more and more information to the output log.
-    The user release build only supports FatalErrors and NonFatalErrors (level 0 and 1), the modders release supports the following:
-        FatalErrors (0)
-        NonFatalErrors (1)
-        Warnings (2)
-        Injections (3)
-        AutoGenCreation (4)
-        StateChanges (5)
+    Each level of verbosity includes the information of all the levels above it.
+    The user release build only supports FatalErrors, NonFatalErrors and Validation.
+    The modders release supports the following:
+        FatalErrors
+        NonFatalErrors
+        Validation
+        Warnings
+        Injections
+        AutoGenCreation
+        StateChanges
+        Stack (Use with caution, this will trace certain methods and some methods are recursive)
     
-    For both the user release and modders release the default verbosity is "NonFatalErrors"
+    For both the user release and modders release the default verbosity is "Validation"
 
-    While the user release will not report anything higher than NonFatalErrors, you should still remove (or comment) the xml tag
+    While the user release will not report anything higher than validation, you should still remove (or comment) the xml tag
     for verbosity before releasing your mod.  The higher levels of verbosity will help track down bugs in both your mod and
     potentially within CCL itself for reporting to the github issues tracker.
 

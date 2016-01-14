@@ -28,7 +28,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get the def set of a specific type for a specific mod
-        public static ModDefSet<T>          DefSetOfModOfType<T>( LoadedMod mod ) where T : Def, new()
+        public static ModDefSet<T>          DefSetOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
         {
             if( mod == null )
             {
@@ -44,13 +44,13 @@ namespace CommunityCoreLibrary
         }
 
         // Get the def list of a specific type for a specific mod
-        public static List<T>               DefListOfModOfType<T>( LoadedMod mod ) where T : Def, new()
+        public static List<T>               DefListOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
         {
             if( mod == null )
             {
                 return null;
             }
-            var modDefSet = DefSetOfModOfType<T>( mod );
+            var modDefSet = DefSetOfTypeForMod<T>( mod );
             if( modDefSet == null )
             {
                 return null;
@@ -58,14 +58,18 @@ namespace CommunityCoreLibrary
             return modDefSet.AllDefs.ToList();
         }
 
-        // Get the specific mod of a specific def of a specific type
+        // Get the specific mod of a specific def of a specific type.
+        // Scans in reverse order (last mod fist) for a specific def
+        // of a specific type.
+        // Optional InitialIndex to be used to continue scanning to find
+        // all instances of the same def in all mods.
         public static LoadedMod             ModByDefOfType<T>( string defName, int InitialIndex = -1 ) where T : Def, new()
         {
             if( defName.NullOrEmpty() )
             {
                 return null;
             }
-            var allMods = LoadedModManager.LoadedMods.ToList();
+            var allMods = Controller.Data.Mods;
             int Start = InitialIndex;
             if(
                 ( Start < 0 )||
@@ -74,9 +78,9 @@ namespace CommunityCoreLibrary
             {
                 Start = allMods.Count - 1;
             }
-            for( int i = Start; i > 0; i-- )
+            for( int i = Start; i >= 0; i-- )
             {
-                var defSet = DefSetOfModOfType<T>( allMods[ i ] );
+                var defSet = DefSetOfTypeForMod<T>( allMods[ i ] );
                 if( defSet.DefNamed( defName, false ) != null )
                 {
                     return allMods[i];
@@ -92,7 +96,7 @@ namespace CommunityCoreLibrary
             {
                 return -1;
             }
-            var allMods = LoadedModManager.LoadedMods.ToList();
+            var allMods = Controller.Data.Mods;
             for( int i = 0; i < allMods.Count; i++ )
             {
                 if( allMods[ i ] == mod )
@@ -106,7 +110,7 @@ namespace CommunityCoreLibrary
         // Get a mod by index in the load order
         public static LoadedMod             ModByModIndex( int Index )
         {
-            var allMods = LoadedModManager.LoadedMods.ToList();
+            var allMods = Controller.Data.Mods;
             if(
                 ( Index < 0 )||
                 ( Index > allMods.Count - 1 )
@@ -117,19 +121,40 @@ namespace CommunityCoreLibrary
             return allMods[ Index ];
         }
 
-        // Get a mods ModHelperDef by mod
-        public static ModHelperDef           ModHelperDefByMod( LoadedMod mod )
+        // Get the ModHelperDef for a mod
+        public static ModHelperDef           ModHelperDefForMod( LoadedMod mod )
         {
             if( mod == null )
             {
                 return null;
             }
-            var modHelperDefs = Find_Extensions.DefListOfModOfType<ModHelperDef>( mod );
-            if( !modHelperDefs.NullOrEmpty() )
+            var rVal = (ModHelperDef) null;
+            if( Controller.Data.DictModHelperDefs.TryGetValue( mod, out rVal ) )
             {
-                return modHelperDefs.First();
+                return rVal;
             }
             return null;
+        }
+
+        // Get the hightest tracing level for global functions
+        private static Verbosity            highestVerbosity = Verbosity.NonFatalErrors;
+        public static Verbosity             HightestVerbosity
+        {
+            get
+            {
+                if( highestVerbosity == Verbosity.NonFatalErrors )
+                {
+                    highestVerbosity = Verbosity.Default;
+                    foreach( var modHelperDef in Controller.Data.ModHelperDefs )
+                    {
+                        if( modHelperDef.Verbosity > highestVerbosity )
+                        {
+                            highestVerbosity = modHelperDef.Verbosity;
+                        }
+                    }
+                }
+                return highestVerbosity;
+            }
         }
 
     }

@@ -31,14 +31,26 @@ namespace CommunityCoreLibrary
             // Check power comp
             if( CompPowerTrader == null )
             {
-                CCL_Log.Error( "CompHeatPusherLowPowered requires CompPowerTrader!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    Verbosity.FatalErrors,
+                    "Missing CompPowerTrader",
+                    this.GetType().ToString(),
+                    parent.def
+                );
                 return;
             }
 
             // Check idle power comp
             if( CompPowerLowIdleDraw == null )
             {
-                CCL_Log.Error( "CompHeatPusherLowPowered requires CompPowerLowIdleDraw!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    Verbosity.FatalErrors,
+                    "Missing CompPowerLowIdleDraw",
+                    this.GetType().ToString(),
+                    parent.def
+                );
                 return;
             }
 

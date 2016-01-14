@@ -11,32 +11,138 @@ namespace CommunityCoreLibrary
     public static class BuildableDef_Extensions
     {
 
+        #region Static Data
+
+        static Dictionary<BuildableDef,bool> isLockedOut = new Dictionary<BuildableDef, bool>();
+
+        #endregion
+
         #region Availability
 
         public static bool                  IsLockedOut( this BuildableDef buildableDef )
         {
-            // Is the designationCategory locked out?
-            if( ( buildableDef.blueprintDef != null )&&
-                ( string.IsNullOrEmpty( buildableDef.designationCategory ) )||
-                ( buildableDef.designationCategory == "None" ) )
+            bool rVal;
+            if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
             {
-                return true;
+#if DEBUG
+                var defType = "BuildableDef";
+                var mod = Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName );
+                if( mod == null )
+                {
+                    List<string> suffixes = new List<string>(){
+                        "_Frame",
+                        "_Blueprint",
+                        "_Blueprint_Install",
+                        "_Corpse",
+                        "_Leather",
+                        "_Meat"
+                    };
+
+                    foreach( var suffix in suffixes )
+                    {
+                        //var searchDef = buildableDef.defName;
+                        if( buildableDef.defName.Length > suffix.Length )
+                        {
+                            var searchDef = buildableDef.defName.Remove( buildableDef.defName.Length - suffix.Length );
+                            mod = Find_Extensions.ModByDefOfType<ThingDef>( searchDef );
+                            if( mod != null )
+                            {
+                                defType += " :: ThingDef";
+                                break;
+                            }
+                        }
+                    }
+                    if( mod == null )
+                    {
+                        mod = Find_Extensions.ModByDefOfType<TerrainDef>( buildableDef.defName );
+                        if( mod != null )
+                        {
+                            defType += " :: TerrainDef";
+                        }
+                    }
+                    if( mod == null )
+                    {
+                        foreach( var suffix in suffixes )
+                        {
+                            //var searchDef = buildableDef.defName;
+                            if( buildableDef.defName.Length > suffix.Length )
+                            {
+                                var searchDef = buildableDef.defName.Remove( buildableDef.defName.Length - suffix.Length );
+                                mod = Find_Extensions.ModByDefOfType<TerrainDef>( searchDef );
+                                if( mod != null )
+                                {
+                                    defType += " :: TerrainDef";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                CCL_Log.TraceMod(
+                    mod,
+                    Verbosity.Stack,
+                    "IsLockedOut()",
+                    defType,
+                    buildableDef
+                );
+#endif
+
+                // Is it a frame or blueprint?
+                if(
+                    ( buildableDef.defName.EndsWith( "_Frame" ) )||
+                    ( buildableDef.defName.EndsWith( "_Blueprint" ) )||
+                    ( buildableDef.defName.EndsWith( "_Blueprint_Install" ) )
+                )
+                {
+                    isLockedOut.Add( buildableDef, true );
+                    return true;
+                }
+
+                // Is the designationCategory locked out?
+                if(
+                    ( buildableDef.blueprintDef == null )||
+                    ( buildableDef.designationCategory.NullOrEmpty() )||
+                    ( buildableDef.designationCategory == "None" )
+                )
+                {
+                    isLockedOut.Add( buildableDef, true );
+                    return true;
+                }
+
+                // Advanced research unlocking it?
+                if( !ResearchController.AdvancedResearch.Any( a => (
+                    ( a.IsBuildingToggle )&&
+                    ( !a.HideDefs )&&
+                    ( a.thingDefs.Contains( buildableDef as ThingDef ) )
+                ) ) )
+                {
+                    isLockedOut.Add( buildableDef, true );
+                    return true;
+                }
+
+                // Is the research parent locked out?
+                rVal = (
+                    ( buildableDef.researchPrerequisite != null )&&
+                    ( buildableDef.researchPrerequisite.IsLockedOut() )
+                );
+
+                // Cache the result
+                isLockedOut.Add( buildableDef, rVal );
             }
-            // Advanced research unlocking it?
-            if( ResearchController.AdvancedResearch.Any( a => (
-                ( a.IsBuildingToggle )&&
-                ( !a.HideDefs )&&
-                ( a.thingDefs.Contains( buildableDef as ThingDef ) )
-            ) ) )
-            {
-                return false;
-            }
-            // Is the research parent locked out?
-            return buildableDef.researchPrerequisite.IsLockedOut();
+            return rVal;
         }
 
         public static bool                  HasResearchRequirement( this BuildableDef buildableDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                Verbosity.Stack,
+                "HasResearchRequirement()",
+                "BuildableDef",
+                buildableDef
+            );
+#endif
             // Can't entirely rely on this one check as it's state may change mid-game
             if( buildableDef.researchPrerequisite != null )
             {
@@ -59,6 +165,15 @@ namespace CommunityCoreLibrary
 
         public static List< Def >           GetResearchRequirements( this BuildableDef buildableDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                Verbosity.Stack,
+                "GetResearchRequirements()",
+                "BuildableDef",
+                buildableDef
+            );
+#endif
             var researchDefs = new List< Def >();
 
             if( buildableDef.researchPrerequisite != null )

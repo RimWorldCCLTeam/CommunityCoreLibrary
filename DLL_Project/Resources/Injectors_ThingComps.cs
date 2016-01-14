@@ -30,19 +30,19 @@ namespace CommunityCoreLibrary
                             ModHelperDef.InjectThingComps();
                             if( !ModHelperDef.ThingCompsInjected )
                             {
-#if DEBUG
-                                if( ModHelperDef.Verbosity >= Verbosity.NonFatalErrors )
-                                {
-                                    CCL_Log.Error( "Error injecting ThingComps", ModHelperDef.ModName );
-                                }
-#endif
+                                CCL_Log.TraceMod(
+                                    ModHelperDef,
+                                    Verbosity.NonFatalErrors,
+                                    "Error injecting ThingComps"
+                                );
                                 return false;
                             }
 #if DEBUG
-                            else if( ModHelperDef.Verbosity >= Verbosity.Injections )
-                            {
-                                CCL_Log.Message( "Injected ThingComps", ModHelperDef.ModName );
-                            }
+                            CCL_Log.TraceMod(
+                                ModHelperDef,
+                                Verbosity.Injections,
+                                "ThingComps injected"
+                            );
 #endif
                         }
                     }
