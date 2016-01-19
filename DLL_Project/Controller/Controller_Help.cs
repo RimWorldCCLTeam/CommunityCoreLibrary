@@ -20,12 +20,19 @@ namespace CommunityCoreLibrary.Controller
 
         public static bool Initialize()
         {
-            try
-            {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "Initialize()",
+                "Help System"
+            );
+#endif
+
+            //try
+            //{
                 // The only thing that will stop these from working is bad xml
                 // or bad programming logic.  Either way an exception will be thrown
                 // and caught.
-
 
                 // Items
                 ResolveApparel();
@@ -67,20 +74,40 @@ namespace CommunityCoreLibrary.Controller
 
                 // Rebuild help caches
                 ResolveReferences();
+            /*
             }
             catch( Exception e )
             {
                 // Ruh-ro, Raggy!
-                CCL_Log.Error( e.Message, "Help System" );
+#if DEBUG
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    e.Message,
+                    "Help System"
+                );
+#endif
                 return false;
             }
+            */
 
-            CCL_Log.Message( "Initialized", "Help System" );
+            CCL_Log.Trace(
+                Verbosity.Validation,
+                "Initialized",
+                "Help System"
+            );
             return true;
         }
 
         static void ResolveReferences()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveReferences()",
+                "Help System"
+            );
+#endif
+
             foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefsListForReading )
             {
                 helpCategory.Recache();
@@ -94,6 +121,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveApparel()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveApparel()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -117,6 +152,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveBodyParts()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveBodyParts()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -144,6 +187,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveDrugs()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveDrugs()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -168,6 +219,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveMeals()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveMeals()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -192,6 +251,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveWeapons()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveWeapons()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -220,6 +287,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveBuildings()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveBuildings()",
+                "Help System"
+            );
+#endif
+
             // Go through buildings by designation categories
             foreach( var designationCategoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
             {
@@ -246,6 +321,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveMinifiableOnly()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveMinifiableOnly()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -280,6 +363,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveThingDefList( List<ThingDef> thingDefs, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveThingDefList()",
+                "Help System"
+            );
+#endif
+
             // Get help database
             var helpDefs = DefDatabase< HelpDef >.AllDefsListForReading;
 
@@ -313,6 +404,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveRecipes()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveRecipes()",
+                "Help System"
+            );
+#endif
+
             // Get the thing database of things which ever have recipes
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -360,6 +459,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveResearch()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveResearch()",
+                "Help System"
+            );
+#endif
+
             // Get research database
             var researchProjectDefs =
                 DefDatabase< ResearchProjectDef >.AllDefsListForReading.Where( r => (
@@ -403,6 +510,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveAdvancedResearch()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveAdvancedResearch()",
+                "Help System"
+            );
+#endif
+
             // Get advanced research database
             var advancedResearchDefs =
                 ResearchController.AdvancedResearch.Where( a => (
@@ -463,6 +578,14 @@ namespace CommunityCoreLibrary.Controller
                 helpCategoryDef.label = label;
                 helpCategoryDef.ModName = modname;
 
+#if DEBUG
+                CCL_Log.Trace(
+                    Verbosity.Stack,
+                    "HelpCategoryForKey() :: " + key,
+                    "Help System"
+                );
+#endif
+                
                 DefDatabase<HelpCategoryDef>.Add( helpCategoryDef );
             }
 
@@ -471,6 +594,14 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                Verbosity.AutoGenCreation,
+                buildableDef.defName,
+                "HelpForBuildable"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
             helpDef.keyDef = buildableDef;
@@ -788,6 +919,14 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                Verbosity.AutoGenCreation,
+                recipeDef.defName,
+                "HelpForRecipe"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.keyDef = recipeDef;
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
@@ -916,6 +1055,14 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForResearch( ResearchProjectDef researchProjectDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.AutoGenCreation,
+                researchProjectDef.defName,
+                "HelpForResearch"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
             helpDef.keyDef = researchProjectDef;
@@ -1028,6 +1175,14 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ThingDef>( advancedResearchDef.defName ),
+                Verbosity.AutoGenCreation,
+                advancedResearchDef.defName,
+                "HelpForAdvancedResearch"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = advancedResearchDef.defName + "_AdvancedResearchDef_Help";
             helpDef.keyDef = advancedResearchDef;

@@ -10,44 +10,75 @@ namespace CommunityCoreLibrary
     public static class ResearchProjectDef_Extensions
     {
 
+        #region Static Data
+
+        static Dictionary<ResearchProjectDef,bool> isLockedOut = new Dictionary<ResearchProjectDef, bool>();
+
+        #endregion
+
         #region Availability
 
-        public static bool                  IsLockedOut( this ResearchProjectDef researchProjectDef )
+        public static bool                  IsLockedOut( this ResearchProjectDef researchProjectDef, ResearchProjectDef initialDef = null )
         {
-            // Check for possible unlock
-            if(
-                ( researchProjectDef != null )&&
-                ( !researchProjectDef.prerequisites.NullOrEmpty() )
-            )
+            bool rVal = false;
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "IsLockedOut()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
+            if( !isLockedOut.TryGetValue( researchProjectDef, out rVal ) )
             {
-                // Check each prerequisite
-                foreach( var p in researchProjectDef.prerequisites )
+                if( initialDef == null )
                 {
-                    if(
-                        ( p.defName == researchProjectDef.defName )||
-                        ( p.IsLockedOut() )
-                    )
+                    // Stop cyclical recursion before it starts
+                    initialDef = researchProjectDef;
+                }
+                // Check for possible unlock
+                if( !researchProjectDef.prerequisites.NullOrEmpty() )
+                {
+                    // Check each prerequisite
+                    foreach( var p in researchProjectDef.prerequisites )
                     {
-                        // Self-prerequisite or parent locked means potential lock-out
-
-                        // Check for possible unlock
-                        if( !ResearchController.AdvancedResearch.Any( a => (
-                            ( a.IsResearchToggle )&&
-                            ( !a.HideDefs )&&
-                            ( a.effectedResearchDefs.Contains( researchProjectDef ) )
-                        ) ) )
+                        if(
+                            ( p.defName == initialDef.defName )||
+                            ( p.IsLockedOut( initialDef ) )
+                        )
                         {
-                            // No unlockers, always locked out
-                            return true;
+                            // Cyclical-prerequisite or parent locked means potential lock-out
+
+                            // Check for possible unlock
+                            if( !ResearchController.AdvancedResearch.Any( a => (
+                                ( a.IsResearchToggle )&&
+                                ( !a.HideDefs )&&
+                                ( a.effectedResearchDefs.Contains( researchProjectDef ) )
+                            ) ) )
+                            {
+                                // No unlockers, always locked out
+                                rVal = true;
+                            }
                         }
                     }
                 }
+                isLockedOut.Add( researchProjectDef, rVal );
             }
-            return false;
+            return rVal;
         }
 
         public static bool                  HasResearchRequirement( this ResearchProjectDef researchProjectDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "HasResearchRequirement()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             // Can't entirely rely on this one check as it's state may change mid-game
             if( researchProjectDef.prerequisites != null )
             {
@@ -70,6 +101,15 @@ namespace CommunityCoreLibrary
 
         public static List< Def >           GetResearchRequirements( this ResearchProjectDef researchProjectDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetResearchRequirements()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             var researchDefs = new List< Def >();
 
             if( researchProjectDef.prerequisites != null )
@@ -100,8 +140,17 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
-        public static List<Def> GetResearchUnlocked(this ResearchProjectDef researchProjectDef)
+        public static List<Def>             GetResearchUnlocked(this ResearchProjectDef researchProjectDef)
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetResearchUnlocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             var researchDefs = new List<Def>();
 
             //CCL_Log.Message("Normal");
@@ -122,6 +171,15 @@ namespace CommunityCoreLibrary
 
         public static List< Def >           GetResearchedLockedBy( this ResearchProjectDef researchProjectDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetResearchLockedBy()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             // Advanced Research that locks it
             var researchDefs = new List<Def>();
 
@@ -146,6 +204,15 @@ namespace CommunityCoreLibrary
 
         public static List< ThingDef >      GetThingsUnlocked( this ResearchProjectDef researchProjectDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetThingsUnlocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             // Buildings it unlocks
             var thingsOn = new List<ThingDef>();
             var researchThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
@@ -181,6 +248,15 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipesUnlocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetRecipesUnlocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             // Recipes on buildings it unlocks
             var recipes = new List<RecipeDef>();
             if( thingDefs != null )
@@ -233,6 +309,15 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipesLocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetRecipesLocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             // Recipes on buildings it locks
             var recipes = new List<RecipeDef>();
             if( thingDefs != null )
@@ -266,6 +351,15 @@ namespace CommunityCoreLibrary
 
         public static List< string >        GetSowTagsUnlocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetSowTagsUnlocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
             var sowTags = new List< string >();
             if( thingDefs != null )
             {
@@ -298,7 +392,16 @@ namespace CommunityCoreLibrary
 
         public static List< string >        GetSowTagsLocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
-            var sowTags = new List< string >();
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetSowTagsLocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
+                       var sowTags = new List< string >();
             if( thingDefs != null )
             {
                 thingDefs.Clear();

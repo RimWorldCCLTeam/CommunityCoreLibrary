@@ -52,11 +52,13 @@ namespace CommunityCoreLibrary
 
         float                               totalCost = -1;
 
+        ModHelperDef                        modHelperDef;
+
         #endregion
 
         #region Query State
 
-        public ResearchEnableMode ResearchState
+        public ResearchEnableMode           ResearchState
         {
             get
             {
@@ -64,120 +66,200 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public bool IsHelpEnabled
+        public bool                         IsHelpEnabled
         {
             get
             {
-                return !HideUntilResearched || researchState != ResearchEnableMode.Incomplete;
+                return (
+                    ( !HideUntilResearched )||
+                    ( researchState != ResearchEnableMode.Incomplete )
+                );
             }
         }
 
-        public bool IsLockedOut()
+        private bool                        isLockedOutChecked = false;
+        private bool                        isLockedOut;
+        public bool                         IsLockedOut()
         {
-            foreach( var p in researchDefs )
+            if( !isLockedOutChecked )
             {
-                if( p.IsLockedOut() )
+                isLockedOutChecked = true;
+                isLockedOut = false;
+                foreach( var p in researchDefs )
                 {
-                    // Any of the research parents locked out?
-                    return true;
+                    if( p.IsLockedOut() )
+                    {
+                        // Any of the research parents locked out?
+                        isLockedOut = true;
+                        break;
+                    }
                 }
             }
-            return false;
+            return isLockedOut;
         }
 
-        public bool IsValid
+        private bool                        isValidChecked = false;
+        private bool                        isValid;
+        public bool                         IsValid
         {
             get
             {
-                // Hopefully...
-                var isValid = true;
+                if( !isValidChecked )
+                {
+                    // Hopefully...
+                    isValid = true;
+
+                    var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
+                    modHelperDef = Find_Extensions.ModHelperDefForMod( loadedMod );
+
+                    if(
+                        ( modHelperDef == null )||
+                        ( modHelperDef.dummy )
+                    )
+                    {
+                        // Missing ModHelperDef (not dummyable)
+                        isValid = false;
+                        CCL_Log.TraceMod(
+                            Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                            Verbosity.NonFatalErrors,
+                            "Requires ModHelperDef",
+                            "AdvancedResearchDef",
+                            this
+                        );
+                    }
 
 #if DEBUG
-                // Validate research
-                if( researchDefs.NullOrEmpty() )
-                {
-                    // Invalid project
-                    isValid = false;
-                    CCL_Log.Error( "AdvancedResearchDef requires at least one research project!", defName );
-                }
-
-                // Validate recipes
-                if( IsRecipeToggle )
-                {
-                    // Make sure thingDefs are of the appropriate type (has ITab_Bills)
-                    foreach( var thingDef in thingDefs )
+                    // Validate research
+                    if( researchDefs.NullOrEmpty() )
                     {
-                        if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
-                        {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must implement \"IBillGiver\"", defName );
-                        }
-                    }
-
-                }
-
-                // Validate plant sowTags
-                if( IsPlantToggle )
-                {
-                    // Make sure things are of the appropriate class (Plant)
-                    foreach( var thingDef in thingDefs )
-                    {
-                        if( thingDef.thingClass != typeof( Plant ) && !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
-                        {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, must be <thingClass> \"Plant\"", defName );
-                        }
-                    }
-
-                    // Make sure sowTags are valid (!null or empty)
-                    for( int i = 0; i < sowTags.Count; i++ )
-                    {
-                        var sowTag = sowTags[ i ];
-                        if( string.IsNullOrEmpty( sowTag ) )
-                        {
-                            CCL_Log.Error( "sowTags( index = " + i + " ) resolved to null", defName );
-                        }
-                    }
-                }
-
-                // Validate buildings
-                if( IsBuildingToggle )
-                {
-                    // Make sure thingDefs are of the appropriate type (has proper designationCategory)
-                    foreach( var thingDef in thingDefs )
-                    {
-                        if( ( string.IsNullOrEmpty( thingDef.designationCategory ) )||
-                            ( thingDef.designationCategory.ToLower() == "none" ) )
-                        {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.Error( "thingDef( " + thingDef.defName + " ) is of inappropriate type, <designationCategory> must not be null or \"None\"", defName );
-                        }
-                    }
-                }
-
-                // Validate help
-                if( ( HasHelp )&&
-                    ( ResearchConsolidator == this ) )
-                {
-                    if( string.IsNullOrEmpty( label ) )
-                    {
-                        // Error processing data
+                        // Invalid project
                         isValid = false;
-                        CCL_Log.Error( "Def is help consolidator but missing label!", defName );
+                        CCL_Log.TraceMod(
+                            Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                            Verbosity.FatalErrors,
+                            "Missing researchDefs",
+                            "AdvancedResearchDef",
+                            this
+                        );
                     }
-                    if( string.IsNullOrEmpty( description ) )
+
+                    // Validate recipes
+                    if( IsRecipeToggle )
                     {
-                        // Error processing data
-                        isValid = false;
-                        CCL_Log.Error( "Def is help consolidator but missing description!", defName );
+                        // Make sure thingDefs are of the appropriate type (has ITab_Bills)
+                        foreach( var thingDef in thingDefs )
+                        {
+                            if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
+                            {
+                                // Invalid project
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' does not implement IBillGiver",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+
                     }
-                }
+
+                    // Validate plant sowTags
+                    if( IsPlantToggle )
+                    {
+                        // Make sure things are of the appropriate class (Plant)
+                        foreach( var thingDef in thingDefs )
+                        {
+                            if(
+                                ( thingDef.thingClass != typeof( Plant ) )&&
+                                ( !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
+                            )
+                            {
+                                // Invalid plant
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' ThingClass is not Plant based",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+
+                        // Make sure sowTags are valid (!null or empty)
+                        for( int i = 0; i < sowTags.Count; i++ )
+                        {
+                            var sowTag = sowTags[ i ];
+                            if( sowTag.NullOrEmpty() )
+                            {
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "sowTag at index'" + i + "' is null or empty",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+                    }
+
+                    // Validate buildings
+                    if( IsBuildingToggle )
+                    {
+                        // Make sure thingDefs are of the appropriate type (has proper designationCategory)
+                        foreach( var thingDef in thingDefs )
+                        {
+                            if( ( thingDef.designationCategory.NullOrEmpty() )||
+                                ( thingDef.designationCategory.ToLower() == "none" ) )
+                            {
+                                // Invalid project
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty",
+                                    "AdvancedResearchDef",
+                                    this
+                                );
+                            }
+                        }
+                    }
+
+                    // Validate help
+                    if( ( HasHelp )&&
+                        ( ResearchConsolidator == this ) )
+                    {
+                        if( label.NullOrEmpty() )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                Verbosity.FatalErrors,
+                                "Help Consolidator requires missing label",
+                                "AdvancedResearchDef",
+                                this
+                            );
+                        }
+                        if( description.NullOrEmpty() )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                Verbosity.FatalErrors,
+                                "Help Consolidator requires missing description",
+                                "AdvancedResearchDef",
+                                this
+                            );
+                        }
+                    }
 
 #endif
-
+                }
                 return isValid;
             }
         }
@@ -193,7 +275,7 @@ namespace CommunityCoreLibrary
                 }
 
                 // Check if research projects are done
-                if (researchDefs.All(rd => rd.IsFinished))
+                if( researchDefs.All( rd => rd.IsFinished ) )
                 {
                     return ResearchEnableMode.Complete;
                 }
@@ -215,8 +297,8 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles recipes
                 return (
-                    ( !recipeDefs.NullOrEmpty() ) &&
-                    ( sowTags.NullOrEmpty() ) &&
+                    ( !recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
@@ -228,8 +310,8 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles plant sow tags
                 return (
-                    ( recipeDefs.NullOrEmpty() ) &&
-                    ( !sowTags.NullOrEmpty() ) &&
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( !sowTags.NullOrEmpty() )&&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
@@ -241,8 +323,8 @@ namespace CommunityCoreLibrary
             {
                 // Determine if this def toggles buildings
                 return (
-                    ( recipeDefs.NullOrEmpty() ) &&
-                    ( sowTags.NullOrEmpty() ) &&
+                    ( recipeDefs.NullOrEmpty() )&&
+                    ( sowTags.NullOrEmpty() )&&
                     ( !thingDefs.NullOrEmpty() )
                 );
             }
@@ -275,9 +357,9 @@ namespace CommunityCoreLibrary
             get
             {
                 return
-                    ( ConsolidateHelp ) ||
+                    ( ConsolidateHelp )||
                     (
-                        ( ResearchConsolidator != null ) &&
+                        ( ResearchConsolidator != null )&&
                         ( ResearchConsolidator.ConsolidateHelp )
                     );
             }
@@ -312,7 +394,7 @@ namespace CommunityCoreLibrary
             {
                 if( totalCost < 0 )
                 {
-                    totalCost = researchDefs.Sum(rd => rd.totalCost);
+                    totalCost = researchDefs.Sum( rd => rd.totalCost );
                 }
                 return totalCost;
             }
@@ -351,12 +433,20 @@ namespace CommunityCoreLibrary
         {
             // Don't disable if it's not the first run or not yet enabled
             if(
-                ( researchState == ResearchEnableMode.Incomplete ) &&
+                ( researchState == ResearchEnableMode.Incomplete )&&
                 ( firstTimeRun == false )
             )
             {
                 return;
             }
+#if DEBUG
+            CCL_Log.TraceMod(
+                modHelperDef,
+                Verbosity.StateChanges,
+                "Disabling '" + defName + "'",
+                "AdvancedResearchDef"
+            );
+#endif
             if( IsRecipeToggle )
             {
                 // Recipe toggle
@@ -373,7 +463,7 @@ namespace CommunityCoreLibrary
                 ToggleBuildings( true );
             }
             if(
-                ( IsResearchToggle ) &&
+                ( IsResearchToggle )&&
                 ( researchState != ResearchEnableMode.GodMode )
             )
             {
@@ -381,7 +471,7 @@ namespace CommunityCoreLibrary
                 ToggleResearch( true );
             }
             if(
-                ( HasCallbacks ) &&
+                ( HasCallbacks )&&
                 ( !firstTimeRun )
             )
             {
@@ -403,8 +493,8 @@ namespace CommunityCoreLibrary
             if( researchState != ResearchEnableMode.Incomplete )
             {
                 if(
-                    ( researchState == ResearchEnableMode.GodMode ) &&
-                    ( mode != ResearchEnableMode.GodMode ) &&
+                    ( researchState == ResearchEnableMode.GodMode )&&
+                    ( mode != ResearchEnableMode.GodMode )&&
                     ( IsResearchToggle )
                 )
                 {
@@ -416,6 +506,14 @@ namespace CommunityCoreLibrary
                 }
                 return;
             }
+#if DEBUG
+            CCL_Log.TraceMod(
+                modHelperDef,
+                Verbosity.StateChanges,
+                "Enabling '" + defName + "'",
+                "AdvancedResearchDef"
+            );
+#endif
             if( IsRecipeToggle )
             {
                 // Recipe toggle
@@ -432,7 +530,7 @@ namespace CommunityCoreLibrary
                 ToggleBuildings();
             }
             if(
-                ( IsResearchToggle ) &&
+                ( IsResearchToggle )&&
                 ( mode != ResearchEnableMode.GodMode )
             )
             {
@@ -605,7 +703,7 @@ namespace CommunityCoreLibrary
 
         public void ToggleHelp( bool setInitialState = false )
         {
-            if( ( !ConsolidateHelp ) ||
+            if( ( !ConsolidateHelp )||
                 ( HelpDef == null ) )
             {
                 return;
@@ -635,7 +733,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if( ( matchingAdvancedResearch == null ) &&
+                if( ( matchingAdvancedResearch == null )&&
                     ( ResearchConsolidator == this ) )
                 {
                     // Matching advanced research (by requirements)
@@ -689,7 +787,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsBuildingToggle )
             )
             {
@@ -702,7 +800,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsBuildingToggle )
                     )
                     {
@@ -726,7 +824,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsBuildingToggle )
             )
             {
@@ -739,7 +837,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs ) &&
+                        ( a.HideDefs )&&
                         ( a.IsBuildingToggle )
                     )
                     {
@@ -767,7 +865,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsRecipeToggle )
             )
             {
@@ -784,7 +882,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsRecipeToggle )
                     )
                     {
@@ -816,7 +914,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsRecipeToggle )
             )
             {
@@ -831,7 +929,7 @@ namespace CommunityCoreLibrary
             foreach( var a in MatchingAdvancedResearch )
             {
                 if(
-                    ( a.HideDefs ) &&
+                    ( a.HideDefs )&&
                     ( a.IsRecipeToggle )
                 )
                 {
@@ -862,7 +960,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsPlantToggle )
             )
             {
@@ -879,7 +977,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsPlantToggle )
                     )
                     {
@@ -911,7 +1009,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsPlantToggle )
             )
             {
@@ -928,7 +1026,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs ) &&
+                        ( a.HideDefs )&&
                         ( a.IsPlantToggle )
                     )
                     {
@@ -956,7 +1054,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( !HideDefs ) &&
+                ( !HideDefs )&&
                 ( IsResearchToggle )
             )
             {
@@ -969,7 +1067,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( !a.HideDefs ) &&
+                        ( !a.HideDefs )&&
                         ( a.IsResearchToggle )
                     )
                     {
@@ -993,7 +1091,7 @@ namespace CommunityCoreLibrary
 
             // Look at this def
             if(
-                ( HideDefs ) &&
+                ( HideDefs )&&
                 ( IsResearchToggle )
             )
             {
@@ -1006,7 +1104,7 @@ namespace CommunityCoreLibrary
                 foreach( var a in MatchingAdvancedResearch )
                 {
                     if(
-                        ( a.HideDefs ) &&
+                        ( a.HideDefs )&&
                         ( a.IsResearchToggle )
                     )
                     {
@@ -1052,10 +1150,14 @@ namespace CommunityCoreLibrary
 
         public bool IsFinished
         {
-            get { return ResearchState == ResearchEnableMode.Complete; }
+            get
+            {
+                return ( ResearchState == ResearchEnableMode.Complete );
+            }
         }
         
         #endregion
+
     }
 
 }

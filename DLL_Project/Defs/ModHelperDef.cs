@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 
 using Verse;
 
@@ -51,18 +51,25 @@ namespace CommunityCoreLibrary
 
         public bool                         UsesGenericHoppers = false;
 
+        public Verbosity                    Verbosity = Verbosity.Default;
+
         #endregion
 
         [Unsaved]
 
         #region Instance Data
 
+        // Used to flag xml defined (false) and auto-generated (true) for logging
+        public bool                         dummy = false;
+
+        public LoadedMod                    mod;
+
         bool                                specialsInjected;
         bool                                postLoadersInjected;
 
         #endregion
 
-        #region Query State
+        #region Validation
 
         public bool                         IsValid
         {
@@ -71,27 +78,41 @@ namespace CommunityCoreLibrary
                 var isValid = true;
                 var errors = "";
 
-                try
+                if( ModName.NullOrEmpty() )
                 {
-                    var modVersion = new System.Version( version );
-
-                    if( modVersion < Version.Minimum )
-                    {
-                        errors += "\n\tMinimum Version requirement: v" + modVersion;
-                        isValid = false;
-                    }
-
-                    if( modVersion > Version.Current )
-                    {
-                        errors += "\n\tVersion requirement: v" + modVersion;
-                        isValid = false;
-                    }
-
-                }
-                catch
-                {
-                    errors += "\n\tUnable to get version from: '" + version + "'";
+                    errors += "\n\tMissing ModName";
                     isValid = false;
+                }
+
+                if( version.NullOrEmpty() )
+                {
+                    errors += "\n\tNull or empty CCL version requirement";
+                    isValid = false;
+                }
+                else
+                {
+                    try
+                    {
+                        var modVersion = new System.Version( version );
+
+                        if( modVersion < Version.Minimum )
+                        {
+                            errors += "\n\tUnsupported CCL version requirement (v" + modVersion + ") minimum supported version is v" + Version.Minimum;
+                            isValid = false;
+                        }
+
+                        if( modVersion > Version.Current )
+                        {
+                            errors += "\n\tUnsupported CCL version requirement (v" + modVersion + ") maximum supported version is v" + Version.Current;
+                            isValid = false;
+                        }
+
+                    }
+                    catch
+                    {
+                        errors += "\n\tUnable to get version from '" + version + "'";
+                        isValid = false;
+                    }
                 }
 
 #if DEBUG
@@ -105,7 +126,7 @@ namespace CommunityCoreLibrary
                             ( !componentType.IsSubclassOf( typeof( MapComponent ) ) )
                         )
                         {
-                            errors += "\n\tUnable to resolve MapComponent \"" + componentType.ToString() + "\"";
+                            errors += "\n\tUnable to resolve MapComponent '" + componentType.ToString() + "'";
                             isValid = false;
                         }
                     }
@@ -121,7 +142,7 @@ namespace CommunityCoreLibrary
                             ( !designatorType.IsSubclassOf( typeof( Designator ) ) )
                         )
                         {
-                            errors += "\n\tUnable to resolve designatorClass \"" + data.designatorClass + "\"";
+                            errors += "\n\tUnable to resolve designatorClass '" + data.designatorClass + "'";
                             isValid = false;
                         }
                         if(
@@ -129,7 +150,7 @@ namespace CommunityCoreLibrary
                             ( DefDatabase<DesignationCategoryDef>.GetNamed( data.designationCategoryDef, false ) == null )
                         )
                         {
-                            errors += "\n\tUnable to resolve designationCategoryDef \"" + data.designationCategoryDef + "\"";
+                            errors += "\n\tUnable to resolve designationCategoryDef '" + data.designationCategoryDef + "'";
                             isValid = false;
                         }
                         if(
@@ -137,7 +158,7 @@ namespace CommunityCoreLibrary
                             ( !data.designatorNextTo.IsSubclassOf( typeof( Designator ) ) )
                         )
                         {
-                            errors += "\n\tUnable to resolve designatorNextTo \"" + data.designatorNextTo + "\"";
+                            errors += "\n\tUnable to resolve designatorNextTo '" + data.designatorNextTo + "'";
                             isValid = false;
                         }
                     }
@@ -156,7 +177,7 @@ namespace CommunityCoreLibrary
                         var targDef = ThingDef.Named( comp.targetDef );
                         if( targDef == null )
                         {
-                            errors += "\n\tUnable to find ThingDef named \"" + comp.targetDef + "\" in ThingComps";
+                            errors += "\n\tUnable to find ThingDef named '" + comp.targetDef + "\" in ThingComps";
                             isValid = false;
                         }*/
                         if( compSet.compProps == null )
@@ -169,7 +190,7 @@ namespace CommunityCoreLibrary
                             ( DefDatabase< ThingDef >.GetNamed( targetDef, false ) == null )
                         ) ) )
                         {
-                            errors += "\n\tUnable to resolve ThingDef \"" + targetDef + "\"";
+                            errors += "\n\tUnable to resolve ThingDef '" + targetDef + "'";
                             isValid = false;
                         }
                     }
@@ -184,7 +205,7 @@ namespace CommunityCoreLibrary
                             ( !injectorType.IsSubclassOf( typeof( SpecialInjector ) ) )
                         )
                         {
-                            errors += "\n\tUnable to resolve SpecialInjector \"" + injectorType.ToString() + "\"";
+                            errors += "\n\tUnable to resolve SpecialInjector '" + injectorType.ToString() + "'";
                             isValid = false;
                         }
                     }
@@ -199,7 +220,7 @@ namespace CommunityCoreLibrary
                             ( !injectorType.IsSubclassOf( typeof( SpecialInjector ) ) )
                         )
                         {
-                            errors += "\n\tUnable to resolve PostLoadInjector \"" + injectorType.ToString() + "\"";
+                            errors += "\n\tUnable to resolve PostLoadInjector '" + injectorType.ToString() + "'";
                             isValid = false;
                         }
                     }
@@ -208,12 +229,22 @@ namespace CommunityCoreLibrary
 
                 if( !isValid )
                 {
-                    CCL_Log.Error( errors, "Mod Dependency :: " + ModName );
+                    var builder = new StringBuilder();
+                    builder.Append( "ModHelperDef :: " ).Append( defName );
+                    if( !ModName.NullOrEmpty() )
+                    {
+                        builder.Append( " :: " ).Append( ModName );
+                    }
+                    CCL_Log.Error( errors, builder.ToString() );
                 }
 
                 return isValid;
             }
         }
+
+        #endregion
+
+        #region Query State
 
         public bool                         MapComponentsInjected
         {

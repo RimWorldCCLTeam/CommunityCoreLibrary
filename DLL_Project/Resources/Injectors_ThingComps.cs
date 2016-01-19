@@ -28,15 +28,22 @@ namespace CommunityCoreLibrary
                             //if( ModHelperDef.InjectThingComps() )
 
                             ModHelperDef.InjectThingComps();
-                            if( ModHelperDef.ThingCompsInjected )
+                            if( !ModHelperDef.ThingCompsInjected )
                             {
-                                CCL_Log.Message( "Injected ThingComps", ModHelperDef.ModName );
-                            }
-                            else
-                            {
-                                CCL_Log.Error( "Error injecting ThingComps", ModHelperDef.ModName );
+                                CCL_Log.TraceMod(
+                                    ModHelperDef,
+                                    Verbosity.NonFatalErrors,
+                                    "Error injecting ThingComps"
+                                );
                                 return false;
                             }
+#if DEBUG
+                            CCL_Log.TraceMod(
+                                ModHelperDef,
+                                Verbosity.Injections,
+                                "ThingComps injected"
+                            );
+#endif
                         }
                     }
                     return true;

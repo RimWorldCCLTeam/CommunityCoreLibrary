@@ -33,7 +33,15 @@ namespace CommunityCoreLibrary
             var props = verbProps as VerbProperties_Extended;
             if( props == null )
             {
-                CCL_Log.Error( "Extended properties not found!", "Verb_ShootExtended" );
+#if DEBUG
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( this.caster.def.defName ),
+                    Verbosity.Warnings,
+                    "Missing VerbProperties_Extended",
+                    this.GetType().ToString(),
+                    this.caster.def
+                );
+#endif
                 pelletCount = 1;
                 expMin = 10;
                 expMid = 50;

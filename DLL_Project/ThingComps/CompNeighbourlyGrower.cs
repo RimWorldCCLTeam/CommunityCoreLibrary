@@ -130,7 +130,13 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( thisGrower == null )
             {
-                CCL_Log.Error( "CompNeighbourlyGrower unable to resolve parent to Building_PlantGrower!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    Verbosity.NonFatalErrors,
+                    "Unable to resolve ThingClass to base Building_PlantGrower",
+                    this.GetType().ToString(),
+                    parent.def
+                );
                 return;
             }
 #endif
@@ -143,7 +149,13 @@ namespace CommunityCoreLibrary
             )
             {
                 // "Plant" doesn't contain the required information
-                CCL_Log.Error( "CompNeighbourlyGrower unable to resolve to plant def to grow!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    Verbosity.Warnings,
+                    "Unable to resolve plant def to grow",
+                    this.GetType().ToString(),
+                    parent.def
+                );
                 return;
             }
 
@@ -159,7 +171,13 @@ namespace CommunityCoreLibrary
                     ( string.IsNullOrEmpty( grower.def.building.sowTag ) )
                 )
                 {
-                    CCL_Log.Error( "CompNeighbourlyGrower unable to resolve other building to Building_PlantGrower!", g.def.defName );
+                    CCL_Log.TraceMod(
+                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        Verbosity.Warnings,
+                        "Unable to resolve other things ThingClass to base Building_PlantGrower",
+                        this.GetType().ToString(),
+                        parent.def
+                    );
                     return;
                 }
 #endif

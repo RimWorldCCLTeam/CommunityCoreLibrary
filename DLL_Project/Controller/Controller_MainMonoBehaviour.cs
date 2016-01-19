@@ -134,7 +134,7 @@ namespace CommunityCoreLibrary.Controller
         public void                         OnLevelWasLoaded( int level )
         {
             // Level 1 means we're in gameplay.
-            enabled = ( ( gameValid )&&( level == 1 ) )? true : false;
+            enabled = ( ( gameValid )&&( level == 1 ) ) ? true : false;
         }
 
         #endregion

@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
 
         #region XML Data
 
-        public HelpCategoryDef category;
+        public HelpCategoryDef      category;
 
         #endregion
 
@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary
             base.ResolveReferences();
             if( category == null )
             {
-                CCL_Log.Error( "Category resolved to null", defName );
+                CCL_Log.Error( "Category resolved to null", "HelpDef :: " + defName );
             }
         }
 #endif
@@ -48,6 +48,8 @@ namespace CommunityCoreLibrary
 
         #region Log Dump
 
+#if DEBUG
+        // Guard against using this method in release builds!
         public string LogDump()
         {
             return 
@@ -59,7 +61,8 @@ namespace CommunityCoreLibrary
                 description +
                 "\n------\n";
         }
-
+#endif
+        
         #endregion
 
         #region Help details

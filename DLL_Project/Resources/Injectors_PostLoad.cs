@@ -28,15 +28,22 @@ namespace CommunityCoreLibrary
                             //if( ModHelperDef.InjectPostLoaders() )
 
                             ModHelperDef.InjectPostLoaders();
-                            if( ModHelperDef.PostLoadersInjected )
+                            if( !ModHelperDef.PostLoadersInjected )
                             {
-                                CCL_Log.Message( "Injected Post Loaders", ModHelperDef.ModName );
-                            }
-                            else
-                            {
-                                CCL_Log.Error( "Error in Post Load Injections", ModHelperDef.ModName );
+                                CCL_Log.TraceMod(
+                                    ModHelperDef,
+                                    Verbosity.NonFatalErrors,
+                                    "Error injecting Post Loaders"
+                                );
                                 return false;
                             }
+#if DEBUG
+                            CCL_Log.TraceMod(
+                                ModHelperDef,
+                                Verbosity.Injections,
+                                "Post Loaders injected"
+                            );
+#endif
                         }
                     }
                     return true;

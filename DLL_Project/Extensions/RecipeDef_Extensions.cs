@@ -12,42 +12,74 @@ namespace CommunityCoreLibrary
     public static class RecipeDef_Extensions
     {
 
+        #region Static Data
+
+        static Dictionary<RecipeDef,bool>   isLockedOut = new Dictionary<RecipeDef, bool>();
+
+        #endregion
+
         #region Availability
 
         public static bool                  IsLockedOut( this RecipeDef recipeDef )
         {
-            // Advanced research unlocking it?
-            if( ResearchController.AdvancedResearch.Any( a => (
-                ( a.IsRecipeToggle )&&
-                ( !a.HideDefs )&&
-                ( a.recipeDefs.Contains( recipeDef ) )
-            ) ) )
+            bool rVal = false;
+            if( !isLockedOut.TryGetValue( recipeDef, out rVal ) )
             {
-                return false;
+#if DEBUG
+                CCL_Log.TraceMod(
+                    Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                    Verbosity.Stack,
+                    "IsLockedOut()",
+                    "RecipeDef",
+                    recipeDef
+                );
+    #endif
+                // Advanced research unlocking it?
+                if( ResearchController.AdvancedResearch.Any( a => (
+                    ( a.IsRecipeToggle )&&
+                    ( !a.HideDefs )&&
+                    ( a.recipeDefs.Contains( recipeDef ) )
+                ) ) )
+                {
+                    isLockedOut.Add( recipeDef, false );
+                    return false;
+                }
+
+                // Is the research parent locked out?
+                if(
+                    ( recipeDef.researchPrerequisite != null )&&
+                    ( recipeDef.researchPrerequisite.IsLockedOut() )
+                )
+                {
+                    isLockedOut.Add( recipeDef, true );
+                    return true;
+                }
+
+                // Is everything using it locked?
+                if( !DefDatabase< ThingDef >.AllDefsListForReading.Any( t => (
+                    ( t.AllRecipes != null )&&
+                    ( t.AllRecipes.Contains( recipeDef ) )&&
+                    ( !t.IsLockedOut() )
+                ) ) )
+                {
+                    rVal = true;
+                }
+                isLockedOut.Add( recipeDef, rVal );
             }
-            // Is the research parent locked out?
-            if(
-                ( recipeDef.researchPrerequisite != null )&&
-                ( recipeDef.researchPrerequisite.IsLockedOut() )
-            )
-            {
-                return true;
-            }
-            // Assigned to things which are all locked out?
-            if( !DefDatabase< ThingDef >.AllDefsListForReading.Any( t => (
-                ( t.AllRecipes != null )&&
-                ( !t.IsLockedOut() )&&
-                ( t.AllRecipes.Contains( recipeDef ) )
-            ) ) )
-            {
-                return true;
-            }
-            // Something has it at some point
-            return false;
+            return rVal;
         }
 
         public static bool                  HasResearchRequirement( this RecipeDef recipeDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                Verbosity.Stack,
+                "HasResearchRequirement()",
+                "RecipeDef",
+                recipeDef
+            );
+#endif
             // Can't entirely rely on this one check as it's state may change mid-game
             if( recipeDef.researchPrerequisite != null )
             {
@@ -68,8 +100,8 @@ namespace CommunityCoreLibrary
             // Get list of things referencing
             var thingsOn = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( t.recipes != null )&&
-                ( !t.IsLockedOut() )&&
-                ( t.recipes.Contains( recipeDef ) )
+                ( t.recipes.Contains( recipeDef ) )&&
+                ( !t.IsLockedOut() )
             ) ).ToList();
 
             if( thingsOn == null )
@@ -83,8 +115,8 @@ namespace CommunityCoreLibrary
 
             var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
                 ( a.IsRecipeToggle )&&
-                ( !a.HideDefs )&&
-                ( a.recipeDefs.Contains( recipeDef ) )
+                ( a.recipeDefs.Contains( recipeDef ) )&&
+                ( !a.HideDefs )
             ) ).ToList();
             if( !advancedResearchDefs.NullOrEmpty() )
             {
@@ -103,6 +135,15 @@ namespace CommunityCoreLibrary
 
         public static List< Def >           GetResearchRequirements( this RecipeDef recipeDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                Verbosity.Stack,
+                "GetResearchRequirements()",
+                "RecipeDef",
+                recipeDef
+            );
+#endif
             var researchDefs = new List< Def >();
 
             if( recipeDef.researchPrerequisite != null )
@@ -113,8 +154,8 @@ namespace CommunityCoreLibrary
                 // Advanced requirement
                 var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
                     ( a.IsRecipeToggle )&&
-                    ( !a.HideDefs )&&
-                    ( a.recipeDefs.Contains( recipeDef ) )
+                    ( a.recipeDefs.Contains( recipeDef ) )&&
+                    ( !a.HideDefs )
                 ) ).ToList();
 
                 if( !advancedResearchDefs.NullOrEmpty() )
@@ -131,8 +172,8 @@ namespace CommunityCoreLibrary
             var thingsOn = new List< ThingDef >();
             var recipeThings = DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
                 ( t.recipes != null )&&
-                ( !t.IsLockedOut() )&&
-                ( t.recipes.Contains( recipeDef ) )
+                ( t.recipes.Contains( recipeDef ) )&&
+                ( !t.IsLockedOut() )
             ) ).ToList();
 
             if( !recipeThings.NullOrEmpty() )
@@ -164,12 +205,21 @@ namespace CommunityCoreLibrary
 
         public static List< ThingDef >      GetThingsCurrent( this RecipeDef recipeDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                Verbosity.Stack,
+                "GetThingsCurrent()",
+                "RecipeDef",
+                recipeDef
+            );
+#endif
             // Things it is currently on
             var thingsOn = new List<ThingDef>();
             var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( t.AllRecipes != null )&&
-                ( !t.IsLockedOut() )&&
-                ( t.AllRecipes.Contains( recipeDef ) )
+                ( t.AllRecipes.Contains( recipeDef ) )&&
+                ( !t.IsLockedOut() )
             ) ).ToList();
 
             if( !recipeThings.NullOrEmpty() )
@@ -182,6 +232,15 @@ namespace CommunityCoreLibrary
 
         public static List< ThingDef >      GetThingsUnlocked( this RecipeDef recipeDef, ref List< Def > researchDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                Verbosity.Stack,
+                "GetThingsUnlocked()",
+                "RecipeDef",
+                recipeDef
+            );
+#endif
             // Things it is unlocked on with research
             var thingDefs = new List<ThingDef>();
             if( researchDefs != null )
@@ -233,6 +292,15 @@ namespace CommunityCoreLibrary
 
         public static List< ThingDef >      GetThingsLocked( this RecipeDef recipeDef, ref List< Def > researchDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                Verbosity.Stack,
+                "GetThingsLocked()",
+                "RecipeDef",
+                recipeDef
+            );
+#endif
             // Things it is locked on with research
             var thingDefs = new List<ThingDef>();
             if( researchDefs != null )
