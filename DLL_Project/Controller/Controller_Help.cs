@@ -58,9 +58,7 @@ namespace CommunityCoreLibrary.Controller
                 // The below are really low priority (as considered by Fluffy)
                 // TODO: Add traders
                 // TODO: Add tradertags
-
-
-
+                
                 // Buildings
                 ResolveBuildings();
                 ResolveMinifiableOnly();
