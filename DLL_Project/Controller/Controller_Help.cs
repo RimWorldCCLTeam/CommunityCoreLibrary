@@ -958,7 +958,7 @@ namespace CommunityCoreLibrary.Controller
                 string[] stats = new[]
                 {
                     "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
-                    "AutoHelpListPathcost".Translate() + ": " + terrainDef.pathCost.ToString()
+                    "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
                 };
                 
                 statParts.Add( new HelpDetailSection( null, stats ) );
