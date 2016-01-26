@@ -97,35 +97,44 @@ namespace CommunityCoreLibrary
                     isLockedOut.Add( buildableDef, true );
                     return true;
                 }
+                
+                //  Logic is faulty ( Thingdefs inherit from buildable defs, checking for existence of blueprint eliminates all non-buildings )
+                //  After correcting logic (Valid: blueprint == null [items], or blueprint != null and designation != null/None [buildings]),
+                //  the check no longer makes sense, since only defs with a designation category ever get a blueprint assigned. -- Fluffy.
+                //
+                //// Is the designationCategory locked out?
+                //// only applies if it is buildable (has a blueprint def), but no category.
+                //if(
+                //    buildableDef.blueprintDef != null &&
+                //    ( buildableDef.designationCategory.NullOrEmpty()||
+                //      buildableDef.designationCategory == "None" )
+                //)
+                //{
+                //    isLockedOut.Add( buildableDef, true );
+                //    return true;
+                //}
 
-                // Is the designationCategory locked out?
-                if(
-                    ( buildableDef.blueprintDef == null )||
-                    ( buildableDef.designationCategory.NullOrEmpty() )||
-                    ( buildableDef.designationCategory == "None" )
-                )
-                {
-                    isLockedOut.Add( buildableDef, true );
-                    return true;
-                }
-
-                // Advanced research unlocking it?
-                if( !ResearchController.AdvancedResearch.Any( a => (
-                    ( a.IsBuildingToggle )&&
-                    ( !a.HideDefs )&&
-                    ( a.thingDefs.Contains( buildableDef as ThingDef ) )
-                ) ) )
-                {
-                    isLockedOut.Add( buildableDef, true );
-                    return true;
-                }
+                // Not really sure why advanced research would be considered like this. 
+                // a) even if not currently unlocked, items should show in help
+                // b) if any advanced research hides this thing, it would never show in help, since the actual state of AR is never checked/updated.
+                //
+                //// Advanced research unlocking it?
+                //if( !ResearchController.AdvancedResearch.Any( a => (
+                //    ( a.IsBuildingToggle )&&
+                //    ( !a.HideDefs )&&
+                //    ( a.thingDefs.Contains( buildableDef as ThingDef ) )
+                //) ) )
+                //{
+                //    isLockedOut.Add( buildableDef, true );
+                //    return true;
+                //}
 
                 // Is the research parent locked out?
                 rVal = (
-                    ( buildableDef.researchPrerequisite != null )&&
+                    ( buildableDef.researchPrerequisite != null ) &&
                     ( buildableDef.researchPrerequisite.IsLockedOut() )
                 );
-
+                
                 // Cache the result
                 isLockedOut.Add( buildableDef, rVal );
             }

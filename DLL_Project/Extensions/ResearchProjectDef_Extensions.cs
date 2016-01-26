@@ -246,6 +246,35 @@ namespace CommunityCoreLibrary
             return thingsOn;
         }
 
+        public static List<TerrainDef> GetTerrainUnlocked( this ResearchProjectDef researchProjectDef )
+        {
+#if DEBUG
+            CCL_Log.TraceMod(
+                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                Verbosity.Stack,
+                "GetTerrainUnlocked()",
+                "ResearchProjectDef",
+                researchProjectDef
+            );
+#endif
+            // Buildings it unlocks
+            var thingsOn = new List<TerrainDef>();
+            var researchThings = DefDatabase<TerrainDef>.AllDefsListForReading.Where( t => (
+                ( !t.IsLockedOut() )&&
+                ( t.researchPrerequisite != null )&&
+                ( t.researchPrerequisite == researchProjectDef )
+            ) ).ToList();
+
+            if( !researchThings.NullOrEmpty() )
+            {
+                thingsOn.AddRange( researchThings );
+            }
+
+            Log.Message( researchProjectDef.LabelCap + " :: " + thingsOn.Count );
+
+            return thingsOn;
+        } 
+
         public static List< RecipeDef >     GetRecipesUnlocked( this ResearchProjectDef researchProjectDef, ref List< ThingDef > thingDefs )
         {
 #if DEBUG

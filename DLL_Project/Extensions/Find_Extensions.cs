@@ -142,6 +142,10 @@ namespace CommunityCoreLibrary
         {
             get
             {
+#if CCL_VERBOSE
+                return Verbosity.Stack;
+#endif
+
                 if( highestVerbosity == Verbosity.NonFatalErrors )
                 {
                     highestVerbosity = Verbosity.Default;
@@ -156,7 +160,5 @@ namespace CommunityCoreLibrary
                 return highestVerbosity;
             }
         }
-
     }
-
 }
