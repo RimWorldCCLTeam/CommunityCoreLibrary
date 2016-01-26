@@ -584,12 +584,19 @@ namespace CommunityCoreLibrary.Controller
             );
 #endif
             
+            // we need the thingdef in several places
+            ThingDef thingDef = buildableDef as ThingDef;
+
+            // set up empty helpdef
             var helpDef = new HelpDef();
             helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
             helpDef.keyDef = buildableDef;
             helpDef.label = buildableDef.label;
             helpDef.category = category;
             helpDef.description = buildableDef.description;
+
+            List<HelpDetailSection> statParts = new List<HelpDetailSection>();
+            List<HelpDetailSection> linkParts = new List<HelpDetailSection>();
 
             #region Base Stats
 
@@ -603,11 +610,11 @@ namespace CommunityCoreLibrary.Controller
                     buildableDef.statBases.Select( sb => sb.stat.ValueToString( sb.value, sb.stat.toStringNumberSense ) )
                                 .ToArray() );
 
-                helpDef.HelpDetailSections.Add( baseStats );
+                statParts.Add( baseStats );
             }
 
             #endregion
-
+            
             #region required research
             // Add list of required research
             var researchDefs = buildableDef.GetResearchRequirements();
@@ -619,26 +626,40 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( reqResearch );
             }
             #endregion
-
+            
             #region Cost List
-
-            // What other things are required?
+            // specific thingdef costs (terrainDefs are buildable with costlist, but do not have stuff cost (oddly)).
             if( !buildableDef.costList.NullOrEmpty() )
             {
                 HelpDetailSection costs = new HelpDetailSection(
-                        "AutoHelpCost".Translate(),
-                        buildableDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
-                        null,
-                        buildableDef.costList.Select(tc => ": " + tc.count.ToString()).ToArray());
+                    "AutoHelpCost".Translate(),
+                    buildableDef.costList.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
+                    null,
+                    buildableDef.costList.Select( tc => tc.count.ToString() ).ToArray() );
 
                 helpDef.HelpDetailSections.Add( costs );
             }
             #endregion
 
             #region ThingDef Specific
-            var thingDef = buildableDef as ThingDef;
             if( thingDef != null )
             {
+                #region stat offsets
+
+                if( !thingDef.equippedStatOffsets.NullOrEmpty() )
+                {
+                    HelpDetailSection equippedOffsets = new HelpDetailSection(
+                    "AutoHelpListStatOffsets".Translate(),
+                    thingDef.equippedStatOffsets.Select( so => so.stat ).ToList().ConvertAll( def => (Def)def ),
+                    null,
+                    thingDef.equippedStatOffsets.Select( so => so.stat.ValueToString( so.value, so.stat.toStringNumberSense ) )
+                                .ToArray() );
+
+                    statParts.Add( equippedOffsets );
+                }
+
+                #endregion
+
                 #region Stuff Cost
 
                 // What stuff can it be made from?
@@ -647,24 +668,55 @@ namespace CommunityCoreLibrary.Controller
                     ( !thingDef.stuffCategories.NullOrEmpty() )
                 )
                 {
-                    helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                    linkParts.Add( new HelpDetailSection(
                         "AutoHelpStuffCost".Translate( thingDef.costStuffCount.ToString() ),
                         thingDef.stuffCategories.ToList().ConvertAll( def => (Def)def ) ) );
                 }
 
                 #endregion
 
+                #region Recipes (to make thing)
+                List<RecipeDef> recipeDefs = buildableDef.GetRecipeDefs();
+                if ( !recipeDefs.NullOrEmpty() )
+                {
+                    HelpDetailSection recipes = new HelpDetailSection(
+                        "AutoHelpListRecipes".Translate(),
+                        recipeDefs.ConvertAll( def => (Def)def ) );
+                    linkParts.Add( recipes );
+
+                    try
+                    {
+                        // for some odd reasons meals and beer give errors when doing this.
+                        var tableDefs = recipeDefs.SelectMany( r => r.GetRecipeUsers() )
+                                                  .ToList()
+                                                  .ConvertAll( def => def as Def );
+                        HelpDetailSection tables = new HelpDetailSection(
+                            "AutoHelpListRecipesOnThingsUnlocked".Translate(), tableDefs );
+                        linkParts.Add( tables );
+                    }
+                    catch
+                    {
+                        CCL_Log.Error( "Error loading recipe providers for " + thingDef.LabelCap, "HelpGen" );
+                    }
+                }
+                #endregion
+
                 #region Ingestible Stats
                 // Look at base stats
                 if( thingDef.IsNutritionSource )
                 {
-                    string[] ingestibleStats =
+                    List<Def> needDefs = new List<Def>();
+                    needDefs.Add( NeedDefOf.Food );
+                    needDefs.Add( NeedDefOf.Joy );
+
+                    string[] suffixes =
                     {
-                        "Nutrition".Translate() + ": " + thingDef.ingestible.nutrition.ToString( "0.###" ),
-                        "Joy".Translate() + ": " + thingDef.ingestible.joy.ToString( "0.###" )
+                        thingDef.ingestible.nutrition.ToString( "0.###" ),
+                        thingDef.ingestible.joy.ToString( "0.###" )
                     };
 
-                    helpDef.HelpDetailSections.Add( new HelpDetailSection( null, ingestibleStats ) );
+                    statParts.Add( 
+                        new HelpDetailSection( "AutoHelpListNutrition".Translate(), needDefs, null, suffixes ) );
                 }
 
                 #endregion
@@ -681,7 +733,7 @@ namespace CommunityCoreLibrary.Controller
 
                     if( hediffDef.addedPartProps != null )
                     {
-                        helpDef.HelpDetailSections.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
+                        statParts.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
                     }
 
                     #endregion
@@ -694,7 +746,7 @@ namespace CommunityCoreLibrary.Controller
                     )
                     {
                         HelpDetailSection capacityMods = new HelpDetailSection(
-                            "CapacityModifiers".Translate(),
+                            "AutoHelpListCapacityModifiers".Translate(),
                             hediffDef.stages.Where(s => !s.capMods.NullOrEmpty())
                                             .SelectMany(s => s.capMods)
                                             .Select(cm => cm.capacity)
@@ -708,7 +760,7 @@ namespace CommunityCoreLibrary.Controller
                                         cm => (cm.offset > 0 ? ": +" : ": ") + cm.offset.ToString("P0"))
                                      .ToArray());
 
-                        helpDef.HelpDetailSections.Add( capacityMods );
+                        statParts.Add( capacityMods );
                     }
 
                     #endregion
@@ -731,7 +783,7 @@ namespace CommunityCoreLibrary.Controller
                                     {
                                         if( verb.verbClass == typeof( Verb_MeleeAttack ) )
                                         {
-                                            helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                            statParts.Add( new HelpDetailSection(
                                                     "MeleeAttack".Translate( verb.meleeDamageDef.label ),
                                                     new[]
                                                     {
@@ -752,7 +804,7 @@ namespace CommunityCoreLibrary.Controller
                     var recipeDef = thingDef.GetImplantRecipeDef();
                     if( !recipeDef.appliedOnFixedBodyParts.NullOrEmpty() )
                     {
-                        helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                        linkParts.Add( new HelpDetailSection(
                             "AutoHelpSurgeryFixOrReplace".Translate(),
                             recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll( def => (Def)def ) ) );
                     }
@@ -763,16 +815,16 @@ namespace CommunityCoreLibrary.Controller
 
                 #endregion
 
-                #region Recipes & Research
+                #region Recipes & Research (on building)
 
                 // Get list of recipes
-                var recipeDefs = thingDef.AllRecipes;
+                recipeDefs = thingDef.AllRecipes;
                 if( !recipeDefs.NullOrEmpty() )
                 {
                     HelpDetailSection recipes = new HelpDetailSection(
                         "AutoHelpListRecipes".Translate(),
                         recipeDefs.ConvertAll(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( recipes );
+                    linkParts.Add( recipes );
                 }
 
                 // Build help for unlocked recipes associated with building
@@ -788,8 +840,8 @@ namespace CommunityCoreLibrary.Controller
                     HelpDetailSection researchBy = new HelpDetailSection(
                         "AutoHelpListResearchBy".Translate(),
                         researchDefs.ConvertAll<Def>(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( unlockRecipes );
-                    helpDef.HelpDetailSections.Add( researchBy );
+                    linkParts.Add( unlockRecipes );
+                    linkParts.Add( researchBy );
                 }
 
                 // Build help for locked recipes associated with building
@@ -805,11 +857,11 @@ namespace CommunityCoreLibrary.Controller
                     HelpDetailSection researchBy = new HelpDetailSection(
                         "AutoHelpListResearchBy".Translate(),
                         researchDefs.ConvertAll<Def>(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( unlockRecipes );
-                    helpDef.HelpDetailSections.Add( researchBy );
+                    linkParts.Add( unlockRecipes );
+                    linkParts.Add( researchBy );
                 }
 
-                #endregion
+                #endregion (on building)
 
                 #region Facilities
 
@@ -855,8 +907,8 @@ namespace CommunityCoreLibrary.Controller
                             "AutoHelpListFacilitiesAffected".Translate(),
                             effectsBuildings.ConvertAll<Def>(def => (Def)def));
 
-                        helpDef.HelpDetailSections.Add( facilityDetailSection );
-                        helpDef.HelpDetailSections.Add( facilitiesAffected );
+                        statParts.Add( facilityDetailSection );
+                        linkParts.Add( facilitiesAffected );
                     }
                 }
 
@@ -890,7 +942,7 @@ namespace CommunityCoreLibrary.Controller
                         "AutoHelpListJoyActivities".Translate(),
                         joyStats.ToArray());
 
-                    helpDef.HelpDetailSections.Add( joyDetailSection );
+                    linkParts.Add( joyDetailSection );
                 }
 
                 #endregion
@@ -903,9 +955,18 @@ namespace CommunityCoreLibrary.Controller
             TerrainDef terrainDef = buildableDef as TerrainDef;
             if ( terrainDef != null )
             {
-                // TODO: add fertility, movement speed, etc.
+                string[] stats = new[]
+                {
+                    "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
+                    "AutoHelpListPathcost".Translate() + ": " + terrainDef.pathCost.ToString()
+                };
+                
+                statParts.Add( new HelpDetailSection( null, stats ) );
             }
             #endregion
+
+            helpDef.HelpDetailSections.AddRange( statParts );
+            helpDef.HelpDetailSections.AddRange( linkParts );
 
             return helpDef;
         }

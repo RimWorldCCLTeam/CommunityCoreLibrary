@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
         #region Static Data
 
         static Dictionary<RecipeDef,bool>   isLockedOut = new Dictionary<RecipeDef, bool>();
-
+        
         #endregion
 
         #region Availability
@@ -336,6 +336,13 @@ namespace CommunityCoreLibrary
             }
 
             return thingDefs;
+        }
+
+        public static List<ThingDef> GetRecipeUsers( this RecipeDef recipeDef )
+        {
+            return
+                DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.recipes?.Contains( recipeDef ) ?? false )
+                                     .ToList();
         }
 
         #endregion

@@ -43,9 +43,12 @@
     <AutoHelpListPlantsIn>In</AutoHelpListPlantsIn>
     <AutoHelpListThingsLocked>Disables construction</AutoHelpListThingsLocked>
     <AutoHelpListThingsUnlocked>Enables construction</AutoHelpListThingsUnlocked>
+    <AutoHelpListCapacityModifiers>Capacity modifiers</AutoHelpListCapacityModifiers>
+    <AutoHelpListStatOffsets>Stat offsets</AutoHelpListStatOffsets>
+    <AutoHelpListNutrition>Meal stats</AutoHelpListNutrition>
+    <AutoHelpFacilityStats>Facility stats</AutoHelpFacilityStats>
 
     <!-- Specific Keys -->
-
     <AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>
 
     <AutoHelpCost>Cost</AutoHelpCost>
@@ -58,5 +61,8 @@
 
     <AutoHelpJoyKind>Joy kind: {0}</AutoHelpJoyKind>
     <AutoHelpJoySkill>Skill: {0}</AutoHelpJoySkill>
+
+    <AutoHelpListFertility>Fertility</AutoHelpListFertility>
+    <AutoHelpListPathCost>Walk speed offset (lower is faster)</AutoHelpListPathCost>
 
 </LanguageData>

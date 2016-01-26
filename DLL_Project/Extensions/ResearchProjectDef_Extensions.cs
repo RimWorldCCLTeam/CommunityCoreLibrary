@@ -270,8 +270,6 @@ namespace CommunityCoreLibrary
                 thingsOn.AddRange( researchThings );
             }
 
-            Log.Message( researchProjectDef.LabelCap + " :: " + thingsOn.Count );
-
             return thingsOn;
         } 
 

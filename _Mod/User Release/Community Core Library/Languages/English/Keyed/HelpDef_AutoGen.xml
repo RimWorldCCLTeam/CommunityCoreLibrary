@@ -10,6 +10,8 @@
     <AutoHelpCategoryRecipes>Recipes</AutoHelpCategoryRecipes>
     <AutoHelpCategoryResearch>Research</AutoHelpCategoryResearch>
 
+    <AutoHelpSubCategoryTerrain>Terrain</AutoHelpSubCategoryTerrain>
+
     <AutoHelpSubCategoryApparel>Apparel</AutoHelpSubCategoryApparel>
     <AutoHelpSubCategoryBodyParts>Body Parts &amp; Implants</AutoHelpSubCategoryBodyParts>
     <AutoHelpSubCategoryDrugs>Drugs</AutoHelpSubCategoryDrugs>
@@ -41,9 +43,10 @@
     <AutoHelpListPlantsIn>In</AutoHelpListPlantsIn>
     <AutoHelpListThingsLocked>Disables construction</AutoHelpListThingsLocked>
     <AutoHelpListThingsUnlocked>Enables construction</AutoHelpListThingsUnlocked>
+    <AutoHelpListCapacityModifiers>Capacity modifiers</AutoHelpListCapacityModifiers>
+    <AutoHelpListStatOffsets>Stat offsets</AutoHelpListStatOffsets>
 
     <!-- Specific Keys -->
-
     <AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>
 
     <AutoHelpCost>Cost</AutoHelpCost>
