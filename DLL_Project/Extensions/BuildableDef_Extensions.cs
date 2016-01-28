@@ -25,6 +25,7 @@ namespace CommunityCoreLibrary
             if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
             {
 #if DEBUG
+                // This debug region is for logging only and serves no other purpose
                 var defType = "BuildableDef";
                 var mod = Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName );
                 if( mod == null )

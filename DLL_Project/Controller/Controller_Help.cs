@@ -1243,7 +1243,7 @@ namespace CommunityCoreLibrary.Controller
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( advancedResearchDef.defName ),
+                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( advancedResearchDef.defName ),
                 Verbosity.AutoGenCreation,
                 advancedResearchDef.defName,
                 "HelpForAdvancedResearch"

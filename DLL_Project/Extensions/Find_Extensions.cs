@@ -137,14 +137,16 @@ namespace CommunityCoreLibrary
         }
 
         // Get the hightest tracing level for global functions
+#if DEBUG
         private static Verbosity            highestVerbosity = Verbosity.NonFatalErrors;
+#endif
         public static Verbosity             HightestVerbosity
         {
             get
             {
-#if CCL_VERBOSE
-                return Verbosity.Stack;
-#endif
+#if RELEASE
+                return Verbosity.Validation;
+#elif DEBUG
 
                 if( highestVerbosity == Verbosity.NonFatalErrors )
                 {
@@ -158,6 +160,7 @@ namespace CommunityCoreLibrary
                     }
                 }
                 return highestVerbosity;
+#endif
             }
         }
     }

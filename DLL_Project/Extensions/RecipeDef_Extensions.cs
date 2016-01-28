@@ -33,7 +33,7 @@ namespace CommunityCoreLibrary
                     "RecipeDef",
                     recipeDef
                 );
-    #endif
+#endif
                 // Advanced research unlocking it?
                 if( ResearchController.AdvancedResearch.Any( a => (
                     ( a.IsRecipeToggle )&&
@@ -341,8 +341,10 @@ namespace CommunityCoreLibrary
         public static List<ThingDef> GetRecipeUsers( this RecipeDef recipeDef )
         {
             return
-                DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.recipes?.Contains( recipeDef ) ?? false )
-                                     .ToList();
+                DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
+                    ( !t.recipes.NullOrEmpty() )&&
+                    ( t.recipes.Contains( recipeDef ) )
+                ) ).ToList();
         }
 
         #endregion
