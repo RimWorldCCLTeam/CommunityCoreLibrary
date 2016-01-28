@@ -115,27 +115,19 @@ namespace CommunityCoreLibrary
                 //    return true;
                 //}
 
-                // Not really sure why advanced research would be considered like this. 
-                // a) even if not currently unlocked, items should show in help
-                // b) if any advanced research hides this thing, it would never show in help, since the actual state of AR is never checked/updated.
-                //
-                //// Advanced research unlocking it?
-                //if( !ResearchController.AdvancedResearch.Any( a => (
-                //    ( a.IsBuildingToggle )&&
-                //    ( !a.HideDefs )&&
-                //    ( a.thingDefs.Contains( buildableDef as ThingDef ) )
-                //) ) )
-                //{
-                //    isLockedOut.Add( buildableDef, true );
-                //    return true;
-                //}
+                // If the research locks it's out, check for an ARDef unlock
+                if(
+                    ( buildableDef.researchPrerequisite != null )&&
+                    ( buildableDef.researchPrerequisite.IsLockedOut() )&&
+                    ( !ResearchController.AdvancedResearch.Any( a => (
+                        ( a.IsBuildingToggle )&&
+                        ( !a.HideDefs )&&
+                        ( a.thingDefs.Contains( buildableDef as ThingDef ) )
+                ) ) ) )
+                {
+                    rVal = true;
+                }
 
-                // Is the research parent locked out?
-                rVal = (
-                    ( buildableDef.researchPrerequisite != null ) &&
-                    ( buildableDef.researchPrerequisite.IsLockedOut() )
-                );
-                
                 // Cache the result
                 isLockedOut.Add( buildableDef, rVal );
             }
