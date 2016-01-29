@@ -93,7 +93,6 @@ namespace CommunityCoreLibrary
 
         public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
         {
-
             return (
                 ( thingDef.GetRecipesCurrent().Contains( recipeDef ) )||
                 ( thingDef.GetRecipesUnlocked( ref nullDefs ).Contains( recipeDef ) )||
@@ -107,6 +106,13 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                thingDef,
+                Verbosity.Stack,
+                "GetRecipesUnlocked()"
+            );
+#endif
             // Things it is unlocked on with research
             var recipeDefs = new List<RecipeDef>();
             if( researchDefs != null )
@@ -118,8 +124,8 @@ namespace CommunityCoreLibrary
             var recipes = DefDatabase< RecipeDef >.AllDefsListForReading.Where( r => (
                 ( r.researchPrerequisite != null )&&
                 ( r.recipeUsers != null )&&
-                ( !r.IsLockedOut() )&&
-                ( r.recipeUsers.Contains( thingDef ) )
+                ( r.recipeUsers.Contains( thingDef ) )&&
+                ( !r.IsLockedOut() )
             ) ).ToList();
 
             // Look in advanced research too
@@ -152,6 +158,13 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipesLocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                thingDef,
+                Verbosity.Stack,
+                "GetRecipesLocked()"
+            );
+#endif
             // Things it is locked on with research
             var recipeDefs = new List<RecipeDef>();
             if( researchDefs != null )
@@ -191,11 +204,25 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipesCurrent( this ThingDef thingDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                thingDef,
+                Verbosity.Stack,
+                "GetRecipesCurrent()"
+            );
+#endif
             return thingDef.AllRecipes;
         }
 
         public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                thingDef,
+                Verbosity.Stack,
+                "GetRecipesAll()"
+            );
+#endif
             // Things it is locked on with research
             var recipeDefs = new List<RecipeDef>();
 

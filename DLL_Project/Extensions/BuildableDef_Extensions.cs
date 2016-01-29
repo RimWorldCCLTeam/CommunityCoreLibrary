@@ -11,32 +11,82 @@ namespace CommunityCoreLibrary
     public static class BuildableDef_Extensions
     {
 
+        #region Static Data
+
+        static Dictionary<BuildableDef,bool> isLockedOut = new Dictionary<BuildableDef, bool>();
+
+        #endregion
+
         #region Availability
 
         public static bool                  IsLockedOut( this BuildableDef buildableDef )
         {
-            // Is the designationCategory locked out?
-            if( ( buildableDef.blueprintDef != null )&&
-                ( string.IsNullOrEmpty( buildableDef.designationCategory ) )||
-                ( buildableDef.designationCategory == "None" ) )
+            bool rVal;
+            if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
             {
-                return true;
+#if DEBUG
+                CCL_Log.TraceMod(
+                    buildableDef,
+                    Verbosity.Stack,
+                    "IsLockedOut()"
+                );
+#endif
+
+                // Is it a frame or blueprint?
+                if(
+                    ( buildableDef.defName.EndsWith( "_Frame" ) )||
+                    ( buildableDef.defName.EndsWith( "_Blueprint" ) )||
+                    ( buildableDef.defName.EndsWith( "_Blueprint_Install" ) )
+                )
+                {
+                    isLockedOut.Add( buildableDef, true );
+                    return true;
+                }
+                
+                //  Logic is faulty ( Thingdefs inherit from buildable defs, checking for existence of blueprint eliminates all non-buildings )
+                //  After correcting logic (Valid: blueprint == null [items], or blueprint != null and designation != null/None [buildings]),
+                //  the check no longer makes sense, since only defs with a designation category ever get a blueprint assigned. -- Fluffy.
+                //
+                //// Is the designationCategory locked out?
+                //// only applies if it is buildable (has a blueprint def), but no category.
+                //if(
+                //    buildableDef.blueprintDef != null &&
+                //    ( buildableDef.designationCategory.NullOrEmpty()||
+                //      buildableDef.designationCategory == "None" )
+                //)
+                //{
+                //    isLockedOut.Add( buildableDef, true );
+                //    return true;
+                //}
+
+                // If the research locks it's out, check for an ARDef unlock
+                if(
+                    ( buildableDef.researchPrerequisite != null )&&
+                    ( buildableDef.researchPrerequisite.IsLockedOut() )&&
+                    ( !ResearchController.AdvancedResearch.Any( a => (
+                        ( a.IsBuildingToggle )&&
+                        ( !a.HideDefs )&&
+                        ( a.thingDefs.Contains( buildableDef as ThingDef ) )
+                ) ) ) )
+                {
+                    rVal = true;
+                }
+
+                // Cache the result
+                isLockedOut.Add( buildableDef, rVal );
             }
-            // Advanced research unlocking it?
-            if( ResearchController.AdvancedResearch.Any( a => (
-                ( a.IsBuildingToggle )&&
-                ( !a.HideDefs )&&
-                ( a.thingDefs.Contains( buildableDef as ThingDef ) )
-            ) ) )
-            {
-                return false;
-            }
-            // Is the research parent locked out?
-            return buildableDef.researchPrerequisite.IsLockedOut();
+            return rVal;
         }
 
         public static bool                  HasResearchRequirement( this BuildableDef buildableDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                buildableDef,
+                Verbosity.Stack,
+                "HasResearchRequirement()"
+            );
+#endif
             // Can't entirely rely on this one check as it's state may change mid-game
             if( buildableDef.researchPrerequisite != null )
             {
@@ -59,6 +109,13 @@ namespace CommunityCoreLibrary
 
         public static List< Def >           GetResearchRequirements( this BuildableDef buildableDef )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                buildableDef,
+                Verbosity.Stack,
+                "GetResearchRequirements()"
+            );
+#endif
             var researchDefs = new List< Def >();
 
             if( buildableDef.researchPrerequisite != null )
@@ -87,6 +144,17 @@ namespace CommunityCoreLibrary
             // Return the list of research required
             return researchDefs;
         }
+
+        public static List< RecipeDef >     GetRecipeDefs( this BuildableDef buildableDef )
+        {
+            // TODO: See if I can track down special product recipes ( butchery / smelting ).
+            // stone blocks, meat and metal (mechanoids) can all be butchered. 
+            // smelting returns stuff from item, and has been applied on cloth as well (recycling mod).
+
+            return
+                DefDatabase<RecipeDef>.AllDefsListForReading.Where(
+                    r => r.products.Any( tc => tc.thingDef == buildableDef as ThingDef ) ).ToList();
+        } 
 
         #endregion
 

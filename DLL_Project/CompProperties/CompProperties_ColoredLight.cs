@@ -10,9 +10,11 @@ namespace CommunityCoreLibrary
 
         #region XML Data
 
-        public string                       requiredResearch = "ColoredLights";
+        public string                       requiredResearch    = "ColoredLights";
         public int                          Default;
         public List< ColorName >            color;
+        public bool                         useColorPicker      = false;
+        public bool                         hideGizmos          = false;
 
         #endregion
 

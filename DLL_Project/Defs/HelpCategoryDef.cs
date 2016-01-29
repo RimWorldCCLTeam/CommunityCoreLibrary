@@ -78,7 +78,7 @@ namespace CommunityCoreLibrary
 
             if( ModName.NullOrEmpty() )
             {
-                CCL_Log.Error( "ModName resolved to null", defName );
+                CCL_Log.Error( "ModName resolved to null", "HelpCategoryDef :: " + defName );
             }
         }
 #endif

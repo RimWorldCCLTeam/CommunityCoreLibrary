@@ -26,7 +26,11 @@ namespace CommunityCoreLibrary
                     _HideItemManager = (HideItemManager) Find_Extensions.MapComponent( typeof( HideItemManager ) );
                     if( _HideItemManager == null )
                     {
-                        CCL_Log.Error( "Unable to find HideItemManager!", "CompHideItem" );
+                        CCL_Log.TraceMod(
+                            parent.def,
+                            Verbosity.FatalErrors,
+                            "MapComponent missing :: HideItemManager"
+                        );
                     }
                 }
                 return _HideItemManager;
@@ -74,6 +78,10 @@ namespace CommunityCoreLibrary
 
         public void                         ReceivedThing( Thing item )
         {
+            if( HideItemManager == null )
+            {
+                return;
+            }
             if(
                 ( item.def.category == ThingCategory.Item )&&
                 ( !knownItems.Contains( item ) )
@@ -86,6 +94,10 @@ namespace CommunityCoreLibrary
 
         public void                         LostThing( Thing item )
         {
+            if( HideItemManager == null )
+            {
+                return;
+            }
             if( knownItems.Contains( item ) )
             {
                 HideItemManager.RegisterForShow( item );

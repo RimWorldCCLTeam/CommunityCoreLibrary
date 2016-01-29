@@ -13,6 +13,8 @@ namespace CommunityCoreLibrary
         public static readonly string           DrugHelp = "Drug" + HelpPostFix;
         public static readonly string           MealHelp = "Meal" + HelpPostFix;
         public static readonly string           WeaponHelp = "Weapon" + HelpPostFix;
+        public static readonly string           TerrainHelp = "Terrain" + HelpPostFix;
+        public static readonly string           FlooringHelp = "Flooring" + HelpPostFix;
 
         public static readonly string           RecipeHelp = "Recipe" + HelpPostFix;
 
@@ -20,7 +22,6 @@ namespace CommunityCoreLibrary
         public static readonly string           AdvancedResearchHelp = "AdvancedResearch" + HelpPostFix;
 
         public static readonly HelpCategoryDef  GizmoHelp = DefDatabase< HelpCategoryDef >.GetNamed( "GizmoHelp", true );
-
     }
 
 }

@@ -28,15 +28,22 @@ namespace CommunityCoreLibrary
                             //if( ModHelperDef.InjectSpecials() )
 
                             ModHelperDef.InjectSpecials();
-                            if( ModHelperDef.SpecialsInjected )
+                            if( !ModHelperDef.SpecialsInjected )
                             {
-                                CCL_Log.Message( "Injected Specials", ModHelperDef.ModName );
-                            }
-                            else
-                            {
-                                CCL_Log.Error( "Error in Special Injections", ModHelperDef.ModName );
+                                CCL_Log.TraceMod(
+                                    ModHelperDef,
+                                    Verbosity.NonFatalErrors,
+                                    "Error injecting Special Injectors"
+                                );
                                 return false;
                             }
+#if DEBUG
+                            CCL_Log.TraceMod(
+                                ModHelperDef,
+                                Verbosity.Injections,
+                                "Special Injectors injected"
+                            );
+#endif
                         }
                     }
                     return true;

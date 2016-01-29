@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace CommunityCoreLibrary.ColorPicker
 {
+    
     public class Dialog_ColorPicker : Window
     {
+        
         enum controls
         {
             colorPicker,
@@ -722,5 +724,7 @@ namespace CommunityCoreLibrary.ColorPicker
                 SetWindowSize(windowSize);
             }
         }
+
     }
+
 }

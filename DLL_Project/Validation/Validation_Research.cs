@@ -48,8 +48,28 @@ namespace CommunityCoreLibrary
                         i--;
                         continue;
                     }
+
                 }
 
+#if DEBUG
+                if( rVal == true )
+                {
+                    var allMods = Controller.Data.Mods;
+                    foreach( var mod in allMods )
+                    {
+                        if( !Find_Extensions.DefListOfTypeForMod<AdvancedResearchDef>( mod ).NullOrEmpty() )
+                        {
+                            CCL_Log.TraceMod(
+                                mod,
+                                Verbosity.Validation,
+                                "Passed validation",
+                                "Advanced Research"
+                            );
+                        }
+                    }
+                }
+#endif
+                
                 // Return true if no errors, false otherwise
                 return rVal;
             }

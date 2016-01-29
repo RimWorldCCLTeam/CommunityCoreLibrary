@@ -22,6 +22,10 @@
     different buildings with different research requirements to change color, the requirement
     of each building is respected so that lights won't change on buildings which don't have the
     prerequisite tech researched.
+
+    From CCL 0.12.5 onward, colors can also be selected with a colourpicker by setting the 'usePicker'
+    toggle, and the gizmo's can be hidden by setting the 'hideGizmos' toggle. Both default to false.
+    The share function works only between lights that both use either the preset list or the colorPicker.
     
     XML Data:
     
@@ -31,6 +35,9 @@
        (ColoredLights)
     int (0)         Default             [optional] Default initial color index
     ColorName (*)   color               [optional] List of color names and values
+    bool   (false)  useColorPicker      [optional] Should a full HSV color picker be used to select colors?
+    bool   (false)  hideGizmos          [optional] Should color change and room/linked sharing gizmo's be hidden? 
+                                                   Useful when color changes are handled in your mod's C#.
     
     * This is a list of names and colors, the default internal list is as follows:
         
@@ -99,6 +106,10 @@
                         <value>(185,61,205,0)</value>
                     </li>
                 </color>
+
+                <useColorPicker>false</useColorPicker>
+
+                <hideGizmos>false</hideGizmos>
                 
             </li>
             

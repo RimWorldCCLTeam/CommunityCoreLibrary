@@ -8,7 +8,9 @@ namespace CommunityCoreLibrary
     /// </summary>
     public class CompRangedGizmoGiver : ThingComp
     {
+        
         public readonly bool                isRangedGiver = true;
+
     }
 
 }

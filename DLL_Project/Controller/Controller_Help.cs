@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RimWorld;
 using Verse;
 
@@ -20,67 +21,74 @@ namespace CommunityCoreLibrary.Controller
 
         public static bool Initialize()
         {
-            try
-            {
-                // The only thing that will stop these from working is bad xml
-                // or bad programming logic.  Either way an exception will be thrown
-                // and caught.
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "Initialize()",
+                "Help System"
+            );
+#endif
 
+            // Items
+            ResolveApparel();
+            ResolveBodyParts();
+            ResolveDrugs();
+            ResolveMeals();
+            ResolveWeapons();
 
-                // Items
-                ResolveApparel();
-                ResolveBodyParts();
-                ResolveDrugs();
-                ResolveMeals();
-                ResolveWeapons();
+            // TODO: Add stuff categories
+            // TODO: Add biomes
+            // TODO: Add plants
+            // TODO: Add animals
+            // TODO: Add workTypes
+            // TODO: Add capacities
+            // TODO: Add skills
 
-                // TODO: Add stuff categories
-                // TODO: Add biomes
-                // TODO: Add plants
-                // TODO: Add animals
-                // TODO: Add workTypes
-                // TODO: Add capacities
-                // TODO: Add skills
+            // The below are low priority  (as considered by Fluffy)
+            // TODO: Add needs
+            // TODO: Add building resources
+            // TODO: Add factions
+            // TODO: Add hediffs
 
-                // The below are low priority  (as considered by Fluffy)
-                // TODO: Add needs
-                // TODO: Add building resources
-                // TODO: Add factions
-                // TODO: Add hediffs
+            // The below are really low priority (as considered by Fluffy)
+            // TODO: Add traders
+            // TODO: Add tradertags
 
-                // The below are really low priority (as considered by Fluffy)
-                // TODO: Add traders
-                // TODO: Add tradertags
+            // Buildings
+            ResolveBuildings();
+            ResolveMinifiableOnly();
 
+            // Terrain
+            ResolveTerrain();
 
+            // Recipes
+            ResolveRecipes();
 
-                // Buildings
-                ResolveBuildings();
-                ResolveMinifiableOnly();
+            // Research
+            ResolveResearch();
+            ResolveAdvancedResearch();
 
-                // Recipes
-                ResolveRecipes();
+            // Rebuild help caches
+            ResolveReferences();
 
-                // Research
-                ResolveResearch();
-                ResolveAdvancedResearch();
-
-                // Rebuild help caches
-                ResolveReferences();
-            }
-            catch( Exception e )
-            {
-                // Ruh-ro, Raggy!
-                CCL_Log.Error( e.Message, "Help System" );
-                return false;
-            }
-
-            CCL_Log.Message( "Initialized", "Help System" );
+            CCL_Log.Trace(
+                Verbosity.Validation,
+                "Initialized",
+                "Help System"
+            );
             return true;
         }
 
         static void ResolveReferences()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveReferences()",
+                "Help System"
+            );
+#endif
+
             foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefsListForReading )
             {
                 helpCategory.Recache();
@@ -94,6 +102,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveApparel()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveApparel()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -109,7 +125,7 @@ namespace CommunityCoreLibrary.Controller
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.ApparelHelp, "AutoHelpSubCategoryApparel".Translate(), "AutoHelpCategoryItems".Translate() );
 
             // Scan through all possible buildable defs and auto-generate help
-            ResolveThingDefList(
+            ResolveDefList(
                 thingDefs,
                 helpCategoryDef
             );
@@ -117,6 +133,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveBodyParts()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveBodyParts()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -136,7 +160,7 @@ namespace CommunityCoreLibrary.Controller
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.BodyPartHelp, "AutoHelpSubCategoryBodyParts".Translate(), "AutoHelpCategoryItems".Translate() );
 
             // Scan through all possible buildable defs and auto-generate help
-            ResolveThingDefList(
+            ResolveDefList(
                 thingDefs,
                 helpCategoryDef
             );
@@ -144,6 +168,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveDrugs()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveDrugs()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -160,7 +192,7 @@ namespace CommunityCoreLibrary.Controller
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.DrugHelp, "AutoHelpSubCategoryDrugs".Translate(), "AutoHelpCategoryItems".Translate() );
 
             // Scan through all possible buildable defs and auto-generate help
-            ResolveThingDefList(
+            ResolveDefList(
                 thingDefs,
                 helpCategoryDef
             );
@@ -168,6 +200,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveMeals()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveMeals()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -184,7 +224,7 @@ namespace CommunityCoreLibrary.Controller
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.MealHelp, "AutoHelpSubCategoryMeals".Translate(), "AutoHelpCategoryItems".Translate() );
 
             // Scan through all possible buildable defs and auto-generate help
-            ResolveThingDefList(
+            ResolveDefList(
                 thingDefs,
                 helpCategoryDef
             );
@@ -192,6 +232,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveWeapons()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveWeapons()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -208,7 +256,7 @@ namespace CommunityCoreLibrary.Controller
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.WeaponHelp, "AutoHelpSubCategoryWeapons".Translate(), "AutoHelpCategoryItems".Translate() );
 
             // Scan through all possible buildable defs and auto-generate help
-            ResolveThingDefList(
+            ResolveDefList(
                 thingDefs,
                 helpCategoryDef
             );
@@ -220,14 +268,22 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveBuildings()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveBuildings()",
+                "Help System"
+            );
+#endif
+
             // Go through buildings by designation categories
             foreach( var designationCategoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
             {
                 // Get list of things
                 var thingDefs =
                     DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
-                        ( t.designationCategory == designationCategoryDef.defName )&&
-                        ( !t.IsLockedOut() )
+                        ( t.designationCategory == designationCategoryDef.defName )
+                        && ( !t.IsLockedOut() )
                     ) ).ToList();
 
                 if( !thingDefs.NullOrEmpty() )
@@ -236,7 +292,7 @@ namespace CommunityCoreLibrary.Controller
                     var helpCategoryDef = HelpCategoryForKey( designationCategoryDef.defName + "_Building" + HelpCategoryDefOf.HelpPostFix, designationCategoryDef.label, "AutoHelpCategoryBuildings".Translate() );
 
                     // Scan through all possible buildable defs and auto-generate help
-                    ResolveThingDefList(
+                    ResolveDefList(
                         thingDefs,
                         helpCategoryDef
                     );
@@ -246,6 +302,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveMinifiableOnly()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveMinifiableOnly()",
+                "Help System"
+            );
+#endif
+
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -268,7 +332,7 @@ namespace CommunityCoreLibrary.Controller
             var helpCategoryDef = HelpCategoryForKey( "Special_Building" + HelpCategoryDefOf.HelpPostFix, "AutoHelpSubCategorySpecial".Translate(), "AutoHelpCategoryBuildings".Translate() );
 
             // Scan through all possible buildable defs and auto-generate help
-            ResolveThingDefList(
+            ResolveDefList(
                 thingDefs,
                 helpCategoryDef
             );
@@ -276,35 +340,48 @@ namespace CommunityCoreLibrary.Controller
 
         #endregion
 
-        #region ThingDef Resolver
+        #region Terrain Resolver
 
-        static void ResolveThingDefList( List<ThingDef> thingDefs, HelpCategoryDef category )
+        static void ResolveTerrain()
         {
-            // Get help database
-            var helpDefs = DefDatabase< HelpDef >.AllDefsListForReading;
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveTerrain()",
+                "Help System"
+            );
 
-            // Scan through defs and auto-generate help
-            foreach( var thingDef in thingDefs )
+            // Get list of natual terrain
+            var terrainDefs =
+                DefDatabase< TerrainDef >.AllDefsListForReading.Where( t => (
+                    ( t.designationCategory.NullOrEmpty() )||
+                    ( t.designationCategory == "None" )
+                ) ).ToList();
+
+            if( !terrainDefs.NullOrEmpty() )
             {
-                // Find an existing entry
-                var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == thingDef )
-                ) );
+                // Get help category
+                var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.TerrainHelp, "AutoHelpSubCategoryTerrain".Translate(), "AutoHelpCategoryTerrain".Translate() );
 
-                if( helpDef == null )
-                {
-                    // Make a new one
-                    //Log.Message( "HelpGen :: " + thingDef.defName );
-                    helpDef = HelpForBuildable( thingDef, category );
-
-                    // Inject the def
-                    if( helpDef != null )
-                    {
-                        DefDatabase<HelpDef>.Add( helpDef );
-                    }
-                }
-
+                // resolve the defs
+                ResolveDefList( terrainDefs, helpCategoryDef );
             }
+
+            // Get list of buildable floors
+            terrainDefs =
+                DefDatabase< TerrainDef >.AllDefsListForReading.Where( t => (
+                    ( !t.designationCategory.NullOrEmpty() )&&
+                    ( t.designationCategory != "None" )
+                ) ).ToList();
+
+            if( !terrainDefs.NullOrEmpty() )
+            {
+                // Get help category
+                var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.FlooringHelp, "AutoHelpSubCategoryFlooring".Translate(), "AutoHelpCategoryTerrain".Translate() );
+
+                // resolve the defs
+                ResolveDefList( terrainDefs, helpCategoryDef );
+            }
+
         }
 
         #endregion
@@ -313,6 +390,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveRecipes()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveRecipes()",
+                "Help System"
+            );
+#endif
+
             // Get the thing database of things which ever have recipes
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -360,6 +445,14 @@ namespace CommunityCoreLibrary.Controller
 
         static void ResolveResearch()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveResearch()",
+                "Help System"
+            );
+#endif
+
             // Get research database
             var researchProjectDefs =
                 DefDatabase< ResearchProjectDef >.AllDefsListForReading.Where( r => (
@@ -374,35 +467,20 @@ namespace CommunityCoreLibrary.Controller
             // Get help category
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.ResearchHelp, "AutoHelpSubCategoryProjects".Translate(), "AutoHelpCategoryResearch".Translate() );
 
-            // Get help database
-            var helpDefs = DefDatabase< HelpDef >.AllDefsListForReading;
-
-            // Scan through defs and auto-generate help
-            foreach( var researchProjectDef in researchProjectDefs )
-            {
-                // Find an existing entry
-                var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == researchProjectDef )
-                ) );
-
-                if( helpDef == null )
-                {
-                    // Make a new one
-                    //Log.Message( "HelpGen :: " + researchProjectDef.defName );
-                    helpDef = HelpForResearch( researchProjectDef, helpCategoryDef );
-
-                    // Inject the def
-                    if( helpDef != null )
-                    {
-                        helpDefs.Add( helpDef );
-                    }
-                }
-
-            }
+            // filter duplicates and create helpdefs
+            ResolveDefList( researchProjectDefs, helpCategoryDef );
         }
 
         static void ResolveAdvancedResearch()
         {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveAdvancedResearch()",
+                "Help System"
+            );
+#endif
+
             // Get advanced research database
             var advancedResearchDefs =
                 ResearchController.AdvancedResearch.Where( a => (
@@ -418,30 +496,43 @@ namespace CommunityCoreLibrary.Controller
             // Get help category
             var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.AdvancedResearchHelp, "AutoHelpSubCategoryAdvanced".Translate(), "AutoHelpCategoryResearch".Translate() );
 
+            // filter duplicates and create helpDefs
+            ResolveDefList( advancedResearchDefs, helpCategoryDef );
+        }
+
+        #endregion
+
+        #region ThingDef Resolver
+
+        static void ResolveDefList<T>( List<T> defs, HelpCategoryDef category ) where T : Def
+        {
+#if DEBUG
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolveDefList()",
+                "Help System"
+                );
+#endif
+
             // Get help database
-            var helpDefs = DefDatabase< HelpDef >.AllDefsListForReading;
+            HashSet<Def> processedDefs =
+                new HashSet<Def>( DefDatabase<HelpDef>.AllDefsListForReading.Select( h => h.keyDef ) );
 
             // Scan through defs and auto-generate help
-            foreach( var advancedResearchDef in advancedResearchDefs )
+            foreach( T def in defs )
             {
-                // Find an existing entry
-                var helpDef = helpDefs.Find( h => (
-                    ( h.keyDef == advancedResearchDef )
-                ) );
-
-                if( helpDef == null )
+                // Check if the def doesn't already have a help entry
+                if( !processedDefs.Contains( def ) )
                 {
                     // Make a new one
-                    //Log.Message( "HelpGen :: " + advancedResearchDef.defName );
-                    helpDef = HelpForAdvancedResearch( advancedResearchDef, helpCategoryDef );
+                    HelpDef helpDef = HelpForDef( def, category );
 
                     // Inject the def
                     if( helpDef != null )
                     {
-                        helpDefs.Add( helpDef );
+                        DefDatabase<HelpDef>.Add( helpDef );
                     }
                 }
-
             }
         }
 
@@ -463,14 +554,59 @@ namespace CommunityCoreLibrary.Controller
                 helpCategoryDef.label = label;
                 helpCategoryDef.ModName = modname;
 
+#if DEBUG
+                CCL_Log.Trace(
+                    Verbosity.Stack,
+                    "HelpCategoryForKey() :: " + key,
+                    "Help System"
+                );
+#endif
+
                 DefDatabase<HelpCategoryDef>.Add( helpCategoryDef );
             }
 
             return helpCategoryDef;
         }
 
+        static HelpDef HelpForDef<T>( T def, HelpCategoryDef category ) where T : Def
+        {
+            // both thingdefs (buildings, items) and terraindefs (floors) are derived from buildableDef
+            if( def is BuildableDef )
+            {
+                return HelpForBuildable( def as BuildableDef, category );
+            }
+            if( def is ResearchProjectDef )
+            {
+                return HelpForResearch( def as ResearchProjectDef, category );
+            }
+            if( def is AdvancedResearchDef )
+            {
+                return HelpForAdvancedResearch( def as AdvancedResearchDef, category );
+            }
+            if( def is RecipeDef )
+            {
+                CCL_Log.Error( "HelpForDef() cannot be used for recipedefs. Use HelpForRecipeDef() directly.", "HelpGen" );
+                return null;
+            }
+
+            CCL_Log.Error( "HelpForDef() used with a def type (" + def.GetType().ToString() + ") that is not handled.", "HelpGen" );
+            return null;
+        }
+
         static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                buildableDef,
+                Verbosity.AutoGenCreation,
+                "HelpForBuildable()"
+            );
+#endif
+            
+            // we need the thingdef in several places
+            ThingDef thingDef = buildableDef as ThingDef;
+
+            // set up empty helpdef
             var helpDef = new HelpDef();
             helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
             helpDef.keyDef = buildableDef;
@@ -478,36 +614,128 @@ namespace CommunityCoreLibrary.Controller
             helpDef.category = category;
             helpDef.description = buildableDef.description;
 
+            List<HelpDetailSection> statParts = new List<HelpDetailSection>();
+            List<HelpDetailSection> linkParts = new List<HelpDetailSection>();
+
             #region Base Stats
 
-            // Look at base stats
-            HelpDetailSection baseStats = new HelpDetailSection(
-                null,
-                buildableDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
-                null,
-                buildableDef.statBases.Select(sb => sb.stat.ValueToString(sb.value, sb.stat.toStringNumberSense)).ToArray());
+            if ( !buildableDef.statBases.NullOrEmpty() )
+            {
+                // Look at base stats
+                HelpDetailSection baseStats = new HelpDetailSection(
+                    null,
+                    buildableDef.statBases.Select( sb => sb.stat ).ToList().ConvertAll( def => (Def)def ),
+                    null,
+                    buildableDef.statBases.Select( sb => sb.stat.ValueToString( sb.value, sb.stat.toStringNumberSense ) )
+                                .ToArray() );
 
-            helpDef.HelpDetailSections.Add( baseStats );
+                statParts.Add( baseStats );
+            }
 
+            #endregion
+            
+            #region required research
+            // Add list of required research
+            var researchDefs = buildableDef.GetResearchRequirements();
+            if( !researchDefs.NullOrEmpty() )
+            {
+                HelpDetailSection reqResearch = new HelpDetailSection(
+                        "AutoHelpListResearchRequired".Translate(),
+                        researchDefs.ConvertAll(def => (Def)def));
+                helpDef.HelpDetailSections.Add( reqResearch );
+            }
+            #endregion
+            
+            #region Cost List
+            // specific thingdef costs (terrainDefs are buildable with costlist, but do not have stuff cost (oddly)).
+            if( !buildableDef.costList.NullOrEmpty() )
+            {
+                HelpDetailSection costs = new HelpDetailSection(
+                    "AutoHelpCost".Translate(),
+                    buildableDef.costList.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
+                    null,
+                    buildableDef.costList.Select( tc => tc.count.ToString() ).ToArray() );
+
+                helpDef.HelpDetailSections.Add( costs );
+            }
             #endregion
 
             #region ThingDef Specific
-
-            var thingDef = buildableDef as ThingDef;
             if( thingDef != null )
             {
+                #region stat offsets
+
+                if( !thingDef.equippedStatOffsets.NullOrEmpty() )
+                {
+                    HelpDetailSection equippedOffsets = new HelpDetailSection(
+                    "AutoHelpListStatOffsets".Translate(),
+                    thingDef.equippedStatOffsets.Select( so => so.stat ).ToList().ConvertAll( def => (Def)def ),
+                    null,
+                    thingDef.equippedStatOffsets.Select( so => so.stat.ValueToString( so.value, so.stat.toStringNumberSense ) )
+                                .ToArray() );
+
+                    statParts.Add( equippedOffsets );
+                }
+
+                #endregion
+
+                #region Stuff Cost
+
+                // What stuff can it be made from?
+                if(
+                    ( thingDef.costStuffCount > 0 ) &&
+                    ( !thingDef.stuffCategories.NullOrEmpty() )
+                )
+                {
+                    linkParts.Add( new HelpDetailSection(
+                        "AutoHelpStuffCost".Translate( thingDef.costStuffCount.ToString() ),
+                        thingDef.stuffCategories.ToList().ConvertAll( def => (Def)def ) ) );
+                }
+
+                #endregion
+
+                #region Recipes (to make thing)
+                List<RecipeDef> recipeDefs = buildableDef.GetRecipeDefs();
+                if ( !recipeDefs.NullOrEmpty() )
+                {
+                    HelpDetailSection recipes = new HelpDetailSection(
+                        "AutoHelpListRecipes".Translate(),
+                        recipeDefs.ConvertAll( def => (Def)def ) );
+                    linkParts.Add( recipes );
+
+                    try
+                    {
+                        // for some odd reasons meals and beer give errors when doing this.
+                        var tableDefs = recipeDefs.SelectMany( r => r.GetRecipeUsers() )
+                                                  .ToList()
+                                                  .ConvertAll( def => def as Def );
+                        HelpDetailSection tables = new HelpDetailSection(
+                            "AutoHelpListRecipesOnThingsUnlocked".Translate(), tableDefs );
+                        linkParts.Add( tables );
+                    }
+                    catch
+                    {
+                        CCL_Log.Error( "Error loading recipe providers for " + thingDef.LabelCap, "HelpGen" );
+                    }
+                }
+                #endregion
 
                 #region Ingestible Stats
                 // Look at base stats
                 if( thingDef.IsNutritionSource )
                 {
-                    string[] ingestibleStats =
+                    List<Def> needDefs = new List<Def>();
+                    needDefs.Add( NeedDefOf.Food );
+                    needDefs.Add( NeedDefOf.Joy );
+
+                    string[] suffixes =
                     {
-                        "Nutrition".Translate() + ": " + thingDef.ingestible.nutrition.ToString( "0.###" ),
-                        "Joy".Translate() + ": " + thingDef.ingestible.joy.ToString( "0.###" )
+                        thingDef.ingestible.nutrition.ToString( "0.###" ),
+                        thingDef.ingestible.joy.ToString( "0.###" )
                     };
 
-                    helpDef.HelpDetailSections.Add( new HelpDetailSection( null, ingestibleStats ) );
+                    statParts.Add( 
+                        new HelpDetailSection( "AutoHelpListNutrition".Translate(), needDefs, null, suffixes ) );
                 }
 
                 #endregion
@@ -524,7 +752,7 @@ namespace CommunityCoreLibrary.Controller
 
                     if( hediffDef.addedPartProps != null )
                     {
-                        helpDef.HelpDetailSections.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
+                        statParts.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
                     }
 
                     #endregion
@@ -537,7 +765,7 @@ namespace CommunityCoreLibrary.Controller
                     )
                     {
                         HelpDetailSection capacityMods = new HelpDetailSection(
-                            "CapacityModifiers".Translate(),
+                            "AutoHelpListCapacityModifiers".Translate(),
                             hediffDef.stages.Where(s => !s.capMods.NullOrEmpty())
                                             .SelectMany(s => s.capMods)
                                             .Select(cm => cm.capacity)
@@ -551,7 +779,7 @@ namespace CommunityCoreLibrary.Controller
                                         cm => (cm.offset > 0 ? ": +" : ": ") + cm.offset.ToString("P0"))
                                      .ToArray());
 
-                        helpDef.HelpDetailSections.Add( capacityMods );
+                        statParts.Add( capacityMods );
                     }
 
                     #endregion
@@ -574,7 +802,7 @@ namespace CommunityCoreLibrary.Controller
                                     {
                                         if( verb.verbClass == typeof( Verb_MeleeAttack ) )
                                         {
-                                            helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                            statParts.Add( new HelpDetailSection(
                                                     "MeleeAttack".Translate( verb.meleeDamageDef.label ),
                                                     new[]
                                                     {
@@ -595,7 +823,7 @@ namespace CommunityCoreLibrary.Controller
                     var recipeDef = thingDef.GetImplantRecipeDef();
                     if( !recipeDef.appliedOnFixedBodyParts.NullOrEmpty() )
                     {
-                        helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                        linkParts.Add( new HelpDetailSection(
                             "AutoHelpSurgeryFixOrReplace".Translate(),
                             recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll( def => (Def)def ) ) );
                     }
@@ -606,57 +834,16 @@ namespace CommunityCoreLibrary.Controller
 
                 #endregion
 
-                #region Cost List
-
-                // What other things are required?
-                if( !thingDef.costList.NullOrEmpty() )
-                {
-                    HelpDetailSection costs = new HelpDetailSection(
-                        "AutoHelpCost".Translate(),
-                        thingDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
-                        null,
-                        thingDef.costList.Select(tc => ": " + tc.count.ToString()).ToArray());
-
-                    helpDef.HelpDetailSections.Add( costs );
-                }
-
-                #endregion
-
-                #region Stuff Cost
-
-                // What stuff can it be made from?
-                if(
-                    ( thingDef.costStuffCount > 0 ) &&
-                    ( !thingDef.stuffCategories.NullOrEmpty() )
-                )
-                {
-                    helpDef.HelpDetailSections.Add( new HelpDetailSection(
-                        "AutoHelpStuffCost".Translate( thingDef.costStuffCount.ToString() ),
-                        thingDef.stuffCategories.ToList().ConvertAll( def => (Def)def ) ) );
-                }
-
-                #endregion
-
-                #region Recipes & Research
+                #region Recipes & Research (on building)
 
                 // Get list of recipes
-                var recipeDefs = thingDef.AllRecipes;
+                recipeDefs = thingDef.AllRecipes;
                 if( !recipeDefs.NullOrEmpty() )
                 {
                     HelpDetailSection recipes = new HelpDetailSection(
                         "AutoHelpListRecipes".Translate(),
                         recipeDefs.ConvertAll(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( recipes );
-                }
-
-                // Add list of required research
-                var researchDefs = buildableDef.GetResearchRequirements();
-                if( !researchDefs.NullOrEmpty() )
-                {
-                    HelpDetailSection reqResearch = new HelpDetailSection(
-                        "AutoHelpListResearchRequired".Translate(),
-                        researchDefs.ConvertAll(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( reqResearch );
+                    linkParts.Add( recipes );
                 }
 
                 // Build help for unlocked recipes associated with building
@@ -672,8 +859,8 @@ namespace CommunityCoreLibrary.Controller
                     HelpDetailSection researchBy = new HelpDetailSection(
                         "AutoHelpListResearchBy".Translate(),
                         researchDefs.ConvertAll<Def>(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( unlockRecipes );
-                    helpDef.HelpDetailSections.Add( researchBy );
+                    linkParts.Add( unlockRecipes );
+                    linkParts.Add( researchBy );
                 }
 
                 // Build help for locked recipes associated with building
@@ -689,11 +876,11 @@ namespace CommunityCoreLibrary.Controller
                     HelpDetailSection researchBy = new HelpDetailSection(
                         "AutoHelpListResearchBy".Translate(),
                         researchDefs.ConvertAll<Def>(def => (Def)def));
-                    helpDef.HelpDetailSections.Add( unlockRecipes );
-                    helpDef.HelpDetailSections.Add( researchBy );
+                    linkParts.Add( unlockRecipes );
+                    linkParts.Add( researchBy );
                 }
 
-                #endregion
+                #endregion (on building)
 
                 #region Facilities
 
@@ -739,8 +926,8 @@ namespace CommunityCoreLibrary.Controller
                             "AutoHelpListFacilitiesAffected".Translate(),
                             effectsBuildings.ConvertAll<Def>(def => (Def)def));
 
-                        helpDef.HelpDetailSections.Add( facilityDetailSection );
-                        helpDef.HelpDetailSections.Add( facilitiesAffected );
+                        statParts.Add( facilityDetailSection );
+                        linkParts.Add( facilitiesAffected );
                     }
                 }
 
@@ -774,7 +961,7 @@ namespace CommunityCoreLibrary.Controller
                         "AutoHelpListJoyActivities".Translate(),
                         joyStats.ToArray());
 
-                    helpDef.HelpDetailSections.Add( joyDetailSection );
+                    linkParts.Add( joyDetailSection );
                 }
 
                 #endregion
@@ -783,11 +970,35 @@ namespace CommunityCoreLibrary.Controller
 
             #endregion
 
+            #region Terrain Specific
+            TerrainDef terrainDef = buildableDef as TerrainDef;
+            if ( terrainDef != null )
+            {
+                string[] stats = new[]
+                {
+                    "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
+                    "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
+                };
+                
+                statParts.Add( new HelpDetailSection( null, stats ) );
+            }
+            #endregion
+
+            helpDef.HelpDetailSections.AddRange( statParts );
+            helpDef.HelpDetailSections.AddRange( linkParts );
+
             return helpDef;
         }
 
         static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                recipeDef,
+                Verbosity.AutoGenCreation,
+                "HelpForRecipe()"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.keyDef = recipeDef;
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
@@ -916,6 +1127,13 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForResearch( ResearchProjectDef researchProjectDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                researchProjectDef,
+                Verbosity.AutoGenCreation,
+                "HelpForResearch()"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
             helpDef.keyDef = researchProjectDef;
@@ -924,7 +1142,6 @@ namespace CommunityCoreLibrary.Controller
             helpDef.description = researchProjectDef.description;
 
             #region Base Stats
-            // TODO: Total cost is misleading - it's just the cost of this project.
             HelpDetailSection totalCost = new HelpDetailSection(null, new [] { "AutoHelpTotalCost".Translate(researchProjectDef.totalCost.ToString()) });
             helpDef.HelpDetailSections.Add( totalCost );
 
@@ -955,16 +1172,30 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( reseachUnlocked );
             }
 
-            // Add buildings it unlocks
-            var thingDefs = researchProjectDef.GetThingsUnlocked();
-            if( !thingDefs.NullOrEmpty() )
+            // Add buildables unlocked (items, buildings and terrain)
+            List<Def> buildableDefs = new List<Def>();
+
+            // items and buildings
+            buildableDefs.AddRange( researchProjectDef.GetThingsUnlocked().ConvertAll<Def>( def => (Def)def ) );
+
+            // terrain
+            buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def) );
+
+            // create help section
+            if( !buildableDefs.NullOrEmpty() )
             {
                 HelpDetailSection thingsUnlocked = new HelpDetailSection(
                     "AutoHelpListThingsUnlocked".Translate(),
-                    thingDefs.ConvertAll<Def>(def => (Def)def));
+                    buildableDefs);
 
                 helpDef.HelpDetailSections.Add( thingsUnlocked );
             }
+
+            // filter down to thingdefs for recipes etc.
+            List<ThingDef> thingDefs =
+                buildableDefs.Where( def => def is ThingDef )
+                             .ToList()
+                             .ConvertAll<ThingDef>( def => (ThingDef)def );
 
             // Add recipes it unlocks
             var recipeDefs = researchProjectDef.GetRecipesUnlocked( ref thingDefs );
@@ -1005,7 +1236,6 @@ namespace CommunityCoreLibrary.Controller
 
                 helpDef.HelpDetailSections.Add( plantsIn );
             }
-
             #endregion
 
             #region Lockouts
@@ -1028,6 +1258,13 @@ namespace CommunityCoreLibrary.Controller
 
         static HelpDef HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
         {
+#if DEBUG
+            CCL_Log.TraceMod(
+                advancedResearchDef,
+                Verbosity.AutoGenCreation,
+                "HelpForAdvancedResearch()"
+            );
+#endif
             var helpDef = new HelpDef();
             helpDef.defName = advancedResearchDef.defName + "_AdvancedResearchDef_Help";
             helpDef.keyDef = advancedResearchDef;
@@ -1178,58 +1415,12 @@ namespace CommunityCoreLibrary.Controller
 
         #endregion
 
-        #region Array Cleaners
-        // TODO: implement the cleaners in the new stringbuilders. Doesn't seem necessary atm though. -Fluffy.
-        //static List< Def >                  TidyDefs( List< Def > defs )
-        //{
-        //    if( defs == null )
-        //    {
-        //        return null;
-        //    }
-        //    for( int i = 0; i < defs.Count; ++i )
-        //    {
-        //        if( defs[ i ] == null )
-        //        {
-        //            defs.RemoveAt( i );
-        //            --i;
-        //        }
-        //    }
-        //    if( defs.Count == 0 )
-        //    {
-        //        return null;
-        //    }
-        //    return defs;
-        //}
-
-        //static List< string >               TidyStrings( List< string > strings )
-        //{
-        //    if( strings == null )
-        //    {
-        //        return null;
-        //    }
-        //    for( int i = 0; i < strings.Count; ++i )
-        //    {
-        //        if( strings[ i ] == null )
-        //        {
-        //            strings.RemoveAt( i );
-        //            --i;
-        //        }
-        //    }
-        //    if( strings.Count == 0 )
-        //    {
-        //        return null;
-        //    }
-        //    return strings;
-        //}
-
-        #endregion
-
         #region HelpDef getters
 
         public static List<HelpDef> GetAllHelpDefs()
         {
             return DefDatabase<HelpDef>.AllDefsListForReading;
-        } 
+        }
 
         #endregion
 

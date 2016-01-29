@@ -16,8 +16,13 @@ namespace CommunityCoreLibrary.Controller
         public static readonly string       UnityObjectName = "Community Core Library";
         public static GameObject            UnityObject;
 
+        private static Dictionary< LoadedMod, ModHelperDef > dictModHelperDefs;
+        private static List< LoadedMod >    mods;
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
+
+        // For tracing in global functions
+        public static ModHelperDef          Trace_Current_Mod = null;
 
         #endregion
 
@@ -28,6 +33,19 @@ namespace CommunityCoreLibrary.Controller
         // factors.  The DefDatabase should only be used as a list of all potential
         // defs where as these lists are the working set used by CCL.
 
+        public static List< LoadedMod >  Mods
+        {
+            get
+            {
+                if( mods == null )
+                {
+                    // Get the initial raw set of mods
+                    mods = new List<LoadedMod>();
+                }
+                return mods;
+            }
+        }
+
         public static List< ModHelperDef >  ModHelperDefs
         {
             get
@@ -35,9 +53,22 @@ namespace CommunityCoreLibrary.Controller
                 if( modHelperDefs == null )
                 {
                     // Get the initial raw set of mods
-                    modHelperDefs = DefDatabase< ModHelperDef >.AllDefs.ToList();
+                    modHelperDefs = new List<ModHelperDef>();
                 }
                 return modHelperDefs;
+            }
+        }
+
+        public static Dictionary< LoadedMod, ModHelperDef > DictModHelperDefs
+        {
+            get
+            {
+                if( dictModHelperDefs == null )
+                {
+                    // Get the initial raw set of mods
+                    dictModHelperDefs = new Dictionary<LoadedMod, ModHelperDef>();
+                }
+                return dictModHelperDefs;
             }
         }
 

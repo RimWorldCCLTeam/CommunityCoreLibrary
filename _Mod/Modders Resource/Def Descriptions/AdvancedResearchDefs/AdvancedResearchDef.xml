@@ -68,6 +68,14 @@
         
     </AdvancedResearchDef>
 
+    NOTE:  AdvancedResearchDefs will automagically lock and unlock the things they unlock and lock respectively if the conditions to lock
+    and unlock them have not been met (researchDefs are not complete).  This frees you from having to specifically handle their initial state.
+
+    NOTE:  When using AdvancedResearchDefs, you must also create a ModHelperDef.  Important information is required in the ModHelperDef
+    which is used to control how your mod is handled and what functionality is available to it.  Without creating a ModHelperDef, CCL will
+    discard all AdvancedResearchDefs from your mod and an error will be thrown.  The requirement of the ModHelperDef has always existed
+    but it is now (v0.12.5+) enforced.
+
     -->
 
 </Defs>

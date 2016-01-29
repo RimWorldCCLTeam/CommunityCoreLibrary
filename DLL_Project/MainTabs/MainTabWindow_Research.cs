@@ -10,11 +10,6 @@ namespace CommunityCoreLibrary
 {
     public class MainTabWindow_Research : MainTabWindow
     {
-        /** 
-        TODO: Remove tabs altogether and set up a filter system, the tabs are too small and overflowing. 
-        Filters would allow for more flexibility and clarity. -Fluffy
-        **/
-
         // UI settings
         private const float     LeftAreaWidth               = 330f;
         private const int       ProjectIntervalY            = 25;
@@ -261,30 +256,28 @@ namespace CommunityCoreLibrary
             }
 
             // Set up rects
-            Rect descRect = rect.ContractedBy(_margin.x);
-            descRect.height -= _buttonSize.y * 2 + _margin.y * 2;
-            Rect controlRect = rect.ContractedBy(_margin.x);
+            Rect titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
+            Rect descRect = rect.ContractedBy( _margin.x * 2 );
+            descRect.yMin = titleRect.yMax;
+            descRect.yMax -= _buttonSize.y * 2 + _margin.y * 2;
+            Rect controlRect = rect.ContractedBy( _margin.x * 2 );
             controlRect.yMin = descRect.yMax + _margin.y;
 
             #region description
             float paragraphMargin = 8f;
             float inset = 30f;
 
-            var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label( titleRect, SelectedProject.LabelCap );
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
-
-            Rect outRect = rect.ContractedBy(2 * _margin.x); // double margin, this is a large UI block.
-            outRect.yMin += 60f;
-            Rect viewRect = outRect;
+            
+            Rect viewRect = descRect;
             viewRect.width -= 16f;
             viewRect.height = _contentHeight;
-
-            GUI.BeginGroup( outRect );
-            Widgets.BeginScrollView( outRect.AtZero(), ref _contentScrollPos, viewRect.AtZero() );
+            
+            Widgets.BeginScrollView( descRect, ref _contentScrollPos, viewRect.AtZero() );
 
             Vector2 cur = Vector2.zero;
 
@@ -344,7 +337,6 @@ namespace CommunityCoreLibrary
             _contentHeight = cur.y;
 
             Widgets.EndScrollView();
-            GUI.EndGroup();
             #endregion
 
             #region controls

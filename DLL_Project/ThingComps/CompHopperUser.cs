@@ -43,7 +43,11 @@ namespace CommunityCoreLibrary
                     {
                         // Does not contain xml resource filter
                         // or (properly) implement IHopperUser
-                        CCL_Log.Error( "HopperUser improperly configured", parent.def.defName );
+                        CCL_Log.TraceMod(
+                            parent.def,
+                            Verbosity.FatalErrors,
+                            "Configuration error (missing xml definition for 'resources' in CompProperties_HopperUser or ThingClass does not implement IHopperUser)"
+                        );
                         return null;
                     }
 

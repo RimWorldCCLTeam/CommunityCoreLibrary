@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using Verse;
 
 namespace CommunityCoreLibrary
 {
+    
     public static class Detours
     {
+        
         private static List<string> detoured = new List<string>();
         private static List<string> destinations = new List<string>();
 
@@ -20,35 +19,98 @@ namespace CommunityCoreLibrary
         **/
         public static unsafe bool TryDetourFromTo ( MethodInfo source, MethodInfo destination )
         {
-            if( source == null || destination == null )
+            // error out on null arguments
+            if( source == null )
+            {
+                CCL_Log.Trace( Verbosity.FatalErrors,
+                    "Source MethodInfo is null",
+                    "Detours"
+                );
                 return false;
+            }
+
+            if( destination == null )
+            {
+                CCL_Log.Trace( Verbosity.FatalErrors,
+                    "Destination MethodInfo is null",
+                    "Detours"
+                );
+                return false;
+            }
 
             // keep track of detours and spit out some messaging
-            string sourceString = source.DeclaringType.FullName + source.Name;
-            string destinationString = destination.DeclaringType.FullName + destination.Name;
+            string sourceString      = source.DeclaringType.FullName      + "." + source.Name;
+            string destinationString = destination.DeclaringType.FullName + "." + destination.Name;
 
-            if ( detoured.Contains( sourceString ) )
+#if DEBUG
+            if( detoured.Contains( sourceString ) )
             {
-                CCL_Log.Error( sourceString + " already detoured to " + destinations[detoured.IndexOf( sourceString )] + ". This detour will be overwritten.", "Detours" );
+                CCL_Log.Trace( Verbosity.Warnings,
+                    "Source method ('" + sourceString + "') is previously detoured to '" + destinations[ detoured.IndexOf( sourceString ) ] + "'",
+                    "Detours"
+                );
             } 
-            CCL_Log.Message( "Detouring " + sourceString + " to " + destinationString, "Detours");
+            CCL_Log.Trace( Verbosity.Injections,
+                "Detouring '" + sourceString + "' to '" + destinationString + "'",
+                "Detours"
+            );
+#endif
+            
             detoured.Add( sourceString );
             destinations.Add( destinationString );
 
-            // get pointers
-            int Source_Base         = source     .MethodHandle.GetFunctionPointer ().ToInt32();
-            int Destination_Base    = destination.MethodHandle.GetFunctionPointer ().ToInt32();
+            if( IntPtr.Size == sizeof( Int64 ) )
+            {
+                // 64-bit systems use 64-bit absolute address and jumps
+                // 12 byte destructive
 
-            // get offset
-            int offset_raw = Destination_Base - Source_Base;
-            uint* Pointer_Raw_Source = (uint*)Source_Base;
+                // Get function pointers
+                long Source_Base        = source     .MethodHandle.GetFunctionPointer().ToInt64();
+                long Destination_Base   = destination.MethodHandle.GetFunctionPointer().ToInt64();
 
-            // insert jump to destination into source
-            *( Pointer_Raw_Source + 0 ) = 0xE9909090;
-            *( Pointer_Raw_Source + 1 ) = (uint)( offset_raw - 8 );
-            
+                // Native source address
+                byte* Pointer_Raw_Source = (byte*)Source_Base;
+
+                // Pointer to insert jump address into native code
+                long* Pointer_Raw_Address = (long*)( Pointer_Raw_Source + 0x02 );
+
+                // Insert 64-bit absolute jump into native code (address in rax)
+                // mov rax, immediate64
+                // jmp [rax]
+                *( Pointer_Raw_Source + 0x00 ) = 0x48;
+                *( Pointer_Raw_Source + 0x01 ) = 0xB8;
+                *Pointer_Raw_Address           = Destination_Base; // ( Pointer_Raw_Source + 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 )
+                *( Pointer_Raw_Source + 0x0A ) = 0xFF;
+                *( Pointer_Raw_Source + 0x0B ) = 0xE0;
+
+            }
+            else
+            {
+                // 32-bit systems use 32-bit relative offset and jump
+                // 5 byte destructive
+
+                // Get function pointers
+                int Source_Base        = source     .MethodHandle.GetFunctionPointer().ToInt32();
+                int Destination_Base   = destination.MethodHandle.GetFunctionPointer().ToInt32();
+
+                // Native source address
+                byte* Pointer_Raw_Source = (byte*)Source_Base;
+
+                // Pointer to insert jump address into native code
+                int* Pointer_Raw_Address = (int*)( Pointer_Raw_Source + 1 );
+
+                // Jump offset (less instruction size)
+                int offset = ( Destination_Base - Source_Base ) - 5;
+
+                // Insert 32-bit relative jump into native code
+                *Pointer_Raw_Source = 0xE9;
+                *Pointer_Raw_Address = offset;
+            }
+
             // done!
             return true;
         }
+
     }
+
 }

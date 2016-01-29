@@ -90,7 +90,11 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( PowerTrader == null )
             {
-                CCL_Log.Error( "CompPowerLowIdleDraw requires CompPowerTrader!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Missing CompPowerTrader"
+                );
                 return;
             }
 #endif
@@ -100,7 +104,11 @@ namespace CommunityCoreLibrary
 #if DEBUG
             if( IdleProps == null )
             {
-                CCL_Log.Error( "CompPowerLowIdleDraw requires CompProperties_LowIdleDraw!", parent.def.defName );
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Missing CompProperties_LowIdleDraw"
+                );
                 return;
             }
 #endif

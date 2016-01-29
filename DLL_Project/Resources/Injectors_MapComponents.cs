@@ -29,15 +29,22 @@ namespace CommunityCoreLibrary
                             //if( ModHelperDef.InjectMapComponents() )
 
                             ModHelperDef.InjectMapComponents();
-                            if( ModHelperDef.MapComponentsInjected )
+                            if( !ModHelperDef.MapComponentsInjected )
                             {
-                                CCL_Log.Message( "Injected MapComponents", ModHelperDef.ModName );
-                            }
-                            else
-                            {
-                                CCL_Log.Error( "Error injecting MapComponents", ModHelperDef.ModName );
+                                CCL_Log.TraceMod(
+                                    ModHelperDef,
+                                    Verbosity.NonFatalErrors,
+                                    "Error injecting MapComponents"
+                                );
                                 return false;
                             }
+#if DEBUG
+                            CCL_Log.TraceMod(
+                                ModHelperDef,
+                                Verbosity.Injections,
+                                "MapComponents injected"
+                            );
+#endif
                         }
                     }
                     return true;

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
-    class HelpDetailSectionHelper
+    public class HelpDetailSectionHelper
     {
 
         #region DefStringTriplet list builder
