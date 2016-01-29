@@ -35,7 +35,6 @@ namespace CommunityCoreLibrary.Controller
             ResolveDrugs();
             ResolveMeals();
             ResolveWeapons();
-            ResolveTerrain();
 
             // TODO: Add stuff categories
             // TODO: Add biomes
@@ -58,6 +57,9 @@ namespace CommunityCoreLibrary.Controller
             // Buildings
             ResolveBuildings();
             ResolveMinifiableOnly();
+
+            // Terrain
+            ResolveTerrain();
 
             // Recipes
             ResolveRecipes();
@@ -348,22 +350,40 @@ namespace CommunityCoreLibrary.Controller
                 "Help System"
             );
 
-            // Get list of things
+            // Get list of natual terrain
             var terrainDefs =
-                DefDatabase< TerrainDef >.AllDefsListForReading;
+                DefDatabase< TerrainDef >.AllDefsListForReading.Where( t => (
+                    ( t.designationCategory.NullOrEmpty() )||
+                    ( t.designationCategory == "None" )
+                ) ).ToList();
 
-            if( terrainDefs.NullOrEmpty() )
+            if( !terrainDefs.NullOrEmpty() )
             {
-                return;
+                // Get help category
+                var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.TerrainHelp, "AutoHelpSubCategoryTerrain".Translate(), "AutoHelpCategoryTerrain".Translate() );
+
+                // resolve the defs
+                ResolveDefList( terrainDefs, helpCategoryDef );
             }
 
-            // Get help category
-            HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.TerrainHelp, "AutoHelpSubCategoryTerrain".Translate(), "AutoHelpCategoryBuildings".Translate() );
+            // Get list of buildable floors
+            terrainDefs =
+                DefDatabase< TerrainDef >.AllDefsListForReading.Where( t => (
+                    ( !t.designationCategory.NullOrEmpty() )&&
+                    ( t.designationCategory != "None" )
+                ) ).ToList();
 
-            // resolve the defs
-            ResolveDefList( terrainDefs, category );
+            if( !terrainDefs.NullOrEmpty() )
+            {
+                // Get help category
+                var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.FlooringHelp, "AutoHelpSubCategoryFlooring".Translate(), "AutoHelpCategoryTerrain".Translate() );
+
+                // resolve the defs
+                ResolveDefList( terrainDefs, helpCategoryDef );
+            }
 
         }
+
         #endregion
 
         #region Recipe Resolvers
@@ -569,7 +589,7 @@ namespace CommunityCoreLibrary.Controller
                 return null;
             }
 
-            CCL_Log.Error( "HelpForDef() used with a def type that is not handled.", "HelpGen" );
+            CCL_Log.Error( "HelpForDef() used with a def type (" + def.GetType().ToString() + ") that is not handled.", "HelpGen" );
             return null;
         }
 
@@ -577,10 +597,9 @@ namespace CommunityCoreLibrary.Controller
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                buildableDef,
                 Verbosity.AutoGenCreation,
-                buildableDef.defName,
-                "HelpForBuildable"
+                "HelpForBuildable()"
             );
 #endif
             
@@ -975,10 +994,9 @@ namespace CommunityCoreLibrary.Controller
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
+                recipeDef,
                 Verbosity.AutoGenCreation,
-                recipeDef.defName,
-                "HelpForRecipe"
+                "HelpForRecipe()"
             );
 #endif
             var helpDef = new HelpDef();
@@ -1111,10 +1129,9 @@ namespace CommunityCoreLibrary.Controller
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.AutoGenCreation,
-                researchProjectDef.defName,
-                "HelpForResearch"
+                "HelpForResearch()"
             );
 #endif
             var helpDef = new HelpDef();
@@ -1243,10 +1260,9 @@ namespace CommunityCoreLibrary.Controller
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( advancedResearchDef.defName ),
+                advancedResearchDef,
                 Verbosity.AutoGenCreation,
-                advancedResearchDef.defName,
-                "HelpForAdvancedResearch"
+                "HelpForAdvancedResearch()"
             );
 #endif
             var helpDef = new HelpDef();

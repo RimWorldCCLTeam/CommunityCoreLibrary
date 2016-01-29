@@ -44,11 +44,9 @@ namespace CommunityCoreLibrary
                     )
                     {
                         CCL_Log.TraceMod(
-                            Find_Extensions.ModByDefOfType<TerrainDef>( this.defName ),
+                            this,
                             Verbosity.FatalErrors,
-                            "Unsupported placeworker :: " + placeWorker.GetType().ToString(),
-                            "TerrainWithComps",
-                            this
+                            "Unsupported placeworker :: " + placeWorker.GetType().ToString()
                         );
                     }
                 }
@@ -68,11 +66,9 @@ namespace CommunityCoreLibrary
                     )
                     {
                         CCL_Log.TraceMod(
-                            Find_Extensions.ModByDefOfType<TerrainDef>( this.defName ),
+                            this,
                             Verbosity.FatalErrors,
-                            "Unsupported ThingComp :: " + compClass.ToString(),
-                            "TerrainWithComps",
-                            this
+                            "Unsupported ThingComp :: " + compClass.ToString()
                         );
                     }
                 }

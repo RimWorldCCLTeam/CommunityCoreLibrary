@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using Verse;
 
 namespace CommunityCoreLibrary
@@ -41,30 +42,30 @@ namespace CommunityCoreLibrary
             Log.Error( builder.ToString() );
         }
 
-        public static void                  Trace( Verbosity Severity, string content, string category = null, Def atFault = null )
+        public static void                  Trace( Verbosity Severity, string content, string category = null )
         {
-#if RELEASE
-            if( Severity > Verbosity.Validation )
-            {
-                return;
-            }
-#endif
-            _Trace( null, Severity, content, category, atFault );
+            _Trace( Controller.Data.Trace_Current_Mod, Severity, content, null, category );
         }
 
-        public static void                  TraceMod( LoadedMod mod, Verbosity Severity, string content, string category = null, Def atFault = null )
+        public static void                  TraceMod( Def atFault, Verbosity Severity, string content, string category = null )
         {
-#if RELEASE
-            if( Severity > Verbosity.Validation )
-            {
-                return;
-            }
-#endif
+            var mod = Find_Extensions.ModByDef( atFault );
             var modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
-            _Trace( modHelperDef, Severity, content, category, atFault );
+            _Trace( modHelperDef, Severity, content, atFault, category );
         }
 
-        public static void                  TraceMod( ModHelperDef modHelperDef, Verbosity Severity, string content, string category = null, Def atFault = null )
+        public static void                  TraceMod( LoadedMod mod, Verbosity Severity, string content, string category = null )
+        {
+            var modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
+            _Trace( modHelperDef, Severity, content, null, category );
+        }
+
+        public static void                  TraceMod( ModHelperDef modHelperDef, Verbosity Severity, string content, string category = null )
+        {
+            _Trace( modHelperDef, Severity, content, null, category );
+        }
+
+        private static void                 _Trace( ModHelperDef modHelperDef, Verbosity Severity, string content, Def atFault = null, string category = null )
         {
 #if RELEASE
             if( Severity > Verbosity.Validation )
@@ -72,11 +73,20 @@ namespace CommunityCoreLibrary
                 return;
             }
 #endif
-            _Trace( modHelperDef, Severity, content, category, atFault );
-        }
+            if(
+                ( modHelperDef == null )&&
+                ( atFault != null )
+            )
+            {
+                // Try to find the mod associated with this def
 
-        static void                         _Trace( ModHelperDef modHelperDef, Verbosity Severity, string content, string category = null, Def atFault = null )
-        {
+                var mod = Find_Extensions.ModByDef( atFault );
+
+                if( mod != null )
+                {
+                    modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
+                }
+            }
             if(
                 (
                     ( modHelperDef != null )&&
@@ -101,7 +111,9 @@ namespace CommunityCoreLibrary
                 }
                 if( atFault != null )
                 {
-                    builder.Append( atFault.defName ).Append( " :: " );
+                    // Name of class
+                    var defType = atFault.GetType().ToString();
+                    builder.Append( defType ).Append( " :: " ).Append( atFault.defName ).Append( " :: " );
                 }
 
                 builder.Append( content );

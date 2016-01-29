@@ -9,8 +9,10 @@
     <AutoHelpCategoryBuildings>Buildings</AutoHelpCategoryBuildings>
     <AutoHelpCategoryRecipes>Recipes</AutoHelpCategoryRecipes>
     <AutoHelpCategoryResearch>Research</AutoHelpCategoryResearch>
+    <AutoHelpCategoryTerrain>Terrain &amp; Flooring</AutoHelpCategoryTerrain>
 
     <AutoHelpSubCategoryTerrain>Terrain</AutoHelpSubCategoryTerrain>
+    <AutoHelpSubCategoryFlooring>Flooring</AutoHelpSubCategoryFlooring>
 
     <AutoHelpSubCategoryApparel>Apparel</AutoHelpSubCategoryApparel>
     <AutoHelpSubCategoryBodyParts>Body Parts &amp; Implants</AutoHelpSubCategoryBodyParts>

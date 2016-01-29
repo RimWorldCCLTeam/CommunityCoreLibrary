@@ -35,11 +35,9 @@ namespace CommunityCoreLibrary
             {
 #if DEBUG
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( this.caster.def.defName ),
+                    this.caster.def,
                     Verbosity.Warnings,
-                    "Missing VerbProperties_Extended",
-                    this.GetType().ToString(),
-                    this.caster.def
+                    "Missing VerbProperties_Extended"
                 );
 #endif
                 pelletCount = 1;

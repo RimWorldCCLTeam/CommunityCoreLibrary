@@ -108,11 +108,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( thingDef.defName ),
+                thingDef,
                 Verbosity.Stack,
-                "GetRecipesUnlocked()",
-                "ThingDef",
-                thingDef
+                "GetRecipesUnlocked()"
             );
 #endif
             // Things it is unlocked on with research
@@ -162,11 +160,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( thingDef.defName ),
+                thingDef,
                 Verbosity.Stack,
-                "GetRecipesLocked()",
-                "ThingDef",
-                thingDef
+                "GetRecipesLocked()"
             );
 #endif
             // Things it is locked on with research
@@ -210,11 +206,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( thingDef.defName ),
+                thingDef,
                 Verbosity.Stack,
-                "GetRecipesCurrent()",
-                "ThingDef",
-                thingDef
+                "GetRecipesCurrent()"
             );
 #endif
             return thingDef.AllRecipes;
@@ -224,11 +218,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( thingDef.defName ),
+                thingDef,
                 Verbosity.Stack,
-                "GetRecipesAll()",
-                "ThingDef",
-                thingDef
+                "GetRecipesAll()"
             );
 #endif
             // Things it is locked on with research

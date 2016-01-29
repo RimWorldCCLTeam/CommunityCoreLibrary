@@ -120,11 +120,9 @@ namespace CommunityCoreLibrary
                         // Missing ModHelperDef (not dummyable)
                         isValid = false;
                         CCL_Log.TraceMod(
-                            Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                            this,
                             Verbosity.NonFatalErrors,
-                            "Requires ModHelperDef",
-                            "AdvancedResearchDef",
-                            this
+                            "Requires ModHelperDef"
                         );
                     }
 
@@ -135,11 +133,9 @@ namespace CommunityCoreLibrary
                         // Invalid project
                         isValid = false;
                         CCL_Log.TraceMod(
-                            Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                            this,
                             Verbosity.FatalErrors,
-                            "Missing researchDefs",
-                            "AdvancedResearchDef",
-                            this
+                            "Missing researchDefs"
                         );
                     }
 
@@ -154,11 +150,9 @@ namespace CommunityCoreLibrary
                                 // Invalid project
                                 isValid = false;
                                 CCL_Log.TraceMod(
-                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    this,
                                     Verbosity.FatalErrors,
-                                    "ThingDef '" + thingDef.defName + "' does not implement IBillGiver",
-                                    "AdvancedResearchDef",
-                                    this
+                                    "ThingDef '" + thingDef.defName + "' does not implement IBillGiver"
                                 );
                             }
                         }
@@ -179,11 +173,9 @@ namespace CommunityCoreLibrary
                                 // Invalid plant
                                 isValid = false;
                                 CCL_Log.TraceMod(
-                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    this,
                                     Verbosity.FatalErrors,
-                                    "ThingDef '" + thingDef.defName + "' ThingClass is not Plant based",
-                                    "AdvancedResearchDef",
-                                    this
+                                    "ThingDef '" + thingDef.defName + "' ThingClass is not Plant based"
                                 );
                             }
                         }
@@ -196,11 +188,9 @@ namespace CommunityCoreLibrary
                             {
                                 isValid = false;
                                 CCL_Log.TraceMod(
-                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    this,
                                     Verbosity.FatalErrors,
-                                    "sowTag at index'" + i + "' is null or empty",
-                                    "AdvancedResearchDef",
-                                    this
+                                    "sowTag at index'" + i + "' is null or empty"
                                 );
                             }
                         }
@@ -218,11 +208,9 @@ namespace CommunityCoreLibrary
                                 // Invalid project
                                 isValid = false;
                                 CCL_Log.TraceMod(
-                                    Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                    this,
                                     Verbosity.FatalErrors,
-                                    "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty",
-                                    "AdvancedResearchDef",
-                                    this
+                                    "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty"
                                 );
                             }
                         }
@@ -237,11 +225,9 @@ namespace CommunityCoreLibrary
                             // Error processing data
                             isValid = false;
                             CCL_Log.TraceMod(
-                                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                this,
                                 Verbosity.FatalErrors,
-                                "Help Consolidator requires missing label",
-                                "AdvancedResearchDef",
-                                this
+                                "Help Consolidator requires missing label"
                             );
                         }
                         if( description.NullOrEmpty() )
@@ -249,11 +235,9 @@ namespace CommunityCoreLibrary
                             // Error processing data
                             isValid = false;
                             CCL_Log.TraceMod(
-                                Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName ),
+                                this,
                                 Verbosity.FatalErrors,
-                                "Help Consolidator requires missing description",
-                                "AdvancedResearchDef",
-                                this
+                                "Help Consolidator requires missing description"
                             );
                         }
                     }
@@ -431,7 +415,7 @@ namespace CommunityCoreLibrary
 
         public void Disable( bool firstTimeRun = false )
         {
-            // Don't disable if it's not the first run or not yet enabled
+            // Don't disable if it's not the first run and not yet enabled
             if(
                 ( researchState == ResearchEnableMode.Incomplete )&&
                 ( firstTimeRun == false )

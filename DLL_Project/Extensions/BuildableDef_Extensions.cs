@@ -25,66 +25,10 @@ namespace CommunityCoreLibrary
             if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
             {
 #if DEBUG
-                // This debug region is for logging only and serves no other purpose
-                var defType = "BuildableDef";
-                var mod = Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName );
-                if( mod == null )
-                {
-                    List<string> suffixes = new List<string>(){
-                        "_Frame",
-                        "_Blueprint",
-                        "_Blueprint_Install",
-                        "_Corpse",
-                        "_Leather",
-                        "_Meat"
-                    };
-
-                    foreach( var suffix in suffixes )
-                    {
-                        //var searchDef = buildableDef.defName;
-                        if( buildableDef.defName.Length > suffix.Length )
-                        {
-                            var searchDef = buildableDef.defName.Remove( buildableDef.defName.Length - suffix.Length );
-                            mod = Find_Extensions.ModByDefOfType<ThingDef>( searchDef );
-                            if( mod != null )
-                            {
-                                defType += " :: ThingDef";
-                                break;
-                            }
-                        }
-                    }
-                    if( mod == null )
-                    {
-                        mod = Find_Extensions.ModByDefOfType<TerrainDef>( buildableDef.defName );
-                        if( mod != null )
-                        {
-                            defType += " :: TerrainDef";
-                        }
-                    }
-                    if( mod == null )
-                    {
-                        foreach( var suffix in suffixes )
-                        {
-                            //var searchDef = buildableDef.defName;
-                            if( buildableDef.defName.Length > suffix.Length )
-                            {
-                                var searchDef = buildableDef.defName.Remove( buildableDef.defName.Length - suffix.Length );
-                                mod = Find_Extensions.ModByDefOfType<TerrainDef>( searchDef );
-                                if( mod != null )
-                                {
-                                    defType += " :: TerrainDef";
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
                 CCL_Log.TraceMod(
-                    mod,
+                    buildableDef,
                     Verbosity.Stack,
-                    "IsLockedOut()",
-                    defType,
-                    buildableDef
+                    "IsLockedOut()"
                 );
 #endif
 
@@ -138,11 +82,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                buildableDef,
                 Verbosity.Stack,
-                "HasResearchRequirement()",
-                "BuildableDef",
-                buildableDef
+                "HasResearchRequirement()"
             );
 #endif
             // Can't entirely rely on this one check as it's state may change mid-game
@@ -169,11 +111,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                buildableDef,
                 Verbosity.Stack,
-                "GetResearchRequirements()",
-                "BuildableDef",
-                buildableDef
+                "GetResearchRequirements()"
             );
 #endif
             var researchDefs = new List< Def >();

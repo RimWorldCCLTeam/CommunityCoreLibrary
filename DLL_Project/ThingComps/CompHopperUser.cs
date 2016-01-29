@@ -44,11 +44,9 @@ namespace CommunityCoreLibrary
                         // Does not contain xml resource filter
                         // or (properly) implement IHopperUser
                         CCL_Log.TraceMod(
-                            Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                            parent.def,
                             Verbosity.FatalErrors,
-                            "Configuration error (missing xml definition for 'resources' in CompProperties_HopperUser or ThingClass does not implement IHopperUser)",
-                            this.GetType().ToString(),
-                            parent.def
+                            "Configuration error (missing xml definition for 'resources' in CompProperties_HopperUser or ThingClass does not implement IHopperUser)"
                         );
                         return null;
                     }

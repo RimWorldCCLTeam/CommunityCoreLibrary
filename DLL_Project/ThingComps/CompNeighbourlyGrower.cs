@@ -131,11 +131,9 @@ namespace CommunityCoreLibrary
             if( thisGrower == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.NonFatalErrors,
-                    "Unable to resolve ThingClass to base Building_PlantGrower",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Unable to resolve ThingClass to base Building_PlantGrower"
                 );
                 return;
             }
@@ -150,11 +148,9 @@ namespace CommunityCoreLibrary
             {
                 // "Plant" doesn't contain the required information
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.Warnings,
-                    "Unable to resolve plant def to grow",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Unable to resolve plant def to grow"
                 );
                 return;
             }
@@ -172,11 +168,9 @@ namespace CommunityCoreLibrary
                 )
                 {
                     CCL_Log.TraceMod(
-                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        parent.def,
                         Verbosity.Warnings,
-                        "Unable to resolve other things ThingClass to base Building_PlantGrower",
-                        this.GetType().ToString(),
-                        parent.def
+                        "Unable to resolve other things ThingClass to base Building_PlantGrower"
                     );
                     return;
                 }
