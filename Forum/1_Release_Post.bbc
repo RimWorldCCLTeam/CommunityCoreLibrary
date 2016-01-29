@@ -1,5 +1,5 @@
 [center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
-v0.12.4[/center]
+v0.12.6[/center]
 
 
 
@@ -44,6 +44,6 @@ This project started in Alpha 9, continued to be developed in Alpha 10 (some ide
 
 [size=12pt][color=orange]Final Notes[/color][/size]
 
-If all else fails, [i]read[/i] [b]all[/b] of the above, don't skim over anything.  Especially read "note" sections.
+If all else fails, [i]read[/i] [b]all[/b] of the documentation, don't skim over anything.  Especially read "note" sections.
 
 Always do a "clean" install.  Delete the old version from /mods/ before copying the new version.  Do [i]not[/i] overwrite an existing copy.
