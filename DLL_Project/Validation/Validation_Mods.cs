@@ -45,8 +45,9 @@ namespace CommunityCoreLibrary
                                 CCL_Log.Error( "ModHelperDef is invalid", mod.name );
                                 rVal = false;
                             }
-                            else
+                            else if( !modHelperDef.dummy )
                             {
+                                // Don't show validation message for dummy defs
                                 CCL_Log.TraceMod(
                                     modHelperDef,
                                     Verbosity.Validation,

@@ -25,65 +25,10 @@ namespace CommunityCoreLibrary
             if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
             {
 #if DEBUG
-                var defType = "BuildableDef";
-                var mod = Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName );
-                if( mod == null )
-                {
-                    List<string> suffixes = new List<string>(){
-                        "_Frame",
-                        "_Blueprint",
-                        "_Blueprint_Install",
-                        "_Corpse",
-                        "_Leather",
-                        "_Meat"
-                    };
-
-                    foreach( var suffix in suffixes )
-                    {
-                        //var searchDef = buildableDef.defName;
-                        if( buildableDef.defName.Length > suffix.Length )
-                        {
-                            var searchDef = buildableDef.defName.Remove( buildableDef.defName.Length - suffix.Length );
-                            mod = Find_Extensions.ModByDefOfType<ThingDef>( searchDef );
-                            if( mod != null )
-                            {
-                                defType += " :: ThingDef";
-                                break;
-                            }
-                        }
-                    }
-                    if( mod == null )
-                    {
-                        mod = Find_Extensions.ModByDefOfType<TerrainDef>( buildableDef.defName );
-                        if( mod != null )
-                        {
-                            defType += " :: TerrainDef";
-                        }
-                    }
-                    if( mod == null )
-                    {
-                        foreach( var suffix in suffixes )
-                        {
-                            //var searchDef = buildableDef.defName;
-                            if( buildableDef.defName.Length > suffix.Length )
-                            {
-                                var searchDef = buildableDef.defName.Remove( buildableDef.defName.Length - suffix.Length );
-                                mod = Find_Extensions.ModByDefOfType<TerrainDef>( searchDef );
-                                if( mod != null )
-                                {
-                                    defType += " :: TerrainDef";
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
                 CCL_Log.TraceMod(
-                    mod,
+                    buildableDef,
                     Verbosity.Stack,
-                    "IsLockedOut()",
-                    defType,
-                    buildableDef
+                    "IsLockedOut()"
                 );
 #endif
 
@@ -114,27 +59,19 @@ namespace CommunityCoreLibrary
                 //    return true;
                 //}
 
-                // Not really sure why advanced research would be considered like this. 
-                // a) even if not currently unlocked, items should show in help
-                // b) if any advanced research hides this thing, it would never show in help, since the actual state of AR is never checked/updated.
-                //
-                //// Advanced research unlocking it?
-                //if( !ResearchController.AdvancedResearch.Any( a => (
-                //    ( a.IsBuildingToggle )&&
-                //    ( !a.HideDefs )&&
-                //    ( a.thingDefs.Contains( buildableDef as ThingDef ) )
-                //) ) )
-                //{
-                //    isLockedOut.Add( buildableDef, true );
-                //    return true;
-                //}
+                // If the research locks it's out, check for an ARDef unlock
+                if(
+                    ( buildableDef.researchPrerequisite != null )&&
+                    ( buildableDef.researchPrerequisite.IsLockedOut() )&&
+                    ( !ResearchController.AdvancedResearch.Any( a => (
+                        ( a.IsBuildingToggle )&&
+                        ( !a.HideDefs )&&
+                        ( a.thingDefs.Contains( buildableDef as ThingDef ) )
+                ) ) ) )
+                {
+                    rVal = true;
+                }
 
-                // Is the research parent locked out?
-                rVal = (
-                    ( buildableDef.researchPrerequisite != null ) &&
-                    ( buildableDef.researchPrerequisite.IsLockedOut() )
-                );
-                
                 // Cache the result
                 isLockedOut.Add( buildableDef, rVal );
             }
@@ -145,11 +82,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                buildableDef,
                 Verbosity.Stack,
-                "HasResearchRequirement()",
-                "BuildableDef",
-                buildableDef
+                "HasResearchRequirement()"
             );
 #endif
             // Can't entirely rely on this one check as it's state may change mid-game
@@ -176,11 +111,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ThingDef>( buildableDef.defName ),
+                buildableDef,
                 Verbosity.Stack,
-                "GetResearchRequirements()",
-                "BuildableDef",
-                buildableDef
+                "GetResearchRequirements()"
             );
 #endif
             var researchDefs = new List< Def >();

@@ -12,6 +12,16 @@ namespace CommunityCoreLibrary
     public static class Find_Extensions
     {
 
+        // Suffixes which (may) need to be removed to find the mod for a def
+        private static List<string>     def_suffixes = new List<string>(){
+            "_Frame",
+            "_Blueprint",
+            "_Blueprint_Install",
+            "_Corpse",
+            "_Leather",
+            "_Meat"
+        };
+
         // This is a safe method of fetching a map component of a specified type
         // If an instance of the component doesn't exist or map isn't loaded it will return null
         public static MapComponent          MapComponent( Type t )
@@ -56,6 +66,52 @@ namespace CommunityCoreLibrary
                 return null;
             }
             return modDefSet.AllDefs.ToList();
+        }
+
+        // Search for mod by def
+        public static LoadedMod             ModByDef<T>( T def, int InitialIndex = -1 ) where T : Def, new()
+        {
+            var allMods = Controller.Data.Mods;
+            int Start = InitialIndex;
+            if(
+                ( Start < 0 )||
+                ( Start >= allMods.Count )
+            )
+            {
+                Start = allMods.Count - 1;
+            }
+            var defName = def.defName;
+            if(
+                ( def is ThingDef )||
+                ( def is TerrainDef )
+            )
+            {
+                // Trim suffix off of thing and terrain defs
+                foreach( var suffix in def_suffixes )
+                {
+                    if( defName.EndsWith( suffix ) )
+                    {
+                        defName = defName.Remove( def.defName.Length - suffix.Length );
+                        break;
+                    }
+                }
+            }
+            // Search for def in mod list
+            for( int i = Start; i >= 0; i-- )
+            {
+                var defSets = typeof( LoadedMod ).GetField( "defSets", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( allMods[ i ] ) as Dictionary<System.Type, ModDefSet>;
+                ModDefSet modDefSet = (ModDefSet) null;
+                if( defSets.TryGetValue( typeof (T), out modDefSet ) )
+                {
+                    List<T> modDefList = ( (ModDefSet<T>) modDefSet ).AllDefs.ToList();
+                    if( modDefList.Exists( d => d.defName == defName ) )
+                    {
+                        return allMods[ i ];
+                    }
+                }
+            }
+            // None found
+            return null;
         }
 
         // Get the specific mod of a specific def of a specific type.
@@ -137,28 +193,40 @@ namespace CommunityCoreLibrary
         }
 
         // Get the hightest tracing level for global functions
-        private static Verbosity            highestVerbosity = Verbosity.NonFatalErrors;
         public static Verbosity             HightestVerbosity
         {
             get
             {
-#if CCL_VERBOSE
-                return Verbosity.Stack;
-#endif
-
-                if( highestVerbosity == Verbosity.NonFatalErrors )
+                if( Controller.Data.Trace_Current_Mod != null )
                 {
-                    highestVerbosity = Verbosity.Default;
-                    foreach( var modHelperDef in Controller.Data.ModHelperDefs )
+                    // Return the current mods tracing level
+#if RELEASE
+                    if( Controller.Data.Trace_Current_Mod.Verbosity > Verbosity.Default )
                     {
-                        if( modHelperDef.Verbosity > highestVerbosity )
-                        {
-                            highestVerbosity = modHelperDef.Verbosity;
-                        }
+                        // Highest level in release is Validation
+                        return Verbosity.Default;
+                    }
+#endif
+                    return Controller.Data.Trace_Current_Mod.Verbosity;
+                }
+#if RELEASE
+                // Highest (default) level in release is Validation
+                return Verbosity.Default;
+#elif DEBUG
+                // Find the highest level in all mods
+                var highestVerbosity = Verbosity.Default;
+                foreach( var modHelperDef in Controller.Data.ModHelperDefs )
+                {
+                    if( modHelperDef.Verbosity > highestVerbosity )
+                    {
+                        highestVerbosity = modHelperDef.Verbosity;
                     }
                 }
                 return highestVerbosity;
+#endif
             }
         }
+
     }
+
 }

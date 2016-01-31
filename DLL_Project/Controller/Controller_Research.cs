@@ -67,7 +67,11 @@ namespace CommunityCoreLibrary
             if( AdvancedResearch.NullOrEmpty() )
             {
                 // No advanced research, hybernate
-                CCL_Log.Message( "No advanced research defined, hybernating...", "Advanced Research" );
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    "No advanced research defined, hybernating...",
+                    "Advanced Research"
+                );
                 return true;
             }
 
@@ -78,7 +82,11 @@ namespace CommunityCoreLibrary
             UpdateTicks = 0;
             okToProcess = true;
 
-            CCL_Log.Message( "Initialized", "Advanced Research" );
+            CCL_Log.Trace(
+                Verbosity.Validation,
+                "Initialized",
+                "Advanced Research"
+            );
             return true;
         }
 

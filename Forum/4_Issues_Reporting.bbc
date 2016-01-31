@@ -1,6 +1,6 @@
 [size=12pt][color=orange]Known Issues[/color][/size]
 
-Changing languages requires RimWorld to be restarted.
+Changing languages and/or mod load order (including enabling mods) requires RimWorld to be restarted.
 
 There is a lot going on when RimWorld starts as far as CCL is concerned.  The best practice is to restart RimWorld if you change any setting more complicated than the volume.
 

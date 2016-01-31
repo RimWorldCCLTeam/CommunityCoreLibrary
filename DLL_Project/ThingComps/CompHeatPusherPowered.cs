@@ -32,11 +32,9 @@ namespace CommunityCoreLibrary
             if( CompPowerTrader == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompPowerTrader",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Missing CompPowerTrader"
                 );
                 return;
             }
@@ -45,11 +43,9 @@ namespace CommunityCoreLibrary
             if( CompPowerLowIdleDraw == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompPowerLowIdleDraw",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Missing CompPowerLowIdleDraw"
                 );
                 return;
             }

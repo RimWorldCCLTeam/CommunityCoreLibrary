@@ -66,11 +66,9 @@ namespace CommunityCoreLibrary
                 if( properties == null )
                 {
                     CCL_Log.TraceMod(
-                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        parent.def,
                         Verbosity.FatalErrors,
-                        "Missing RestrictedPlacement_Properties",
-                        this.GetType().ToString(),
-                        parent.def
+                        "Missing RestrictedPlacement_Properties"
                     );
                     return;
                 }
@@ -80,11 +78,9 @@ namespace CommunityCoreLibrary
                 )
                 {
                     CCL_Log.TraceMod(
-                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        parent.def,
                         Verbosity.FatalErrors,
-                        "Missing terrainDefs",
-                        this.GetType().ToString(),
-                        parent.def
+                        "Missing terrainDefs"
                     );
                 }
                 if(
@@ -93,11 +89,9 @@ namespace CommunityCoreLibrary
                 )
                 {
                     CCL_Log.TraceMod(
-                        Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                        parent.def,
                         Verbosity.FatalErrors,
-                        "Missing thingDefs",
-                        this.GetType().ToString(),
-                        parent.def
+                        "Missing thingDefs"
                     );
                 }
             }

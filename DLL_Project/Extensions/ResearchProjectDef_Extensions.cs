@@ -23,11 +23,9 @@ namespace CommunityCoreLibrary
             bool rVal = false;
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "IsLockedOut()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "IsLockedOut()"
             );
 #endif
             if( !isLockedOut.TryGetValue( researchProjectDef, out rVal ) )
@@ -72,11 +70,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "HasResearchRequirement()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "HasResearchRequirement()"
             );
 #endif
             // Can't entirely rely on this one check as it's state may change mid-game
@@ -103,11 +99,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetResearchRequirements()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetResearchRequirements()"
             );
 #endif
             var researchDefs = new List< Def >();
@@ -144,11 +138,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetResearchUnlocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetResearchUnlocked()"
             );
 #endif
             var researchDefs = new List<Def>();
@@ -173,11 +165,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetResearchLockedBy()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetResearchLockedBy()"
             );
 #endif
             // Advanced Research that locks it
@@ -206,11 +196,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetThingsUnlocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetThingsUnlocked()"
             );
 #endif
             // Buildings it unlocks
@@ -250,11 +238,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetTerrainUnlocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetTerrainUnlocked()"
             );
 #endif
             // Buildings it unlocks
@@ -277,11 +263,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetRecipesUnlocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetRecipesUnlocked()"
             );
 #endif
             // Recipes on buildings it unlocks
@@ -338,11 +322,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetRecipesLocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetRecipesLocked()"
             );
 #endif
             // Recipes on buildings it locks
@@ -380,11 +362,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetSowTagsUnlocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetSowTagsUnlocked()"
             );
 #endif
             var sowTags = new List< string >();
@@ -421,11 +401,9 @@ namespace CommunityCoreLibrary
         {
 #if DEBUG
             CCL_Log.TraceMod(
-                Find_Extensions.ModByDefOfType<ResearchProjectDef>( researchProjectDef.defName ),
+                researchProjectDef,
                 Verbosity.Stack,
-                "GetSowTagsLocked()",
-                "ResearchProjectDef",
-                researchProjectDef
+                "GetSowTagsLocked()"
             );
 #endif
                        var sowTags = new List< string >();

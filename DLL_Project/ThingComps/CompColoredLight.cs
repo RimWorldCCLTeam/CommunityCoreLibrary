@@ -109,11 +109,9 @@ namespace CommunityCoreLibrary
             if( CompGlower == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompGlower",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Missing CompGlower"
                 );
                 return;
             }
@@ -125,11 +123,9 @@ namespace CommunityCoreLibrary
             if( ColorProps == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompProperties_ColoredLight",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Missing CompProperties_ColoredLight"
                 );
                 return;
             }

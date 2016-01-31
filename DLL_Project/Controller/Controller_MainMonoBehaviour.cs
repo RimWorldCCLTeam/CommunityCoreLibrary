@@ -57,13 +57,6 @@ namespace CommunityCoreLibrary.Controller
                 return;
             }
 
-            // Designator injections
-            if( !Resources.Injectors.Designators.Inject() )
-            {
-                CCL_Log.Error( "Initialization Error!", "Desginator Injection" );
-                return;
-            }
-
             // Enables CCL resources (hoppers, etc) for mods wanting them
             if( !Resources.Enable() )
             {
@@ -105,6 +98,7 @@ namespace CommunityCoreLibrary.Controller
                 ( Find.Map.components == null )
             )
             {
+                // Do nothing until the game has fully loaded the map and is ready to play
                 return;
             }
 
@@ -121,6 +115,15 @@ namespace CommunityCoreLibrary.Controller
             if( !Resources.Injectors.MapComponents.Inject() )
             {
                 CCL_Log.Error( "Initialization Error!", "Map Component Injection" );
+                mapValid = false;
+                enabled = false;
+                return;
+            }
+
+            // Designator injections
+            if( !Resources.Injectors.Designators.Inject() )
+            {
+                CCL_Log.Error( "Initialization Error!", "Desginator Injection" );
                 mapValid = false;
                 enabled = false;
                 return;

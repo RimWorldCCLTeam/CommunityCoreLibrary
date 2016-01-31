@@ -6,7 +6,7 @@ With the help system implemented in v0.12.0, CCL will generate help for most of 
 The list of auto-generated help includes virtually every in-game object and more information is added with each new release of CCL.  This help will tell you virtually everything you can need about the topic including but not limited to item stats, research requirements, recipes, etc.
 
 [color=orange]Research Menu[/color]
-The research menu provides the same information as the help menu on the topic as well as quick access to research requirements and children.
+The research menu provides a lot more information than the core game research menu including the same information as the help menu on the topic as well as quick access to research requirements and children.
 
 [color=orange]Proper Refrigeration[/color]
 Buildings implementing refrigeration will refrigerate rottable items without the usual "rot-unrot" cycle.  CCL automatically replaces the vanilla rotting component on items with a new component which handles refrigerated buildings properly by simply not rotting the item.

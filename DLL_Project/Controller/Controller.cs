@@ -21,6 +21,9 @@ namespace CommunityCoreLibrary.Controller
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
+        // For tracing in global functions
+        public static ModHelperDef          Trace_Current_Mod = null;
+
         #endregion
 
         #region Static Properties

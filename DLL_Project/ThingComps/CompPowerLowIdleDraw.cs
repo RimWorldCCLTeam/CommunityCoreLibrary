@@ -91,11 +91,9 @@ namespace CommunityCoreLibrary
             if( PowerTrader == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompPowerTrader",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Missing CompPowerTrader"
                 );
                 return;
             }
@@ -107,11 +105,9 @@ namespace CommunityCoreLibrary
             if( IdleProps == null )
             {
                 CCL_Log.TraceMod(
-                    Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                    parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompProperties_LowIdleDraw",
-                    this.GetType().ToString(),
-                    parent.def
+                    "Missing CompProperties_LowIdleDraw"
                 );
                 return;
             }

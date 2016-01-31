@@ -27,11 +27,9 @@ namespace CommunityCoreLibrary
                     if( _HideItemManager == null )
                     {
                         CCL_Log.TraceMod(
-                            Find_Extensions.ModByDefOfType<ThingDef>( parent.def.defName ),
+                            parent.def,
                             Verbosity.FatalErrors,
-                            "MapComponent missing :: HideItemManager",
-                            this.GetType().ToString(),
-                            parent.def
+                            "MapComponent missing :: HideItemManager"
                         );
                     }
                 }
