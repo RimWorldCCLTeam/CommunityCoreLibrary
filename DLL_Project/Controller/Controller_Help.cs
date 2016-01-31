@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using RimWorld;
 using Verse;
@@ -37,9 +39,6 @@ namespace CommunityCoreLibrary.Controller
             ResolveWeapons();
 
             // TODO: Add stuff categories
-            // TODO: Add biomes
-            // TODO: Add plants
-            // TODO: Add animals
             // TODO: Add workTypes
             // TODO: Add capacities
             // TODO: Add skills
@@ -60,6 +59,11 @@ namespace CommunityCoreLibrary.Controller
 
             // Terrain
             ResolveTerrain();
+
+            // flora and fauna
+            ResolvePlants();
+            ResolveRaces();
+            ResolveBiomes();
 
             // Recipes
             ResolveRecipes();
@@ -341,7 +345,6 @@ namespace CommunityCoreLibrary.Controller
         #endregion
 
         #region Terrain Resolver
-
         static void ResolveTerrain()
         {
             CCL_Log.Trace(
@@ -350,12 +353,24 @@ namespace CommunityCoreLibrary.Controller
                 "Help System"
             );
 
-            // Get list of natual terrain
-            var terrainDefs =
-                DefDatabase< TerrainDef >.AllDefsListForReading.Where( t => (
-                    ( t.designationCategory.NullOrEmpty() )||
-                    ( t.designationCategory == "None" )
-                ) ).ToList();
+            // Get list of terrainDefs without designation category that occurs as a byproduct of mining (rocky),
+            // or is listed in biomes (natural terrain). This excludes terrains that are not normally visible (e.g. Underwall).
+            string[] rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
+
+            List<TerrainDef> terrainDefs =
+                DefDatabase<TerrainDef>.AllDefsListForReading
+                                       .Where( 
+                                            // not buildable
+                                            t => String.IsNullOrEmpty( t.designationCategory )
+                                            && (
+                                                // is a type generated from rock
+                                                rockySuffixes.Any( s => t.defName.EndsWith( s ) )
+
+                                                // or is listed in any biome
+                                                || DefDatabase<BiomeDef>.AllDefsListForReading.Any(
+                                                    b => b.GetAllTerrainDefs().Contains( t ) )
+                                                ) )
+                                       .ToList();
 
             if( !terrainDefs.NullOrEmpty() )
             {
@@ -381,6 +396,64 @@ namespace CommunityCoreLibrary.Controller
                     ResolveDefList( terrainDefs, helpCategoryDef );
                 }
             }
+        }
+
+        #endregion
+
+        #region Flora and Fauna resolvers
+
+        static void ResolvePlants()
+        {
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolvePlants()",
+                "Help System"
+            );
+
+            // plants
+            List<ThingDef> plants = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.plant != null ).ToList();
+            HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.Plants, "AutoHelpSubCategoryPlants".Translate(),
+                                               "AutoHelpCategoryFloraAndFauna".Translate() );
+
+            ResolveDefList( plants, category );
+        }
+
+        static void ResolveRaces()
+        {
+            // animals
+            List<ThingDef> races =
+                DefDatabase<ThingDef>.AllDefsListForReading
+                                     .Where( t => t.race != null 
+                                               && t.race.Animal ).ToList();
+            HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.Animals, "AutoHelpSubCategoryAnimals".Translate(),
+                                               "AutoHelpCategoryFloraAndFauna".Translate() );
+            ResolveDefList( races, category );
+
+            // mechanoids
+            races = DefDatabase<ThingDef>.AllDefsListForReading
+                                         .Where( t => t.race != null
+                                                   && t.race.mechanoid ).ToList();
+            category = HelpCategoryForKey( HelpCategoryDefOf.Mechanoids, "AutoHelpSubCategoryMechanoids".Translate(),
+                                           "AutoHelpCategoryFloraAndFauna".Translate() );
+            ResolveDefList( races, category );
+
+            // humanoids
+            races = DefDatabase<ThingDef>.AllDefsListForReading
+                                         .Where( t => t.race != null 
+                                                  && !t.race.Animal 
+                                                  && !t.race.mechanoid ).ToList();
+            category = HelpCategoryForKey( HelpCategoryDefOf.Humanoids, "AutoHelpSubCategoryHumanoids".Translate(),
+                                           "AutoHelpCategoryFloraAndFauna".Translate() );
+            ResolveDefList( races, category );
+
+        }
+
+        static void ResolveBiomes()
+        {
+            var biomes = DefDatabase<BiomeDef>.AllDefsListForReading;
+            var category = HelpCategoryForKey( HelpCategoryDefOf.Biomes, "AutoHelpSubCategoryBiomes".Translate(),
+                                               "AutoHelpCategoryFloraAndFauna".Translate() );
+            ResolveDefList( biomes, category );
         }
 
         #endregion
@@ -501,7 +574,7 @@ namespace CommunityCoreLibrary.Controller
 
         #endregion
 
-        #region ThingDef Resolver
+        #region Help Makers
 
         static void ResolveDefList<T>( List<T> defs, HelpCategoryDef category ) where T : Def
         {
@@ -534,10 +607,6 @@ namespace CommunityCoreLibrary.Controller
                 }
             }
         }
-
-        #endregion
-
-        #region Help Makers
 
         static HelpCategoryDef HelpCategoryForKey( string key, string label, string modname )
         {
@@ -586,6 +655,10 @@ namespace CommunityCoreLibrary.Controller
             {
                 CCL_Log.Error( "HelpForDef() cannot be used for recipedefs. Use HelpForRecipeDef() directly.", "HelpGen" );
                 return null;
+            }
+            if ( def is BiomeDef )
+            {
+                return HelpForBiome( def as BiomeDef, category );
             }
 
             CCL_Log.Error( "HelpForDef() used with a def type (" + def.GetType().ToString() + ") that is not handled.", "HelpGen" );
@@ -726,18 +799,30 @@ namespace CommunityCoreLibrary.Controller
                 // Look at base stats
                 if( thingDef.IsNutritionSource )
                 {
+                    // only show Joy if it's non-zero
                     List<Def> needDefs = new List<Def>();
                     needDefs.Add( NeedDefOf.Food );
-                    needDefs.Add( NeedDefOf.Joy );
-
-                    string[] suffixes =
+                    if ( Math.Abs( thingDef.ingestible.joy ) > 1e-3 )
                     {
-                        thingDef.ingestible.nutrition.ToString( "0.###" ),
-                        thingDef.ingestible.joy.ToString( "0.###" )
-                    };
+                        needDefs.Add( NeedDefOf.Joy );
+                    }
+
+                    List<string> suffixes = new List<string>();
+                    suffixes.Add( thingDef.ingestible.nutrition.ToString( "0.###" ) );
+                    if( Math.Abs( thingDef.ingestible.joy ) > 1e-3 )
+                    {
+                        suffixes.Add( thingDef.ingestible.joy.ToString( "0.###" ) );
+                    }
+
+                    // show different label for plants to show we're talking about the actual plant, not the grown veggie/fruit/etc.
+                    string statLabel = "AutoHelpListNutrition".Translate();
+                    if( thingDef.plant != null )
+                    {
+                        statLabel = "AutoHelpListNutritionPlant".Translate();
+                    }
 
                     statParts.Add( 
-                        new HelpDetailSection( "AutoHelpListNutrition".Translate(), needDefs, null, suffixes ) );
+                        new HelpDetailSection( statLabel, needDefs, null, suffixes.ToArray() ) );
                 }
 
 #endregion
@@ -970,31 +1055,40 @@ namespace CommunityCoreLibrary.Controller
 
             }
 
-#endregion
+            #endregion
 
-#region Terrain Specific
-            HelpPartsForTerrain( buildableDef, ref statParts, ref linkParts );
-#endregion
+            #region plant extras
+
+            if( thingDef?.plant != null )
+            {
+                HelpPartsForPlant( thingDef, ref statParts, ref linkParts );
+            }
+
+            #endregion
+
+            #region Terrain Specific
+            TerrainDef terrainDef = buildableDef as TerrainDef;
+            if( terrainDef != null )
+            {
+                HelpPartsForTerrain( terrainDef, ref statParts, ref linkParts );
+            }
+
+            #endregion
+
+            #region Race Specific
+
+            if ( thingDef != null &&
+                 thingDef.race != null )
+            {
+                HelpPartsForAnimal( thingDef, ref statParts, ref linkParts );
+            }
+
+            #endregion
 
             helpDef.HelpDetailSections.AddRange( statParts );
             helpDef.HelpDetailSections.AddRange( linkParts );
 
             return helpDef;
-        }
-
-        static void HelpPartsForTerrain( BuildableDef buildableDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
-        {
-            TerrainDef terrainDef = buildableDef as TerrainDef;
-            if ( terrainDef != null )
-            {
-                string[] stats = new[]
-                {
-                    "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
-                    "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
-                };
-
-                statParts.Add( new HelpDetailSection( null, stats ) );
-            }
         }
 
         static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
@@ -1420,9 +1514,449 @@ namespace CommunityCoreLibrary.Controller
             return helpDef;
         }
 
-#endregion
+        static HelpDef HelpForBiome( BiomeDef biomeDef, HelpCategoryDef category )
+        {
+#if DEBUG
+            CCL_Log.TraceMod(
+                biomeDef,
+                Verbosity.AutoGenCreation,
+                "HelpForBiome()"
+            );
+#endif
+            var helpDef = new HelpDef();
+            helpDef.keyDef = biomeDef;
+            helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
+            helpDef.label = biomeDef.label;
+            helpDef.category = category;
+            helpDef.description = biomeDef.description;
 
-#region HelpDef getters
+            List<Def> defs = new List<Def>();
+
+            #region Generic (temp, rainfall, elevation)
+            // we can't get to these stats. They seem to be hardcoded in RimWorld.Planet.WorldGenerator_Grid.BiomeFrom()
+            // hacky solution would be to reverse-engineer them by taking a loaded world and 5th and 95th percentiles from worldsquares with this biome.
+            // however, that requires a world to be loaded.
+            #endregion
+
+            #region Diseases
+            // TODO: figure this mess out.
+            // workaround through looping incidents doesn't appear to work - go through reflection
+            //FieldInfo diseasesFieldInfo = typeof (BiomeDef).GetField( "diseases",
+            //                                                          BindingFlags.NonPublic | BindingFlags.Instance );
+            //IList diseases = diseasesFieldInfo.GetValue( biomeDef ) as IList;
+
+            //if ( diseases != null &&
+            //     diseases.Count > 0 )
+            //{
+            //    foreach ( object disease in diseases )
+            //    {
+            //        defs.Add( ((IncidentDef)disease).disease );
+            //    }
+
+            //    helpDef.HelpDetailSections.Add( new HelpDetailSection(
+            //                                        "AutoHelpListBiomeDiseases".Translate(),
+            //                                        defs ) );
+            //}
+            //defs.Clear();
+
+            #endregion
+
+            #region Terrain
+            defs = biomeDef.GetAllTerrainDefs().ConvertAll( def => (Def)def );
+            if ( !defs.NullOrEmpty() )
+            {
+                helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                                    "AutoHelpListBiomeTerrain".Translate(),
+                                                    defs ) );
+            }
+
+            #endregion
+
+            #region Plants
+            defs = DefDatabase<ThingDef>.AllDefsListForReading
+                                        .Where( t => biomeDef.AllWildPlants.Contains( t ) )
+                                        .ToList().ConvertAll( def => (Def)def );
+            if( !defs.NullOrEmpty() )
+            {
+                helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                                    "AutoHelpListBiomePlants".Translate(),
+                                                    defs ) );
+            }
+
+            #endregion
+
+            #region Animals
+            defs = DefDatabase<PawnKindDef>.AllDefsListForReading
+                                        .Where( t => biomeDef.AllWildAnimals.Contains( t ) )
+                                        .Select( t => t.race )
+                                        .Distinct()
+                                        .ToList().ConvertAll( def => (Def)def );
+            if( !defs.NullOrEmpty() )
+            {
+                helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                                    "AutoHelpListBiomeAnimals".Translate(),
+                                                    defs ) );
+            }
+
+            #endregion
+
+            return helpDef;
+        }
+
+        #endregion
+
+        #region Help maker helpers
+        static void HelpPartsForTerrain( TerrainDef terrainDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
+        {
+            string[] stats = new[]
+            {
+                "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
+                "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
+            };
+
+            // wild biome tags
+            var biomes = DefDatabase<BiomeDef>.AllDefsListForReading
+                                              .Where( b => b.GetAllTerrainDefs().Contains( terrainDef ) )
+                                              .ToList();
+            if( !biomes.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListAppearsInBiomes".Translate(),
+                                                      biomes.Select( r => r as Def ).ToList() ) );
+            }
+
+            statParts.Add( new HelpDetailSection( null, stats ) );
+        }
+
+        static void HelpPartsForPlant( ThingDef thingDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
+        {
+            var plant = thingDef.plant;
+
+            // non-def stat part
+            List<string> textDescs = new List<string>();
+            textDescs.Add( "AutoHelpGrowDays".Translate( plant.growDays ) );
+            textDescs.Add( "AutoHelpMinFertility".Translate( plant.fertilityMin.ToStringPercent() ) );
+            textDescs.Add( "AutoHelpLightRange".Translate( plant.growMinGlow.ToStringPercent(),
+                                                           plant.growOptimalGlow.ToStringPercent() ) );
+
+            statParts.Add( new HelpDetailSection( null, textDescs.ToArray() ) );
+
+            if( plant.Harvestable )
+            {
+                // yield
+                linkParts.Add( new HelpDetailSection(
+                                   "AutoHelpListPlantYield".Translate(),
+                                   new List<Def>( new[] { plant.harvestedThingDef } ),
+                                   new[] { plant.harvestYield.ToString() }
+                                   ) );
+            }
+
+            // sowtags
+            if( plant.Sowable )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListCanBePlantedIn".Translate(),
+                                                      plant.sowTags.ToArray() ) );
+            }
+
+            // unlockable sowtags
+            List<DefStringTriplet> unlockableSowtags = new List<DefStringTriplet>();
+            foreach( AdvancedResearchDef def in DefDatabase<AdvancedResearchDef>.AllDefsListForReading )
+            {
+                if( !def.IsLockedOut() &&
+                     !def.HideDefs &&
+                     def.IsPlantToggle &&
+                     def.thingDefs.Contains( thingDef ) )
+                {
+                    foreach( string sowTag in def.sowTags )
+                    {
+                        foreach( ResearchProjectDef res in def.researchDefs )
+                        {
+                            unlockableSowtags.Add( new DefStringTriplet( res, sowTag + " (", ")" ) );
+                        }
+                    }
+                }
+            }
+            if( !unlockableSowtags.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListUnlockableSowTags".Translate(), unlockableSowtags ) );
+            }
+
+            // wild biome tags
+            var biomes = DefDatabase<BiomeDef>.AllDefsListForReading.Where( b => b.AllWildPlants.Contains( thingDef ) ).ToList();
+            if( !biomes.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListAppearsInBiomes".Translate(),
+                                                      biomes.Select( r => r as Def ).ToList() ) );
+            }
+        }
+
+        static void HelpPartsForAnimal( ThingDef thingDef, ref List<HelpDetailSection> statParts,
+                                        ref List<HelpDetailSection> linkParts )
+        {
+            var race = thingDef.race;
+            float maxSize = race.lifeStageAges.Select( lsa => lsa.def.bodySizeFactor * race.baseBodySize ).Max();
+
+            // set up vars
+            List<Def> defs = new List<Def>();
+            List<string> stringDescs = new List<string>();
+            List<string> prefixes = new List<string>();
+            List<String> suffixes = new List<string>();
+
+            #region Health, diet and intelligence
+            stringDescs.Add(
+                "AutoHelpHealthScale".Translate(
+                        ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent() )
+                    );
+            stringDescs.Add( "AutoHelpLifeExpectancy".Translate() + " " + race.lifeExpectancy.ToStringApproximateTimePeriod() );
+            stringDescs.Add( "AutoHelpDiet".Translate( race.diet.ToString().Translate() ) );
+            // there's no meaningful intelligence indicator for non-animals.
+            if( race.Animal )
+            {
+                stringDescs.Add( "AutoHelpIntelligence".Translate( race.trainableIntelligence.ToString() ) );
+            }
+            statParts.Add( new HelpDetailSection( null, stringDescs.ToArray() ) );
+            stringDescs.Clear();
+            #endregion
+
+            #region Training
+            if( race.Animal )
+            {
+                foreach( TrainableDef def in DefDatabase<TrainableDef>.AllDefsListForReading )
+                {
+                    // skip if explicitly disallowed
+                    if( !race.untrainableTags.NullOrEmpty() &&
+                         race.untrainableTags.Any( tag => def.MatchesTag( tag ) ) )
+                    {
+                        continue;
+                    }
+
+                    // explicitly allowed tags.
+                    if( !race.trainableTags.NullOrEmpty() &&
+                         race.trainableTags.Any( tag => def.MatchesTag( tag ) ) &&
+                         maxSize >= def.minBodySize )
+                    {
+                        defs.Add( def );
+                        continue;
+                    }
+
+                    // normal proceedings
+                    if( maxSize >= def.minBodySize &&
+                         race.trainableIntelligence >= def.requiredTrainableIntelligence &&
+                         def.defaultTrainable )
+                    {
+                        defs.Add( def );
+                    }
+                }
+
+                if( defs.Count > 0 )
+                {
+                    linkParts.Add( new HelpDetailSection(
+                                       "AutoHelpListTrainable".Translate(),
+                                       defs ) );
+                }
+                defs.Clear();
+            }
+
+            #endregion
+
+            #region Lifestages
+            List<float> ages = race.lifeStageAges.Select( age => age.minAge ).ToList();
+            for( int i = 0; i < race.lifeStageAges.Count; i++ )
+            {
+                defs.Add( race.lifeStageAges[i].def );
+                // final lifestage
+                if( i == race.lifeStageAges.Count - 1 )
+                {
+                    suffixes.Add( ages[i].ToStringApproximateTimePeriod() + " - ~" +
+                                  race.lifeExpectancy.ToStringApproximateTimePeriod() );
+                }
+                else
+                // other lifestages
+                {
+                    suffixes.Add( ages[i].ToStringApproximateTimePeriod() + " - " +
+                                  ages[i + 1].ToStringApproximateTimePeriod() );
+                }
+            }
+
+            // only print if interesting (i.e. more than one lifestage).
+            if( defs.Count > 1 )
+            {
+                statParts.Add( new HelpDetailSection(
+                    "AutoHelpListLifestages".Translate(),
+                    defs,
+                    null,
+                    suffixes.ToArray() ) );
+            }
+            defs.Clear();
+            suffixes.Clear();
+            #endregion
+
+            #region Reproduction
+            // egglayers
+            if( thingDef.HasComp( typeof( CompEggLayer ) ) )
+            {
+                var eggComp = thingDef.GetCompProperties( typeof (CompEggLayer) );
+                string range;
+                if( eggComp.eggCountRange.min == eggComp.eggCountRange.max )
+                {
+                    range = eggComp.eggCountRange.min.ToString();
+                }
+                else
+                {
+                    range = eggComp.eggCountRange.ToString();
+                }
+                stringDescs.Add( "AutoHelpEggLayer".Translate( range,
+                    ( eggComp.eggLayIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+
+                statParts.Add( new HelpDetailSection(
+                                   "AutoHelpListReproduction".Translate(),
+                                   stringDescs.ToArray() ) );
+                stringDescs.Clear();
+            }
+            // mammals
+            else if( race.hasGenders &&
+                      race.lifeStageAges.Any( lsa => lsa.def.reproductive ) )
+            {
+                stringDescs.Add(
+                    "AutoHelpGestationPeriod".Translate(
+                        ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear )
+                            .ToStringApproximateTimePeriod() ) );
+
+                if( race.litterSizeCurve != null &&
+                     race.litterSizeCurve.PointsCount >= 3 )
+                {
+                    // if size is three, there is actually only one option (weird boundary restrictions by Tynan require a +/- .5 min/max)
+                    if( race.litterSizeCurve.PointsCount == 3 )
+                    {
+                        stringDescs.Add( "AutoHelpLitterSize".Translate( race.litterSizeCurve[1].x ) );
+                    }
+
+                    // for the same reason, if more than one choice, indeces are second and second to last.
+                    else
+                    {
+                        stringDescs.Add( "AutoHelpLitterSize".Translate( race.litterSizeCurve[1].x.ToString() + " - " +
+                            race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x.ToString() ) );
+                    }
+                }
+                else
+                {
+                    // if litterSize is not defined in XML, it's always 1
+                    stringDescs.Add( "AutoHelpLitterSize".Translate( 1 ) );
+                }
+
+                statParts.Add( new HelpDetailSection(
+                                   "AutoHelpListReproduction".Translate(),
+                                   stringDescs.ToArray() ) );
+                stringDescs.Clear();
+            }
+            #endregion
+
+            #region Biomes
+
+            var kinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race == thingDef );
+            foreach ( PawnKindDef kind in kinds )
+            {
+                foreach ( BiomeDef biome in DefDatabase<BiomeDef>.AllDefsListForReading )
+                {
+                    if ( biome.AllWildAnimals.Contains( kind ) )
+                    {
+                        defs.Add( biome );
+                    }
+                }
+            }
+            defs = defs.Distinct().ToList();
+
+            if ( !defs.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection(
+                                   "AutoHelpListAppearsInBiomes".Translate(),
+                                   defs ) );
+            }
+            defs.Clear();
+
+
+            #endregion
+
+            #region Butcher products
+            // fleshy pawns ( meat + leather )
+            if( race.isFlesh )
+            {
+                defs.Add( race.meatDef );
+                prefixes.Add( "~" + maxSize * StatDefOf.MeatAmount.defaultBaseValue );
+
+                if( race.leatherDef != null )
+                {
+                    defs.Add( race.leatherDef );
+                    prefixes.Add( "~" + maxSize * thingDef.statBases.Find( sb => sb.stat == StatDefOf.LeatherAmount ).value );
+                }
+
+                statParts.Add( new HelpDetailSection(
+                    "AutoHelpListButcher".Translate(),
+                    defs,
+                    prefixes.ToArray() ) );
+            }
+
+            // metallic pawns ( mechanoids )
+            else if( race.mechanoid &&
+                 !thingDef.butcherProducts.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection(
+                                   "AutoHelpListDisassemble".Translate(),
+                                   thingDef.butcherProducts.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
+                                   thingDef.butcherProducts.Select( tc => tc.count.ToString() ).ToArray() ) );
+            }
+            defs.Clear();
+            prefixes.Clear();
+
+            #endregion
+
+            #region Milking products
+
+            if( thingDef.HasComp( typeof( CompMilkable ) ) )
+            {
+                var milkComp = thingDef.GetCompProperties( typeof (CompMilkable) );
+
+                defs.Add( milkComp.milkDef );
+                prefixes.Add( milkComp.milkAmount.ToString() );
+                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+
+                linkParts.Add( new HelpDetailSection(
+                                   "AutoHelpListMilk".Translate(),
+                                   defs,
+                                   prefixes.ToArray(),
+                                   suffixes.ToArray() ) );
+            }
+            defs.Clear();
+            prefixes.Clear();
+            suffixes.Clear();
+
+            #endregion
+
+            #region Shearing products
+
+            if( thingDef.HasComp( typeof( CompShearable ) ) )
+            {
+                var shearComp = thingDef.GetCompProperties( typeof (CompShearable) );
+
+                defs.Add( shearComp.woolDef );
+                prefixes.Add( shearComp.woolAmount.ToString() );
+                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)shearComp.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+
+                linkParts.Add( new HelpDetailSection(
+                                   "AutoHelpListShear".Translate(),
+                                   defs,
+                                   prefixes.ToArray(),
+                                   suffixes.ToArray() ) );
+            }
+            defs.Clear();
+            prefixes.Clear();
+            suffixes.Clear();
+
+            #endregion
+
+        }
+        #endregion
+
+        #region HelpDef getters
 
         public static List<HelpDef> GetAllHelpDefs()
         {

@@ -169,6 +169,7 @@
     <PostBuildEvent>call "$(ProjectDir)PostBuild.bat" $(ConfigurationName) "$(TargetPath)" $(SolutionDir)</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
