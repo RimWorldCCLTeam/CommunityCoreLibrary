@@ -203,18 +203,18 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
-        public static List< ThingDef >      GetThingsCurrent( this RecipeDef recipeDef )
+        public static List< ThingDef >      GetRecipeUsers( this RecipeDef recipeDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
                 Find_Extensions.ModByDefOfType<RecipeDef>( recipeDef.defName ),
                 Verbosity.Stack,
-                "GetThingsCurrent()",
+                "GetRecipeUsers()",
                 "RecipeDef",
                 recipeDef
             );
 #endif
-            // Things it is currently on
+            // Things this recipe can be performed on/with
             var thingsOn = new List<ThingDef>();
             var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( t.AllRecipes != null )&&
@@ -336,13 +336,6 @@ namespace CommunityCoreLibrary
             }
 
             return thingDefs;
-        }
-
-        public static List<ThingDef> GetRecipeUsers( this RecipeDef recipeDef )
-        {
-            return
-                DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.recipes?.Contains( recipeDef ) ?? false )
-                                     .ToList();
         }
 
         #endregion

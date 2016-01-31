@@ -9,14 +9,17 @@
     <AutoHelpCategoryBuildings>Buildings</AutoHelpCategoryBuildings>
     <AutoHelpCategoryRecipes>Recipes</AutoHelpCategoryRecipes>
     <AutoHelpCategoryResearch>Research</AutoHelpCategoryResearch>
+    <AutoHelpCategoryFloraAndFauna>Flora &amp; Fauna</AutoHelpCategoryFloraAndFauna>
 
-    <AutoHelpSubCategoryTerrain>Terrain</AutoHelpSubCategoryTerrain>
 
     <AutoHelpSubCategoryApparel>Apparel</AutoHelpSubCategoryApparel>
     <AutoHelpSubCategoryBodyParts>Body Parts &amp; Implants</AutoHelpSubCategoryBodyParts>
     <AutoHelpSubCategoryDrugs>Drugs</AutoHelpSubCategoryDrugs>
     <AutoHelpSubCategoryMeals>Meals</AutoHelpSubCategoryMeals>
     <AutoHelpSubCategoryWeapons>Weapons</AutoHelpSubCategoryWeapons>
+
+    <AutoHelpSubCategoryPlants>Plants</AutoHelpSubCategoryPlants>
+    <AutoHelpSubCategoryTerrain>Terrain</AutoHelpSubCategoryTerrain>
 
     <AutoHelpSubCategoryAdvanced>Advanced</AutoHelpSubCategoryAdvanced>
     <AutoHelpSubCategoryProjects>Projects</AutoHelpSubCategoryProjects>
@@ -44,9 +47,14 @@
     <AutoHelpListThingsLocked>Disables construction</AutoHelpListThingsLocked>
     <AutoHelpListThingsUnlocked>Enables construction</AutoHelpListThingsUnlocked>
     <AutoHelpListCapacityModifiers>Capacity modifiers</AutoHelpListCapacityModifiers>
-    <AutoHelpListStatOffsets>Stat offsets</AutoHelpListStatOffsets>
-    <AutoHelpListNutrition>Meal stats</AutoHelpListNutrition>
-    <AutoHelpFacilityStats>Facility stats</AutoHelpFacilityStats>
+    <AutoHelpListStatOffsets>Stat bonus</AutoHelpListStatOffsets>
+    <AutoHelpListNutrition>When eaten</AutoHelpListNutrition>
+    <AutoHelpFacilityStats>Facility bonus</AutoHelpFacilityStats>
+
+    <AutoHelpListPlantYield>Yields</AutoHelpListPlantYield>
+    <AutoHelpListCanBePlantedIn>Can be sown in</AutoHelpListCanBePlantedIn>
+    <AutoHelpListAppearsInBiomes>Can appear in</AutoHelpListAppearsInBiomes>
+    <AutoHelpListUnlockableSowTags>Requires research to sow in</AutoHelpListUnlockableSowTags>
 
     <!-- Specific Keys -->
     <AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>
@@ -64,5 +72,9 @@
 
     <AutoHelpListFertility>Fertility</AutoHelpListFertility>
     <AutoHelpListPathCost>Walk speed offset (lower is faster)</AutoHelpListPathCost>
+
+    <AutoHelpGrowDays>Days to maturity: {0}</AutoHelpGrowDays>
+    <AutoHelpMinFertility>Minimum soil fertility: {0}</AutoHelpMinFertility>
+    <AutoHelpLightRange>Light required: {0} (optimal: {1})</AutoHelpLightRange>
 
 </LanguageData>

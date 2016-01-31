@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace CommunityCoreLibrary.Controller
 {
@@ -28,18 +29,8 @@ namespace CommunityCoreLibrary.Controller
                 "Help System"
             );
 #endif
-
-            // Items
-            ResolveApparel();
-            ResolveBodyParts();
-            ResolveDrugs();
-            ResolveMeals();
-            ResolveWeapons();
-            ResolveTerrain();
-
             // TODO: Add stuff categories
             // TODO: Add biomes
-            // TODO: Add plants
             // TODO: Add animals
             // TODO: Add workTypes
             // TODO: Add capacities
@@ -54,6 +45,18 @@ namespace CommunityCoreLibrary.Controller
             // The below are really low priority (as considered by Fluffy)
             // TODO: Add traders
             // TODO: Add tradertags
+
+            // Items
+            ResolveApparel();
+            ResolveBodyParts();
+            ResolveDrugs();
+            ResolveMeals();
+            ResolveWeapons();
+
+            // flora and fauna
+            ResolveTerrain();
+            ResolvePlants();
+            ResolveRaces();
 
             // Buildings
             ResolveBuildings();
@@ -338,7 +341,23 @@ namespace CommunityCoreLibrary.Controller
 
         #endregion
 
-        #region Terrain Resolver
+        #region Flora and Fauna resolvers
+
+        static void ResolvePlants()
+        {
+            CCL_Log.Trace(
+                Verbosity.Stack,
+                "ResolvePlants()",
+                "Help System"
+            );
+
+            // plants
+            List<ThingDef> plants = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.plant != null ).ToList();
+            HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.Plants, "AutoHelpSubCategoryPlants".Translate(),
+                                               "AutoHelpCategoryFloraAndFauna".Translate() );
+
+            ResolveDefList( plants, category );
+        }
 
         static void ResolveTerrain()
         {
@@ -348,21 +367,74 @@ namespace CommunityCoreLibrary.Controller
                 "Help System"
             );
 
-            // Get list of things
-            var terrainDefs =
-                DefDatabase< TerrainDef >.AllDefsListForReading;
+            // Get list of terrainDefs without designation category (natural terrain)
+            string[] rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
 
-            if( terrainDefs.NullOrEmpty() )
+            List<TerrainDef> terrainDefs =
+                DefDatabase<TerrainDef>.AllDefsListForReading
+                                       .Where( 
+                                            // not buildable
+                                            t => String.IsNullOrEmpty( t.designationCategory )
+                                            && (
+                                                // is a type generated from rock
+                                                rockySuffixes.Any( s => t.defName.EndsWith( s ) )
+
+                                                // or is listed in any biome
+                                                || DefDatabase<BiomeDef>.AllDefsListForReading.Any(
+                                                    b => b.GetAllTerrainDefs().Contains( t ) )
+                                                ) )
+                                       .ToList();
+
+            if( !terrainDefs.NullOrEmpty() )
             {
-                return;
+                // Get help category
+                HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.TerrainHelp, "AutoHelpSubCategoryTerrain".Translate(), "AutoHelpCategoryFloraAndFauna".Translate() );
+
+                // resolve the defs
+                ResolveDefList( terrainDefs, category );
             }
 
-            // Get help category
-            HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.TerrainHelp, "AutoHelpSubCategoryTerrain".Translate(), "AutoHelpCategoryBuildings".Translate() );
+            // Go through other terrains by designation categories
+            foreach( DesignationCategoryDef designationCategoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
+            {
+                // Get list of terrains in category
+                terrainDefs =
+                    DefDatabase<TerrainDef>.AllDefsListForReading.Where( t => (
+                      ( t.designationCategory == designationCategoryDef.defName )
+                      && ( !t.IsLockedOut() )
+                  ) ).ToList();
 
-            // resolve the defs
-            ResolveDefList( terrainDefs, category );
+                if( !terrainDefs.NullOrEmpty() )
+                {
+                    // Get help category
+                    var helpCategoryDef = HelpCategoryForKey( designationCategoryDef.defName + "_Building" + HelpCategoryDefOf.HelpPostFix, designationCategoryDef.label, "AutoHelpCategoryBuildings".Translate() );
 
+                    // Scan through all possible buildable defs and auto-generate help
+                    ResolveDefList(
+                        terrainDefs,
+                        helpCategoryDef
+                    );
+                }
+            }
+        }
+
+        static void ResolveRaces()
+        {
+            // animals
+            List<ThingDef> races =
+                DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.race != null && t.race.Animal ).ToList();
+
+            HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.Animals, "AutoHelpSubCategoryAnimals".Translate(),
+                                               "AutoHelpCategoryFloraAndFauna".Translate() );
+
+            ResolveDefList( races, category );
+
+            // humanoids
+            races = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.race != null && !t.race.Animal ).ToList();
+            category = HelpCategoryForKey( HelpCategoryDefOf.Humanoids, "AutoHelpSubCategoryHumanoids".Translate(),
+                                           "AutoHelpCategoryFloraAndFauna".Translate() );
+
+            ResolveDefList( races, category );
         }
         #endregion
 
@@ -583,8 +655,8 @@ namespace CommunityCoreLibrary.Controller
                 "HelpForBuildable"
             );
 #endif
-            
-            // we need the thingdef in several places
+
+            // Some stuff needs upcasting to thing
             ThingDef thingDef = buildableDef as ThingDef;
 
             // set up empty helpdef
@@ -600,7 +672,7 @@ namespace CommunityCoreLibrary.Controller
 
             #region Base Stats
 
-            if ( !buildableDef.statBases.NullOrEmpty() )
+            if( !buildableDef.statBases.NullOrEmpty() )
             {
                 // Look at base stats
                 HelpDetailSection baseStats = new HelpDetailSection(
@@ -614,7 +686,7 @@ namespace CommunityCoreLibrary.Controller
             }
 
             #endregion
-            
+
             #region required research
             // Add list of required research
             var researchDefs = buildableDef.GetResearchRequirements();
@@ -626,7 +698,7 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( reqResearch );
             }
             #endregion
-            
+
             #region Cost List
             // specific thingdef costs (terrainDefs are buildable with costlist, but do not have stuff cost (oddly)).
             if( !buildableDef.costList.NullOrEmpty() )
@@ -677,27 +749,21 @@ namespace CommunityCoreLibrary.Controller
 
                 #region Recipes (to make thing)
                 List<RecipeDef> recipeDefs = buildableDef.GetRecipeDefs();
-                if ( !recipeDefs.NullOrEmpty() )
+                if( !recipeDefs.NullOrEmpty() )
                 {
+                    // recipes to create thing
                     HelpDetailSection recipes = new HelpDetailSection(
                         "AutoHelpListRecipes".Translate(),
                         recipeDefs.ConvertAll( def => (Def)def ) );
                     linkParts.Add( recipes );
-
-                    try
-                    {
-                        // for some odd reasons meals and beer give errors when doing this.
-                        var tableDefs = recipeDefs.SelectMany( r => r.GetRecipeUsers() )
-                                                  .ToList()
-                                                  .ConvertAll( def => def as Def );
-                        HelpDetailSection tables = new HelpDetailSection(
-                            "AutoHelpListRecipesOnThingsUnlocked".Translate(), tableDefs );
-                        linkParts.Add( tables );
-                    }
-                    catch
-                    {
-                        CCL_Log.Error( "Error loading recipe providers for " + thingDef.LabelCap, "HelpGen" );
-                    }
+                    
+                    // recipe users
+                    List<Def> users = recipeDefs.SelectMany( r => r.GetRecipeUsers() )
+                                                .ToList()
+                                                .ConvertAll( def => def as Def );
+                    HelpDetailSection tables = new HelpDetailSection(
+                        "AutoHelpListRecipesOnThingsUnlocked".Translate(), users );
+                    linkParts.Add( tables );
                 }
                 #endregion
 
@@ -715,8 +781,13 @@ namespace CommunityCoreLibrary.Controller
                         thingDef.ingestible.joy.ToString( "0.###" )
                     };
 
-                    statParts.Add( 
-                        new HelpDetailSection( "AutoHelpListNutrition".Translate(), needDefs, null, suffixes ) );
+                    string statLabel = "AutoHelpListNutrition".Translate();
+                    if( thingDef.plant != null )
+                    {
+                        statLabel += " (raw)";
+                    }
+                    statParts.Add(
+                        new HelpDetailSection( statLabel, needDefs, null, suffixes ) );
                 }
 
                 #endregion
@@ -946,29 +1017,153 @@ namespace CommunityCoreLibrary.Controller
                 }
 
                 #endregion
+                
+            }
 
+            #endregion
+
+            #region plant extras
+
+            if( thingDef?.plant != null )
+            {
+                HelpPartsForPlant( thingDef, ref statParts, ref linkParts );
             }
 
             #endregion
 
             #region Terrain Specific
             TerrainDef terrainDef = buildableDef as TerrainDef;
-            if ( terrainDef != null )
+            if( terrainDef != null )
             {
-                string[] stats = new[]
-                {
-                    "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
-                    "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
-                };
-                
-                statParts.Add( new HelpDetailSection( null, stats ) );
+                HelpPartsForTerrain( terrainDef, ref statParts, ref linkParts );
             }
+
             #endregion
 
             helpDef.HelpDetailSections.AddRange( statParts );
             helpDef.HelpDetailSections.AddRange( linkParts );
 
             return helpDef;
+        }
+
+        private static void HelpPartsForTerrain( TerrainDef terrainDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
+        {
+            string[] stats = new[]
+            {
+                "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
+                "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
+            };
+
+            statParts.Add( new HelpDetailSection( null, stats ) );
+
+            // wild biome tags
+            var biomes = DefDatabase<BiomeDef>.AllDefsListForReading
+                                              .Where( b => b.GetAllTerrainDefs().Contains( terrainDef ) )
+                                              .ToList();
+            if( !biomes.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListAppearsInBiomes".Translate(),
+                                                      biomes.Select( r => r as Def ).ToList() ) );
+            }
+        }
+
+        private static void HelpPartsForPlant( ThingDef thingDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
+        {
+            var plant = thingDef.plant;
+
+            // non-def stat part
+            List<string> textDescs = new List<string>();
+            textDescs.Add( "AutoHelpGrowDays".Translate( plant.growDays ) );
+            textDescs.Add( "AutoHelpMinFertility".Translate( plant.fertilityMin.ToStringPercent() ) );
+            textDescs.Add( "AutoHelpLightRange".Translate( plant.growMinGlow.ToStringPercent(),
+                                                           plant.growOptimalGlow.ToStringPercent() ) );
+
+            statParts.Add( new HelpDetailSection( null, textDescs.ToArray() ) );
+
+            if ( plant.Harvestable )
+            {
+                // yield
+                linkParts.Add( new HelpDetailSection(
+                                   "AutoHelpListPlantYield".Translate(),
+                                   new List<Def>( new[] { plant.harvestedThingDef } ),
+                                   new[] { plant.harvestYield.ToString() }
+                                   ) );
+            }
+
+            // sowtags
+            if ( plant.Sowable )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListCanBePlantedIn".Translate(),
+                                                      plant.sowTags.ToArray() ) );
+            }
+
+            // unlockable sowtags
+            List<DefStringTriplet> unlockableSowtags = new List<DefStringTriplet>();
+            foreach ( AdvancedResearchDef def in DefDatabase<AdvancedResearchDef>.AllDefsListForReading )
+            {
+                if ( !def.IsLockedOut() &&
+                     !def.HideDefs &&
+                     def.IsPlantToggle &&
+                     def.thingDefs.Contains( thingDef ) )
+                {
+                    foreach ( string sowTag in def.sowTags )
+                    {
+                        foreach ( ResearchProjectDef res in def.researchDefs )
+                        {
+                            unlockableSowtags.Add( new DefStringTriplet( res, sowTag + " (", ")" ) );
+                        }
+                    }
+                }
+            }
+            if ( !unlockableSowtags.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListUnlockableSowTags".Translate(), unlockableSowtags ) );
+            }
+
+            // wild biome tags
+            var biomes = DefDatabase<BiomeDef>.AllDefsListForReading.Where( b => b.AllWildPlants.Contains( thingDef ) ).ToList();
+            if ( !biomes.NullOrEmpty() )
+            {
+                linkParts.Add( new HelpDetailSection( "AutoHelpListAppearsInBiomes".Translate(),
+                                                      biomes.Select( r => r as Def ).ToList() ) );
+            }
+        }
+
+        private static void HelpPartsForAnimal( ThingDef thingDef, ref List<HelpDetailSection> statParts,
+                                                ref List<HelpDetailSection> linkParts )
+        {
+            var race = thingDef.race;
+
+            // set up vars
+            List<Def> defs = new List<Def>();
+            List<string> stringDescs = new List<string>();
+            List<string> prefixes = new List<string>();
+            List<String> suffixes = new List<string>();
+            
+            // health, intelligence, etc.
+            stringDescs.Add(
+                "AutoHelpHealthScale".Translate(
+                        ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent() ) 
+                    );
+            stringDescs.Add( "AutoHelpLifeExpectancy".Translate() + " " + "LetterYear".Translate( race.lifeExpectancy ) );
+            stringDescs.Add( "AutoHelpIntelligence".Translate( race.trainableIntelligence.ToString() ));
+            stringDescs.Add( "AutoHelpDiet".Translate( race.diet.ToString() ) );
+            statParts.Add( new HelpDetailSection( null, stringDescs.ToArray() ) );
+
+            // training
+            
+
+            // lifestages
+
+            // gestation and litter
+
+            // meat
+
+            // leather
+
+            // milk
+
+            // sheer
         }
 
         static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
@@ -1041,7 +1236,7 @@ namespace CommunityCoreLibrary.Controller
             #region Things & Research
 
             // Add things it's on
-            var thingDefs = recipeDef.GetThingsCurrent();
+            var thingDefs = recipeDef.GetRecipeUsers();
             if( !thingDefs.NullOrEmpty() )
             {
                 HelpDetailSection billgivers = new HelpDetailSection(
@@ -1162,7 +1357,7 @@ namespace CommunityCoreLibrary.Controller
             buildableDefs.AddRange( researchProjectDef.GetThingsUnlocked().ConvertAll<Def>( def => (Def)def ) );
 
             // terrain
-            buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def) );
+            buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def ) );
 
             // create help section
             if( !buildableDefs.NullOrEmpty() )

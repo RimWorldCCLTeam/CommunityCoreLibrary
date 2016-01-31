@@ -214,10 +214,6 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipeDefs( this BuildableDef buildableDef )
         {
-            // TODO: See if I can track down special product recipes ( butchery / smelting ).
-            // stone blocks, meat and metal (mechanoids) can all be butchered. 
-            // smelting returns stuff from item, and has been applied on cloth as well (recycling mod).
-
             return
                 DefDatabase<RecipeDef>.AllDefsListForReading.Where(
                     r => r.products.Any( tc => tc.thingDef == buildableDef as ThingDef ) ).ToList();
