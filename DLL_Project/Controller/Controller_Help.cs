@@ -366,22 +366,21 @@ namespace CommunityCoreLibrary.Controller
                 ResolveDefList( terrainDefs, helpCategoryDef );
             }
 
-            // Get list of buildable floors
-            terrainDefs =
-                DefDatabase< TerrainDef >.AllDefsListForReading.Where( t => (
-                    ( !t.designationCategory.NullOrEmpty() )&&
-                    ( t.designationCategory != "None" )
-                ) ).ToList();
-
-            if( !terrainDefs.NullOrEmpty() )
+            // Get list of buildable floors per designation category
+            foreach ( var categoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
             {
-                // Get help category
-                var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.FlooringHelp, "AutoHelpSubCategoryFlooring".Translate(), "AutoHelpCategoryTerrain".Translate() );
+                terrainDefs =
+                    DefDatabase<TerrainDef>.AllDefsListForReading.Where( t => t.designationCategory == categoryDef.defName ).ToList();
 
-                // resolve the defs
-                ResolveDefList( terrainDefs, helpCategoryDef );
+                if( !terrainDefs.NullOrEmpty() )
+                {
+                    // Get help category
+                    var helpCategoryDef = HelpCategoryForKey( categoryDef.defName + HelpCategoryDefOf.HelpPostFix, categoryDef.LabelCap, "AutoHelpCategoryTerrain".Translate() );
+
+                    // resolve the defs
+                    ResolveDefList( terrainDefs, helpCategoryDef );
+                }
             }
-
         }
 
         #endregion
@@ -642,7 +641,7 @@ namespace CommunityCoreLibrary.Controller
                 HelpDetailSection reqResearch = new HelpDetailSection(
                         "AutoHelpListResearchRequired".Translate(),
                         researchDefs.ConvertAll(def => (Def)def));
-                helpDef.HelpDetailSections.Add( reqResearch );
+                linkParts.Add( reqResearch );
             }
             #endregion
             
@@ -656,7 +655,7 @@ namespace CommunityCoreLibrary.Controller
                     null,
                     buildableDef.costList.Select( tc => tc.count.ToString() ).ToArray() );
 
-                helpDef.HelpDetailSections.Add( costs );
+                linkParts.Add( costs );
             }
             #endregion
 
@@ -703,20 +702,23 @@ namespace CommunityCoreLibrary.Controller
                         recipeDefs.ConvertAll( def => (Def)def ) );
                     linkParts.Add( recipes );
 
-                    try
+                    // TODO: Figure out why this fails on a few select recipes (e.g. MVP's burger recipes and Apparello's Hive Armor), but works when called directly in these recipe's helpdefs.
+                    var tableDefs = recipeDefs.SelectMany( r => r.GetRecipeUsers() )
+                                              .ToList()
+                                              .ConvertAll( def => def as Def );
+
+                    if ( !tableDefs.NullOrEmpty() )
                     {
-                        // for some odd reasons meals and beer give errors when doing this.
-                        var tableDefs = recipeDefs.SelectMany( r => r.GetRecipeUsers() )
-                                                  .ToList()
-                                                  .ConvertAll( def => def as Def );
                         HelpDetailSection tables = new HelpDetailSection(
-                            "AutoHelpListRecipesOnThingsUnlocked".Translate(), tableDefs );
+                        "AutoHelpListRecipesOnThingsUnlocked".Translate(), tableDefs );
                         linkParts.Add( tables );
                     }
-                    catch
+#if DEBUG
+                    else 
                     {
-                        CCL_Log.Error( "Error loading recipe providers for " + thingDef.LabelCap, "HelpGen" );
+                        Log.Message("Loading 'available on' failed for " + thingDef.LabelCap );
                     }
+#endif
                 }
                 #endregion
 
@@ -738,9 +740,9 @@ namespace CommunityCoreLibrary.Controller
                         new HelpDetailSection( "AutoHelpListNutrition".Translate(), needDefs, null, suffixes ) );
                 }
 
-                #endregion
+#endregion
 
-                #region Body Part Stats
+#region Body Part Stats
 
                 if( ( !thingDef.thingCategories.NullOrEmpty() ) &&
                     ( thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyPartsAndImplants ) ) &&
@@ -748,16 +750,16 @@ namespace CommunityCoreLibrary.Controller
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
 
-                    #region Efficiency
+#region Efficiency
 
                     if( hediffDef.addedPartProps != null )
                     {
                         statParts.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
                     }
 
-                    #endregion
+#endregion
 
-                    #region Capacities
+#region Capacities
                     if( ( !hediffDef.stages.NullOrEmpty() ) &&
                         ( hediffDef.stages.Exists( stage => (
                             ( !stage.capMods.NullOrEmpty() )
@@ -782,9 +784,9 @@ namespace CommunityCoreLibrary.Controller
                         statParts.Add( capacityMods );
                     }
 
-                    #endregion
+#endregion
 
-                    #region Components (Melee attack)
+#region Components (Melee attack)
 
                     if( ( !hediffDef.comps.NullOrEmpty() ) &&
                         ( hediffDef.comps.Exists( p => (
@@ -817,9 +819,9 @@ namespace CommunityCoreLibrary.Controller
                         }
                     }
 
-                    #endregion
+#endregion
 
-                    #region Body part fixed or replaced
+#region Body part fixed or replaced
                     var recipeDef = thingDef.GetImplantRecipeDef();
                     if( !recipeDef.appliedOnFixedBodyParts.NullOrEmpty() )
                     {
@@ -828,13 +830,13 @@ namespace CommunityCoreLibrary.Controller
                             recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll( def => (Def)def ) ) );
                     }
 
-                    #endregion
+#endregion
 
                 }
 
-                #endregion
+#endregion
 
-                #region Recipes & Research (on building)
+#region Recipes & Research (on building)
 
                 // Get list of recipes
                 recipeDefs = thingDef.AllRecipes;
@@ -880,9 +882,9 @@ namespace CommunityCoreLibrary.Controller
                     linkParts.Add( researchBy );
                 }
 
-                #endregion (on building)
+#endregion (on building)
 
-                #region Facilities
+#region Facilities
 
                 // Get list of facilities that effect it
                 var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
@@ -931,9 +933,9 @@ namespace CommunityCoreLibrary.Controller
                     }
                 }
 
-                #endregion
+#endregion
 
-                #region Joy
+#region Joy
 
                 // Get valid joy givers
                 var joyGiverDefs = DefDatabase< JoyGiverDef >.AllDefsListForReading
@@ -964,13 +966,24 @@ namespace CommunityCoreLibrary.Controller
                     linkParts.Add( joyDetailSection );
                 }
 
-                #endregion
+#endregion
 
             }
 
-            #endregion
+#endregion
 
-            #region Terrain Specific
+#region Terrain Specific
+            HelpPartsForTerrain( buildableDef, ref statParts, ref linkParts );
+#endregion
+
+            helpDef.HelpDetailSections.AddRange( statParts );
+            helpDef.HelpDetailSections.AddRange( linkParts );
+
+            return helpDef;
+        }
+
+        static void HelpPartsForTerrain( BuildableDef buildableDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
+        {
             TerrainDef terrainDef = buildableDef as TerrainDef;
             if ( terrainDef != null )
             {
@@ -979,15 +992,9 @@ namespace CommunityCoreLibrary.Controller
                     "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
                     "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
                 };
-                
+
                 statParts.Add( new HelpDetailSection( null, stats ) );
             }
-            #endregion
-
-            helpDef.HelpDetailSections.AddRange( statParts );
-            helpDef.HelpDetailSections.AddRange( linkParts );
-
-            return helpDef;
         }
 
         static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
@@ -1007,13 +1014,13 @@ namespace CommunityCoreLibrary.Controller
             helpDef.description = recipeDef.description;
 
 
-            #region Base Stats
+#region Base Stats
 
             helpDef.HelpDetailSections.Add( new HelpDetailSection( null, new[] { "WorkAmount".Translate() + " : " + recipeDef.WorkAmountTotal( (ThingDef)null ).ToStringWorkAmount() } ) );
 
-            #endregion
+#endregion
 
-            #region Skill Requirements
+#region Skill Requirements
 
             if( !recipeDef.skillRequirements.NullOrEmpty() )
             {
@@ -1024,9 +1031,9 @@ namespace CommunityCoreLibrary.Controller
                     recipeDef.skillRequirements.Select( sr => sr.minLevel.ToString( "####0" ) ).ToArray() ) );
             }
 
-            #endregion
+#endregion
 
-            #region Ingredients
+#region Ingredients
 
             // List of ingredients
             if( !recipeDef.ingredients.NullOrEmpty() )
@@ -1039,9 +1046,9 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( ingredients );
             }
 
-            #endregion
+#endregion
 
-            #region Products
+#region Products
 
             // List of products
             if( !recipeDef.products.NullOrEmpty() )
@@ -1054,12 +1061,12 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( products );
             }
 
-            #endregion
+#endregion
 
-            #region Things & Research
+#region Things & Research
 
             // Add things it's on
-            var thingDefs = recipeDef.GetThingsCurrent();
+            var thingDefs = recipeDef.GetRecipeUsers();
             if( !thingDefs.NullOrEmpty() )
             {
                 HelpDetailSection billgivers = new HelpDetailSection(
@@ -1120,7 +1127,7 @@ namespace CommunityCoreLibrary.Controller
                 }
             }
 
-            #endregion
+#endregion
 
             return helpDef;
         }
@@ -1141,13 +1148,13 @@ namespace CommunityCoreLibrary.Controller
             helpDef.category = category;
             helpDef.description = researchProjectDef.description;
 
-            #region Base Stats
+#region Base Stats
             HelpDetailSection totalCost = new HelpDetailSection(null, new [] { "AutoHelpTotalCost".Translate(researchProjectDef.totalCost.ToString()) });
             helpDef.HelpDetailSections.Add( totalCost );
 
-            #endregion
+#endregion
 
-            #region Research, Buildings, Recipes and SowTags
+#region Research, Buildings, Recipes and SowTags
 
             // Add research required
             var researchDefs = researchProjectDef.GetResearchRequirements();
@@ -1236,9 +1243,9 @@ namespace CommunityCoreLibrary.Controller
 
                 helpDef.HelpDetailSections.Add( plantsIn );
             }
-            #endregion
+#endregion
 
-            #region Lockouts
+#region Lockouts
 
             // Get advanced research which locks
             researchDefs = researchProjectDef.GetResearchedLockedBy();
@@ -1251,7 +1258,7 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( researchLockout );
             }
 
-            #endregion
+#endregion
 
             return helpDef;
         }
@@ -1280,7 +1287,7 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.category = advancedResearchDef.helpCategoryDef;
             }
 
-            #region Base Stats
+#region Base Stats
 
             HelpDetailSection totalCost = new HelpDetailSection(
                 null,
@@ -1288,9 +1295,9 @@ namespace CommunityCoreLibrary.Controller
 
             helpDef.HelpDetailSections.Add( totalCost );
 
-            #endregion
+#endregion
 
-            #region Research, Buildings, Recipes and SowTags
+#region Research, Buildings, Recipes and SowTags
 
             // Add research required
             var researchDefs = advancedResearchDef.GetResearchRequirements();
@@ -1354,9 +1361,9 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( recipesOnThingsUnlocked );
             }
 
-            #endregion
+#endregion
 
-            #region Lockouts
+#region Lockouts
 
             // Add buildings it locks
             thingDefs = advancedResearchDef.GetThingsLocked();
@@ -1407,22 +1414,22 @@ namespace CommunityCoreLibrary.Controller
                 helpDef.HelpDetailSections.Add( plantsIn );
             }
 
-            #endregion
+#endregion
 
             advancedResearchDef.HelpDef = helpDef;
             return helpDef;
         }
 
-        #endregion
+#endregion
 
-        #region HelpDef getters
+#region HelpDef getters
 
         public static List<HelpDef> GetAllHelpDefs()
         {
             return DefDatabase<HelpDef>.AllDefsListForReading;
         }
 
-        #endregion
+#endregion
 
     }
 
