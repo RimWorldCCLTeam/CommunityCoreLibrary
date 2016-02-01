@@ -58,6 +58,7 @@
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyUnderRoof.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_WallAttachment.cs" />
     <Compile Include="StaticClasses\CCL_Log.cs" />
+    <Compile Include="Structures\StringDescTriplet.cs" />
     <Compile Include="ThingComps\CompPawnGizmo.cs" />
     <Compile Include="ThingComps\CompPowerLowIdleDraw.cs" />
     <Compile Include="CompProperties\CompProperties_LowIdleDraw.cs" />

@@ -295,9 +295,9 @@ namespace CommunityCoreLibrary
                 }
                 if( section.StringDescs != null )
                 {
-                    foreach( string s in section.StringDescs )
+                    foreach( var s in section.StringDescs )
                     {
-                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s );
+                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s.ToString() );
                     }
                 }
                 if( section.KeyDefs != null )

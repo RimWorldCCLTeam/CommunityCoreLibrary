@@ -839,7 +839,7 @@ namespace CommunityCoreLibrary.Controller
 
                     if( hediffDef.addedPartProps != null )
                     {
-                        statParts.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) } ) );
+                        statParts.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) }, null, null ) );
                     }
 
 #endregion
@@ -893,8 +893,14 @@ namespace CommunityCoreLibrary.Controller
                                                     "MeleeAttack".Translate( verb.meleeDamageDef.label ),
                                                     new[]
                                                     {
-                                                        "MeleeWarmupTime".Translate() + verb.defaultCooldownTicks,
-                                                        "StatsReport_MeleeDamage".Translate() + verb.meleeDamageBaseAmount
+                                                        "MeleeWarmupTime".Translate(),
+                                                        "StatsReport_MeleeDamage".Translate()
+                                                    },
+                                                    null,
+                                                    new[]
+                                                    {
+                                                        verb.defaultCooldownTicks.ToString(),
+                                                        verb.meleeDamageBaseAmount.ToString()
                                                     }
                                                 ) );
                                         }
@@ -995,19 +1001,19 @@ namespace CommunityCoreLibrary.Controller
                     {
                         var facilityProperties = thingDef.GetCompProperties( typeof( CompFacility ) );
 
-                        List<string> facilityStats = new List<string>();
-                        facilityStats.Add(
-                            "AutoHelpMaximumAffected".Translate( facilityProperties.maxSimultaneous.ToString() ) );
+                        List<DefStringTriplet> facilityDefs = new List<DefStringTriplet>();
+                        List<StringDescTriplet> facilityStrings = new List<StringDescTriplet>();
+                        facilityStrings.Add( new StringDescTriplet( facilityProperties.maxSimultaneous.ToString(), "AutoHelpMaximumAffected".Translate() ) );
 
                         // Look at stats modifiers
                         foreach( var stat in facilityProperties.statOffsets )
                         {
-                            facilityStats.Add( stat.stat.LabelCap + ": " + stat.stat.ValueToString( stat.value, stat.stat.toStringNumberSense ) );
+                            facilityDefs.Add( new DefStringTriplet( stat.stat, null, ": " + stat.stat.ValueToString( stat.value, stat.stat.toStringNumberSense ) ) );
                         }
 
                         HelpDetailSection facilityDetailSection = new HelpDetailSection(
                             "AutoHelpFacilityStats".Translate(),
-                            facilityStats.ToArray());
+                            facilityDefs, facilityStrings);
 
                         HelpDetailSection facilitiesAffected = new HelpDetailSection(
                             "AutoHelpListFacilitiesAffected".Translate(),
@@ -1031,24 +1037,24 @@ namespace CommunityCoreLibrary.Controller
 
                 if( !joyGiverDefs.NullOrEmpty() )
                 {
-                    List<string> joyStats = new List<string>();
                     foreach( var joyGiverDef in joyGiverDefs )
                     {
+                        List<DefStringTriplet> defs = new List<DefStringTriplet>();
+                        List<StringDescTriplet> strings = new List<StringDescTriplet>();
+
                         // Get job driver stats
-                        joyStats.Add( joyGiverDef.jobDef.reportString );
-                        joyStats.Add( "AutoHelpMaximumParticipants".Translate( joyGiverDef.jobDef.joyMaxParticipants.ToString() ) );
-                        joyStats.Add( "AutoHelpJoyKind".Translate( joyGiverDef.jobDef.joyKind.LabelCap ) );
+                        strings.Add( new StringDescTriplet( joyGiverDef.jobDef.reportString ) );
+                        strings.Add( new StringDescTriplet( joyGiverDef.jobDef.joyMaxParticipants.ToString(), "AutoHelpMaximumParticipants".Translate() ) );
+                        defs.Add( new DefStringTriplet( joyGiverDef.jobDef.joyKind, "AutoHelpJoyKind".Translate() ) );
                         if( joyGiverDef.jobDef.joySkill != null )
                         {
-                            joyStats.Add( "AutoHelpJoySkill".Translate( joyGiverDef.jobDef.joySkill.LabelCap ) );
+                            defs.Add( new DefStringTriplet( joyGiverDef.jobDef.joySkill, "AutoHelpJoySkill".Translate() ) );
                         }
+
+                        linkParts.Add( new HelpDetailSection(
+                            "AutoHelpListJoyActivities".Translate(),
+                            defs, strings ) );
                     }
-
-                    HelpDetailSection joyDetailSection = new HelpDetailSection(
-                        "AutoHelpListJoyActivities".Translate(),
-                        joyStats.ToArray());
-
-                    linkParts.Add( joyDetailSection );
                 }
 
 #endregion
@@ -1110,7 +1116,10 @@ namespace CommunityCoreLibrary.Controller
 
 #region Base Stats
 
-            helpDef.HelpDetailSections.Add( new HelpDetailSection( null, new[] { "WorkAmount".Translate() + " : " + recipeDef.WorkAmountTotal( (ThingDef)null ).ToStringWorkAmount() } ) );
+            helpDef.HelpDetailSections.Add( new HelpDetailSection( null, 
+                new[] { recipeDef.WorkAmountTotal( (ThingDef)null ).ToStringWorkAmount() },
+                new[] { "WorkAmount".Translate() + " : " },
+                null ) );
 
 #endregion
 
@@ -1135,7 +1144,7 @@ namespace CommunityCoreLibrary.Controller
                 // TODO: find the actual thingDefs of ingredients so we can use defs instead of strings.
                 HelpDetailSection ingredients = new HelpDetailSection(
                     "Ingredients".Translate(),
-                    recipeDef.ingredients.Select(ic => recipeDef.IngredientValueGetter.BillRequirementsDescription( ic )).ToArray());
+                    recipeDef.ingredients.Select(ic => recipeDef.IngredientValueGetter.BillRequirementsDescription( ic )).ToArray(), null, null);
 
                 helpDef.HelpDetailSections.Add( ingredients );
             }
@@ -1243,7 +1252,10 @@ namespace CommunityCoreLibrary.Controller
             helpDef.description = researchProjectDef.description;
 
 #region Base Stats
-            HelpDetailSection totalCost = new HelpDetailSection(null, new [] { "AutoHelpTotalCost".Translate(researchProjectDef.totalCost.ToString()) });
+            HelpDetailSection totalCost = new HelpDetailSection(null, 
+                                                                new [] { researchProjectDef.totalCost.ToString() },
+                                                                new [] { "AutoHelpTotalCost".Translate() },
+                                                                null );
             helpDef.HelpDetailSections.Add( totalCost );
 
 #endregion
@@ -1333,7 +1345,7 @@ namespace CommunityCoreLibrary.Controller
 
                 HelpDetailSection plantsIn = new HelpDetailSection(
                     "AutoHelpListPlantsIn".Translate(),
-                    sowTags.ToArray());
+                    sowTags.ToArray(), null, null);
 
                 helpDef.HelpDetailSections.Add( plantsIn );
             }
@@ -1385,7 +1397,9 @@ namespace CommunityCoreLibrary.Controller
 
             HelpDetailSection totalCost = new HelpDetailSection(
                 null,
-                new [] {"AutoHelpTotalCost".Translate( advancedResearchDef.TotalCost.ToString() )});
+                new [] { advancedResearchDef.TotalCost.ToString() },
+                new [] {"AutoHelpTotalCost".Translate()},
+                null );
 
             helpDef.HelpDetailSections.Add( totalCost );
 
@@ -1450,7 +1464,7 @@ namespace CommunityCoreLibrary.Controller
 
                 HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
                     "AutoHelpListPlantsIn".Translate(),
-                    sowTags.ToArray() );
+                    sowTags.ToArray(), null, null );
 
                 helpDef.HelpDetailSections.Add( recipesOnThingsUnlocked );
             }
@@ -1503,7 +1517,7 @@ namespace CommunityCoreLibrary.Controller
 
                 HelpDetailSection plantsIn = new HelpDetailSection(
                     "AutoHelpListPlantsIn".Translate(),
-                    sowTags.ToArray() );
+                    sowTags.ToArray(), null, null );
 
                 helpDef.HelpDetailSections.Add( plantsIn );
             }
@@ -1606,11 +1620,18 @@ namespace CommunityCoreLibrary.Controller
         #region Help maker helpers
         static void HelpPartsForTerrain( TerrainDef terrainDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
         {
-            string[] stats = new[]
-            {
-                "AutoHelpListFertility".Translate() + ": " + terrainDef.fertility.ToStringPercent(),
-                "AutoHelpListPathCost".Translate() + ": " + terrainDef.pathCost.ToString()
-            };
+            statParts.Add( new HelpDetailSection( null, 
+                                                  new []
+                                                  {
+                                                      terrainDef.fertility.ToStringPercent(),
+                                                      terrainDef.pathCost.ToString()
+                                                  },
+                                                  new []
+                                                  {
+                                                      "AutoHelpListFertility".Translate() + ":",
+                                                      "AutoHelpListPathCost".Translate() + ":"
+                                                  },
+                                                  null ) );
 
             // wild biome tags
             var biomes = DefDatabase<BiomeDef>.AllDefsListForReading
@@ -1622,7 +1643,6 @@ namespace CommunityCoreLibrary.Controller
                                                       biomes.Select( r => r as Def ).ToList() ) );
             }
 
-            statParts.Add( new HelpDetailSection( null, stats ) );
         }
 
         static void HelpPartsForPlant( ThingDef thingDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts )
@@ -1630,13 +1650,20 @@ namespace CommunityCoreLibrary.Controller
             var plant = thingDef.plant;
 
             // non-def stat part
-            List<string> textDescs = new List<string>();
-            textDescs.Add( "AutoHelpGrowDays".Translate( plant.growDays ) );
-            textDescs.Add( "AutoHelpMinFertility".Translate( plant.fertilityMin.ToStringPercent() ) );
-            textDescs.Add( "AutoHelpLightRange".Translate( plant.growMinGlow.ToStringPercent(),
-                                                           plant.growOptimalGlow.ToStringPercent() ) );
-
-            statParts.Add( new HelpDetailSection( null, textDescs.ToArray() ) );
+            statParts.Add( new HelpDetailSection( null, 
+                                                  new []
+                                                  {
+                                                      plant.growDays.ToString(),
+                                                      plant.fertilityMin.ToStringPercent(),
+                                                      plant.growMinGlow.ToStringPercent() + " - " + plant.growOptimalGlow.ToStringPercent()
+                                                  },
+                                                  new []
+                                                  {
+                                                      "AutoHelpGrowDays".Translate(),
+                                                      "AutoHelpMinFertility".Translate(),
+                                                      "AutoHelpLightRange".Translate()
+                                                  },
+                                                  null ) );
 
             if( plant.Harvestable )
             {
@@ -1652,7 +1679,7 @@ namespace CommunityCoreLibrary.Controller
             if( plant.Sowable )
             {
                 linkParts.Add( new HelpDetailSection( "AutoHelpListCanBePlantedIn".Translate(),
-                                                      plant.sowTags.ToArray() ) );
+                                                      plant.sowTags.ToArray(), null, null ) );
             }
 
             // unlockable sowtags
@@ -1675,7 +1702,7 @@ namespace CommunityCoreLibrary.Controller
             }
             if( !unlockableSowtags.NullOrEmpty() )
             {
-                linkParts.Add( new HelpDetailSection( "AutoHelpListUnlockableSowTags".Translate(), unlockableSowtags ) );
+                linkParts.Add( new HelpDetailSection( "AutoHelpListUnlockableSowTags".Translate(), unlockableSowtags, null ) );
             }
 
             // wild biome tags
@@ -1700,24 +1727,32 @@ namespace CommunityCoreLibrary.Controller
             List<String> suffixes = new List<string>();
 
             #region Health, diet and intelligence
-            stringDescs.Add(
-                "AutoHelpHealthScale".Translate(
-                        ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent() )
-                    );
-            stringDescs.Add( "AutoHelpLifeExpectancy".Translate() + " " + race.lifeExpectancy.ToStringApproximateTimePeriod() );
-            stringDescs.Add( "AutoHelpDiet".Translate( race.diet.ToString().Translate() ) );
-            // there's no meaningful intelligence indicator for non-animals.
-            if( race.Animal )
-            {
-                stringDescs.Add( "AutoHelpIntelligence".Translate( race.trainableIntelligence.ToString() ) );
-            }
-            statParts.Add( new HelpDetailSection( null, stringDescs.ToArray() ) );
-            stringDescs.Clear();
+
+            statParts.Add( new HelpDetailSection( null, 
+                new []
+                {
+                    ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
+                    race.lifeExpectancy.ToStringApproximateTimePeriod(),
+                    race.diet.ToString().Translate()
+                },
+                new []
+                {
+                    "AutoHelpHealthScale".Translate(),
+                    "AutoHelpLifeExpectancy".Translate(),
+                    "AutoHelpDiet".Translate()
+                },
+                null ) );
+
             #endregion
 
             #region Training
             if( race.Animal )
             {
+                List<DefStringTriplet> DST = new List<DefStringTriplet>();
+                List<StringDescTriplet> SDT = new List<StringDescTriplet>();
+
+                SDT.Add( new StringDescTriplet( race.trainableIntelligence.ToString(), "AutoHelpIntelligence".Translate() ) );
+                
                 foreach( TrainableDef def in DefDatabase<TrainableDef>.AllDefsListForReading )
                 {
                     // skip if explicitly disallowed
@@ -1732,7 +1767,7 @@ namespace CommunityCoreLibrary.Controller
                          race.trainableTags.Any( tag => def.MatchesTag( tag ) ) &&
                          maxSize >= def.minBodySize )
                     {
-                        defs.Add( def );
+                        DST.Add( new DefStringTriplet( def ) );
                         continue;
                     }
 
@@ -1741,15 +1776,15 @@ namespace CommunityCoreLibrary.Controller
                          race.trainableIntelligence >= def.requiredTrainableIntelligence &&
                          def.defaultTrainable )
                     {
-                        defs.Add( def );
+                        DST.Add( new DefStringTriplet( def ) );
                     }
                 }
 
-                if( defs.Count > 0 )
+                if( DST.Count > 0 )
                 {
                     linkParts.Add( new HelpDetailSection(
                                        "AutoHelpListTrainable".Translate(),
-                                       defs ) );
+                                       DST, SDT ) );
                 }
                 defs.Clear();
             }
@@ -1807,17 +1842,17 @@ namespace CommunityCoreLibrary.Controller
 
                 statParts.Add( new HelpDetailSection(
                                    "AutoHelpListReproduction".Translate(),
-                                   stringDescs.ToArray() ) );
+                                   stringDescs.ToArray(), null, null ) );
                 stringDescs.Clear();
             }
             // mammals
             else if( race.hasGenders &&
                       race.lifeStageAges.Any( lsa => lsa.def.reproductive ) )
             {
-                stringDescs.Add(
-                    "AutoHelpGestationPeriod".Translate(
-                        ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear )
-                            .ToStringApproximateTimePeriod() ) );
+                List<StringDescTriplet> SDT = new List<StringDescTriplet>();
+                SDT.Add( new StringDescTriplet( 
+                    ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod(),
+                    "AutoHelpGestationPeriod".Translate() ) );
 
                 if( race.litterSizeCurve != null &&
                      race.litterSizeCurve.PointsCount >= 3 )
@@ -1825,26 +1860,32 @@ namespace CommunityCoreLibrary.Controller
                     // if size is three, there is actually only one option (weird boundary restrictions by Tynan require a +/- .5 min/max)
                     if( race.litterSizeCurve.PointsCount == 3 )
                     {
-                        stringDescs.Add( "AutoHelpLitterSize".Translate( race.litterSizeCurve[1].x ) );
+                        SDT.Add( new StringDescTriplet(
+                            race.litterSizeCurve[1].x.ToString(),
+                            "AutoHelpLitterSize".Translate() ) );
                     }
 
                     // for the same reason, if more than one choice, indeces are second and second to last.
                     else
                     {
-                        stringDescs.Add( "AutoHelpLitterSize".Translate( race.litterSizeCurve[1].x.ToString() + " - " +
-                            race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x.ToString() ) );
+                        SDT.Add( new StringDescTriplet(
+                            race.litterSizeCurve[1].x.ToString() + " - " +
+                            race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x.ToString(),
+                            "AutoHelpLitterSize".Translate() ) );
+                        stringDescs.Add( "AutoHelpLitterSize".Translate(  ) );
                     }
                 }
                 else
                 {
                     // if litterSize is not defined in XML, it's always 1
-                    stringDescs.Add( "AutoHelpLitterSize".Translate( 1 ) );
+                    SDT.Add( new StringDescTriplet(
+                        "1",
+                        "AutoHelpLitterSize".Translate() ) );
                 }
 
                 statParts.Add( new HelpDetailSection(
                                    "AutoHelpListReproduction".Translate(),
-                                   stringDescs.ToArray() ) );
-                stringDescs.Clear();
+                                   null, SDT ) );
             }
             #endregion
 

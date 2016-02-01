@@ -24,10 +24,10 @@ namespace CommunityCoreLibrary
 
             if (hds.StringDescs != null)
             {
-                foreach (string stringDesc in hds.StringDescs)
+                foreach (StringDescTriplet stringDesc in hds.StringDescs )
                 {
                     s.Append(hds.InsetString);
-                    s.AppendLine(stringDesc);
+                    s.AppendLine(stringDesc.ToString());
                 }
             }
 
