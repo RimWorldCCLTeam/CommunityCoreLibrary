@@ -49,7 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\TerrainDef_Extensions.cs" />
+    <Compile Include="Extensions\BiomeDef_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
     <Compile Include="StaticClasses\Detours.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />

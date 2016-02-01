@@ -7,9 +7,9 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    public static class TerrainDef_Extensions
+    public static class BiomeDef_Extensions
     {
-        public static List<TerrainDef> GetAllTerrainDefs( this BiomeDef biome )
+        public static List<TerrainDef> AllTerrainDefs( this BiomeDef biome )
         {
             List<TerrainDef> ret = new List<TerrainDef>();
 

@@ -368,7 +368,7 @@ namespace CommunityCoreLibrary.Controller
 
                                                 // or is listed in any biome
                                                 || DefDatabase<BiomeDef>.AllDefsListForReading.Any(
-                                                    b => b.GetAllTerrainDefs().Contains( t ) )
+                                                    b => b.AllTerrainDefs().Contains( t ) )
                                                 ) )
                                        .ToList();
 
@@ -1539,30 +1539,28 @@ namespace CommunityCoreLibrary.Controller
             #endregion
 
             #region Diseases
-            // TODO: figure this mess out.
             // workaround through looping incidents doesn't appear to work - go through reflection
-            //FieldInfo diseasesFieldInfo = typeof (BiomeDef).GetField( "diseases",
-            //                                                          BindingFlags.NonPublic | BindingFlags.Instance );
-            //IList diseases = diseasesFieldInfo.GetValue( biomeDef ) as IList;
+            FieldInfo diseasesFieldInfo = typeof (BiomeDef).GetField( "diseases",
+                                                                      BindingFlags.NonPublic | BindingFlags.Instance );
+            IList diseases = diseasesFieldInfo.GetValue( biomeDef ) as IList;
 
-            //if ( diseases != null &&
-            //     diseases.Count > 0 )
-            //{
-            //    foreach ( object disease in diseases )
-            //    {
-            //        defs.Add( ((IncidentDef)disease).disease );
-            //    }
+            if( diseases != null &&
+                 diseases.Count > 0 )
+            {
+                foreach( object disease in diseases )
+                {
+                    defs.Add( ( (BiomeDiseaseRecord)disease ).diseaseInc.disease );
+                }
 
-            //    helpDef.HelpDetailSections.Add( new HelpDetailSection(
-            //                                        "AutoHelpListBiomeDiseases".Translate(),
-            //                                        defs ) );
-            //}
-            //defs.Clear();
-
+                helpDef.HelpDetailSections.Add( new HelpDetailSection(
+                                                    "AutoHelpListBiomeDiseases".Translate(),
+                                                    defs ) );
+            }
+            defs.Clear();
             #endregion
 
             #region Terrain
-            defs = biomeDef.GetAllTerrainDefs().ConvertAll( def => (Def)def );
+            defs = biomeDef.AllTerrainDefs().ConvertAll( def => (Def)def );
             if ( !defs.NullOrEmpty() )
             {
                 helpDef.HelpDetailSections.Add( new HelpDetailSection(
@@ -1616,7 +1614,7 @@ namespace CommunityCoreLibrary.Controller
 
             // wild biome tags
             var biomes = DefDatabase<BiomeDef>.AllDefsListForReading
-                                              .Where( b => b.GetAllTerrainDefs().Contains( terrainDef ) )
+                                              .Where( b => b.AllTerrainDefs().Contains( terrainDef ) )
                                               .ToList();
             if( !biomes.NullOrEmpty() )
             {
