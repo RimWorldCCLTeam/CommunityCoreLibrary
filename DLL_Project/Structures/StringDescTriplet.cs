@@ -4,16 +4,15 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-
-    public struct DefStringTriplet
+    public struct StringDescTriplet
     {
-        public Def Def;
+        public string StringDesc;
         public string Prefix;
         public string Suffix;
 
-        public DefStringTriplet(Def def, string prefix = null, string suffix = null )
+        public StringDescTriplet( string stringDesc, string prefix = null, string suffix = null )
         {
-            Def = def;
+            StringDesc = stringDesc;
             Prefix = prefix;
             Suffix = suffix;
         }
@@ -21,14 +20,14 @@ namespace CommunityCoreLibrary
         public override string ToString()
         {
             StringBuilder s = new StringBuilder();
-            if (Prefix != "")
+            if( Prefix != "" )
             {
-                s.Append(Prefix + " ");
+                s.Append( Prefix + " " );
             }
-            s.Append(Def.LabelCap);
-            if (Suffix != "")
+            s.Append( StringDesc );
+            if( Suffix != "" )
             {
-                s.Append(" " + Suffix);
+                s.Append( " " + Suffix );
             }
             return s.ToString();
         }

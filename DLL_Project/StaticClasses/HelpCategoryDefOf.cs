@@ -5,22 +5,28 @@ namespace CommunityCoreLibrary
 
     public static class HelpCategoryDefOf
     {
+        public static readonly string           HelpPostFix          = "_HelpCategoryDef",
 
-        public static readonly string           HelpPostFix = "_HelpCategoryDef";
+                                                // items
+                                                ApparelHelp          = "Apparel" + HelpPostFix,
+                                                BodyPartHelp         = "BodyPart" + HelpPostFix,
+                                                DrugHelp             = "Drug" + HelpPostFix,
+                                                MealHelp             = "Meal" + HelpPostFix,
+                                                WeaponHelp           = "Weapon" + HelpPostFix,
+                                                
+                                                // flora and fauna
+                                                TerrainHelp          = "Terrain" + HelpPostFix,
+                                                Plants               = "Plants" + HelpPostFix,
+                                                Animals              = "Animals" + HelpPostFix,
+                                                Humanoids            = "Humanoids" + HelpPostFix,
+                                                Mechanoids           = "Mechanoids" + HelpPostFix,
+                                                Biomes               = "Biomes" + HelpPostFix,
 
-        public static readonly string           ApparelHelp = "Apparel" + HelpPostFix;
-        public static readonly string           BodyPartHelp = "BodyPart" + HelpPostFix;
-        public static readonly string           DrugHelp = "Drug" + HelpPostFix;
-        public static readonly string           MealHelp = "Meal" + HelpPostFix;
-        public static readonly string           WeaponHelp = "Weapon" + HelpPostFix;
-        public static readonly string           TerrainHelp = "Terrain" + HelpPostFix;
-        public static readonly string           FlooringHelp = "Flooring" + HelpPostFix;
-
-        public static readonly string           RecipeHelp = "Recipe" + HelpPostFix;
-
-        public static readonly string           ResearchHelp = "Research" + HelpPostFix;
-        public static readonly string           AdvancedResearchHelp = "AdvancedResearch" + HelpPostFix;
-
+                                                // recipes and research
+                                                RecipeHelp           = "Recipe" + HelpPostFix,
+                                                ResearchHelp         = "Research" + HelpPostFix,
+                                                AdvancedResearchHelp = "AdvancedResearch" + HelpPostFix;
+        
         public static readonly HelpCategoryDef  GizmoHelp = DefDatabase< HelpCategoryDef >.GetNamed( "GizmoHelp", true );
     }
 

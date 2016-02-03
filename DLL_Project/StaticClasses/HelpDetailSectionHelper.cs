@@ -14,14 +14,14 @@ namespace CommunityCoreLibrary
 
         public static List<DefStringTriplet> BuildDefStringTripletList(List<Def> defs, string[] prefixes = null, string[] suffixes = null)
         {
-            bool pre = false, suf = false;
+            bool hasPrefix = false, hasSuffix = false;
             if (prefixes != null)
             {
                 if (prefixes.Length != defs.Count)
                 {
                     throw new Exception("Prefix array length does not match Def list length.");
                 }
-                pre = true;
+                hasPrefix = true;
             }
 
             if (suffixes != null)
@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
                 {
                     throw new Exception("Suffix array length does not match Def list length.");
                 }
-                suf = true;
+                hasSuffix = true;
             }
 
             // prepare list of unique indices, filter out duplicates.
@@ -49,7 +49,7 @@ namespace CommunityCoreLibrary
             List<DefStringTriplet> ret = new List<DefStringTriplet>();
             foreach (int i in unique)
             {
-                ret.Add( new DefStringTriplet( defs[i], pre ? prefixes[i] : null, suf ? suffixes[i] : null ) );
+                ret.Add( new DefStringTriplet( defs[i], hasPrefix ? prefixes[i] : null, hasSuffix ? suffixes[i] : null ) );
             }
 
             return ret;
@@ -194,10 +194,37 @@ namespace CommunityCoreLibrary
             return clicked;
 
         }
-
-
-
-
+        
 #endregion
+
+        public static List<StringDescTriplet> BuildStringDescTripletList( string[] stringDescs, string[] prefixes, string[] suffixes )
+        {
+            bool hasPrefix = false, hasSuffix = false;
+            if( prefixes != null )
+            {
+                if( prefixes.Length != stringDescs.Length )
+                {
+                    throw new Exception( "Prefix array length does not match stringDescs length." );
+                }
+                hasPrefix = true;
+            }
+
+            if( suffixes != null )
+            {
+                if( suffixes.Length != stringDescs.Length )
+                {
+                    throw new Exception( "Suffix array length does not match stringDescs length." );
+                }
+                hasSuffix = true;
+            }
+            
+            List<StringDescTriplet> ret = new List<StringDescTriplet>();
+            for ( int i = 0; i < stringDescs.Length; i++ )
+            {
+                ret.Add( new StringDescTriplet( stringDescs[i], hasPrefix ? prefixes[i] : null, hasSuffix ? suffixes[i] : null ) );
+            }
+
+            return ret;
+        }
     }
 }

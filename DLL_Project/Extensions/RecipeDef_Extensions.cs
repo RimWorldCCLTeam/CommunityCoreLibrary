@@ -197,29 +197,27 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
-        public static List< ThingDef >      GetThingsCurrent( this RecipeDef recipeDef )
+        public static List<ThingDef> GetRecipeUsers( this RecipeDef recipeDef )
         {
+
 #if DEBUG
             CCL_Log.TraceMod(
                 recipeDef,
                 Verbosity.Stack,
-                "GetThingsCurrent()"
+                "GetRecipeUsers()"
             );
 #endif
-            // Things it is currently on
-            var thingsOn = new List<ThingDef>();
-            var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
-                ( t.AllRecipes != null )&&
-                ( t.AllRecipes.Contains( recipeDef ) )&&
-                ( !t.IsLockedOut() )
-            ) ).ToList();
 
-            if( !recipeThings.NullOrEmpty() )
+            var thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.Where( t =>
+                    !t.AllRecipes.NullOrEmpty() &&
+                    t.AllRecipes.Contains( recipeDef ) &&
+                    !t.IsLockedOut() ).ToList();
+
+            if ( !thingDefs.NullOrEmpty() )
             {
-                thingsOn.AddRange( recipeThings );
+                return thingDefs;
             }
-
-            return thingsOn;
+            return new List<ThingDef>();
         }
 
         public static List< ThingDef >      GetThingsUnlocked( this RecipeDef recipeDef, ref List< Def > researchDefs )
@@ -325,16 +323,7 @@ namespace CommunityCoreLibrary
 
             return thingDefs;
         }
-
-        public static List<ThingDef> GetRecipeUsers( this RecipeDef recipeDef )
-        {
-            return
-                DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
-                    ( !t.recipes.NullOrEmpty() )&&
-                    ( t.recipes.Contains( recipeDef ) )
-                ) ).ToList();
-        }
-
+        
         #endregion
 
     }

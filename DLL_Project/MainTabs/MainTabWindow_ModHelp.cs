@@ -26,8 +26,8 @@ namespace CommunityCoreLibrary
         protected Vector2                   SelectionScrollPos      = default(Vector2);
         protected Vector2                   DisplayScrollPos        = default(Vector2);
 
-        public const float                  MinWidth                = 600f;
-        public const float                  MinHeight               = 400f;
+        public const float                  MinWidth                = 800f;
+        public const float                  MinHeight               = 600f;
         public const float                  MinListWidth            = 200f;
         public float                        ContentHeight           = 9999f;
         public float                        SelectionHeight         = 9999f;
@@ -37,15 +37,7 @@ namespace CommunityCoreLibrary
         private int                         _lastFilterTick;
         private bool                        _filtered;
         private bool                        _jump;
-
-        public override MainTabWindowAnchor Anchor
-        {
-            get
-            {
-                return MainTabWindowAnchor.Right;
-            }
-        }
-
+        
         public override Vector2 RequestedTabSize
         {
             get
@@ -78,6 +70,20 @@ namespace CommunityCoreLibrary
             doCloseButton = false;
             doCloseX = true;
             closeOnEscapeKey = true;
+            forcePause = true;
+        }
+
+        #endregion
+
+        #region Positioning overrides
+        public override void PostOpen()
+        {
+            base.PostOpen();
+
+            this.currentWindowRect = new Rect( ( Screen.width - RequestedTabSize.x ) / 2,
+                                               ( Screen.height - RequestedTabSize.y - 35f ) / 2,
+                                               RequestedTabSize.x, RequestedTabSize.y );
+            Log.Message( currentWindowRect.ToString() );
         }
 
         #endregion
@@ -158,7 +164,7 @@ namespace CommunityCoreLibrary
         {
             base.PreOpen();
 
-            //Set whether the window forces a pause
+            // Set whether the window forces a pause
             // Not entirely sure why force pause warrants an xml setting? - Fluffy.
             if( TabDef != null )
             {
@@ -239,8 +245,6 @@ namespace CommunityCoreLibrary
 
         public override void DoWindowContents( Rect rect )
         {
-            base.DoWindowContents( rect );
-
             Text.Font = GameFont.Small;
 
             GUI.BeginGroup( rect );
@@ -302,9 +306,9 @@ namespace CommunityCoreLibrary
                 }
                 if( section.StringDescs != null )
                 {
-                    foreach( string s in section.StringDescs )
+                    foreach( var s in section.StringDescs )
                     {
-                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s );
+                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s.ToString() );
                     }
                 }
                 if( section.KeyDefs != null )

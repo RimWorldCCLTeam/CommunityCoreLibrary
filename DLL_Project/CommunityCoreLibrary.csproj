@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\BiomeDef_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
     <Compile Include="StaticClasses\Detours.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyUnderRoof.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_WallAttachment.cs" />
     <Compile Include="StaticClasses\CCL_Log.cs" />
+    <Compile Include="Structures\StringDescTriplet.cs" />
     <Compile Include="ThingComps\CompPawnGizmo.cs" />
     <Compile Include="ThingComps\CompPowerLowIdleDraw.cs" />
     <Compile Include="CompProperties\CompProperties_LowIdleDraw.cs" />
@@ -170,6 +172,7 @@
     <PostBuildEvent>call "$(ProjectDir)PostBuild.bat" $(ConfigurationName) "$(TargetPath)" $(SolutionDir)</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
