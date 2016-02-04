@@ -7,7 +7,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public class MainTabWindow_ModHelp : MainTabWindow
+    public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
     {
 
         #region Instance Data
@@ -18,6 +18,8 @@ namespace CommunityCoreLibrary
         public const float                  Margin                  = 6f; // 15 is way too much.
         public const float                  EntryHeight             = 30f;
         public const float                  EntryIndent             = 15f;
+        public const float                  ParagraphMargin         = 8f;
+        public const float                  LineHeigthOffset        = 6f; // CalcSize overestimates required height by roughly this much.
 
         protected Rect                      SelectionRect;
         protected Rect                      DisplayRect;
@@ -37,7 +39,7 @@ namespace CommunityCoreLibrary
         private int                         _lastFilterTick;
         private bool                        _filtered;
         private bool                        _jump;
-        
+
         public override Vector2 RequestedTabSize
         {
             get
@@ -264,9 +266,6 @@ namespace CommunityCoreLibrary
 
         void DrawDisplayArea( Rect rect )
         {
-            float paragraphMargin = 8f;
-            float inset = 30f;
-
             Widgets.DrawMenuSection( rect );
 
             if( SelectedHelpDef == null )
@@ -292,40 +291,13 @@ namespace CommunityCoreLibrary
 
             Vector2 cur = Vector2.zero;
 
-            HelpDetailSectionHelper.DrawText( ref cur, viewRect, SelectedHelpDef.description );
+            HelpDetailSectionHelper.DrawText( ref cur, viewRect.width, SelectedHelpDef.description );
 
-            cur.y += paragraphMargin;
+            cur.y += ParagraphMargin;
 
-            foreach( HelpDetailSection section in SelectedHelpDef.HelpDetailSections )
+            foreach ( HelpDetailSection section in SelectedHelpDef.HelpDetailSections )
             {
-                cur.x = 0f;
-                if( !string.IsNullOrEmpty( section.Label ) )
-                {
-                    HelpDetailSectionHelper.DrawText( ref cur, viewRect, section.Label );
-                    cur.x = inset;
-                }
-                if( section.StringDescs != null )
-                {
-                    foreach( var s in section.StringDescs )
-                    {
-                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s.ToString() );
-                    }
-                }
-                if( section.KeyDefs != null )
-                {
-                    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
-                    {
-                        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
-                        {
-                            // bit ugly, but since the helper can't return true if the helpdef doesn't exist, we can fetch it again here -Fluffy.
-                            // TODO: better way of passing along helpdef. Perhaps make a resolve references step to add helpdef so we don't have to find it in realtime?
-                            HelpDef helpDef = DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
-                            SelectedHelpDef = helpDef;
-                            JumpToDef( helpDef );
-                        }
-                    }
-                }
-                cur.y += paragraphMargin;
+                section.Draw( ref cur, viewRect.width, this );
             }
 
             ContentHeight = cur.y;
@@ -502,8 +474,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void JumpToDef( HelpDef helpDef )
+        public void JumpTo( HelpDef helpDef )
         {
+            Find.MainTabsRoot.SetCurrentTab( this.def );
             ResetFilter();
             _jump = true;
             HelpCategoryDef cat =
@@ -512,6 +485,17 @@ namespace CommunityCoreLibrary
             ModCategory mod = CachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
             mod.Expanded = true;
         }
+
+        public bool Accept( HelpDef def )
+        {
+            return true;
+        }
+
+        public IHelpDefView SecondaryView( HelpDef def )
+        {
+            return null;
+        }
+
         #endregion
 
     }

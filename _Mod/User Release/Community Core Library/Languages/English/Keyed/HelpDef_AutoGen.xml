@@ -101,8 +101,8 @@
     <AutoHelpLifeExpectancy>Life expectancy:</AutoHelpLifeExpectancy>
     <AutoHelpIntelligence>Intelligence:</AutoHelpIntelligence>
     <AutoHelpDiet>Diet:</AutoHelpDiet>
-    <AutoHelpGestationPeriod>Gestation period: {0}</AutoHelpGestationPeriod>
-    <AutoHelpLitterSize>Litter size: {0}</AutoHelpLitterSize>
+    <AutoHelpGestationPeriod>Gestation period:</AutoHelpGestationPeriod>
+    <AutoHelpLitterSize>Litter size:</AutoHelpLitterSize>
     <AutoHelpEggLayer>Lays {0} eggs every {1}</AutoHelpEggLayer>
     <AutoHelpEveryX>every {0}</AutoHelpEveryX> 
 

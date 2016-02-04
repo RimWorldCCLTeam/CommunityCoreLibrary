@@ -8,7 +8,7 @@ using RimWorld;
 
 namespace CommunityCoreLibrary
 {
-    public class MainTabWindow_Research : MainTabWindow
+    public class MainTabWindow_Research : MainTabWindow, IHelpDefView
     {
         // UI settings
         private const float     LeftAreaWidth               = 330f;
@@ -281,57 +281,48 @@ namespace CommunityCoreLibrary
 
             Vector2 cur = Vector2.zero;
 
-            HelpDetailSectionHelper.DrawText( ref cur, viewRect, SelectedProject.description );
+            HelpDetailSectionHelper.DrawText( ref cur, viewRect.width - cur.x, SelectedProject.description );
 
             cur.y += paragraphMargin;
 
             foreach( HelpDetailSection section in SelectedProject.HelpDetailSections )
             {
-                cur.x = 0f;
-                if( !string.IsNullOrEmpty( section.Label ) )
-                {
-                    HelpDetailSectionHelper.DrawText( ref cur, viewRect, section.Label );
-                    cur.x = inset;
-                }
-                if( section.StringDescs != null )
-                {
-                    foreach( var s in section.StringDescs )
-                    {
-                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s.ToString() );
-                    }
-                }
-                if( section.KeyDefs != null )
-                {
-                    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
-                    {
-                        // deflink may return true if the defstringtriplet contains a valid linkable def and is clicked
-                        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
-                        {
-                            // Helper can only return true if helpDef exists, lets find it!
-                            HelpDef linkedHelpDef = defStringTriplet.Def.GetHelpDef();
-                            if( defStringTriplet.Def is ResearchProjectDef )
-                            {
-                                _showResearchedProjects = ShowResearch.All;
-                                RefreshSource();
-                                SelectedProject = linkedHelpDef;
-                            }
-                            else
-                            {
-                                // If it's not research, we're linking to the help tab.
-                                MainTabDef helpTab = DefDatabase<MainTabDef>.GetNamed("CCL_ModHelp", false);
+                section.Draw( ref cur, viewRect.width, this );
+                //cur.x = 0f;
+                //if( !string.IsNullOrEmpty( section.Label ) )
+                //{
+                //    HelpDetailSectionHelper.DrawText( ref cur, viewRect.width - cur.x, section.Label );
+                //    cur.x = inset;
+                //}
+                //if( section.StringDescs != null )
+                //{
+                //    foreach( var s in section.StringDescs )
+                //    {
+                        
+                //        // HelpDetailSectionHelper.DrawText( ref cur, viewRect.width - cur.x, s.ToString() );
+                //    }
+                //}
+                //if( section.KeyDefs != null )
+                //{
+                //    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
+                //    {
+                //        // deflink may return true if the defstringtriplet contains a valid linkable def and is clicked
+                //        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
+                //        {
+                //            // Helper can only return true if helpDef exists, lets find it!
+                //            HelpDef linkedHelpDef = defStringTriplet.Def.GetHelpDef();
+                //            if( defStringTriplet.Def is ResearchProjectDef )
+                //            {
+                //            }
+                //            else
+                //            {
+                //                // If it's not research, we're linking to the help tab.
 
-                                if( helpTab != null )
-                                {
-                                    MainTabWindow_ModHelp helpWindow = (MainTabWindow_ModHelp) helpTab.Window;
-                                    helpWindow.SelectedHelpDef = linkedHelpDef;
-                                    Find.MainTabsRoot.SetCurrentTab( helpTab, false );
-                                    helpWindow.JumpToDef( linkedHelpDef );
-                                }
-                            }
-                        }
-                    }
-                }
-                cur.y += paragraphMargin;
+                //            }
+                //        }
+                //    }
+                //}
+                //cur.y += paragraphMargin;
             }
 
             _contentHeight = cur.y;
@@ -564,6 +555,25 @@ namespace CommunityCoreLibrary
             }
 
             if( _asc ) _source = _source.Reverse();
+        }
+
+        public void JumpTo( HelpDef def )
+        {
+            Find.MainTabsRoot.SetCurrentTab( this.def, false );
+            _showResearchedProjects = ShowResearch.All;
+            RefreshSource();
+            SelectedProject = def;
+        }
+
+        public bool Accept( HelpDef def )
+        {
+            return def.keyDef is ResearchProjectDef;
+        }
+
+        public IHelpDefView SecondaryView( HelpDef def )
+        {
+            MainTabDef helpTab = DefDatabase<MainTabDef>.GetNamed("CCL_ModHelp", false);
+            return helpTab.Window as MainTabWindow_ModHelp;
         }
     }
 }
