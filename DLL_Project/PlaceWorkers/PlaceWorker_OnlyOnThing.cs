@@ -28,13 +28,14 @@ namespace CommunityCoreLibrary
 #endif
 
             // Override steam-geyser restriction if required
-            if(
-                ( Restrictions.RestrictedThing.Exists( r => r == ThingDefOf.SteamGeyser ) )&&
-                ( ThingDefOf.GeothermalGenerator != thingDef )
-            )
-            {
-                ThingDefOf.GeothermalGenerator = thingDef;
-            }
+            // Obsoleted with detouring
+            //if(
+            //    ( Restrictions.RestrictedThing.Exists( r => r == ThingDefOf.SteamGeyser ) )&&
+            //    ( ThingDefOf.GeothermalGenerator != thingDef )
+            //)
+            //{
+            //    ThingDefOf.GeothermalGenerator = thingDef;
+            //}
 
             foreach( Thing t in loc.GetThingList() )
             {

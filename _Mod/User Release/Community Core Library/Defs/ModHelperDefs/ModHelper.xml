@@ -6,7 +6,7 @@
 
         <ModName>Community Core Library</ModName>
 
-        <version>0.12.6</version>
+        <version>0.12.7</version>
 
         <MapComponents>
             <li>CommunityCoreLibrary.ResearchController</li>
@@ -14,6 +14,7 @@
         </MapComponents>
 
         <SpecialInjectors>
+            <li>CommunityCoreLibrary.DetourInjector</li>
             <li>CommunityCoreLibrary.CompRottableRefrigerated_Injector</li>
         </SpecialInjectors>
 

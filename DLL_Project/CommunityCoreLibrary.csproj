@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.12.5</ReleaseVersion>
+    <ReleaseVersion>0.12.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -159,6 +159,8 @@
     <Compile Include="MapComponents\HideItemManager.cs" />
     <Compile Include="Extensions\Find_Extensions.cs" />
     <Compile Include="Enumerations\Verbosity.cs" />
+    <Compile Include="Detours\GenSpawn.cs" />
+    <Compile Include="Detours\DetourInjector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -172,11 +174,11 @@
     <PostBuildEvent>call "$(ProjectDir)PostBuild.bat" $(ConfigurationName) "$(TargetPath)" $(SolutionDir)</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ITabs\" />
     <Folder Include="MonoBehaviour\" />
+    <Folder Include="Detours\" />
   </ItemGroup>
 </Project>

@@ -1065,7 +1065,10 @@ namespace CommunityCoreLibrary.Controller
 
             #region plant extras
 
-            if( thingDef?.plant != null )
+            if(
+                ( thingDef != null )&&
+                ( thingDef.plant != null )
+            )
             {
                 HelpPartsForPlant( thingDef, ref statParts, ref linkParts );
             }
