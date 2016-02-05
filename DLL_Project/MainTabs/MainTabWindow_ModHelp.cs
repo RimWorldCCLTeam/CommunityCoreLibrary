@@ -479,8 +479,8 @@ namespace CommunityCoreLibrary
             Find.MainTabsRoot.SetCurrentTab( this.def );
             ResetFilter();
             _jump = true;
-            HelpCategoryDef cat =
-                DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
+            SelectedHelpDef = helpDef;
+            HelpCategoryDef cat = DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
             cat.Expanded = true;
             ModCategory mod = CachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
             mod.Expanded = true;

@@ -288,41 +288,6 @@ namespace CommunityCoreLibrary
             foreach( HelpDetailSection section in SelectedProject.HelpDetailSections )
             {
                 section.Draw( ref cur, viewRect.width, this );
-                //cur.x = 0f;
-                //if( !string.IsNullOrEmpty( section.Label ) )
-                //{
-                //    HelpDetailSectionHelper.DrawText( ref cur, viewRect.width - cur.x, section.Label );
-                //    cur.x = inset;
-                //}
-                //if( section.StringDescs != null )
-                //{
-                //    foreach( var s in section.StringDescs )
-                //    {
-                        
-                //        // HelpDetailSectionHelper.DrawText( ref cur, viewRect.width - cur.x, s.ToString() );
-                //    }
-                //}
-                //if( section.KeyDefs != null )
-                //{
-                //    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
-                //    {
-                //        // deflink may return true if the defstringtriplet contains a valid linkable def and is clicked
-                //        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
-                //        {
-                //            // Helper can only return true if helpDef exists, lets find it!
-                //            HelpDef linkedHelpDef = defStringTriplet.Def.GetHelpDef();
-                //            if( defStringTriplet.Def is ResearchProjectDef )
-                //            {
-                //            }
-                //            else
-                //            {
-                //                // If it's not research, we're linking to the help tab.
-
-                //            }
-                //        }
-                //    }
-                //}
-                //cur.y += paragraphMargin;
             }
 
             _contentHeight = cur.y;

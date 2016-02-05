@@ -41,8 +41,9 @@ namespace CommunityCoreLibrary
             return s.ToString();
         }
 
-        public void Draw( ref Vector2 cur, Vector3 colWidths )
+        public void Draw( ref Vector2 cur, Vector3 colWidths, IHelpDefView window = null )
         {
+            // calculate height of row, or fetch from cache
             if( !_heightSet )
             {
                 List<float> heights = new List<float>();
@@ -58,6 +59,8 @@ namespace CommunityCoreLibrary
                 _height = heights.Max();
                 _heightSet = true;
             }
+
+            // draw text
             if( !Prefix.NullOrEmpty() )
             {
                 Rect prefixRect = new Rect( cur.x, cur.y, colWidths.x, _height );
@@ -68,8 +71,38 @@ namespace CommunityCoreLibrary
                 Rect suffixRect = new Rect( cur.x + colWidths.x + colWidths.y + 2 * HelpDetailSection._columnMargin, cur.y, colWidths.z, _height );
                 Widgets.Label( suffixRect, Suffix );
             }
-            Rect labelRect = new Rect( cur.x + colWidths.x + HelpDetailSection._columnMargin, cur.y, colWidths.y, _height );
+            Rect labelRect = 
+                new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0f : HelpDetailSection._columnMargin ),
+                          cur.y,
+                          colWidths.y,
+                          _height );
+
             Widgets.Label( labelRect, Def.LabelStyled() );
+
+            // def interactions (if any)
+            // if we have a window set up to catch jumps, and there is a helpdef available, draw a button on the def text.
+            HelpDef helpDef = Def.GetHelpDef();
+            if( window != null && 
+                helpDef != null )
+            {
+                TooltipHandler.TipRegion( labelRect, Def.description + "\n\n" + "JumpToTopic".Translate() );
+                if ( Widgets.InvisibleButton( labelRect ) )
+                {
+                    if ( window.Accept( helpDef ) )
+                    {
+                        window.JumpTo( helpDef );
+                    }
+                    else
+                    {
+                        window.SecondaryView( helpDef ).JumpTo( helpDef );
+                    }
+                }
+            }
+            if ( helpDef == null &&
+                 !Def.description.NullOrEmpty() )
+            {
+                TooltipHandler.TipRegion( labelRect, Def.description );
+            }
             cur.y += _height - MainTabWindow_ModHelp.LineHeigthOffset;
         }
     }

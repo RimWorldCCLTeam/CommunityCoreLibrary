@@ -54,8 +54,8 @@
     <AutoHelpListThingsUnlocked>Enables construction</AutoHelpListThingsUnlocked>
     <AutoHelpListCapacityModifiers>Capacity modifiers</AutoHelpListCapacityModifiers>    
     <AutoHelpListStatOffsets>Stat bonus</AutoHelpListStatOffsets>
-    <AutoHelpListNutrition>When eaten</AutoHelpListNutrition>
-    <AutoHelpListNutritionPlant>When eaten (plant)</AutoHelpListNutritionPlant>
+    <AutoHelpListNutrition>Nutritional value</AutoHelpListNutrition>
+    <AutoHelpListNutritionPlant>Nutritional value (plant)</AutoHelpListNutritionPlant>
     <AutoHelpFacilityStats>Facility bonus</AutoHelpFacilityStats>
 
     <AutoHelpListPlantYield>Yields</AutoHelpListPlantYield>
@@ -74,7 +74,7 @@
     <AutoHelpListBiomeTerrain>Terrain</AutoHelpListBiomeTerrain>
     <AutoHelpListBiomePlants>Plants</AutoHelpListBiomePlants>
     <AutoHelpListBiomeAnimals>Animals</AutoHelpListBiomeAnimals>
-    <AutoHelpListBiomeDiseases>Diseases</AutoHelpListBiomeDiseases>
+    <AutoHelpListBiomeDiseases>Diseases (Chance per year)</AutoHelpListBiomeDiseases>
 
     <!-- Specific Keys -->
     <AutoHelpSurgeryFixOrReplace>Fixes or replaces</AutoHelpSurgeryFixOrReplace>

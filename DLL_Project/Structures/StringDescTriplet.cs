@@ -70,7 +70,12 @@ namespace CommunityCoreLibrary
                 Widgets.Label( suffixRect, Suffix );
             }
 
-            Rect labelRect = new Rect( cur.x + colWidths.x + HelpDetailSection._columnMargin, cur.y, colWidths.y, _height );
+            Rect labelRect =
+                new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0f : HelpDetailSection._columnMargin ),
+                          cur.y,
+                          colWidths.y,
+                          _height );
+
             Widgets.Label( labelRect, StringDesc );
             cur.y += _height - MainTabWindow_ModHelp.LineHeigthOffset;
         }

@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
         public bool                     Align;
         public Vector3                  ColumnWidths        = Vector3.zero;
         public bool                     WidthsSet           = false;
-        public static float                   _columnMargin       = 6f;
+        public static float             _columnMargin       = 8f;
 
         public HelpDetailSection(string label, 
                                  string[] stringDescs,
@@ -109,7 +109,7 @@ namespace CommunityCoreLibrary
             {
                 Rect labelRect = new Rect( cur.x, cur.y, width, 20f );
                 Widgets.Label( labelRect, Label );
-                cur.y += 20f;
+                cur.y += 20f - MainTabWindow_ModHelp.LineHeigthOffset;
             }
 
             // respect tabs!
@@ -133,7 +133,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( DefStringTriplet triplet in KeyDefs )
                 {
-                    triplet.Draw( ref cur, ColumnWidths );
+                    triplet.Draw( ref cur, ColumnWidths, window );
                 }
             }
 

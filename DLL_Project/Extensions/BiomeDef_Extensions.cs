@@ -29,6 +29,6 @@ namespace CommunityCoreLibrary
             }
 
             return ret;
-        } 
+        }
     }
 }

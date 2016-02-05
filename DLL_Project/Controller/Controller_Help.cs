@@ -725,7 +725,6 @@ namespace CommunityCoreLibrary.Controller
                 HelpDetailSection costs = new HelpDetailSection(
                     "AutoHelpCost".Translate(),
                     buildableDef.costList.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
-                    null,
                     buildableDef.costList.Select( tc => tc.count.ToString() ).ToArray() );
 
                 linkParts.Add( costs );
@@ -863,7 +862,7 @@ namespace CommunityCoreLibrary.Controller
                                      .Where(s => !s.capMods.NullOrEmpty())
                                      .SelectMany(s => s.capMods)
                                      .Select(
-                                        cm => (cm.offset > 0 ? ": +" : ": ") + cm.offset.ToString("P0"))
+                                        cm => (cm.offset > 0 ? "+" : "") + cm.offset.ToString("P0"))
                                      .ToArray());
 
                         statParts.Add( capacityMods );
@@ -978,6 +977,7 @@ namespace CommunityCoreLibrary.Controller
 #region Facilities
 
                 // Get list of facilities that effect it
+                // TODO: This was never implemented?
                 var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
                 if( ( affectedBy != null ) &&
                     ( !affectedBy.linkableFacilities.NullOrEmpty() ) )
@@ -1003,7 +1003,7 @@ namespace CommunityCoreLibrary.Controller
 
                         List<DefStringTriplet> facilityDefs = new List<DefStringTriplet>();
                         List<StringDescTriplet> facilityStrings = new List<StringDescTriplet>();
-                        facilityStrings.Add( new StringDescTriplet( facilityProperties.maxSimultaneous.ToString(), "AutoHelpMaximumAffected".Translate() ) );
+                        facilityStrings.Add( new StringDescTriplet( "AutoHelpMaximumAffected".Translate(), null, facilityProperties.maxSimultaneous.ToString() ) );
 
                         // Look at stats modifiers
                         foreach( var stat in facilityProperties.statOffsets )
@@ -1548,6 +1548,7 @@ namespace CommunityCoreLibrary.Controller
             helpDef.description = biomeDef.description;
 
             List<Def> defs = new List<Def>();
+            List<string> chances = new List<string>();
 
             #region Generic (temp, rainfall, elevation)
             // we can't get to these stats. They seem to be hardcoded in RimWorld.Planet.WorldGenerator_Grid.BiomeFrom()
@@ -1567,17 +1568,19 @@ namespace CommunityCoreLibrary.Controller
                 foreach( object disease in diseases )
                 {
                     defs.Add( ( (BiomeDiseaseRecord)disease ).diseaseInc.disease );
+                    chances.Add( ( ( (BiomeDiseaseRecord)disease ).mtbDays / GenDate.DaysPerYear ).ToStringPercent() );
                 }
 
                 helpDef.HelpDetailSections.Add( new HelpDetailSection(
                                                     "AutoHelpListBiomeDiseases".Translate(),
-                                                    defs ) );
+                                                    defs, null, chances.ToArray() ) );
             }
             defs.Clear();
             #endregion
 
             #region Terrain
             defs = biomeDef.AllTerrainDefs().ConvertAll( def => (Def)def );
+            // commonalities unknown
             if ( !defs.NullOrEmpty() )
             {
                 helpDef.HelpDetailSections.Add( new HelpDetailSection(
@@ -1730,19 +1733,21 @@ namespace CommunityCoreLibrary.Controller
             List<String> suffixes = new List<string>();
 
             #region Health, diet and intelligence
-
+            
             statParts.Add( new HelpDetailSection( null, 
                 new []
                 {
                     ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
                     race.lifeExpectancy.ToStringApproximateTimePeriod(),
-                    race.diet.ToString().Translate()
+                    race.diet.ToString().Translate(),
+                    race.trainableIntelligence.ToString()
                 },
                 new []
                 {
                     "AutoHelpHealthScale".Translate(),
                     "AutoHelpLifeExpectancy".Translate(),
-                    "AutoHelpDiet".Translate()
+                    "AutoHelpDiet".Translate(),
+                    "AutoHelpIntelligence".Translate()
                 },
                 null ) );
 
@@ -1752,9 +1757,6 @@ namespace CommunityCoreLibrary.Controller
             if( race.Animal )
             {
                 List<DefStringTriplet> DST = new List<DefStringTriplet>();
-                List<StringDescTriplet> SDT = new List<StringDescTriplet>();
-
-                SDT.Add( new StringDescTriplet( race.trainableIntelligence.ToString(), "AutoHelpIntelligence".Translate() ) );
                 
                 foreach( TrainableDef def in DefDatabase<TrainableDef>.AllDefsListForReading )
                 {
@@ -1787,7 +1789,7 @@ namespace CommunityCoreLibrary.Controller
                 {
                     linkParts.Add( new HelpDetailSection(
                                        "AutoHelpListTrainable".Translate(),
-                                       DST, SDT ) );
+                                       DST, null ) );
                 }
                 defs.Clear();
             }
