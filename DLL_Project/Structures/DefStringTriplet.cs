@@ -71,13 +71,33 @@ namespace CommunityCoreLibrary
                 Rect suffixRect = new Rect( cur.x + colWidths.x + colWidths.y + 2 * HelpDetailSection._columnMargin, cur.y, colWidths.z, _height );
                 Widgets.Label( suffixRect, Suffix );
             }
-            Rect labelRect = 
-                new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0f : HelpDetailSection._columnMargin ),
+
+            Rect labelRect;
+            if ( Def.Icon() != null )
+            {
+                Rect iconRect =
+                new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0 : 1 ) * HelpDetailSection._columnMargin,
+                          cur.y + 2f,
+                          16f,
+                          16f );
+                labelRect =
+                new Rect( cur.x + colWidths.x + 20f + ( Prefix.NullOrEmpty() ? 0 : 1 ) * HelpDetailSection._columnMargin,
+                          cur.y,
+                          colWidths.y - 20f,
+                          _height );
+                Def.Icon().DrawFittedIn( iconRect );
+                Widgets.Label( labelRect, Def.LabelStyled() );
+            }
+            else
+            {
+                labelRect =
+                new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0 : 1 ) * HelpDetailSection._columnMargin,
                           cur.y,
                           colWidths.y,
                           _height );
-
-            Widgets.Label( labelRect, Def.LabelStyled() );
+                Widgets.Label( labelRect, Def.LabelStyled() );
+            }
+            
 
             // def interactions (if any)
             // if we have a window set up to catch jumps, and there is a helpdef available, draw a button on the def text.
@@ -85,7 +105,7 @@ namespace CommunityCoreLibrary
             if( window != null && 
                 helpDef != null )
             {
-                TooltipHandler.TipRegion( labelRect, Def.description + "\n\n" + "JumpToTopic".Translate() );
+                TooltipHandler.TipRegion( labelRect, Def.description + (Def.description.NullOrEmpty() ? "" : "\n\n" ) + "JumpToTopic".Translate() );
                 if ( Widgets.InvisibleButton( labelRect ) )
                 {
                     if ( window.Accept( helpDef ) )

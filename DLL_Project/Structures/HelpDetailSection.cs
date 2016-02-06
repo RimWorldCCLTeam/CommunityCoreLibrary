@@ -157,6 +157,7 @@ namespace CommunityCoreLibrary
             List<string> prefixes = new List<string>();
             List<string> suffixes = new List<string>();
             List<string> descs = new List<string>();
+            List<Def> defs = new List<Def>();
 
             if ( StringDescs != null )
             {
@@ -169,7 +170,7 @@ namespace CommunityCoreLibrary
             {
                 prefixes.AddRange( KeyDefs.Select( k => k.Prefix ) );
                 suffixes.AddRange( KeyDefs.Select( k => k.Suffix ) );
-                descs.AddRange( KeyDefs.Select( k => k.Def.LabelStyled() ) );
+                defs.AddRange( KeyDefs.Select( k => k.Def ) );
             }
 
             // fetch length of all strings, select largest for each column
@@ -185,6 +186,10 @@ namespace CommunityCoreLibrary
             if ( !descs.NullOrEmpty() )
             {
                 requestedWidths.y = descs.Select( s => Text.CalcSize( s ).x ).Max();
+            }
+            if ( !defs.NullOrEmpty() )
+            {
+                requestedWidths.y = Mathf.Max( requestedWidths.y, defs.Select( d => d.StyledLabelAndIconSize() ).Max() );
             }
             if ( !suffixes.NullOrEmpty() )
             {

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\BiomeDef_Extensions.cs" />
+    <Compile Include="Extensions\Texture2D_Extensions.cs" />
     <Compile Include="Extensions\Vector3_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
     <Compile Include="Interfaces\IHelpDefView.cs" />
@@ -179,6 +180,5 @@
   <ItemGroup>
     <Folder Include="ITabs\" />
     <Folder Include="MonoBehaviour\" />
-    <Folder Include="Detours\" />
   </ItemGroup>
 </Project>

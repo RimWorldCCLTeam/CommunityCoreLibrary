@@ -82,10 +82,9 @@ namespace CommunityCoreLibrary
         {
             base.PostOpen();
 
-            this.currentWindowRect = new Rect( ( Screen.width - RequestedTabSize.x ) / 2,
-                                               ( Screen.height - RequestedTabSize.y - 35f ) / 2,
+            this.currentWindowRect = new Rect( ( Screen.width - RequestedTabSize.x ) ,
+                                               ( Screen.height - RequestedTabSize.y - 35f ) ,
                                                RequestedTabSize.x, RequestedTabSize.y );
-            Log.Message( currentWindowRect.ToString() );
         }
 
         #endregion
@@ -273,12 +272,20 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
+            Text.WordWrap = false;
+            float titleWidth = Text.CalcSize( SelectedHelpDef.LabelCap ).x;
+            var titleRect = new Rect(rect.xMin + (rect.width - titleWidth) / 3f, rect.yMin, titleWidth, 60f);
+            if ( SelectedHelpDef.keyDef?.Icon() != null )
+            {
+                var iconRect = new Rect( titleRect.xMin - 60f, rect.yMin, 60f, 60f );
+                SelectedHelpDef.keyDef.Icon().DrawFittedIn( iconRect );
+            }
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
+            Text.WordWrap = true;
 
             Rect outRect = rect.ContractedBy(Margin);
             outRect.yMin += 60f;

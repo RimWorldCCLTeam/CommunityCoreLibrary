@@ -62,7 +62,7 @@ namespace CommunityCoreLibrary.Controller
 
             // flora and fauna
             ResolvePlants();
-            ResolveRaces();
+            ResolvePawnkinds();
             ResolveBiomes();
 
             // Recipes
@@ -418,33 +418,26 @@ namespace CommunityCoreLibrary.Controller
             ResolveDefList( plants, category );
         }
 
-        static void ResolveRaces()
+        static void ResolvePawnkinds()
         {
             // animals
-            List<ThingDef> races =
-                DefDatabase<ThingDef>.AllDefsListForReading
-                                     .Where( t => t.race != null 
-                                               && t.race.Animal ).ToList();
+            List<PawnKindDef> pawnkinds =
+                DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race.race.Animal ).ToList();
             HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.Animals, "AutoHelpSubCategoryAnimals".Translate(),
                                                "AutoHelpCategoryFloraAndFauna".Translate() );
-            ResolveDefList( races, category );
+            ResolveDefList( pawnkinds, category );
 
             // mechanoids
-            races = DefDatabase<ThingDef>.AllDefsListForReading
-                                         .Where( t => t.race != null
-                                                   && t.race.mechanoid ).ToList();
+            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race.race.mechanoid ).ToList();
             category = HelpCategoryForKey( HelpCategoryDefOf.Mechanoids, "AutoHelpSubCategoryMechanoids".Translate(),
                                            "AutoHelpCategoryFloraAndFauna".Translate() );
-            ResolveDefList( races, category );
+            ResolveDefList( pawnkinds, category );
 
             // humanoids
-            races = DefDatabase<ThingDef>.AllDefsListForReading
-                                         .Where( t => t.race != null 
-                                                  && !t.race.Animal 
-                                                  && !t.race.mechanoid ).ToList();
+            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => !t.race.race.Animal && !t.race.race.mechanoid ).ToList();
             category = HelpCategoryForKey( HelpCategoryDefOf.Humanoids, "AutoHelpSubCategoryHumanoids".Translate(),
                                            "AutoHelpCategoryFloraAndFauna".Translate() );
-            ResolveDefList( races, category );
+            ResolveDefList( pawnkinds, category );
 
         }
 
@@ -650,6 +643,10 @@ namespace CommunityCoreLibrary.Controller
             if( def is AdvancedResearchDef )
             {
                 return HelpForAdvancedResearch( def as AdvancedResearchDef, category );
+            }
+            if (def is PawnKindDef )
+            {
+                return HelpForPawnKind( def as PawnKindDef, category );
             }
             if( def is RecipeDef )
             {
@@ -1083,17 +1080,7 @@ namespace CommunityCoreLibrary.Controller
             }
 
             #endregion
-
-            #region Race Specific
-
-            if ( thingDef != null &&
-                 thingDef.race != null )
-            {
-                HelpPartsForAnimal( thingDef, ref statParts, ref linkParts );
-            }
-
-            #endregion
-
+            
             helpDef.HelpDetailSections.AddRange( statParts );
             helpDef.HelpDetailSections.AddRange( linkParts );
 
@@ -1606,7 +1593,6 @@ namespace CommunityCoreLibrary.Controller
             #region Animals
             defs = DefDatabase<PawnKindDef>.AllDefsListForReading
                                         .Where( t => biomeDef.AllWildAnimals.Contains( t ) )
-                                        .Select( t => t.race )
                                         .Distinct()
                                         .ToList().ConvertAll( def => (Def)def );
             if( !defs.NullOrEmpty() )
@@ -1617,6 +1603,56 @@ namespace CommunityCoreLibrary.Controller
             }
 
             #endregion
+
+            return helpDef;
+        }
+
+        static HelpDef HelpForPawnKind( PawnKindDef kindDef, HelpCategoryDef category )
+        {
+
+#if DEBUG
+            CCL_Log.TraceMod(
+                kindDef,
+                Verbosity.AutoGenCreation,
+                "HelpForBuildable()"
+            );
+#endif
+
+            // we need the thingdef in several places
+            ThingDef raceDef = kindDef.race;
+
+            // set up empty helpdef
+            var helpDef = new HelpDef();
+            helpDef.defName = kindDef.defName + "_PawnKindDef_Help";
+            helpDef.keyDef = kindDef;
+            helpDef.label = kindDef.label;
+            helpDef.category = category;
+            helpDef.description = kindDef.description;
+
+            List<HelpDetailSection> statParts = new List<HelpDetailSection>();
+            List<HelpDetailSection> linkParts = new List<HelpDetailSection>();
+
+            #region Base Stats
+
+            if( !raceDef.statBases.NullOrEmpty() )
+            {
+                // Look at base stats
+                HelpDetailSection baseStats = new HelpDetailSection(
+                    null,
+                    raceDef.statBases.Select( sb => sb.stat ).ToList().ConvertAll( def => (Def)def ),
+                    null,
+                    raceDef.statBases.Select( sb => sb.stat.ValueToString( sb.value, sb.stat.toStringNumberSense ) )
+                                .ToArray() );
+
+                statParts.Add( baseStats );
+            }
+
+            #endregion
+
+            HelpPartsForAnimal( kindDef, ref statParts, ref linkParts );
+            
+            helpDef.HelpDetailSections.AddRange( statParts );
+            helpDef.HelpDetailSections.AddRange( linkParts );
 
             return helpDef;
         }
@@ -1720,10 +1756,10 @@ namespace CommunityCoreLibrary.Controller
             }
         }
 
-        static void HelpPartsForAnimal( ThingDef thingDef, ref List<HelpDetailSection> statParts,
+        static void HelpPartsForAnimal( PawnKindDef kindDef, ref List<HelpDetailSection> statParts,
                                         ref List<HelpDetailSection> linkParts )
         {
-            var race = thingDef.race;
+            RaceProperties race = kindDef.race.race;
             float maxSize = race.lifeStageAges.Select( lsa => lsa.def.bodySizeFactor * race.baseBodySize ).Max();
 
             // set up vars
@@ -1830,9 +1866,9 @@ namespace CommunityCoreLibrary.Controller
 
             #region Reproduction
             // egglayers
-            if( thingDef.HasComp( typeof( CompEggLayer ) ) )
+            if( kindDef.race.HasComp( typeof( CompEggLayer ) ) )
             {
-                var eggComp = thingDef.GetCompProperties( typeof (CompEggLayer) );
+                var eggComp =  kindDef.race.GetCompProperties( typeof (CompEggLayer) );
                 string range;
                 if( eggComp.eggCountRange.min == eggComp.eggCountRange.max )
                 {
@@ -1896,7 +1932,7 @@ namespace CommunityCoreLibrary.Controller
 
             #region Biomes
 
-            var kinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race == thingDef );
+            var kinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race ==  kindDef.race );
             foreach ( PawnKindDef kind in kinds )
             {
                 foreach ( BiomeDef biome in DefDatabase<BiomeDef>.AllDefsListForReading )
@@ -1930,7 +1966,7 @@ namespace CommunityCoreLibrary.Controller
                 if( race.leatherDef != null )
                 {
                     defs.Add( race.leatherDef );
-                    prefixes.Add( "~" + maxSize * thingDef.statBases.Find( sb => sb.stat == StatDefOf.LeatherAmount ).value );
+                    prefixes.Add( "~" + maxSize * kindDef.race.statBases.Find( sb => sb.stat == StatDefOf.LeatherAmount ).value );
                 }
 
                 statParts.Add( new HelpDetailSection(
@@ -1941,12 +1977,12 @@ namespace CommunityCoreLibrary.Controller
 
             // metallic pawns ( mechanoids )
             else if( race.mechanoid &&
-                 !thingDef.butcherProducts.NullOrEmpty() )
+                 !kindDef.race.butcherProducts.NullOrEmpty() )
             {
                 linkParts.Add( new HelpDetailSection(
                                    "AutoHelpListDisassemble".Translate(),
-                                   thingDef.butcherProducts.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
-                                   thingDef.butcherProducts.Select( tc => tc.count.ToString() ).ToArray() ) );
+                                    kindDef.race.butcherProducts.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
+                                    kindDef.race.butcherProducts.Select( tc => tc.count.ToString() ).ToArray() ) );
             }
             defs.Clear();
             prefixes.Clear();
@@ -1955,9 +1991,9 @@ namespace CommunityCoreLibrary.Controller
 
             #region Milking products
 
-            if( thingDef.HasComp( typeof( CompMilkable ) ) )
+            if( kindDef.race.HasComp( typeof( CompMilkable ) ) )
             {
-                var milkComp = thingDef.GetCompProperties( typeof (CompMilkable) );
+                var milkComp =  kindDef.race.GetCompProperties( typeof (CompMilkable) );
 
                 defs.Add( milkComp.milkDef );
                 prefixes.Add( milkComp.milkAmount.ToString() );
@@ -1977,9 +2013,9 @@ namespace CommunityCoreLibrary.Controller
 
             #region Shearing products
 
-            if( thingDef.HasComp( typeof( CompShearable ) ) )
+            if( kindDef.race.HasComp( typeof( CompShearable ) ) )
             {
-                var shearComp = thingDef.GetCompProperties( typeof (CompShearable) );
+                var shearComp =  kindDef.race.GetCompProperties( typeof (CompShearable) );
 
                 defs.Add( shearComp.woolDef );
                 prefixes.Add( shearComp.woolAmount.ToString() );
