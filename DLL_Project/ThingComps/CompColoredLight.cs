@@ -14,7 +14,8 @@ namespace CommunityCoreLibrary
     {
         #region Private vars
 
-        int                                 ColorIndex = -1;
+        int                                 ColorIndex      = -1;
+        Color                               Color           = new Color( 1f, 1f, 1f, 0f );
         float                               lightRadius;
         
         CompProperties_ColoredLight         ColorProps;
@@ -98,6 +99,7 @@ namespace CommunityCoreLibrary
             base.PostExposeData();
 
             Scribe_Values.LookValue<int>( ref ColorIndex, "ColorIndex", -1 );
+            Scribe_Values.LookValue( ref Color, "Color", new Color( 1f, 1f, 1f, 0f ) );
         }
 
         public override void                PostSpawnSetup()
@@ -148,13 +150,25 @@ namespace CommunityCoreLibrary
             lightRadius = CompGlower.props.glowRadius;
 
             // Set the light color
-            ChangeColor( ColorIndex );
+            if ( ColorProps.useColorPicker )
+            {
+                ChangeColor( Color, false );
+            }
+            else
+            {
+                ChangeColor( ColorIndex );
+            }
         }
 
         public override string              CompInspectStringExtra()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append( "CompColorLightInspect".Translate() + ColorProps.color[ ColorIndex ].name );
+            stringBuilder.Append( "CompColorLightInspect".Translate() );
+            if ( ColorProps.useColorPicker )
+            {
+                return stringBuilder.ToString();
+            }
+            stringBuilder.Append( ColorProps.color[ ColorIndex ].name );
             return stringBuilder.ToString();
         }
 
