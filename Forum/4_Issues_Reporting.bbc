@@ -4,10 +4,21 @@ Changing languages and/or mod load order (including enabling mods) requires RimW
 
 There is a lot going on when RimWorld starts as far as CCL is concerned.  The best practice is to restart RimWorld if you change any setting more complicated than the volume.
 
+Software of any complexity is bound to have bugs, CCL is no different.  Please report bug by using the github issues tracker.  This makes it faster and easier to get bugs fixed and they can be linked directly to the commit that fixes them.  We appreciate feedback and want a bug free library for all but, with multiple team members, sending a PM or using the forum to report bug is now becoming inefficient.
+
 
 
 [size=12pt][color=orange]Bug Reporting[/color][/size]
 
-Software of any complexity is bound to have bugs, CCL is no different.  Please report bug by using the github issues tracker.  This makes it faster and easier to get bugs fixed and they can be linked directly to the commit that fixes them.  We appreciate feedback and want a bug free library for all but, with multiple team members, sending a PM or using the forum to report bug is now becoming inefficient.
+What we need:
+[list]
+[li]You to use the github issues tracker.  Going forward, issue reports on the forums [b]will[/b] be deleted.  (Either by a member of the CCL team or at the request of a forum moderator.)[/li]
+[li]Your full game log file found in /RimWorld[build][platform]_Data/ ([i]not[/i] a screen shot of).[/li]
+[li]If the issue is gameplay related, as much detail as possible on how to reproduce the error and [i]if relevant[/i] a screen shot of the problem.[/i]
+[li]Your save game and world file if the issue is save/load related.  [i]Please[/i] zip the files before sending them.[/li]
+[/list]
 
-[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/issues]Report a bug[/url]
+
+
+[size=12pt][color=orange]Issue Tracker[/color][/size]
+[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/issues]github[/url]

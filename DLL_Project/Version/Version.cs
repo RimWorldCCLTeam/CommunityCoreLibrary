@@ -40,6 +40,50 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        #region Comparison
+
+        public enum VersionCompare
+        {
+            LessThanMin,
+            GreaterThanMax,
+            ExactMatch,
+            WithinRange,
+            Invalid
+        }
+
+        public static VersionCompare        Compare( string v )
+        {
+            try
+            {
+                var modVersion = new System.Version( v );
+                return Compare( modVersion );
+            }
+            catch
+            {
+                return VersionCompare.Invalid;
+            }
+        }
+
+        public static VersionCompare        Compare( System.Version v )
+        {
+            if( v < Version.Minimum )
+            {
+                return VersionCompare.LessThanMin;
+            }
+            else if( v > Version.Current )
+            {
+                return VersionCompare.GreaterThanMax;
+            }
+            else if( v == Version.Current )
+            {
+                return VersionCompare.ExactMatch;
+            }
+
+            return VersionCompare.WithinRange;
+        }
+
+        #endregion
+
         public static void                  Log()
         {
 #if DEBUG

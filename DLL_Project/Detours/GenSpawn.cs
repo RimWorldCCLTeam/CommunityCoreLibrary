@@ -1,17 +1,16 @@
-﻿using System;
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary.Detour
 {
 
-    public static class GenSpawn
+    internal static class _GenSpawn
     {
         
         // This method is to remove the hard-coded references allowing more flexibility in
         // building placements.  Specifically, it removes the steam geyser/geothermal generator
         // lock.
-        public static bool                  CanPlaceBlueprintOver( BuildableDef newDef, ThingDef oldDef )
+        internal static bool                _CanPlaceBlueprintOver( BuildableDef newDef, ThingDef oldDef )
         {
             if( oldDef.EverHaulable )
             {
@@ -27,11 +26,11 @@ namespace CommunityCoreLibrary.Detour
                     // No place workers means nothing to allow it
                     return false;
                 }
-                if( newDef.placeWorkers.Contains( typeof( RimWorld.PlaceWorker_OnSteamGeyser ) ) )
+                if( newDef.placeWorkers.Contains( typeof( PlaceWorker_OnSteamGeyser ) ) )
                 {
                     return true;
                 }
-                if( newDef.placeWorkers.Contains( typeof( CommunityCoreLibrary.PlaceWorker_OnlyOnThing ) ) )
+                if( newDef.placeWorkers.Contains( typeof( PlaceWorker_OnlyOnThing ) ) )
                 {
                     var Restrictions = newDef.RestrictedPlacement_Properties();
 #if DEBUG
@@ -51,7 +50,7 @@ namespace CommunityCoreLibrary.Detour
 
             ThingDef newThingDef = newDef as ThingDef;
             ThingDef oldThingDef = oldDef;
-            BuildableDef buildableDef = Verse.GenSpawn.BuiltDefOf( oldDef );
+            BuildableDef buildableDef = GenSpawn.BuiltDefOf( oldDef );
             ThingDef resultThingDef = buildableDef as ThingDef;
 
             if(

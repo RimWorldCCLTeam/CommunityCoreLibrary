@@ -83,9 +83,15 @@ namespace CommunityCoreLibrary
                 // Should now be a complete pair of lists in mod load order
                 // as well as a dictionary of mods and their defs
 
+#if DEVELOPER
                 //Dump ordered list of mods and their defs
-                //for( int i = 0; i < Controller.Data.Mods.Count; i++ )
-                //    Log.Message( "[" + i + "] - " + Controller.Data.Mods[ i ].name + " - " + Controller.Data.ModHelperDefs[ i ].defName );
+                string dump = "Mod load order:\n";
+                for( int i = 0; i < Controller.Data.Mods.Count; i++ )
+                {
+                    dump += "\t[" + i + "] - " + Controller.Data.Mods[ i ].name + " - " + Controller.Data.ModHelperDefs[ i ].defName + ( Controller.Data.ModHelperDefs[ i ].dummy ? " - dummy" : "" ) + "\n";
+                }
+                CCL_Log.Write( dump );
+#endif
                 
                 // Return true if all mods OK, false if any failed validation
                 return rVal;

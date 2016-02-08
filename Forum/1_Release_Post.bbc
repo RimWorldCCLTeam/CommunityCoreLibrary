@@ -1,5 +1,5 @@
 [center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
-v0.12.6[/center]
+v0.12.7[/center]
 
 
 
@@ -7,22 +7,24 @@ v0.12.6[/center]
 
 This is a basic set of functions which modders can use to enhance their RimWorld mods. Most of the library can be used from xml without any additional C# skill or requirement.
 
-If you are a user which has a mod using CCL, you only need to download the latest CCL release zip.  Make sure it is enabled after the 'Core' mod and before any mod requiring CCL.
+If you are a user which has a mod using CCL, you only need to download the latest CCL release zip.  Make sure it is enabled immediately after the 'Core' mod and before any other mod.
 
 If you are a modder, download the modders resource or the source package.
 
 
 
-[size=12pt][color=orange]Download[/color][/size]
+[size=12pt][color=orange]Download & Install Instructions[/color][/size]
+
+Delete any previous install of both the core library and the vanilla tweaks.  This will avoid most common problems.
 
 [size=12pt]Regular users download the "User Release" package.[/size]
 [list][li]Extract both the folders in the zip into your Mods folder.[/li]
-[li]Enable "Community Core Library" after "Core"[/li]
-[li]Enable "Community Core Library - Vanilla Tweaks" after "Community Core Library" - The vanilla tweaks is entirely optional but highly recommended.[/li][/list]
+[li]Enable "Community Core Library" immediately after "Core" - This is [b][i]REQUIRED[/i][/b] and an error will be thrown if the library does not detect the correct load order position.[/li]
+[li]The "Community Core Library - Vanilla Tweaks" is entirely optional but highly recommended.  It does not matter where in your load order it is but other mods may make changes to the same game objects.  Enable the tweaks before or after those mods depending on the functional changes you want to use.[/li][/list]
 
 [size=12pt]Modders download the "Modders Resource" package.[/size]
 [list][li]Do not unzip this into Mods.[/li]
-[li]Install the two mod folders ("Community Core Library" and "Community Core Library - Vanilla Tweaks") into your Mods directory and enable them as usual.[/li]
+[li]Install the two mod folders ("Community Core Library" and "Community Core Library - Vanilla Tweaks") into your Mods directory and enable them as per the user release.[/li]
 [li]Check your output_log.txt!  It will contain valuable information if CCL encounters errors when handling your mod!  This will help you fix those trivial bugs.[/li]
 [li]Always refer to "Def Descriptions" and "Examples" for how to use this library.[/li]
 [li]If something is not covered, please ask a question.  Be ready to be given a polite "rtfm" if it is covered in the docs. ;)[/li][/list]
@@ -42,8 +44,8 @@ This project started in Alpha 9, continued to be developed in Alpha 10 (some ide
 
 
 
-[size=12pt][color=orange]Final Notes[/color][/size]
+[size=12pt][color=orange]Basic Troubleshooting[/color][/size]
 
-If all else fails, [i]read[/i] [b]all[/b] of the documentation, don't skim over anything.  Especially read "note" sections.
+If all else fails, [i]read[/i] [b]all[/b] of the documentation (this forum thread posts #1-10), don't skim over anything.  Especially read "note" sections.
 
 Always do a "clean" install.  Delete the old version from /mods/ before copying the new version.  Do [i]not[/i] overwrite an existing copy.

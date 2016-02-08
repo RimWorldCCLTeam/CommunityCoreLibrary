@@ -39,27 +39,28 @@ namespace CommunityCoreLibrary
         public int CompareTo(object obj)
         {
             var d = obj as HelpDef;
-            return d != null
+            return
+                ( d != null )
                 ? d.label.CompareTo(label) * -1
-                    : 1;
+                : 1;
         }
 
         #endregion
 
         #region Log Dump
 
-#if DEBUG
+#if DEVELOPER
         // Guard against using this method in release builds!
         public string LogDump()
         {
             return 
-                "HelpDef: " + defName +
-                "\n\t" + keyDef +
-                "\n\t" + category.LabelCap +
-                "\n\t" + LabelCap +
-                "\n------\n" +
-                description +
-                "\n------\n";
+                "\tHelpDef: " + defName + "\n" +
+                "\t\t" + ( keyDef == null ? "(null)" : keyDef.defName ) + "\n" +
+                "\t\t" + category.LabelCap + "\n" +
+                "\t\t" + LabelCap + "\n" +
+                "\t\t------\n" +
+                "\t\t" + description + "\n" +
+                "\t\t------\n";
         }
 #endif
         
