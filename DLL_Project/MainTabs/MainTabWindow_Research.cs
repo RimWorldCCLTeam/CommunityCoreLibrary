@@ -124,7 +124,10 @@ namespace CommunityCoreLibrary
             // warn the player if no research bench is built
             if( !_noBenchWarned )
             {
-                if( !Find.ListerBuildings.ColonistsHaveBuilding( ThingDefOf.ResearchBench ) )
+                if( !Find.ListerBuildings.allBuildingsColonist.Any( b => (
+                    ( b.def.thingClass == typeof( Building_ResearchBench ) )||
+                    ( b.def.thingClass.IsSubclassOf( typeof( Building_ResearchBench ) ) )
+                ) ) )
                 {
                     Find.WindowStack.Add( new Dialog_Message( "ResearchMenuWithoutBench".Translate() ) );
                 }

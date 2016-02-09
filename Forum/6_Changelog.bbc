@@ -2,7 +2,8 @@
 
 For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/56]commit log[/url].  This section is just for convenience sake.
 
-[code]v0.12.6 - Per-mod verbosity for debugging, help for terrain & flooring, helper functions for getting a mod by def, even more bugs fixed.
+[code]v0.12.7 - Detouring of core methods, more changes and additions to the help menu system, tighter control of the mod load order (CCL must be #2).
+v0.12.6 - Per-mod verbosity for debugging, help for terrain & flooring, helper functions for getting a mod by def, even more bugs fixed.
 v0.12.5.x - (Modder pre-release of new features) - More bugs fixed, internal refactoring, hidden storage comp, color picker and method detouring.
 v0.12.4 - Many, many bugs fixed, help menu overhaul, research menu overhaul, new comp & property.
 v0.12.3b - Fixes Advanced Research Def to recognizes plants using plants with an override class.

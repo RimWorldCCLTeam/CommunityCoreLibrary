@@ -91,27 +91,21 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    try
+                    var vc = Version.Compare( version );
+                    switch( vc )
                     {
-                        var modVersion = new System.Version( version );
-
-                        if( modVersion < Version.Minimum )
-                        {
-                            errors += "\n\tUnsupported CCL version requirement (v" + modVersion + ") minimum supported version is v" + Version.Minimum;
-                            isValid = false;
-                        }
-
-                        if( modVersion > Version.Current )
-                        {
-                            errors += "\n\tUnsupported CCL version requirement (v" + modVersion + ") maximum supported version is v" + Version.Current;
-                            isValid = false;
-                        }
-
-                    }
-                    catch
-                    {
+                    case Version.VersionCompare.LessThanMin:
+                        errors += "\n\tUnsupported CCL version requirement (v" + version + ") minimum supported version is v" + Version.Minimum;
+                        isValid = false;
+                        break;
+                    case Version.VersionCompare.GreaterThanMax:
+                        errors += "\n\tUnsupported CCL version requirement (v" + version + ") maximum supported version is v" + Version.Current;
+                        isValid = false;
+                        break;
+                    case Version.VersionCompare.Invalid:
                         errors += "\n\tUnable to get version from '" + version + "'";
                         isValid = false;
+                        break;
                     }
                 }
 

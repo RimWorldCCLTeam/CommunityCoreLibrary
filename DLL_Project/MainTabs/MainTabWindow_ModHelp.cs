@@ -276,7 +276,10 @@ namespace CommunityCoreLibrary
             Text.WordWrap = false;
             float titleWidth = Text.CalcSize( SelectedHelpDef.LabelCap ).x;
             var titleRect = new Rect(rect.xMin + (rect.width - titleWidth) / 3f, rect.yMin, titleWidth, 60f);
-            if ( SelectedHelpDef.keyDef?.Icon() != null )
+            if(
+                ( SelectedHelpDef.keyDef != null )&&
+                ( SelectedHelpDef.keyDef.Icon() != null )
+            )
             {
                 var iconRect = new Rect( titleRect.xMin - 60f, rect.yMin, 60f, 60f );
                 SelectedHelpDef.keyDef.Icon().DrawFittedIn( iconRect );

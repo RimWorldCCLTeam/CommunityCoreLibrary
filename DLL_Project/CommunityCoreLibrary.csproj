@@ -8,11 +8,11 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CommunityCoreLibrary</RootNamespace>
-    <AssemblyName>Community Core Library</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <ReleaseVersion>0.12.7</ReleaseVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyName>Community Core Library</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +31,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Developer|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;DEVELOPER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -162,6 +170,21 @@
     <Compile Include="Enumerations\Verbosity.cs" />
     <Compile Include="Detours\GenSpawn.cs" />
     <Compile Include="Detours\DetourInjector.cs" />
+    <Compile Include="Detours\RegionMaker.cs" />
+    <Compile Include="Detours\TargetingParameters.cs" />
+    <Compile Include="Detours\GenPlant.cs" />
+    <Compile Include="Detours\StatWorker.cs" />
+    <Compile Include="Detours\SectionLayer_IndoorMask.cs" />
+    <Compile Include="Detours\Building_Door.cs" />
+    <Compile Include="Detours\GhostDrawer.cs" />
+    <Compile Include="Detours\GenPlace.cs" />
+    <Compile Include="Detours\ThingDef.cs" />
+    <Compile Include="Validation\Validation_Core.cs" />
+    <Compile Include="Detours\JobGiver_Binge.cs" />
+    <Compile Include="Detours\BrokenStateWorker_Binging.cs" />
+    <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
+    <Compile Include="Detours\RoomRoleWorker_Laboratory.cs" />
+    <Compile Include="Detours\WorkGiver_Researcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

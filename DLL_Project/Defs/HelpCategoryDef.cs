@@ -94,6 +94,15 @@ namespace CommunityCoreLibrary
                 _cachedHelpDefs.Add(def);
             }
             _cachedHelpDefs.Sort();
+
+#if DEVELOPER
+            string dump = "Help Category: " + label + " - " + defName + " - " + ModName + "\n";
+            foreach( var def in _cachedHelpDefs )
+            {
+                dump += def.LogDump();
+            }
+            CCL_Log.Write( dump );
+#endif
         }
 
         #endregion

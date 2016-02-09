@@ -64,9 +64,6 @@ namespace CommunityCoreLibrary
         /// <returns></returns>
         public static Texture2D Icon( this Def def )
         {
-            // debug flag
-            bool debug = false;
-
             // check cache
             if ( _cachedDefIcons.ContainsKey( def ) )
             {
@@ -92,8 +89,9 @@ namespace CommunityCoreLibrary
             // animals need special treatment ( this will still only work for animals, pawns are a whole different can o' worms ).
             if( pdef != null )
             {
-                if( debug )
-                    Log.Message( def.LabelCap + " animal icon " );
+#if DEVELOPER
+                CCL_Log.Write( def.LabelCap + " animal icon " );
+#endif
                 try
                 {
                     _cachedDefIcons.Add( def, (pdef.lifeStages.Last().bodyGraphicData.Graphic.MatFront.mainTexture as Texture2D).Crop() );
@@ -101,31 +99,38 @@ namespace CommunityCoreLibrary
                 }
                 catch
                 {
-                    if( debug )
-                        Log.Message( "failed" );
+#if DEVELOPER
+                    CCL_Log.Write( "failed" );
+#endif
                 }
             }
 
             // if not buildable it probably doesn't have an icon.
             if ( bdef == null )
             {
-                if( debug )
-                    Log.Message( def.LabelCap + " not buildable - no icon " );
+#if DEVELOPER
+                CCL_Log.Write( def.LabelCap + " not buildable - no icon " );
+#endif
                 _cachedDefIcons.Add( def, null );
                 return null;
             }
 
             // fetch uiIcon. If not set in xml it should be set in Verse.BuildableDef.PostLoad(). 
-            if ( tdef?.entityDefToBuild != null )
+            if(
+                ( tdef != null )&&
+                ( tdef.entityDefToBuild != null )
+            )
             {
-                if( debug )
-                    Log.Message( def.LabelCap + " getting icon from entityToBuild " );
+#if DEVELOPER
+                CCL_Log.Write( def.LabelCap + " getting icon from entityToBuild " );
+#endif
                 _cachedDefIcons.Add( def, tdef.entityDefToBuild.Icon().Crop() );
                 return tdef.entityDefToBuild.uiIcon.Crop();
             }
 
-            if( debug )
-                Log.Message( def.LabelCap + " uiIcon " );
+#if DEVELOPER
+            CCL_Log.Write( def.LabelCap + " uiIcon " );
+#endif
             _cachedDefIcons.Add( def, bdef.uiIcon.Crop() );
             return bdef.uiIcon.Crop();
         }
@@ -138,5 +143,7 @@ namespace CommunityCoreLibrary
             Text.WordWrap = WW;
             return width;
         }
+
     }
+
 }

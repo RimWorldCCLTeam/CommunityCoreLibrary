@@ -6,6 +6,44 @@ namespace CommunityCoreLibrary
 {
     internal static class CCL_Log
     {
+
+#if DEVELOPER
+        private static System.IO.FileStream logFile;
+
+        public static void                  OpenStream()
+        {
+            logFile = System.IO.File.Open( "ccl_log.txt", System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+        }
+
+        public static void                  CloseStream()
+        {
+            logFile.Close();
+            logFile = null;
+        }
+
+        public static void                  Write( string s )
+        {
+            if(
+                ( s.NullOrEmpty() )||
+                ( logFile == null )
+            )
+            {
+                return;
+            }
+
+            s += "\n";
+            byte[] b = new byte[ s.Length ];
+
+            for( int i = 0; i < s.Length; ++i )
+            {
+                b[ i ] = (byte) s[ i ];
+            }
+
+            logFile.Write( b, 0, s.Length );
+            logFile.Flush();
+        }
+#endif
+
         /// <summary>
         /// Write a log => Community Core Library :: category(nullable) :: content
         /// </summary>
@@ -21,7 +59,10 @@ namespace CommunityCoreLibrary
 
             builder.Append( content );
 
-            Log.Message( builder.ToString() );
+#if DEVELOPER
+            Write( builder.ToString() );
+#endif
+            Verse.Log.Message( builder.ToString() );
         }
 
         /// <summary>
@@ -39,7 +80,10 @@ namespace CommunityCoreLibrary
 
             builder.Append( content );
 
-            Log.Error( builder.ToString() );
+#if DEVELOPER
+            Write( builder.ToString() );
+#endif
+            Verse.Log.Error( builder.ToString() );
         }
 
         public static void                  Trace( Verbosity Severity, string content, string category = null )
@@ -73,35 +117,44 @@ namespace CommunityCoreLibrary
                 return;
             }
 #endif
+            Verbosity TraceAt = Verbosity.Default;
             if(
-                ( modHelperDef == null )&&
-                ( atFault != null )
+                ( !Controller.Data.Mods.NullOrEmpty() )&&
+                ( !Controller.Data.ModHelperDefs.NullOrEmpty() )
             )
             {
-                // Try to find the mod associated with this def
-
-                var mod = Find_Extensions.ModByDef( atFault );
-
-                if( mod != null )
+                if(
+                    ( modHelperDef == null )&&
+                    ( atFault != null )
+                )
                 {
-                    modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
+                    // Try to find the mod associated with this def
+
+                    var mod = Find_Extensions.ModByDef( atFault );
+
+                    if( mod != null )
+                    {
+                        modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
+                    }
+                }
+                if( modHelperDef != null )
+                {
+                    TraceAt = modHelperDef.Verbosity;
+                }
+                else
+                {
+                    TraceAt = Find_Extensions.HightestVerbosity;
                 }
             }
-            if(
-                (
-                    ( modHelperDef != null )&&
-                    ( modHelperDef.Verbosity >= Severity )
-                )||
-                (
-                    ( modHelperDef == null )&&
-                    ( Find_Extensions.HightestVerbosity >= Severity )
-                )
-            )
+            if( TraceAt >= Severity )
             {
                 var builder = new StringBuilder();
                 builder.Append( Controller.Data.UnityObjectName ).Append( " :: " );
 
-                if( modHelperDef != null )
+                if(
+                    ( modHelperDef != null )&&
+                    ( modHelperDef != Controller.Data.cclHelperDef )
+                )
                 {
                     builder.Append( modHelperDef.ModName ).Append( " :: " );
                 }
@@ -121,17 +174,26 @@ namespace CommunityCoreLibrary
                 if( Severity <= Verbosity.NonFatalErrors )
                 {
                     // Error
-                    Log.Error( builder.ToString() );
+#if DEVELOPER
+                    Write( builder.ToString() );
+#endif
+                    Verse.Log.Error( builder.ToString() );
                 }
                 else if ( Severity == Verbosity.Warnings )
                 {
                     // Warning
-                    Log.Warning( builder.ToString() );
+#if DEVELOPER
+                    Write( builder.ToString() );
+#endif
+                    Verse.Log.Warning( builder.ToString() );
                 }
                 else
                 {
                     // Wall of text
-                    Log.Message( builder.ToString() );
+#if DEVELOPER
+                    Write( builder.ToString() );
+#endif
+                    Verse.Log.Message( builder.ToString() );
                 }
             }
         }

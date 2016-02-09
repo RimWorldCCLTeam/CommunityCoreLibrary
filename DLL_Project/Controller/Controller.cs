@@ -16,17 +16,38 @@ namespace CommunityCoreLibrary.Controller
         public static readonly string       UnityObjectName = "Community Core Library";
         public static GameObject            UnityObject;
 
+        public static MainMonoBehaviour     cclMonoBehaviour;
+
+        public static LoadedMod             cclMod;
+        public static ModHelperDef          cclHelperDef;
+
         private static Dictionary< LoadedMod, ModHelperDef > dictModHelperDefs;
         private static List< LoadedMod >    mods;
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
         // For tracing in global functions
-        public static ModHelperDef          Trace_Current_Mod = null;
+        private static ModHelperDef         _Trace_Current_Mod = null;
 
         #endregion
 
         #region Static Properties
+
+        public static ModHelperDef          Trace_Current_Mod
+        {
+            get
+            {
+                if( _Trace_Current_Mod == null )
+                {
+                    return cclHelperDef;
+                }
+                return _Trace_Current_Mod;
+            }
+            set
+            {
+                _Trace_Current_Mod = value;
+            }
+        }
 
         // All controllers will use these lists when working on the global set.
         // These lists are properly maintained for the game state based on varing
