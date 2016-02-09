@@ -77,6 +77,17 @@ namespace CommunityCoreLibrary
             var bdef = def as BuildableDef;
             var tdef = def as ThingDef;
             var pdef = def as PawnKindDef;
+            var rdef = def as RecipeDef;
+
+            // recipes will be passed icon of first product, if defined.
+            if (rdef != null )
+            {
+                if( debug )
+                    Log.Message( def.LabelCap + " recipe icon " );
+
+                _cachedDefIcons.Add( def, rdef.products?.FirstOrDefault()?.thingDef.Icon() );
+                return _cachedDefIcons[def];
+            }
 
             // animals need special treatment ( this will still only work for animals, pawns are a whole different can o' worms ).
             if( pdef != null )
@@ -110,13 +121,13 @@ namespace CommunityCoreLibrary
                 if( debug )
                     Log.Message( def.LabelCap + " getting icon from entityToBuild " );
                 _cachedDefIcons.Add( def, tdef.entityDefToBuild.Icon().Crop() );
-                return tdef.entityDefToBuild.uiIcon;
+                return tdef.entityDefToBuild.uiIcon.Crop();
             }
 
             if( debug )
                 Log.Message( def.LabelCap + " uiIcon " );
             _cachedDefIcons.Add( def, bdef.uiIcon.Crop() );
-            return bdef.uiIcon;
+            return bdef.uiIcon.Crop();
         }
 
         public static float StyledLabelAndIconSize( this Def def )
