@@ -474,7 +474,7 @@ namespace CommunityCoreLibrary
             else if( _showResearchedProjects == ShowResearch.Completed )
             {
                 _source = from hd in _researchDefs
-                          where hd.IsFinished && hd.PrereqsFulfilled
+                          where hd.IsFinished
                           select hd.GetHelpDef();
             }
             else if( _showResearchedProjects == ShowResearch.Available )
@@ -495,11 +495,10 @@ namespace CommunityCoreLibrary
                 _source = _source.Where( rpd => rpd.label.ToUpper().Contains( _filter.ToUpper() ) );
             }
 
-            switch( _sortBy )
-            {
-                case SortOptions.Cost:
-                    try
-                    {
+            try {
+                switch( _sortBy )
+                {
+                    case SortOptions.Cost:
                         if( _showResearchedProjects != ShowResearch.Advanced )
                         {
                             _source = _source.OrderBy( hd => ( (ResearchProjectDef)hd.keyDef ).totalCost );
@@ -509,17 +508,20 @@ namespace CommunityCoreLibrary
                         {
                             _source =
                                 _source.OrderBy(
-                                    hd => ( (AdvancedResearchDef)hd.keyDef ).researchDefs.Count );
+                                    hd => ( (AdvancedResearchDef)hd.keyDef ).TotalCost );
                         }
-                    }
-                    catch
-                    {
-                        Log.Error( "Error in sorting by cost. It's likely normal and advanced research defs were mixed up." );
-                    }
-                    break;
-                case SortOptions.Name:
-                    _source = _source.OrderBy( rpd => rpd.LabelCap );
-                    break;
+                        break;
+                    case SortOptions.Name:
+                        _source = _source.OrderBy( rpd => rpd.LabelCap ?? string.Empty );
+                        break;
+                }
+            }
+            catch
+            {
+                // ugly assed catch to at least get some idea of what's failing exactly. 
+                // I have a sneaky suspicion ARD's without researchDefs defined are getting through, can't see what else would fail.
+                CCL_Log.Error( "Sorting research by " + _sortBy.ToString() + " failed. Please upload the dump in the error below to the CCL forum thread or github issue tracker.", "Research" );
+                Log.ErrorOnce( "DUMP:\n" + string.Join( "\n", _source.Select( hd => hd.keyDef.LabelCap + "(" + hd.keyDef.defName + ")" ).ToArray() ), 142511143 );
             }
 
             if( _asc ) _source = _source.Reverse();

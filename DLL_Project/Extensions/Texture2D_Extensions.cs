@@ -119,13 +119,13 @@ namespace CommunityCoreLibrary
 
             if ( texProportion > rectProportion )
             {
-                Rect wider = new Rect(rect.xMin, 0f, rect.width, rect.width / texProportion ).CenteredOnYIn(rect);
+                Rect wider = new Rect(rect.xMin, 0f, rect.width, rect.width / texProportion ).CenteredOnYIn(rect).CenteredOnXIn(rect);
                 GUI.DrawTexture( wider, tex );
                 return;
             }
             else if ( texProportion < rectProportion )
             {
-                Rect taller = new Rect(0f, rect.yMin, rect.height * texProportion, rect.height ).CenteredOnXIn(rect);
+                Rect taller = new Rect(0f, rect.yMin, rect.height * texProportion, rect.height ).CenteredOnXIn(rect).CenteredOnXIn(rect);
                 GUI.DrawTexture( taller, tex );
                 return;
             }
