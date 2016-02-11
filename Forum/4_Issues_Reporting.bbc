@@ -13,8 +13,8 @@ Software of any complexity is bound to have bugs, CCL is no different.  Please r
 What we need:
 [list]
 [li]You to use the github issues tracker.  Going forward, issue reports on the forums [b]will[/b] be deleted.  (Either by a member of the CCL team or at the request of a forum moderator.)[/li]
-[li]Your full game log file found in /RimWorld[build][platform]_Data/ ([i]not[/i] a screen shot of).[/li]
-[li]If the issue is gameplay related, as much detail as possible on how to reproduce the error and [i]if relevant[/i] a screen shot of the problem.[/i]
+[li]Your full game log file found in /RimWorld[build][platform]_Data/ ([i]not[/i] a screen shot of).  eg, RimWorld914Win_Data/output_log.txt[/li]
+[li]If the issue is gameplay related, as much detail as possible on how to reproduce the error and [i]if relevant[/i] a screen shot of the problem.[/li]
 [li]Your save game and world file if the issue is save/load related.  [i]Please[/i] zip the files before sending them.[/li]
 [/list]
 

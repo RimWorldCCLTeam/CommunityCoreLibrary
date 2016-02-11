@@ -7,6 +7,8 @@
     
     ThingComp:  CompHideItem
     
+    Requires:   CompProperties_HideItem
+    
     This comp will disable calling of the Draw() and DrawGUIOverlay() on items in the same cells
     as the building it is applied to.  This means the item(s) in the same cells as the building
     will not be drawn nor will it's label.
@@ -34,6 +36,13 @@
     render call chain and a map component is used to maintain a master list of items and handles the
     render state change in the ticking call chain.
     
+    XML Data:
+    
+    type (default)  tag                 Details
+    
+    bool   (false)  preventItemSelection
+                                        [optional] Prevents hidden items from being directly selected by the player
+    
     Usage:
     
     <ThingDef>
@@ -42,8 +51,11 @@
         <comps>
             ...
             
-            <li>
+            <li Class="CommunityCoreLibrary.CompProperties_HideItem">
                 <compClass>CommunityCoreLibrary.CompHideItem</compClass>
+                
+                <preventItemSelection>false</preventItemSelection>
+                
             </li>
             
             ...

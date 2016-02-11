@@ -117,6 +117,11 @@ namespace CommunityCoreLibrary
             MethodInfo CCL_WorkGiver_Researcher_HasJobOnThing = typeof( Detour._WorkGiver_Researcher ).GetMethod( "_HasJobOnThing", BindingFlags.Static | BindingFlags.NonPublic );
             Detours.TryDetourFromTo( RimWorld_WorkGiver_Researcher_HasJobOnThing, CCL_WorkGiver_Researcher_HasJobOnThing );
 
+            // Detour RimWorld.ThingSelectionUtility.SelectableNow
+            MethodInfo RimWorld_ThingSelectionUtility_SelectableNow = typeof( ThingSelectionUtility ).GetMethod( "SelectableNow", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_ThingSelectionUtility_SelectableNow = typeof( Detour._ThingSelectionUtility ).GetMethod( "_SelectableNow", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_ThingSelectionUtility_SelectableNow, CCL_ThingSelectionUtility_SelectableNow );
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
