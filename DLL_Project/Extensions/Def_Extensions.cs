@@ -158,9 +158,9 @@ namespace CommunityCoreLibrary
             var rdef = def as RecipeDef;
 
             // recipes will be passed icon of first product, if defined.
-            if (rdef != null )
+            if (rdef != null && !rdef.products.NullOrEmpty() )
             {
-                _cachedDefIcons.Add( def, rdef.products?.FirstOrDefault()?.thingDef.IconTexture() );
+                _cachedDefIcons.Add( def, rdef.products.First().thingDef.IconTexture() );
                 return _cachedDefIcons[def];
             }
 
@@ -195,7 +195,7 @@ namespace CommunityCoreLibrary
 
             // if def built != def listed.
             if(
-                ( tdef != null )&&
+                ( tdef != null ) &&
                 ( tdef.entityDefToBuild != null )
             )
             {
