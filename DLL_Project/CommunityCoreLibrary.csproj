@@ -185,6 +185,8 @@
     <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
     <Compile Include="Detours\RoomRoleWorker_Laboratory.cs" />
     <Compile Include="Detours\WorkGiver_Researcher.cs" />
+    <Compile Include="CompProperties\CompProperties_HideItem.cs" />
+    <Compile Include="Detours\ThingSelectionUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

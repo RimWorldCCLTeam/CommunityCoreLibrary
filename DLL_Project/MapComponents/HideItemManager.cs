@@ -18,6 +18,9 @@ namespace CommunityCoreLibrary
 
         private int                         tickCount = REHIDE_TICKS;
 
+        private static readonly Dictionary<IntVec3,Thing>
+                                            hiderBuildings = new Dictionary<IntVec3, Thing>();
+
         private static List<Thing>          listHasGUIOverlay
         {
             get
@@ -70,6 +73,24 @@ namespace CommunityCoreLibrary
 
         }
 
+        public void                         RegisterBuilding( Thing building )
+        {
+            var occupiedCells = building.OccupiedRect();
+            foreach( var cell in occupiedCells )
+            {
+                hiderBuildings.Add( cell, building );
+            }
+        }
+
+        public void                         DeregisterBuilding( Thing building )
+        {
+            var occupiedCells = building.OccupiedRect();
+            foreach( var cell in occupiedCells )
+            {
+                hiderBuildings.Remove( cell );
+            }
+        }
+
         public void                         RegisterForHide( Thing item )
         {
             if(
@@ -94,6 +115,21 @@ namespace CommunityCoreLibrary
                     itemHide.Remove( item );
                 }
             }
+        }
+
+        public static bool                  PreventItemSelection( Thing item )
+        {
+            Thing hiderBuilding;
+            if( !hiderBuildings.TryGetValue( item.Position, out hiderBuilding ) )
+            {
+                return false;
+            }
+            var comp = hiderBuilding.TryGetComp<CompHideItem>();
+            if( comp == null )
+            {
+                return false;
+            }
+            return comp.Properties.preventItemSelection;
         }
 
     }
