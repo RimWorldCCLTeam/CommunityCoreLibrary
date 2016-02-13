@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary
             }
 
             Rect labelRect;
-            if ( Def.Icon() != null )
+            if ( Def.IconTexture() != null )
             {
                 Rect iconRect =
                 new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0 : 1 ) * HelpDetailSection._columnMargin,
@@ -85,7 +85,7 @@ namespace CommunityCoreLibrary
                           cur.y,
                           colWidths.y - 20f,
                           _height );
-                Def.Icon().DrawFittedIn( iconRect );
+                Def.DrawColouredIcon( iconRect );
                 Widgets.Label( labelRect, Def.LabelStyled() );
             }
             else
