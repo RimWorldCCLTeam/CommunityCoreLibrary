@@ -18,7 +18,8 @@ namespace CommunityCoreLibrary
         /// <summary>
         /// hold a cached list of icons per def
         /// </summary>
-        private static Dictionary<Def, Texture2D> _cachedDefIcons = new Dictionary<Def, Texture2D>(); 
+        private static Dictionary<Def, Texture2D>   _cachedDefIcons     = new Dictionary<Def, Texture2D>();
+        private static Dictionary<Def, Color>       _cachedIconColors   = new Dictionary<Def, Color>();
 
         /// <summary>
         /// Get the helpdef associated with the current def, or null if none exists.
@@ -57,12 +58,92 @@ namespace CommunityCoreLibrary
             return def.LabelCap;
         }
 
+        public static void DrawColouredIcon( this Def def, Rect canvas )
+        {
+            GUI.color = def.IconColor();
+            GUI.DrawTexture( canvas, def.IconTexture(), ScaleMode.ScaleToFit );
+            GUI.color = Color.white;
+        }
+
         /// <summary>
-        /// Get the uiIcon for the def. Only defined for buildableDef, and switches to entityToBuild's uiIcon when appropriate.
+        /// Gets an appropriate drawColor for this def. 
+        /// Will use a default stuff or DrawColor, if defined.
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
-        public static Texture2D Icon( this Def def )
+        public static Color IconColor( this Def def )
+        {
+            // check cache
+            if ( _cachedIconColors.ContainsKey( def ) )
+            {
+                return _cachedIconColors[def];
+            }
+
+            // otherwise try to determine icon
+            var bdef = def as BuildableDef;
+            var tdef = def as ThingDef;
+            var pdef = def as PawnKindDef;
+            var rdef = def as RecipeDef;
+
+            // get product color for recipes
+            if ( rdef != null )
+            {
+                if ( !rdef.products.NullOrEmpty() )
+                {
+                    _cachedIconColors.Add( def, rdef.products.First().thingDef.IconColor() );
+                    return _cachedIconColors[def];
+                }    
+            }
+            
+            // get color from final lifestage for pawns
+            if ( pdef != null )
+            {
+                _cachedIconColors.Add( def, pdef.lifeStages.Last().bodyGraphicData.color );
+                return _cachedIconColors[def];
+            }
+
+            if ( bdef == null )
+            {
+                // if we reach this point, def.IconTexture() would return null. Just store and return white to make sure we don't get weird errors down the line.
+                _cachedIconColors.Add( def, Color.white );
+                return _cachedIconColors[def];
+            }
+
+            // built def != listed def
+            if ( tdef != null &&
+                 tdef.entityDefToBuild != null )
+            {
+                _cachedIconColors.Add( def, tdef.entityDefToBuild.IconColor() );
+                return _cachedIconColors[def];
+            }
+
+            // graphic.color set?
+            if ( bdef.graphic != null )
+            {
+                _cachedIconColors.Add( def, bdef.graphic.color );
+                return _cachedIconColors[def];
+            }
+
+            // stuff used?
+            if ( tdef != null &&
+                 tdef.MadeFromStuff )
+            {
+                ThingDef stuff = GenStuff.DefaultStuffFor( tdef );
+                _cachedIconColors.Add( def, stuff.stuffProps.color );
+                return _cachedIconColors[def];
+            }
+
+            // all else failed.
+            _cachedIconColors.Add( def, Color.white );
+            return _cachedIconColors[def];
+        }
+
+        /// <summary>
+        /// Get a texture for the def, where defined. 
+        /// </summary>
+        /// <param name="def"></param>
+        /// <returns></returns>
+        public static Texture2D IconTexture( this Def def )
         {
             // check cache
             if ( _cachedDefIcons.ContainsKey( def ) )
@@ -77,15 +158,9 @@ namespace CommunityCoreLibrary
             var rdef = def as RecipeDef;
 
             // recipes will be passed icon of first product, if defined.
-            if (rdef != null )
+            if (rdef != null && !rdef.products.NullOrEmpty() )
             {
-#if DEVELOPER
-                Log.Message( def.LabelCap + " recipe icon " );
-#endif
-
-                // rdef?.products?.FirstOrDefault()?.thingDef.Icon()
-                Texture2D icon = ( rdef != null ) ? ( rdef.products != null ) ? ( rdef.products.FirstOrDefault() != null ) ? rdef.products.FirstOrDefault().thingDef.Icon() : null : null : null;
-                    _cachedDefIcons.Add( def, icon );
+                _cachedDefIcons.Add( def, rdef.products.First().thingDef.IconTexture() );
                 return _cachedDefIcons[def];
             }
 
@@ -118,17 +193,17 @@ namespace CommunityCoreLibrary
                 return null;
             }
 
-            // fetch uiIcon. If not set in xml it should be set in Verse.BuildableDef.PostLoad(). 
+            // if def built != def listed.
             if(
-                ( tdef != null )&&
+                ( tdef != null ) &&
                 ( tdef.entityDefToBuild != null )
             )
             {
 #if DEVELOPER
                 CCL_Log.Write( def.LabelCap + " getting icon from entityToBuild " );
 #endif
-                _cachedDefIcons.Add( def, tdef.entityDefToBuild.Icon().Crop() );
-                return tdef.entityDefToBuild.uiIcon.Crop();
+                _cachedDefIcons.Add( def, tdef.entityDefToBuild.IconTexture().Crop() );
+                return _cachedDefIcons[def];
             }
 
 #if DEVELOPER
@@ -142,7 +217,7 @@ namespace CommunityCoreLibrary
         {
             var WW = Text.WordWrap;
             Text.WordWrap = false;
-            float width = Text.CalcSize( def.LabelStyled() ).x + (def.Icon() == null ? 0 : 20 );
+            float width = Text.CalcSize( def.LabelStyled() ).x + (def.IconTexture() == null ? 0 : 20 );
             Text.WordWrap = WW;
             return width;
         }

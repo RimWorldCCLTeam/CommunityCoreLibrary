@@ -275,14 +275,15 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Medium;
             Text.WordWrap = false;
             float titleWidth = Text.CalcSize( SelectedHelpDef.LabelCap ).x;
-            var titleRect = new Rect(rect.xMin + (rect.width - titleWidth) / 3f, rect.yMin, titleWidth, 60f);
+            var titleRect = new Rect(rect.xMin, rect.yMin, titleWidth, 60f);
             if(
                 ( SelectedHelpDef.keyDef != null )&&
-                ( SelectedHelpDef.keyDef.Icon() != null )
+                ( SelectedHelpDef.keyDef.IconTexture() != null )
             )
             {
-                var iconRect = new Rect( titleRect.xMin - 60f, rect.yMin, 60f, 60f );
-                SelectedHelpDef.keyDef.Icon().DrawFittedIn( iconRect );
+                var iconRect = new Rect( titleRect.xMin + Margin, rect.yMin + Margin, 60f - 2 * Margin, 60f * Margin );
+                titleRect.x += 60f;
+                SelectedHelpDef.keyDef.DrawColouredIcon( iconRect );
             }
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
