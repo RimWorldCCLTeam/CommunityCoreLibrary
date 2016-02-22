@@ -36,13 +36,16 @@ namespace CommunityCoreLibrary
             foreach( var building in buildings )
             {
                 var BillGiver = building as IBillGiver;
-                for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
+                if( BillGiver != null )
                 {
-                    var bill = BillGiver.BillStack[ i ];
-                    if( !recipes.Exists( r => bill.recipe == r ) )
+                    for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
                     {
-                        BillGiver.BillStack.Delete( bill );
-                        continue;
+                        var bill = BillGiver.BillStack[ i ];
+                        if( !recipes.Exists( r => bill.recipe == r ) )
+                        {
+                            BillGiver.BillStack.Delete( bill );
+                            continue;
+                        }
                     }
                 }
             }
@@ -52,6 +55,34 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Availability
+
+        public static bool                  IsIngestible( this ThingDef thingDef )
+        {
+            if(
+                (
+                    ( thingDef.thingClass == typeof( Meal ) )||
+                    ( thingDef.thingClass.IsSubclassOf( typeof( Meal ) ) )
+                )&&
+                ( thingDef.ingestible != null )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool                  IsAlcohol( this ThingDef thingDef )
+        {
+            if(
+                ( thingDef.IsIngestible() )&&
+                ( !thingDef.ingestible.hediffGivers.NullOrEmpty() )&&
+                ( thingDef.ingestible.hediffGivers.Exists( d => d.hediffDef == HediffDefOf.Alcohol ) )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
 
         public static bool                  IsImplant( this ThingDef thingDef )
         {

@@ -144,15 +144,11 @@ namespace CommunityCoreLibrary.Detour
                         return (Job) null;
                     }
                     List<Thing> list = Find.ListerThings.AllThings.Where( t => (
-                        ( t.def.ingestible != null )&&
-                        ( t.def.ingestible.hediffGivers != null )&&
-                        ( t.def.ingestible.hediffGivers.Any( h => (
-                            ( h.hediffDef == HediffDefOf.Alcohol )
-                        ) ) )
+                        ( t.def.IsAlcohol() )||
+                        ( t is Building_FoodSynthesizer )
                     ) ).ToList();
                     if( list.Count > 0 )
                     {
-                        // ISSUE: method pointer
                         Predicate<Thing> validator = new Predicate<Thing>( JoyGiver_SocialRelax_TryUseThing.CanUseThing );
                         Thing thing = GenClosest.ClosestThing_Global_Reachable(
                             result.parent.Position,
@@ -185,11 +181,24 @@ namespace CommunityCoreLibrary.Detour
 
             internal bool CanUseThing( Thing t )
             {
-                if( ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 ) )
+                if( ForbidUtility.IsForbidden( t, this.pawn ) )
                 {
-                    return !ForbidUtility.IsForbidden( t, this.pawn );
+                    return false;
                 }
-                return false;
+
+                if( t is Building_FoodSynthesizer )
+                {
+                    var FS = t as Building_FoodSynthesizer;
+                    if(
+                        ( !GenGrid.Standable( FS.InteractionCell ) )||
+                        ( !FS.CompPowerTrader.PowerOn )||
+                        ( FS.BestAlcoholFrom() == null )
+                    )
+                    {
+                        return false;
+                    }
+                }
+                return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
             }
         }
 

@@ -50,6 +50,7 @@ namespace CommunityCoreLibrary
         public List< Type >                 PostLoadInjectors;
 
         public bool                         UsesGenericHoppers = false;
+        public bool                         HideVanillaHoppers = false;
 
         public Verbosity                    Verbosity = Verbosity.Default;
 

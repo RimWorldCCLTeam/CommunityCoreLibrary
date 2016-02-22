@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using UnityEngine;
+using RimWorld;
 using Verse;
+using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -16,11 +17,10 @@ namespace CommunityCoreLibrary
             
             public static class Hoppers
             {
-                private static bool         enabled = false;
-
-                public static bool          Enable()
+                
+                public static bool          EnableGenericHoppers()
                 {
-                    if( enabled )
+                    if( Controller.Data.GenericHoppersEnabled )
                     {
                         // Only enable them once
                         return true;
@@ -33,10 +33,44 @@ namespace CommunityCoreLibrary
 
                     foreach( var hopper in hoppers )
                     {
-                        hopper.researchPrerequisite = null;
+                        if( hopper.researchPrerequisite == Research.Locker )
+                        {
+                            // Only change the prerequisite if it's using the default locker
+                            hopper.researchPrerequisite = null;
+                        }
                     }
 
-                    enabled = true;
+                    // Flag it as done
+                    Controller.Data.GenericHoppersEnabled = true;
+                    return true;
+                }
+
+                public static bool          DisableVanillaHoppers()
+                {
+                    if( Controller.Data.VanillaHoppersDisabled )
+                    {
+                        // Only disable them once
+                        return true;
+                    }
+
+                    // This will hide it "normally"
+                    ThingDefOf.Hopper.researchPrerequisite = Research.Locker;
+
+                    // This will hide it in god mode
+                    ThingDefOf.Hopper.menuHidden = true;
+                    var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( ThingDefOf.Hopper.designationCategory, true );
+                    var designator = designationCategory.resolvedDesignators.Find( d => (
+                        ( d is Designator_Build )&&
+                        ( ((Designator_Build)d).PlacingDef == ThingDefOf.Hopper )
+                    ) );
+                    if( designator != null )
+                    {
+                        designationCategory.resolvedDesignators.Remove( designator );
+                    }
+                    ThingDefOf.Hopper.designationCategory = "None";
+
+                    // Flag it as done
+                    Controller.Data.VanillaHoppersDisabled = true;
                     return true;
                 }
 

@@ -8,7 +8,7 @@ v0.12.5.x - (Modder pre-release of new features) - More bugs fixed, internal ref
 v0.12.4 - Many, many bugs fixed, help menu overhaul, research menu overhaul, new comp & property.
 v0.12.3b - Fixes Advanced Research Def to recognizes plants using plants with an override class.
 v0.12.3 - Bug fixes, Ice boxes (CompRefrigerated no longer *requires* CompPowerTrader but will respect it), Post Load Injectors, removes research requirement from Xerigium.
-v0.12.2 - Alpha 12d update.  Refactors CompRefrigerated, fixes several bugs, graphics by mrofa.  See the commit log for full detail.
+v0.12.2 - Alpha 12d update.  Refactors CompRefrigerated, fixes several bugs, graphics by mrofa.
 v0.12.1 - Alpha 12c update and bug-fixes.  First release with AutoGen Help!
 v0.12.0 - Alpha 12 update.  Adds menu help system and mod helper system.  Separates vanilla tweaks from core.
 v0.11.4 - Fixes CompRefrigerated save/load issue, fixes lights and growers not sharing through link type properly sometimes, move repository to a team organization.

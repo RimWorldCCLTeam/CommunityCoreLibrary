@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>FoodSynthesizerVersion</defName>
+
+        <ModName>Modders Resource: Food Synthesizer</ModName>
+
+        <version>0.12.7</version>
+
+        <UsesGenericHoppers>true</UsesGenericHoppers>
+
+    </ModHelperDef>
+
+</Defs>

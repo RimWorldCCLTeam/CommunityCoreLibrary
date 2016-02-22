@@ -29,11 +29,8 @@ namespace CommunityCoreLibrary.Detour
                 9999f,
                 validator,
                 Find.ListerThings.AllThings.Where( t => (
-                    ( t.def.ingestible != null )&&
-                    ( t.def.ingestible.hediffGivers != null )&&
-                    ( t.def.ingestible.hediffGivers.Any( h => (
-                        ( h.hediffDef == HediffDefOf.Alcohol )
-                    ) ) )
+                    ( t.def.IsAlcohol() )||
+                    ( t is Building_FoodSynthesizer )
                 ) ),
                 -1,
                 true );
@@ -41,7 +38,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 return (Job) null;
             }
-            Job job = new Job( JobDefOf.Ingest, (TargetInfo) thing );
+            Job job = new Job( JobDefOf.Ingest, (TargetInfo) thing, (TargetInfo) thing );
             job.maxNumToCarry = Mathf.Min(
                 thing.stackCount,
                 thing.def.ingestible.maxNumToIngestAtOnce );
@@ -61,13 +58,26 @@ namespace CommunityCoreLibrary.Detour
             internal bool CanBingeOn( Thing t )
             {
                 if(
-                    ( this.ignoreForbid )||
-                    ( !ForbidUtility.IsForbidden( t, this.pawn ) )
+                    ( !this.ignoreForbid )&&
+                    ( ForbidUtility.IsForbidden( t, this.pawn ) )
                 )
                 {
-                    return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
+                    return false;
                 }
-                return false;
+
+                if( t is Building_FoodSynthesizer )
+                {
+                    var FS = t as Building_FoodSynthesizer;
+                    if(
+                        ( !GenGrid.Standable( FS.InteractionCell ) )||
+                        ( !FS.CompPowerTrader.PowerOn )||
+                        ( FS.BestAlcoholFrom() == null )
+                    )
+                    {
+                        return false;
+                    }
+                }
+                return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
             }
         }
 

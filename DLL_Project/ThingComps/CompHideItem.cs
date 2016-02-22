@@ -33,27 +33,21 @@ namespace CommunityCoreLibrary
         {
             base.PostSpawnSetup();
             tickCount = parent.GetHashCode() % RECHECK_TICKS;
-            if( Controller.Data.HideItemManager != null )
-            {
-                Controller.Data.HideItemManager.RegisterBuilding( parent );
-            }
+            HideItemManager.RegisterBuilding( parent );
         }
 
         public override void                PostDestroy( DestroyMode mode = DestroyMode.Vanish )
         {
             base.PostDestroy( mode );
-            if(
-                ( Controller.Data.HideItemManager == null )||
-                ( knownItems.NullOrEmpty() )
-            )
+            if( knownItems.NullOrEmpty() )
             {
                 return;
             }
             foreach( var item in knownItems )
             {
-                Controller.Data.HideItemManager.RegisterForShow( item );
+                HideItemManager.RegisterForShow( item );
             }
-            Controller.Data.HideItemManager.DeregisterBuilding( parent );
+            HideItemManager.DeregisterBuilding( parent );
         }
 
         public override void                PostDraw()
@@ -91,29 +85,21 @@ namespace CommunityCoreLibrary
 
         public void                         ReceivedThing( Thing item )
         {
-            if( Controller.Data.HideItemManager == null )
-            {
-                return;
-            }
             if(
                 ( item.def.category == ThingCategory.Item )&&
                 ( !knownItems.Contains( item ) )
             )
             {
-                Controller.Data.HideItemManager.RegisterForHide( item );
+                HideItemManager.RegisterForHide( item );
                 knownItems.Add( item );
             }
         }
 
         public void                         LostThing( Thing item )
         {
-            if( Controller.Data.HideItemManager == null )
-            {
-                return;
-            }
             if( knownItems.Contains( item ) )
             {
-                Controller.Data.HideItemManager.RegisterForShow( item );
+                HideItemManager.RegisterForShow( item );
                 knownItems.Remove( item );
             }
         }

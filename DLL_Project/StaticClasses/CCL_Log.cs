@@ -10,15 +10,26 @@ namespace CommunityCoreLibrary
 #if DEVELOPER
         private static System.IO.FileStream logFile;
 
-        public static void                  OpenStream()
+        static                              CCL_Log()
         {
-            logFile = System.IO.File.Open( "ccl_log.txt", System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+            OpenStream();
+        }
+
+        private static void                 OpenStream()
+        {
+            if( logFile == null )
+            {
+                logFile = System.IO.File.Open( "ccl_log.txt", System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+            }
         }
 
         public static void                  CloseStream()
         {
-            logFile.Close();
-            logFile = null;
+            if( logFile != null )
+            {
+                logFile.Close();
+                logFile = null;
+            }
         }
 
         public static void                  Write( string s )

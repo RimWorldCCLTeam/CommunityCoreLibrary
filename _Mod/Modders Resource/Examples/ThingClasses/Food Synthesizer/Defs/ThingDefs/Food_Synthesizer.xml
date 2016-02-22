@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef Name="BuildingBase" Abstract="True">
+        <category>Building</category>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <selectable>true</selectable>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <repairEffect>Repair</repairEffect>
+        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <filthLeaving>BuildingRubble</filthLeaving>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>FoodSynthesizer</defName>
+        <label>food synthesizer</label>
+        <thingClass>CommunityCoreLibrary.Building_FoodSynthesizer</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Production/NutrientDispenser</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <drawSize>(3,4)</drawSize>
+        </graphicData>
+        <altitudeLayer>BuildingTall</altitudeLayer>
+        <passability>Impassable</passability>
+        <fillPercent>1</fillPercent>
+        <statBases>
+            <WorkToMake>2200</WorkToMake>
+            <MaxHitPoints>350</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <description>Synthesizes actual meals from organic feedstocks. It consumes the same amount of ingredients as actual cooking but takes less time. Accepts raw food, but not rough plant matter like hay.</description>
+        <building>
+            <isMealSource>true</isMealSource>
+            <wantsHopperAdjacent>true</wantsHopperAdjacent>
+        </building>
+        <tickerType>Normal</tickerType>
+        <comps>
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                <startElectricalFires>true</startElectricalFires>
+                <basePowerConsumption>500</basePowerConsumption>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                <idlePowerFactor>0.1</idlePowerFactor>
+                <operationalMode>WhenNear</operationalMode>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
+                <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+            </li>
+        </comps>
+        <size>(3,4)</size>
+        <costList>
+            <Steel>90</Steel>
+        </costList>
+        <socialPropernessMatters>true</socialPropernessMatters>
+        <interactionCellOffset>(0,0,3)</interactionCellOffset>
+        <hasInteractionCell>true</hasInteractionCell>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <designationCategory>Production</designationCategory>
+        <constructEffect>ConstructMetal</constructEffect>
+        <designationHotKey/>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
+        </placeWorkers>
+        <recipes>
+            <li>SynthesizeMealSimple</li>
+        </recipes>
+        <researchPrerequisite>MealSynthesis</researchPrerequisite>
+    </ThingDef>
+
+</Defs>

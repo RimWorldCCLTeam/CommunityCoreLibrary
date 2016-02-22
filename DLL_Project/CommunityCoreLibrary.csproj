@@ -187,6 +187,22 @@
     <Compile Include="Detours\WorkGiver_Researcher.cs" />
     <Compile Include="CompProperties\CompProperties_HideItem.cs" />
     <Compile Include="Detours\ThingSelectionUtility.cs" />
+    <Compile Include="Controller\Controller_PreLoader.cs" />
+    <Compile Include="Detours\DropCellFinder.cs" />
+    <Compile Include="Detours\PassingShip.cs" />
+    <Compile Include="Alerts\Alert_NoTradingCapacity.cs" />
+    <Compile Include="Detours\IncidentWorker_TraderArrival.cs" />
+    <Compile Include="Detours\FoodUtility.cs" />
+    <Compile Include="Buildings\Building_FoodSynthesizer.cs" />
+    <Compile Include="Detours\Building_NutrientPasteDispenser.cs" />
+    <Compile Include="Detours\JobDriver_FoodDeliver.cs" />
+    <Compile Include="Detours\JobDriver_FoodFeedPatient.cs" />
+    <Compile Include="Extensions\JobDriver_Extensions.cs" />
+    <Compile Include="Toils\Toils_FoodSynthesizer.cs" />
+    <Compile Include="Detours\JobDriver_Ingest.cs" />
+    <Compile Include="Alerts\Alert_PasteDispenserNeedsHopper.cs" />
+    <Compile Include="Detours\JobGiver_GetFood.cs" />
+    <Compile Include="Detours\JobDriver_SocialRelax.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

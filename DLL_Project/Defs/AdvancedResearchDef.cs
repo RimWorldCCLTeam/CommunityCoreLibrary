@@ -142,7 +142,9 @@ namespace CommunityCoreLibrary
                     // Validate recipes
                     if( IsRecipeToggle )
                     {
+                        // v0.12.7 - Obsoleted check to allow for automated machines
                         // Make sure thingDefs are of the appropriate type (has ITab_Bills)
+                        /*
                         foreach( var thingDef in thingDefs )
                         {
                             if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
@@ -156,7 +158,7 @@ namespace CommunityCoreLibrary
                                 );
                             }
                         }
-
+                        */
                     }
 
                     // Validate plant sowTags
