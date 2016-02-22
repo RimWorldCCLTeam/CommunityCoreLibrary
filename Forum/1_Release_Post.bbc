@@ -31,7 +31,7 @@ If you are a modder, download the modders resource or the source package.
 
 
 
-[size=12pt][color=orange]Download & Install Instructions[/color][/size]
+[size=12pt][color=orange]Install Instructions[/color][/size]
 
 [b]ALWAYS[/b] delete any previous install of both the core library and the vanilla tweaks before installing a new version.  This will avoid most common problems.
 
@@ -51,9 +51,10 @@ If you are a modder, download the modders resource or the source package.
 [list][li]If you are simply wanting to mod and take advantage of CCL, use the source download or fork from the master branch.[/li]
 [li]If you want to contribute, bug fix, nitpick, etc, you should fork from the unstable development branch and propose changes through pull requests.[/li][/list]
 
-[size=12pt]Download[/size]
-[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases/latest]From github[/url]
 
+
+[size=12pt][color=orange]Download[/color][/size]
+[color=white][url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases/latest]Latest release[/url] | [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases]All releases[/url] | [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary]GitHub repository[/url][/color]
 
 
 [size=12pt][color=orange]Background[/color][/size]
