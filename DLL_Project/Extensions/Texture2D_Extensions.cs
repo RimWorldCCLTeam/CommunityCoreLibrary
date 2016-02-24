@@ -1,10 +1,10 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
 namespace CommunityCoreLibrary
 {
@@ -15,11 +15,9 @@ namespace CommunityCoreLibrary
         // Alternatives such as GetRawTextureData() are not yet implemented in the dated version of Unity Tynan uses.
         //      - Fluffy
 
-        #region Methods
-
         /// <summary>
         /// Returns a new texture with as much blank space as possible stripped, while respecting (to an extent) original proportions.
-        /// WARNING: Does not cache! Textures are not automatically garbage collected,
+        /// WARNING: Does not cache! Textures are not automatically garbage collected, 
         /// so make sure to destroy and/or cache textures where appropriate.
         /// Failing to do so will lead to a memory leak.
         /// </summary>
@@ -34,10 +32,10 @@ namespace CommunityCoreLibrary
             float proportion = (float)tex.width / (float)tex.height;
 
             // loop over rows of pixels to determine first and last row with any opacity.
-            for ( int x = 0; x < tex.height; x++ )
+            for (int x = 0; x < tex.height; x++ )
             {
                 var row = tex.GetPixels( x, 0, tex.width, 1 );
-                if ( row.Any( c => c.a > 1e-4 ) )
+                if (row.Any( c => c.a > 1e-4 ) )
                 {
                     xMin = x;
                     break;
@@ -50,20 +48,20 @@ namespace CommunityCoreLibrary
                 }
             }
             // and from bottom up for the max
-            for ( int x = tex.height - 1; x >= 0; x-- )
+            for( int x = tex.height - 1; x >= 0; x-- )
             {
                 var row = tex.GetPixels( x, 0, tex.width, 1 );
-                if ( row.Any( c => c.a > 1e-4 ) )
+                if( row.Any( c => c.a > 1e-4 ) )
                 {
                     xMax = x;
                     break;
                 }
             }
             // columns, left to right
-            for ( int y = 0; y < tex.width; y++ )
+            for( int y = 0; y < tex.width; y++ )
             {
                 var column = tex.GetPixels( 0, y, 1, tex.height );
-                if ( column.Any( c => c.a > 1e-4 ) )
+                if( column.Any( c => c.a > 1e-4 ) )
                 {
                     yMin = y;
                     break;
@@ -71,10 +69,10 @@ namespace CommunityCoreLibrary
                 return tex;
             }
             // right to left
-            for ( int y = tex.width - 1; y >= 0; y-- )
+            for( int y = tex.width - 1; y >= 0; y-- )
             {
                 var column = tex.GetPixels( 0, y, 1, tex.height );
-                if ( column.Any( c => c.a > 1e-4 ) )
+                if( column.Any( c => c.a > 1e-4 ) )
                 {
                     yMax = y;
                     break;
@@ -121,19 +119,17 @@ namespace CommunityCoreLibrary
 
             if ( texProportion > rectProportion )
             {
-                Rect wider = new Rect( rect.xMin, 0f, rect.width, rect.width / texProportion ).CenteredOnYIn( rect ).CenteredOnXIn( rect );
+                Rect wider = new Rect(rect.xMin, 0f, rect.width, rect.width / texProportion ).CenteredOnYIn(rect).CenteredOnXIn(rect);
                 GUI.DrawTexture( wider, tex );
                 return;
             }
             else if ( texProportion < rectProportion )
             {
-                Rect taller = new Rect( 0f, rect.yMin, rect.height * texProportion, rect.height ).CenteredOnXIn( rect ).CenteredOnXIn( rect );
+                Rect taller = new Rect(0f, rect.yMin, rect.height * texProportion, rect.height ).CenteredOnXIn(rect).CenteredOnXIn(rect);
                 GUI.DrawTexture( taller, tex );
                 return;
             }
             GUI.DrawTexture( rect, tex );
         }
-
-        #endregion Methods
     }
 }
