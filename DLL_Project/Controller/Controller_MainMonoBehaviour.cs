@@ -21,43 +21,16 @@ namespace CommunityCoreLibrary.Controller
 
         #region Mono Callbacks
 
-        // TODO:  Check if this method exists
-        public void                         Stop()
-        {
-#if DEVELOPER
-            CCL_Log.CloseStream();
-#endif
-        }
-
-        public void                         Initialize()
-        {
-            // This is a pre-start sequence to hook some deeper level functions
-            // These functions can be hooked later but it would be after the sequence of
-            // operations which call them is complete
-
-            // Detour Verse.ThingDef.PostLoad
-            MethodInfo Verse_ThingDef_PostLoad = typeof( ThingDef ).GetMethod( "PostLoad", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_ThingDef_PostLoad = typeof( Detour._ThingDef ).GetMethod( "_PostLoad", BindingFlags.Static | BindingFlags.NonPublic );
-            Detours.TryDetourFromTo( Verse_ThingDef_PostLoad, CCL_ThingDef_PostLoad );
-
-        }
-
         public void                         Start()
         {
             enabled = false;
             gameValid = false;
-
-            // Log CCL version
-            Version.Log();
 
             // Check versions of mods and throw errors to the user if the
             // mod version requirement is higher than the installed version
             if( !Validation.Mods.Validate() )
             {
                 CCL_Log.Error( "Initialization Error!", "Mod Validation" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 
@@ -65,9 +38,6 @@ namespace CommunityCoreLibrary.Controller
             if( !Validation.Core.Validate() )
             {
                 CCL_Log.Error( "Initialization Error!", "Library Validation" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
 
             }
@@ -76,9 +46,6 @@ namespace CommunityCoreLibrary.Controller
             if( !Validation.Research.Validate() )
             {
                 CCL_Log.Error( "Initialization Error!", "Research Validation" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 
@@ -86,9 +53,6 @@ namespace CommunityCoreLibrary.Controller
             if( !Resources.Injectors.Special.Inject() )
             {
                 CCL_Log.Error( "Initialization Error!", "Special Injection" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 
@@ -96,9 +60,6 @@ namespace CommunityCoreLibrary.Controller
             if( !Resources.Injectors.ThingComps.Inject() )
             {
                 CCL_Log.Error( "Initialization Error!", "ThingComp Injection" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 
@@ -106,9 +67,6 @@ namespace CommunityCoreLibrary.Controller
             if( !Resources.Enable() )
             {
                 CCL_Log.Error( "Initialization Error!", "Resource Injection" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 
@@ -118,9 +76,6 @@ namespace CommunityCoreLibrary.Controller
             if( !ResearchController.Initialize() )
             {
                 CCL_Log.Error( "Initialization Error!", "Advanced Research" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 
@@ -128,9 +83,6 @@ namespace CommunityCoreLibrary.Controller
             if( !Controller.Help.Initialize() )
             {
                 CCL_Log.Error( "Initialization Error!", "Help Controller" );
-#if DEVELOPER
-                CCL_Log.CloseStream();
-#endif
                 return;
             }
 

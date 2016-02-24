@@ -26,7 +26,8 @@ namespace CommunityCoreLibrary.Controller
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
-        private static HideItemManager      hideItemManager;
+        public static bool                  GenericHoppersEnabled = false;
+        public static bool                  VanillaHoppersDisabled = false;
 
         // For tracing in global functions
         private static ModHelperDef         _Trace_Current_Mod = null;
@@ -108,23 +109,6 @@ namespace CommunityCoreLibrary.Controller
             }
         }
 
-        public static  HideItemManager              HideItemManager
-        {
-            get
-            {
-                if( hideItemManager == null )
-                {
-                    hideItemManager = (HideItemManager) Find_Extensions.MapComponent( typeof( HideItemManager ) );
-                    if( hideItemManager == null )
-                    {
-                        CCL_Log.Error(
-                            "MapComponent missing :: HideItemManager"
-                        );
-                    }
-                }
-                return hideItemManager;
-            }
-        }
         #endregion
 
     }

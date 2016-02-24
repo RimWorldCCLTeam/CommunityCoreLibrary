@@ -31,5 +31,8 @@ The standing lamps have been reduced to a single object which takes advantage of
 [color=orange]Neighbourly Growers[/color]
 Hydroponic basins and plant pots can share growing information with other hydroponic basins and plant pots.  No need to select each grower individually when setting everything up.
 
+[color=orange]Nutrient Paste Dispensers[/color]
+The nutrient paste dispensers use the generic hoppers provided with the core library and the vanilla hopper is hidden from use.  This allows easier management of the dispensers by automatically programming the hoppers connected to them.
+
 [color=orange]Remember![/color]
 All changes are defined in xml in the Vanilla Tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml!

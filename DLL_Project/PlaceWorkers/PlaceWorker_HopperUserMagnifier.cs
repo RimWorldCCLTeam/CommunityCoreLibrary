@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 using Verse;
 
@@ -23,6 +25,7 @@ namespace CommunityCoreLibrary
                 ( !hopperUser.OccupiedRect().Cells.Contains( center ) )
             )
             {                
+                GenDraw.DrawFieldEdges( hopperUser.OccupiedRect().Cells.ToList() );
                 GenDraw.DrawTargetHighlight( hopperUser );
             }
             else

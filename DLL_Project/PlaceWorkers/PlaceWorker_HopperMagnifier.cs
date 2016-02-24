@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 using Verse;
 
@@ -19,6 +21,7 @@ namespace CommunityCoreLibrary
             List<CompHopper> hoppers = CompHopperUser.FindHoppers( center, rot, def.Size );
             foreach( var hopper in hoppers )
             {
+                GenDraw.DrawFieldEdges( hopper.parent.OccupiedRect().Cells.ToList() );
                 GenDraw.DrawTargetHighlight( hopper.parent );
             }
         }

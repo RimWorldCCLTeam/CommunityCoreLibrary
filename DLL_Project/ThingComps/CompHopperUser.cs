@@ -26,6 +26,19 @@ namespace CommunityCoreLibrary
             }
         }
 
+        private CompProperties_HopperUser   HopperProperties
+        {
+            get
+            {
+                return ( props as CompProperties_HopperUser );
+            }
+        }
+            
+        public void                         ResetResourceSettings()
+        {
+            resourceSettings = null;
+        }
+
         public StorageSettings              ResourceSettings
         {
             get
@@ -92,10 +105,13 @@ namespace CommunityCoreLibrary
             {
                 if( xmlResources == null )
                 {
-                    xmlResources = ((CompProperties_HopperUser)props).resources;
-                    if( xmlResources != null )
+                    if( HopperProperties != null )
                     {
-                        xmlResources.ResolveReferences();
+                        xmlResources = HopperProperties.resources;
+                        if( xmlResources != null )
+                        {
+                            xmlResources.ResolveReferences();
+                        }
                     }
                 }
                 return xmlResources;
@@ -305,6 +321,54 @@ namespace CommunityCoreLibrary
             return ( resourceCount <= 0 );
         }
 
+        public bool                         RemoveResourcesFromHoppers( RecipeDef recipe, List<ThingAmount> chosen )
+        {
+            var hoppers = FindHoppers();
+            if( hoppers.NullOrEmpty() )
+            {
+                return false;
+            }
+
+            var allResources = new List<Thing>();
+
+            foreach( var hopper in hoppers )
+            {
+                var hopperResources = hopper.GetAllResources( ResourceSettings.filter );
+                if( hopperResources != null )
+                {
+                    allResources.AddRange( hopperResources );
+                }
+            }
+
+            bool removeThings = false;
+            if( recipe.allowMixingIngredients )
+            {
+                removeThings = recipe.TryFindBestRecipeIngredientsInSet_AllowMix( allResources, chosen );
+            }
+            else
+            {
+                removeThings = recipe.TryFindBestRecipeIngredientsInSet_NoMix( allResources, chosen );
+            }
+            if( !removeThings )
+            {
+                return false;
+            }
+
+            foreach( var chosenThing in chosen )
+            {
+                if( chosenThing.count >= chosenThing.thing.stackCount )
+                {
+                    chosenThing.thing.Destroy();
+                }
+                else
+                {
+                    chosenThing.thing.stackCount -= chosenThing.count;
+                }
+            }
+
+            return true;
+        }
+
         public bool                         EnoughResourceInHoppers( ThingDef resourceDef, int resourceCount )
         {
             return ( CountResourceInHoppers( resourceDef ) >= resourceCount );
@@ -313,6 +377,44 @@ namespace CommunityCoreLibrary
         public bool                         EnoughResourcesInHoppers( int resourceCount )
         {
             return ( CountResourcesInHoppers() >= resourceCount );
+        }
+
+        public bool                         EnoughResourcesInHoppers( RecipeDef recipe )
+        {
+            var hoppers = FindHoppers();
+            if( hoppers.NullOrEmpty() )
+            {
+                return false;
+            }
+
+            var allResources = new List<Thing>();
+
+            foreach( var hopper in hoppers )
+            {
+                var hopperResources = hopper.GetAllResources( ResourceSettings.filter );
+                if( hopperResources != null )
+                {
+                    allResources.AddRange( hopperResources );
+                }
+            }
+
+            List<ThingAmount> chosen = new List<ThingAmount>();
+            if( recipe.allowMixingIngredients )
+            {
+                if( recipe.TryFindBestRecipeIngredientsInSet_AllowMix( allResources, chosen ) )
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if( recipe.TryFindBestRecipeIngredientsInSet_NoMix( allResources, chosen ) )
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public int                          CountResourceInHoppers( ThingDef resourceDef )

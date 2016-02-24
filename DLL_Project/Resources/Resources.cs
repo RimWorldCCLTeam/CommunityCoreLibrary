@@ -19,12 +19,12 @@ namespace CommunityCoreLibrary
                 // Generic hoppers
                 if( ModHelperDef.UsesGenericHoppers )
                 {
-                    if( !Resources.Buildings.Hoppers.Enable() )
+                    if( !Resources.Buildings.Hoppers.EnableGenericHoppers() )
                     {
                         CCL_Log.TraceMod(
                             ModHelperDef,
                             Verbosity.NonFatalErrors,
-                            "Error enabling Hoppers"
+                            "Error enabling generic hoppers"
                         );
                         return false;
                     }
@@ -32,7 +32,28 @@ namespace CommunityCoreLibrary
                     CCL_Log.TraceMod(
                         ModHelperDef,
                         Verbosity.Injections,
-                        "Hoppers Enabled"
+                        "Generic Hoppers Enabled"
+                    );
+#endif
+                }
+
+                // Vanilla hoppers
+                if( ModHelperDef.HideVanillaHoppers )
+                {
+                    if( !Resources.Buildings.Hoppers.DisableVanillaHoppers() )
+                    {
+                        CCL_Log.TraceMod(
+                            ModHelperDef,
+                            Verbosity.NonFatalErrors,
+                            "Error disabling vanilla hoppers"
+                        );
+                        return false;
+                    }
+#if DEBUG
+                    CCL_Log.TraceMod(
+                        ModHelperDef,
+                        Verbosity.Injections,
+                        "Vanilla Hoppers Disabled"
                     );
 #endif
                 }

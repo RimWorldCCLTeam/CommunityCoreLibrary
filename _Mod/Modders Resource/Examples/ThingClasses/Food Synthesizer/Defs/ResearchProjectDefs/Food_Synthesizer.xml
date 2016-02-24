@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResearchProjectDefs>
+
+    <ResearchProjectDef>
+        <defName>MealSynthesis</defName>
+        <label>meal synthesis</label>
+        <description>Food synthesizers can be built which can create actual meals instead of just disgusting paste.</description>
+        <totalCost>1000</totalCost>
+        <prerequisites>
+            <li>NutrientResynthesis</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>FineMealSynthesis</defName>
+        <label>fine meal synthesis</label>
+        <description>Fine meals can be synthesized at food synthesizers.</description>
+        <totalCost>2000</totalCost>
+        <prerequisites>
+            <li>MealSynthesis</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef>
+        <defName>LavishMealSynthesis</defName>
+        <label>lavish meal synthesis</label>
+        <description>Lavish meals can be synthesized at food synthesizers.</description>
+        <totalCost>4000</totalCost>
+        <prerequisites>
+            <li>FineMealSynthesis</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+</ResearchProjectDefs>

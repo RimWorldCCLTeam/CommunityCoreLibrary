@@ -48,6 +48,22 @@
                 <idlePowerFactor>0.25</idlePowerFactor>
                 <operationalMode>WhenNear</operationalMode>
             </li>
+            <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
+                <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+                <resources>
+                    <allowedQualitiesConfigurable>false</allowedQualitiesConfigurable>
+                    <categories>
+                        <li>FoodRaw</li>
+                    </categories>
+                    <exceptedThingDefs>
+                        <li>Hay</li>
+                        <li>Human_Meat</li>
+                    </exceptedThingDefs>
+                    <exceptedCategories>
+                        <li>EggsFertilized</li>
+                    </exceptedCategories>
+                </resources>
+            </li>
         </comps>
         <size>(3,4)</size>
         <costList>

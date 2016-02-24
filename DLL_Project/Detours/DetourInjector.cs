@@ -122,11 +122,77 @@ namespace CommunityCoreLibrary
             MethodInfo CCL_ThingSelectionUtility_SelectableNow = typeof( Detour._ThingSelectionUtility ).GetMethod( "_SelectableNow", BindingFlags.Static | BindingFlags.NonPublic );
             Detours.TryDetourFromTo( RimWorld_ThingSelectionUtility_SelectableNow, CCL_ThingSelectionUtility_SelectableNow );
 
+            // Detour RimWorld.DropCellFinder.TradeDropSpot
+            MethodInfo RimWorld_DropCellFinder_TradeDropSpot = typeof( DropCellFinder ).GetMethod( "TradeDropSpot", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_DropCellFinder_TradeDropSpot = typeof( Detour._DropCellFinder ).GetMethod( "_TradeDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_DropCellFinder_TradeDropSpot, CCL_DropCellFinder_TradeDropSpot );
+
+            // Detour RimWorld.PassingShip.Depart
+            MethodInfo RimWorld_PassingShop_Depart = typeof( PassingShip ).GetMethod( "Depart", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_PassingShop_Depart = typeof( Detour._PassingShip ).GetMethod( "_Depart", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_PassingShop_Depart, CCL_PassingShop_Depart );
+
+            // Detour RimWorld.IncidentWorker_TraderArrival.TryExecute
+            MethodInfo RimWorld_IncidentWorker_TraderArrival_TryExecute = typeof( IncidentWorker_TraderArrival ).GetMethod( "TryExecute", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_IncidentWorker_TraderArrival_TryExecute = typeof( Detour._IncidentWorker_TraderArrival ).GetMethod( "_TryExecute", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_IncidentWorker_TraderArrival_TryExecute, CCL_IncidentWorker_TraderArrival_TryExecute );
+
+            // Detour RimWorld.FoodUtility.BestFoodSourceFor
+            MethodInfo RimWorld_FoodUtility_BestFoodSourceFor = typeof( FoodUtility ).GetMethod( "BestFoodSourceFor", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_FoodUtility_BestFoodSourceFor = typeof( Detour._FoodUtility ).GetMethod( "_BestFoodSourceFor", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_FoodUtility_BestFoodSourceFor, CCL_FoodUtility_BestFoodSourceFor );
+
+            // Detour RimWorld.FoodUtility.NutritionAvailableFromFor
+            MethodInfo RimWorld_FoodUtility_NutritionAvailableFromFor = typeof( FoodUtility ).GetMethod( "NutritionAvailableFromFor", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_FoodUtility_NutritionAvailableFromFor = typeof( Detour._FoodUtility ).GetMethod( "_NutritionAvailableFromFor", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_FoodUtility_NutritionAvailableFromFor, CCL_FoodUtility_NutritionAvailableFromFor );
+
+            // Detour RimWorld.Building_NutrientPasteDispenser.AdjacentReachableHopper
+            MethodInfo RimWorld_Building_NutrientPasteDispenser_AdjacentReachableHopper = typeof( Building_NutrientPasteDispenser ).GetMethod( "AdjacentReachableHopper", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_Building_NutrientPasteDispenser_AdjacentReachableHopper = typeof( Detour._Building_NutrientPasteDispenser ).GetMethod( "_AdjacentReachableHopper", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_Building_NutrientPasteDispenser_AdjacentReachableHopper, CCL_Building_NutrientPasteDispenser_AdjacentReachableHopper );
+
+            // Detour RimWorld.Building_NutrientPasteDispenser.FindFeedInAnyHopper
+            MethodInfo RimWorld_Building_NutrientPasteDispenser_FindFeedInAnyHopper = typeof( Building_NutrientPasteDispenser ).GetMethod( "FindFeedInAnyHopper", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_Building_NutrientPasteDispenser_FindFeedInAnyHopper = typeof( Detour._Building_NutrientPasteDispenser ).GetMethod( "_FindFeedInAnyHopper", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_Building_NutrientPasteDispenser_FindFeedInAnyHopper, CCL_Building_NutrientPasteDispenser_FindFeedInAnyHopper );
+
+            // Detour RimWorld.Building_NutrientPasteDispenser.HasEnoughFeedstockInHoppers
+            MethodInfo RimWorld_Building_NutrientPasteDispenser_HasEnoughFeedstockInHoppers = typeof( Building_NutrientPasteDispenser ).GetMethod( "HasEnoughFeedstockInHoppers", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_Building_NutrientPasteDispenser_HasEnoughFeedstockInHoppers = typeof( Detour._Building_NutrientPasteDispenser ).GetMethod( "_HasEnoughFeedstockInHoppers", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_Building_NutrientPasteDispenser_HasEnoughFeedstockInHoppers, CCL_Building_NutrientPasteDispenser_HasEnoughFeedstockInHoppers );
+
+            // Detour RimWorld.JobDriver_FoodDeliver.MakeNewToils
+            MethodInfo RimWorld_JobDriver_FoodDeliver_MakeNewToils = typeof( JobDriver_FoodDeliver ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_JobDriver_FoodDeliver_MakeNewToils = typeof( Detour._JobDriver_FoodDeliver ).GetMethod( "_MakeNewToils", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_JobDriver_FoodDeliver_MakeNewToils, CCL_JobDriver_FoodDeliver_MakeNewToils );
+
+            // Detour RimWorld.JobDriver_FoodFeedPatient.MakeNewToils
+            MethodInfo RimWorld_JobDriver_FoodFeedPatient_MakeNewToils = typeof( JobDriver_FoodFeedPatient ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_JobDriver_FoodFeedPatient_MakeNewToils = typeof( Detour._JobDriver_FoodFeedPatient ).GetMethod( "_MakeNewToils", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_JobDriver_FoodFeedPatient_MakeNewToils, CCL_JobDriver_FoodFeedPatient_MakeNewToils );
+
+            // Detour RimWorld.JobDriver_Ingest.MakeNewToils
+            MethodInfo RimWorld_JobDriver_Ingest_MakeNewToils = typeof( JobDriver_Ingest ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_JobDriver_Ingest_MakeNewToils = typeof( Detour._JobDriver_Ingest ).GetMethod( "_MakeNewToils", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_MakeNewToils, CCL_JobDriver_Ingest_MakeNewToils );
+
+            // Detour RimWorld.JobGiver_GetFood.TryGiveTerminalJob
+            MethodInfo RimWorld_JobGiver_GetFood_TryGiveTerminalJob = typeof( JobGiver_GetFood ).GetMethod( "TryGiveTerminalJob", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_JobGiver_GetFood_TryGiveTerminalJob = typeof( Detour._JobGiver_GetFood ).GetMethod( "_TryGiveTerminalJob", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_JobGiver_GetFood_TryGiveTerminalJob, CCL_JobGiver_GetFood_TryGiveTerminalJob );
+
+            // Detour RimWorld.JobDriver_SocialRelax.MakeNewToils
+            MethodInfo RimWorld_JobDriver_SocialRelax_MakeNewToils = typeof( JobDriver_SocialRelax ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_JobDriver_SocialRelax_MakeNewToils = typeof( Detour._JobDriver_SocialRelax ).GetMethod( "_MakeNewToils", BindingFlags.Static | BindingFlags.NonPublic );
+            Detours.TryDetourFromTo( RimWorld_JobDriver_SocialRelax_MakeNewToils, CCL_JobDriver_SocialRelax_MakeNewToils );
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
             MethodInfo CCL_bar = typeof( Detour._bar ).GetMethod( "_bar_method", BindingFlags.Static | BindingFlags.NonPublic );
             Detours.TryDetourFromTo( foo, CCL_bar );
+
             */
         }
 

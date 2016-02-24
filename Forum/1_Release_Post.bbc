@@ -1,5 +1,23 @@
 [center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
-v0.12.7[/center]
+v0.12.7
+
+[color="red"]This forum thread and the first 10 posts serve as the documentation.
+
+Be sure to RTFM every time you upgrade, things change, these posts are here to tell you how and how to avoid issue![/color][/center]
+
+
+
+[size=12pt][color=orange]Table of Contents[/color][/size]
+[list]
+[li]1 - [url=https://ludeon.com/forums/index.php?topic=16599.0]Release Post & Download[/url][/li]
+[li]2 - [url=https://ludeon.com/forums/index.php?topic=16599.1]Issue Reporting[/url][/li]
+[li]3 - [url=https://ludeon.com/forums/index.php?topic=16599.2]User Information[/url][/li]
+[li]4 - [url=https://ludeon.com/forums/index.php?topic=16599.3]Modders Information[/url][/li]
+[li]5 - [url=https://ludeon.com/forums/index.php?topic=16599.4]Internal Detours[/url][/li]
+[li]6 - [url=https://ludeon.com/forums/index.php?topic=16599.5]Credits[/url][/li]
+[li]7 - [url=https://ludeon.com/forums/index.php?topic=16599.6]Short Change Log[/url][/li]
+[li]8 - [url=https://ludeon.com/forums/index.php?topic=16599.7]Usage Terms AKA License[/url][/li]
+[li]9 - [url=https://ludeon.com/forums/index.php?topic=16599.8]Notes[/url][/li][/list]
 
 
 
@@ -13,9 +31,9 @@ If you are a modder, download the modders resource or the source package.
 
 
 
-[size=12pt][color=orange]Download & Install Instructions[/color][/size]
+[size=12pt][color=orange]Install Instructions[/color][/size]
 
-Delete any previous install of both the core library and the vanilla tweaks.  This will avoid most common problems.
+[b]ALWAYS[/b] delete any previous install of both the core library and the vanilla tweaks before installing a new version.  This will avoid most common problems.
 
 [size=12pt]Regular users download the "User Release" package.[/size]
 [list][li]Extract both the folders in the zip into your Mods folder.[/li]
@@ -33,9 +51,10 @@ Delete any previous install of both the core library and the vanilla tweaks.  Th
 [list][li]If you are simply wanting to mod and take advantage of CCL, use the source download or fork from the master branch.[/li]
 [li]If you want to contribute, bug fix, nitpick, etc, you should fork from the unstable development branch and propose changes through pull requests.[/li][/list]
 
-[size=12pt]Download[/size]
-[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases/latest]From github[/url]
 
+
+[size=12pt][color=orange]Download[/color][/size]
+[color=white][url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases/latest]Latest release[/url] | [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases]All releases[/url] | [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary]GitHub repository[/url][/color]
 
 
 [size=12pt][color=orange]Background[/color][/size]

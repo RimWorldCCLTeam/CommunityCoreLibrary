@@ -55,6 +55,11 @@
                                         [optional] Enables the generic hoppers for use with buildings, hoppers
                                         are hidden by default from player use unless a mod enables them
 
+        <HideVanillaHoppers>bool</HideVanillaHoppers>
+                                        [optional] Disables the vanilla hoppers, preventing them from being built.
+                                        The use of this is not recommended outside of modpacks to prevent
+                                        incompatibilities with mods which may use the vanilla hopper.
+
         <Verbosity>enum*</Verbosity>    [optional] Sets the level of logging output CCL will perform when performing tasks specific to your mod
 
     </ModHelperDef>
