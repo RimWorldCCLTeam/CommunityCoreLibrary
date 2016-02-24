@@ -1,3 +1,0 @@
-Copy the .dll from your game folder.
-You can find it here:
-{RimWorld-Folder}/RimWorld413Win_Data/Managed/Assembly-CSharp.dll
