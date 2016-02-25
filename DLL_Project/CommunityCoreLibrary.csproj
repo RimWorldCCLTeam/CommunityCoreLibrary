@@ -62,6 +62,12 @@
     <Compile Include="Extensions\Vector3_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
     <Compile Include="Interfaces\IHelpDefView.cs" />
+    <Compile Include="MainTabs\MainTabWindow_ResearchTree.cs" />
+    <Compile Include="ResearchTree\Node.cs" />
+    <Compile Include="ResearchTree\Queue.cs" />
+    <Compile Include="ResearchTree\ResearchTree.cs" />
+    <Compile Include="ResearchTree\Settings.cs" />
+    <Compile Include="ResearchTree\Tree.cs" />
     <Compile Include="StaticClasses\Detours.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />

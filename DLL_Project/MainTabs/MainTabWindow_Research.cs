@@ -7,6 +7,9 @@ using Verse.Sound;
 
 namespace CommunityCoreLibrary
 {
+    /// <summary>
+    /// This thing is broken.
+    /// </summary>
     public class MainTabWindow_Research : MainTabWindow, IHelpDefView
     {
         // UI settings
