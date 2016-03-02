@@ -21,14 +21,14 @@ namespace CommunityCoreLibrary
         // minIdleDraw is to prevent idlePower from being 0.0f
         // This is important so that the device stays connected to the
         // power net without actually drawing off of it when not in use.
-        const float                         minIdleDraw = -0.01f;
-        float                               idlePower;
+        public const float                  MinIdleDraw = -0.01f;
+        public float                        IdlePower;
         float                               curPower = 1f;
         bool                                onIfOn;
 
         int                                 keepOnTicks;
 
-        CompProperties_LowIdleDraw          IdleProps;
+        public CompProperties_LowIdleDraw   IdleProps;
 
         #endregion
 
@@ -50,6 +50,14 @@ namespace CommunityCoreLibrary
             }
         }
 
+        Building_AutomatedFactory           AutomatedFactory
+        {
+            get
+            {
+                return parent as Building_AutomatedFactory;
+            }
+        }
+
         #endregion
 
         #region Query State
@@ -58,7 +66,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return !( PowerTrader.PowerOutput < idlePower );
+                return !( PowerTrader.PowerOutput < IdlePower );
             }
         }
 
@@ -93,7 +101,8 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompPowerTrader"
+                    "Missing CompPowerTrader",
+                    "CompPowerLowIdleDraw"
                 );
                 return;
             }
@@ -107,28 +116,46 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompProperties_LowIdleDraw"
+                    "Missing CompProperties_LowIdleDraw",
+                    "CompPowerLowIdleDraw"
                 );
                 return;
             }
 #endif
 
+#if DEBUG
+            // Validate Automated Factory
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.Factory )&&
+                ( AutomatedFactory == null )
+            )
+            {
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Parent building must be ThingClass Building_AutomatedFactory",
+                    "CompPowerLowIdleDraw"
+                );
+                return;
+            }
+#endif
+            
             // Generate the list of cells to check
             BuildScanList();
 
             // Calculate low-power mode consumption
-            idlePower = IdleProps.idlePowerFactor * -PowerTrader.props.basePowerConsumption;
-            if( idlePower > minIdleDraw )
+            IdlePower = IdleProps.idlePowerFactor * -PowerTrader.props.basePowerConsumption;
+            if( IdlePower > MinIdleDraw )
             {
-                idlePower = minIdleDraw;
+                IdlePower = MinIdleDraw;
             }
 
             // Initial state...
 
-            if( curPower > idlePower )
+            if( curPower > IdlePower )
             {
                 // ...Default off...
-                curPower = idlePower;
+                curPower = IdlePower;
             }
 
             // Set power usage
@@ -290,6 +317,13 @@ namespace CommunityCoreLibrary
                         turnItOn = true;
                     }
                     break;
+                case LowIdleDrawMode.Factory :
+                    // Automated Factory production
+                    if( AutomatedFactory.CurrentRecipe != null )
+                    {
+                        turnItOn = true;
+                    }
+                    break;
                 }
             }
             else
@@ -326,6 +360,11 @@ namespace CommunityCoreLibrary
                 // ...Is not idle, go to idle mode
                 TogglePower();
             }
+            else
+            {
+                // ..maintain idle state
+                keepOnTicks = IdleProps.cycleLowTicks;
+            }
 
             if(
                 ( LowPowerMode )&&
@@ -350,7 +389,7 @@ namespace CommunityCoreLibrary
             else
             {
                 // Is not idle, power down
-                curPower = idlePower;
+                curPower = IdlePower;
                 PowerTrader.PowerOutput = curPower;
                 keepOnTicks = IdleProps.cycleLowTicks;
                 curUser = null;
@@ -411,6 +450,21 @@ namespace CommunityCoreLibrary
 
                 return;
             }
+            else if ( IdleProps.operationalMode == LowIdleDrawMode.Factory )
+            {
+                // Set default scan tick intervals
+                if( IdleProps.cycleLowTicks < 0 )
+                {
+                    IdleProps.cycleLowTicks = 30;
+                }
+
+                if( IdleProps.cycleHighTicks < 0 )
+                {
+                    IdleProps.cycleHighTicks = 100;
+                }
+
+                return;
+            }
 
             // List of cells to check
             scanPosition = new List<IntVec3>();
@@ -424,8 +478,7 @@ namespace CommunityCoreLibrary
                 switch( IdleProps.operationalMode )
                 {
                 case LowIdleDrawMode.WhenNear :
-                    // And the adjacent cells too???
-                    // Only really used by NPDs as they "need time to prepare"
+                    // And the adjacent cells too
                     foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
                     {
                         AddScanPositionIfAllowed( curPos );

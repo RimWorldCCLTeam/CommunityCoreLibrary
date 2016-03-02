@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+
+        <defName>AdvancedAutomatedStonecutter</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>Stonecutting</li>
+            <li>Machining</li>
+        </researchDefs>
+
+        <thingDefs>
+            <li>AutomatedStonecutter</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+</Defs>

@@ -88,7 +88,7 @@ namespace CommunityCoreLibrary
             settings = new StorageSettings((IStoreSettingsParent) this);
             if( def.building.defaultStorageSettings != null )
             {
-                settings.CopyFrom(def.building.defaultStorageSettings);
+                settings.CopyFrom( def.building.defaultStorageSettings );
             }
             settings.filter.BlockDefaultAcceptanceFilters();
             settings.filter.ResolveReferences();
@@ -97,7 +97,7 @@ namespace CommunityCoreLibrary
         public override void                SpawnSetup()
         {
             base.SpawnSetup();
-            slotGroup = new SlotGroup((ISlotGroupParent) this);
+            slotGroup = new SlotGroup( (ISlotGroupParent) this );
             cachedOccupiedCells = this.OccupiedRect().Cells;
         }
 
@@ -115,9 +115,11 @@ namespace CommunityCoreLibrary
 
         public override void                Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            if (slotGroup != null)
+            if( slotGroup != null )
+            {
                 slotGroup.Notify_ParentDestroying();
-            base.Destroy(mode);
+            }
+            base.Destroy( mode );
         }
 
         public override IEnumerable<Gizmo>  GetGizmos()

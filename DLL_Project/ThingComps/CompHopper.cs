@@ -40,19 +40,30 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         IsRefrigerated
+        {
+            get
+            {
+                return ( Building.TryGetComp<CompRefrigerated>() != null );
+            }
+        }
+
         public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
-            var userSettings = Building.GetParentStoreSettings();
-            if( userSettings == null )
+            if(
+                ( !WasProgrammed )&&
+                ( FindHopperUser() != null )
+            )
             {
-                return;
+                var hopperUser = FindHopperUser().TryGetComp<CompHopperUser>();
+                hopperUser.FindAndProgramHoppers();
             }
-            ProgramHopper( userSettings );
         }
 
         public override void                PostExposeData()
         {
+            base.PostExposeData();
             Scribe_Values.LookValue( ref wasProgrammed, "wasProgrammed", false );
         }
 
@@ -76,7 +87,7 @@ namespace CommunityCoreLibrary
             }
 
             // Clear the programming
-            hopperSettings.filter.SetDisallowAll();
+            hopperSettings.filter = new ThingFilter();
 
             // Reset the flag
             WasProgrammed = false;
@@ -106,6 +117,11 @@ namespace CommunityCoreLibrary
 
             // Set the programming flag
             WasProgrammed = true;
+        }
+
+        public StorageSettings              GetStoreSettings()
+        {
+            return Building.GetStoreSettings();
         }
 
         public Thing                        FindHopperUser()

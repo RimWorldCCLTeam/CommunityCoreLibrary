@@ -16,17 +16,19 @@ namespace CommunityCoreLibrary
     public static class Toils_FoodSynthesizer
     {
 
-        public static Toil TakeAlcoholFromSynthesizer( TargetIndex ind, Pawn eater )
+        private static Toil TakeFromSynthesier( TargetIndex ind, Pawn eater, Func<ThingDef,bool> validator, Func<ThingDef,ThingDef,int> sorter )
         {
-            var synthesizer = (Building_FoodSynthesizer) eater.jobs.curJob.GetTarget( ind ).Thing;
-            var alcoholDef = synthesizer.BestAlcoholFrom();
+            var synthesizer = (Building_AutomatedFactory) eater.jobs.curJob.GetTarget( ind ).Thing;
+            var bestDef = synthesizer.BestProduct( validator, sorter );
             var takeFromSynthesizer = new Toil();
             takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
             takeFromSynthesizer.AddFinishAction( () =>
                 {
-                    Thing thing = synthesizer.TryDispenseAlcohol( alcoholDef );
+                    var def = synthesizer.BestProduct( validator, sorter );
+                    Thing thing = synthesizer.TryProduceThingDef( def );
                     if( thing == null )
                     {
+                        Log.Error( eater.Label + " unable to take " + def.label + " from " + synthesizer.ThingID );
                         eater.jobs.curDriver.EndJobWith( JobCondition.Incompletable );
                     }
                     else
@@ -36,33 +38,18 @@ namespace CommunityCoreLibrary
                     }
                 }
             );
-            takeFromSynthesizer.defaultDuration = synthesizer.CollectDuration( alcoholDef );
+            takeFromSynthesizer.defaultDuration = synthesizer.ProductionTicks( bestDef );
             return takeFromSynthesizer;
+        }
+
+        public static Toil TakeAlcoholFromSynthesizer( TargetIndex ind, Pawn eater )
+        {
+            return TakeFromSynthesier( ind, eater, FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol );
         }
 
         public static Toil TakeMealFromSynthesizer( TargetIndex ind, Pawn eater )
         {
-            Pawn pawn = eater;
-            var synthesizer = (Building_FoodSynthesizer) pawn.jobs.curJob.GetTarget( ind ).Thing;
-            var mealDef = synthesizer.BestMealFrom();
-            var takeFromSynthesizer = new Toil();
-            takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
-            takeFromSynthesizer.AddFinishAction( () =>
-                {
-                    Thing thing = synthesizer.TryDispenseMeal( mealDef );
-                    if( thing == null )
-                    {
-                        eater.jobs.curDriver.EndJobWith( JobCondition.Incompletable );
-                    }
-                    else
-                    {
-                        eater.carrier.TryStartCarry( thing );
-                        eater.jobs.curJob.targetA = (TargetInfo) eater.carrier.CarriedThing;
-                    }
-                }
-            );
-            takeFromSynthesizer.defaultDuration = synthesizer.CollectDuration( mealDef );
-            return takeFromSynthesizer;
+            return TakeFromSynthesier( ind, eater, FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
         }
 
     }

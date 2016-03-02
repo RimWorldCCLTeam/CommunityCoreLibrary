@@ -85,7 +85,10 @@ namespace CommunityCoreLibrary.Detour
                 // Try to find a working nutrient paste dispenser or food sythesizer
                 var dispensers = Find.ListerThings.AllThings.Where( t => (
                     ( t is Building_NutrientPasteDispenser )||
-                    ( t is Building_FoodSynthesizer )
+                    (
+                        ( t is Building_AutomatedFactory )&&
+                        ( ((Building_AutomatedFactory)t).CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )
+                    )
                 ) );
                 var dispenser = GenClosest.ClosestThingReachable(
                     dispenserValidator.getter.Position,
@@ -128,10 +131,10 @@ namespace CommunityCoreLibrary.Detour
                         return ThingDefOf.MealNutrientPaste.ingestible.nutrition;
                     }
                 }
-                if( t is Building_FoodSynthesizer )
+                if( t is Building_AutomatedFactory )
                 {
-                    var FS = t as Building_FoodSynthesizer;
-                    var meal = FS.BestMealFrom();
+                    var FS = t as Building_AutomatedFactory;
+                    var meal = FS.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                     if(
                         ( meal != null )&&
                         ( FS.CanDispenseNow( meal ) )
@@ -192,10 +195,10 @@ namespace CommunityCoreLibrary.Detour
                     checkDef = ThingDefOf.MealNutrientPaste;
                     interactionCell = NPD.InteractionCell;
                 }
-                if( t is Building_FoodSynthesizer )
+                if( t is Building_AutomatedFactory )
                 {
-                    var FS = t as Building_FoodSynthesizer;
-                    checkDef = FS.BestMealFrom();
+                    var FS = t as Building_AutomatedFactory;
+                    checkDef = FS.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                     if(
                         ( this.fullDispensersOnly )&&
                         ( checkDef == null )

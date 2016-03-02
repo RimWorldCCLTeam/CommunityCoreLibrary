@@ -32,7 +32,7 @@ namespace CommunityCoreLibrary.Detour
 
             if( targetThingC != null )
             {
-                if( targetThingC is Building_FoodSynthesizer )
+                if( targetThingC is Building_AutomatedFactory )
                 {
                     yield return Toils_Goto.GotoThing( TargetIndex.C, PathEndMode.InteractionCell );
                     yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer( TargetIndex.C, obj.pawn );

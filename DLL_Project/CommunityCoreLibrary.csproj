@@ -193,7 +193,6 @@
     <Compile Include="Alerts\Alert_NoTradingCapacity.cs" />
     <Compile Include="Detours\IncidentWorker_TraderArrival.cs" />
     <Compile Include="Detours\FoodUtility.cs" />
-    <Compile Include="Buildings\Building_FoodSynthesizer.cs" />
     <Compile Include="Detours\Building_NutrientPasteDispenser.cs" />
     <Compile Include="Detours\JobDriver_FoodDeliver.cs" />
     <Compile Include="Detours\JobDriver_FoodFeedPatient.cs" />
@@ -203,6 +202,15 @@
     <Compile Include="Alerts\Alert_PasteDispenserNeedsHopper.cs" />
     <Compile Include="Detours\JobGiver_GetFood.cs" />
     <Compile Include="Detours\JobDriver_SocialRelax.cs" />
+    <Compile Include="Extensions\ThingFilter_Extensions.cs" />
+    <Compile Include="Structures\ResourceAmount.cs" />
+    <Compile Include="Buildings\Building_AutomatedFactory.cs" />
+    <Compile Include="Enumerations\FactoryProductionMode.cs" />
+    <Compile Include="Enumerations\FactoryOutputVector.cs" />
+    <Compile Include="ThingComps\CompAutomatedFactory.cs" />
+    <Compile Include="CompProperties\CompProperties_AutomatedFactory.cs" />
+    <Compile Include="StaticClasses\FoodSynthesis.cs" />
+    <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

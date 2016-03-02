@@ -3,6 +3,7 @@ using System.Linq;
 
 using RimWorld;
 using Verse;
+using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -10,8 +11,157 @@ namespace CommunityCoreLibrary
     public class CompHopperUser : ThingComp
     {
 
+        private class HopperSettingsAmount
+        {
+
+            public List<CompHopper>         hoppers = new List<CompHopper>();
+            public StorageSettings          settings = new StorageSettings();
+            public ThingCategoryDef         categoryDef;
+            public ThingDef                 thingDef;
+            public int                      count;
+            private int                     hoppersRequired = -1;
+
+            public                          HopperSettingsAmount( ThingDef thingDef, float count )
+            {
+                this.categoryDef = null;
+                this.thingDef = thingDef;
+                this.count = Mathf.CeilToInt( count );
+            }
+
+            public                          HopperSettingsAmount( ThingCategoryDef categoryDef, float count )
+            {
+                this.categoryDef = categoryDef;
+                this.thingDef = null;
+                this.count = Mathf.CeilToInt( count );
+            }
+
+            public bool                     ShouldBeRefrigerated
+            {
+                get
+                {
+                    return settings.filter.AllowedThingDefs.Any( def => def.HasComp( typeof( CompRottableRefrigerated ) ) );
+                }
+            }
+
+            public int                      HoppersRequired
+            {
+                get
+                {
+                    if( hoppersRequired < 0 )
+                    {
+                        hoppersRequired = 0;
+                        if( this.categoryDef != null )
+                        {
+                            int largest = 0;
+                            foreach( var thingDef in categoryDef.childThingDefs )
+                            {
+                                if( thingDef.stackLimit > largest )
+                                {
+                                    largest = thingDef.stackLimit;
+                                }
+                            }
+                            hoppersRequired = Mathf.Max( 1, Mathf.CeilToInt( (float) count / largest ) );
+                        }
+                        if( this.thingDef != null )
+                        {
+                            hoppersRequired = Mathf.Max( 1, Mathf.CeilToInt( (float) count / thingDef.stackLimit ) );
+                        }
+                    }
+                    return hoppersRequired;
+                }
+            }
+
+            public static void              AddToList( List<HopperSettingsAmount> list, ThingDef thingDef, float baseCount, RecipeDef recipe )
+            {
+                int countNeeded = CountForThingDef( thingDef, baseCount, recipe );
+                for( int index = 0; index < list.Count; ++index )
+                {
+                    if( list[ index ].thingDef == thingDef )
+                    {
+                        if( countNeeded > list[ index ].count )
+                        {
+                            list[ index ] = new HopperSettingsAmount( list[ index ].thingDef, countNeeded );
+                        }
+                        return;
+                    }
+                }
+                list.Add( new HopperSettingsAmount( thingDef, countNeeded ) );
+            }
+
+            public static void              AddToList( List<HopperSettingsAmount> list, ThingCategoryDef categoryDef, float baseCount, RecipeDef recipe )
+            {
+                int countNeeded = CountForCategoryDef( categoryDef, baseCount, recipe );
+                for( int index = 0; index < list.Count; ++index )
+                {
+                    if( list[ index ].categoryDef == categoryDef )
+                    {
+                        if( countNeeded > list[ index ].count )
+                        {
+                            list[ index ] = new HopperSettingsAmount( list[ index ].categoryDef, countNeeded );
+                        }
+                        return;
+                    }
+                }
+                list.Add( new HopperSettingsAmount( categoryDef, countNeeded ) );
+            }
+
+            public static int               CountForThingDef( ThingDef thingDef, float baseCount, RecipeDef recipe )
+            {
+                if( !recipe.IsIngredient( thingDef ) )
+                {
+                    return 0;
+                }
+                if( baseCount < 0 )
+                {
+                    foreach( var ingredientCount in recipe.ingredients )
+                    {
+                        if( ingredientCount.filter.AllowedThingDefs.Contains( thingDef ) )
+                        {
+                            baseCount = ingredientCount.GetBaseCount();
+                            break;
+                        }
+                    }
+                }
+                float ingredientValue = recipe.IngredientValueGetter.ValuePerUnitOf( thingDef );
+                return Mathf.Max( 1, Mathf.CeilToInt( baseCount / ingredientValue ) );
+            }
+
+            public static int               CountForCategoryDef( ThingCategoryDef categoryDef, float baseCount, RecipeDef recipe )
+            {
+                int largest = 0;
+                foreach( var thingDef in categoryDef.DescendantThingDefs )
+                {
+                    int thisThingCount = CountForThingDef( thingDef, baseCount, recipe );
+                    if( thisThingCount > largest )
+                    {
+                        largest = thisThingCount;
+                    }
+                }
+                /*
+                foreach( var childCategoryDef in categoryDef.childCategories )
+                {
+                    int thisCategoryCount = CountForCategoryDef( childCategoryDef, baseCount, recipe );
+                    if( thisCategoryCount > largest )
+                    {
+                        largest = thisCategoryCount;
+                    }
+                }
+                */
+                return largest;
+            }
+
+        }
+
         private StorageSettings             resourceSettings;
         private ThingFilter                 xmlResources;
+
+        private List<RecipeDef>             recipeFilter = new List<RecipeDef>();
+
+        private List<HopperSettingsAmount>  hopperSettings = new List<HopperSettingsAmount>();
+
+        private bool                        settingsBuilt = false;
+
+        #region Neighbouring Cell Enumeration
 
         private List<IntVec3>               cachedAdjCellsCardinal;
         private List<IntVec3>               AdjCellsCardinalInBounds
@@ -26,6 +176,10 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
+        #region Comps & Properties
+
         private CompProperties_HopperUser   HopperProperties
         {
             get
@@ -33,10 +187,51 @@ namespace CommunityCoreLibrary
                 return ( props as CompProperties_HopperUser );
             }
         }
-            
+
+        public Building                     Building
+        {
+            get
+            {
+                return parent as Building;
+            }
+        }
+
+        #endregion
+
+        #region Core Comp Overrides
+
+        public override void                PostSpawnSetup()
+        {
+            base.PostSpawnSetup();
+
+            FindAndProgramHoppers();
+        }
+
+        public override void                PostDeSpawn()
+        {
+            base.PostDeSpawn();
+
+            // Scan for hoppers and deprogram each one
+            var hoppers = FindHoppers();
+            if( !hoppers.NullOrEmpty() )
+            {
+                foreach( var hopper in hoppers )
+                {
+                    hopper.DeprogramHopper();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Storage Settings
+
         public void                         ResetResourceSettings()
         {
+            recipeFilter.Clear();
+            hopperSettings.Clear();
             resourceSettings = null;
+            settingsBuilt = false;
         }
 
         public StorageSettings              ResourceSettings
@@ -69,9 +264,6 @@ namespace CommunityCoreLibrary
 
                     // Set priority
                     resourceSettings.Priority = StoragePriority.Important;
-
-                    // Create a new filter
-                    resourceSettings.filter = new ThingFilter();
 
                     // Set the filter from the hopper user
                     if( iHopperUser != null )
@@ -118,41 +310,455 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override void                PostSpawnSetup()
-        {
-            base.PostSpawnSetup();
+        #endregion
 
-            if( ResourceSettings != null )
+        #region Filter Builders
+
+        private void                        MergeIngredientIntoFilter( ThingFilter filter, IngredientCount ingredient )
+        {
+            if( ingredient.filter != null )
             {
-                FindAndProgramHoppers();
+                if( !ingredient.filter.categories.NullOrEmpty() )
+                {
+                    foreach( var category in ingredient.filter.categories )
+                    {
+                        var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
+                        filter.SetAllow( categoryDef, true );
+                    }
+                }
+                if( !ingredient.filter.thingDefs.NullOrEmpty() )
+                {
+                    foreach( var thingDef in ingredient.filter.thingDefs )
+                    {
+                        filter.SetAllow( thingDef, true );
+                    }
+                }
             }
         }
 
-        public override void                PostDeSpawn()
+        private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
         {
-            base.PostDeSpawn();
-
-            // Scan for hoppers and deprogram each one
-            var hoppers = FindHoppers();
-            if( !hoppers.NullOrEmpty() )
+            if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
             {
-                foreach( var hopper in hoppers )
+                foreach( var category in exceptionFilter.exceptedCategories )
                 {
-                    hopper.DeprogramHopper();
+                    var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
+                    filter.SetAllow( categoryDef, false );
+                }
+            }
+            if( !exceptionFilter.exceptedThingDefs.NullOrEmpty() )
+            {
+                foreach( var thingDef in exceptionFilter.exceptedThingDefs )
+                {
+                    filter.SetAllow( thingDef, false );
+                }
+            }
+        }
+
+        public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
+        {
+            if( recipeFilter.Contains( recipe ) )
+            {
+                return;
+            }
+            recipeFilter.Add( recipe );
+            if( !recipe.ingredients.NullOrEmpty() )
+            {
+                foreach( var ingredient in recipe.ingredients )
+                {
+                    MergeIngredientIntoFilter( filter, ingredient );
+                }
+            }
+            if( recipe.defaultIngredientFilter != null )
+            {
+                MergeExceptionsIntoFilter( filter, recipe.defaultIngredientFilter );
+            }
+            if( recipe.fixedIngredientFilter != null )
+            {
+                MergeExceptionsIntoFilter( filter, recipe.fixedIngredientFilter );
+            }
+        }
+
+        private void                        MergeIngredientIntoHopperSettings( IngredientCount ingredient, RecipeDef recipe )
+        {
+            if( ingredient.filter != null )
+            {
+                if( !ingredient.filter.categories.NullOrEmpty() )
+                {
+                    foreach( var category in ingredient.filter.categories )
+                    {
+                        var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
+                        HopperSettingsAmount.AddToList( hopperSettings, categoryDef, ingredient.GetBaseCount(), recipe );
+                    }
+                }
+                if( !ingredient.filter.thingDefs.NullOrEmpty() )
+                {
+                    foreach( var thingDef in ingredient.filter.thingDefs )
+                    {
+                        HopperSettingsAmount.AddToList( hopperSettings, thingDef, ingredient.GetBaseCount(), recipe );
+                    }
+                }
+            }
+        }
+
+        private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
+        {
+            if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
+            {
+                foreach( var category in exceptionFilter.exceptedCategories )
+                {
+                    var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
+                    foreach( var hopperSetting in hopperSettings )
+                    {
+                        hopperSetting.settings.filter.SetAllow( categoryDef, false );
+                    }
+                }
+            }
+            if( !exceptionFilter.exceptedThingDefs.NullOrEmpty() )
+            {
+                foreach( var thingDef in exceptionFilter.exceptedThingDefs )
+                {
+                    foreach( var hopperSetting in hopperSettings )
+                    {
+                        hopperSetting.settings.filter.SetAllow( thingDef, false );
+                    }
+                }
+            }
+        }
+
+        private void                        BuildHopperSettings()
+        {
+            // Create initial list of hopper settings from recipe ingredients
+            foreach( var recipe in recipeFilter )
+            {
+                if( !recipe.ingredients.NullOrEmpty() )
+                {
+                    foreach( var ingredient in recipe.ingredients )
+                    {
+                        MergeIngredientIntoHopperSettings( ingredient, recipe );
+                    }
+                }
+            }
+
+            // Assign hopper settings filters from ingredients
+            foreach( var hopperSetting in hopperSettings )
+            {
+                if( hopperSetting.categoryDef != null )
+                {
+                    hopperSetting.settings.filter.SetAllow( hopperSetting.categoryDef, true );
+                }
+                if( hopperSetting.thingDef != null )
+                {
+                    hopperSetting.settings.filter.SetAllow( hopperSetting.thingDef, true );
+                }
+            }
+
+            // Add exceptions to hopper settings filters
+            foreach( var recipe in recipeFilter )
+            {
+                if( recipe.defaultIngredientFilter != null )
+                {
+                    MergeExceptionsIntoHopperSettings( recipe.defaultIngredientFilter );
+                }
+                if( recipe.fixedIngredientFilter != null )
+                {
+                    MergeExceptionsIntoHopperSettings( recipe.fixedIngredientFilter );
+                }
+            }
+
+            // Exclude categories and things from other categories
+            for( int index = 0; index < hopperSettings.Count; index++ )
+            {
+                var settingA = hopperSettings[ index ];
+                if( settingA.settings.filter.AllowedDefCount > 1 )
+                {
+                    for( int index2 = 0; index2 < hopperSettings.Count; index2++ )
+                    {
+                        if( index != index2 )
+                        {
+                            var settingB = hopperSettings[ index2 ];
+                            if(
+                                (
+                                    ( settingB.categoryDef != null )&&
+                                    ( settingA.categoryDef.ThisAndChildCategoryDefs.Contains( settingB.categoryDef ) )
+                                )||
+                                (
+                                    ( settingB.thingDef != null )&&
+                                    ( settingA.categoryDef.DescendantThingDefs.Contains( settingB.thingDef ) )
+                                )
+                            )
+                            {
+                                foreach( var thingDef in settingB.settings.filter.AllowedThingDefs )
+                                {
+                                    settingA.settings.filter.SetAllow( thingDef, false );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Recheck hopper settings count requirements for the recipes
+            foreach( var hopperSetting in hopperSettings )
+            {
+                int largest = 0;
+                foreach( var recipe in recipeFilter )
+                {
+                    foreach( var thingDef in hopperSetting.settings.filter.AllowedThingDefs )
+                    {
+                        int thisThingDefCount = HopperSettingsAmount.CountForThingDef( thingDef, -1, recipe );
+                        if( thisThingDefCount > largest )
+                        {
+                            largest = thisThingDefCount;
+                        }
+                    }
+                }
+                hopperSetting.count = largest;
+            }
+
+            // Remove empty hopper settings from the list
+            for( int index = 0; index < hopperSettings.Count; index++ )
+            {
+                var hopperSetting = hopperSettings[ index ];
+                if( hopperSetting.settings.filter.AllowedDefCount < 1 )
+                {
+                    hopperSettings.Remove( hopperSetting );
+                }
+            }
+
+            // Sort the hopper settings from most required ingredients to least
+            hopperSettings.Sort( ( x, y ) => ( x.count > y.count ? -1 : 1 ) );
+
+            // Finalize hopper settings
+            for( int index = 0; index < hopperSettings.Count; ++index )
+            {
+                var hopperSetting = hopperSettings[ index ];
+                hopperSetting.settings.Priority = StoragePriority.Important;
+                hopperSetting.settings.filter.ResolveReferences();
+                hopperSetting.settings.filter.BlockDefaultAcceptanceFilters();
+                hopperSetting.settings.filter.allowedQualitiesConfigurable = false;
+            }
+
+            settingsBuilt = true;
+        }
+
+        #endregion
+
+        #region Hopper Programming
+
+        private void                        ProgramHoppersSimple( List<CompHopper> hoppers )
+        {
+            // Blanket all hoppers with the main filter
+            foreach( var hopper in hoppers )
+            {
+                hopper.ProgramHopper( ResourceSettings );
+            }
+        }
+
+        private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
+        {
+            // Try to find hoppers which match already
+            var freeHoppers = new List<CompHopper>();
+            foreach( var hopper in hoppers )
+            {
+                if( !hopper.WasProgrammed )
+                {
+                    if( !freeHoppers.Contains( hopper ) )
+                    {
+                        freeHoppers.Add( hopper );
+                    }
+                }
+                else
+                {
+                    var hopperStoreSettings = hopper.GetStoreSettings();
+                    bool found = false;
+                    foreach( var hopperSetting in hopperSettings )
+                    {
+                        if( hopperStoreSettings.filter.Matches( hopperSetting.settings.filter ) )
+                        {
+                            if(
+                                ( hopperSetting.HoppersRequired > hopperSetting.hoppers.Count )&&
+                                ( hopperSetting.ShouldBeRefrigerated == hopper.IsRefrigerated )
+                            )
+                            {
+                                // Filters match, refrigeration requirements match, now check existing resources
+                                var currentResources = hopper.GetAllResources( resourceSettings.filter );
+                                if( currentResources.NullOrEmpty() )
+                                {
+                                    // None here so we can use it for this
+                                    found = true;
+                                }
+                                else
+                                {
+                                    // Something here, prefer hoppers with resources which are allowed already
+                                    foreach( var thing in currentResources )
+                                    {
+                                        if( hopperSetting.settings.filter.Allows( thing ) )
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if( found )
+                                {
+                                    hopperSetting.hoppers.Add( hopper );
+                                    break;
+                                }
+                            }
+                        }
+                        if( found == true )
+                        {
+                            break;
+                        }
+                    }
+                    if( !found )
+                    {
+                        // No matching hopper for this setting
+                        hopper.DeprogramHopper();
+                        freeHoppers.Add( hopper );
+                    }
+                }
+            }
+
+            // Assign any resources which need hoppers matching refrigeration requirements
+            foreach( var hopperSetting in hopperSettings )
+            {
+                int amountToAssign = hopperSetting.HoppersRequired - hopperSetting.hoppers.Count;
+                if( amountToAssign > 0 )
+                {
+                    for( int index = 0; index < amountToAssign; index++ )
+                    {
+                        for( int index2 = 0; index2 < freeHoppers.Count; index2++ )
+                        {
+                            var hopper = freeHoppers[ index2 ];
+                            if( hopperSetting.ShouldBeRefrigerated == hopper.IsRefrigerated )
+                            {
+                                hopperSetting.hoppers.Add( hopper );
+                                freeHoppers.Remove( hopper );
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Assign any resources which need hoppers to any hopper regardless of refrigeration requirements
+            foreach( var hopperSetting in hopperSettings )
+            {
+                int amountToAssign = hopperSetting.HoppersRequired - hopperSetting.hoppers.Count;
+                if( amountToAssign > 0 )
+                {
+                    for( int index = 0; index < amountToAssign; index++ )
+                    {
+                        var hopper = freeHoppers[ 0 ];
+                        hopperSetting.hoppers.Add( hopper );
+                        freeHoppers.Remove( hopper );
+                    }
+                }
+            }
+
+            // Assign any remaining hoppers to resource settings from most required ingredients to least
+            if( !freeHoppers.NullOrEmpty() )
+            {
+                int nextSetting = 0;
+                do
+                {
+                    var hopper = freeHoppers[ 0 ];
+                    bool found = false;
+                    bool matchRefrigeration = true;
+                    int settingIndex = nextSetting;
+                    do
+                    {
+                        var hopperSetting = hopperSettings[ settingIndex ];
+                        if(
+                            (
+                                ( matchRefrigeration )&&
+                                ( hopper.IsRefrigerated == hopperSetting.ShouldBeRefrigerated )
+                            )||
+                            ( !matchRefrigeration )
+                        )
+                        {
+                            hopperSetting.hoppers.Add( hopper );
+                            freeHoppers.Remove( hopper );
+                            found = true;
+                        }
+                        else
+                        {
+                            settingIndex++;
+                            settingIndex %= hopperSettings.Count;
+                            if( settingIndex == nextSetting )
+                            {
+                                matchRefrigeration = false;
+                            }
+                        }
+                    } while ( !found );
+                    nextSetting++;
+                    nextSetting %= hopperSettings.Count;
+                } while ( freeHoppers.Count > 0 );
+            }
+
+            // Finally, program the hoppers
+            foreach( var hopperSetting in hopperSettings )
+            {
+                foreach( var hopper in hopperSetting.hoppers )
+                {
+                    hopper.ProgramHopper( hopperSetting.settings );
                 }
             }
         }
 
         public void                         FindAndProgramHoppers()
         {
-            // Now scan for hoppers and program each one
-            var hoppers = FindHoppers();
-            if( !hoppers.NullOrEmpty() )
+            if( ResourceSettings == null )
             {
-                foreach( var hopper in hoppers )
+                // No xml or IHopperUser settings
+                return;
+            }
+            if( !settingsBuilt )
+            {
+                // Rebuild the hopper settings
+                BuildHopperSettings();
+            }
+            var hoppers = FindHoppers();
+            if( hoppers.NullOrEmpty() )
+            {
+                // No hoppers to program
+                return;
+            }
+            if(
+                ( recipeFilter.NullOrEmpty() )||
+                ( hoppers.Count < HoppersRequired )
+            )
+            {
+                // No recipe filter or not enough connected hoppers to individually program, do simple programming
+                ProgramHoppersSimple( hoppers );
+            }
+            else
+            {
+                // Program individual hoppers with individual settings
+                ProgramHoppersIndividual( hoppers );
+            }
+        }
+
+        #endregion
+
+        #region Hopper Enumeration
+
+        public int                          HoppersRequired
+        {
+            get
+            {
+                if( hopperSettings.NullOrEmpty() )
                 {
-                    hopper.ProgramHopper( ResourceSettings );
+                    return 1;
                 }
+                int count = 0;
+                foreach( var resourceAmount in hopperSettings )
+                {
+                    count += resourceAmount.HoppersRequired;
+                }
+                return count;
             }
         }
 
@@ -251,6 +857,10 @@ namespace CommunityCoreLibrary
             // Return the best hopper
             return bestHopper;
         }
+
+        #endregion
+
+        #region Remove Resource(s) From Hoppers
 
         public bool                         RemoveResourceFromHoppers( ThingDef resourceDef, int resourceCount )
         {
@@ -369,6 +979,10 @@ namespace CommunityCoreLibrary
             return true;
         }
 
+        #endregion
+
+        #region Enough Resource(s) In Hoppers
+
         public bool                         EnoughResourceInHoppers( ThingDef resourceDef, int resourceCount )
         {
             return ( CountResourceInHoppers( resourceDef ) >= resourceCount );
@@ -417,6 +1031,10 @@ namespace CommunityCoreLibrary
             return false;
         }
 
+        #endregion
+
+        #region Count Resource(s) In Hoppers
+
         public int                          CountResourceInHoppers( ThingDef resourceDef )
         {
             var hoppers = FindHoppers();
@@ -462,6 +1080,26 @@ namespace CommunityCoreLibrary
             }
             return availableResources;
         }
+
+        public bool                         CountResourcesInHoppers( List<ResourceAmount> resources )
+        {
+            if( resources == null )
+            {
+                return false;
+            }
+            resources.Clear();
+
+            foreach( var hopper in FindHoppers() )
+            {
+                foreach( var thing in hopper.GetAllResources( Resources ) )
+                {
+                    ResourceAmount.AddToList( resources, thing.def, thing.stackCount );
+                }
+            }
+            return !resources.NullOrEmpty();
+        }
+
+        #endregion
 
     }
 
