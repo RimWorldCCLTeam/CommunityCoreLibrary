@@ -185,7 +185,7 @@ namespace CommunityCoreLibrary
             if( currentRecipe != null )
             {
                 str += currentRecipe.jobString;
-                str += "\nWork Left: " + currentProductionTick;
+                str += "Building_AutomatedFactory_WorkRemaining".Translate( currentProductionTick );
             }
             else if( currentThing != null )
             {

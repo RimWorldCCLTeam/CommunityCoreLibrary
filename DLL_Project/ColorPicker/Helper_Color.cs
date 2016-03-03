@@ -168,7 +168,13 @@ namespace CommunityCoreLibrary.ColorPicker
         public static bool TryHexToRGB( string hex, ref Color col )
         {
             Color clr = new Color(0,0,0);
-            if( hex != null && ( hex.Length == 9 || hex.Length == 7 ) )
+            if(
+                ( hex != null )&&
+                (
+                    ( hex.Length == 9 )||
+                    ( hex.Length == 7 )
+                )
+            )
             {
                 try
                 {

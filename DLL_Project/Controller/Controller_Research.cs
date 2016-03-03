@@ -1,52 +1,55 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using RimWorld;
+using System.Reflection;
 using Verse;
 
 /*
     TODO:  Alpha 13 API change
-    
+
     Can't change yet otherwise existing saves will get null errors for missing class
-    
+
 namespace CommunityCoreLibrary.Controller
 {
-    
     public class Research : MapComponent
 */
 
 namespace CommunityCoreLibrary
 {
-
     public class ResearchController : MapComponent
     {
-
-        const int                           TicksPerSecond = 60;
-        const int                           UpdatesPerSecond = 2;
-        const int                           BaseUpdateTicks = TicksPerSecond / UpdatesPerSecond;
-        static int                          UpdateTicks;
-
-        static List< AdvancedResearchDef >  _advancedResearch;
-
-        static bool                         wasGodMode;
-
-        static bool                         firstRun = true;
-        static bool                         okToProcess;
+        #region Fields
 
         // These are used to optimize the process so the same data
         // isn't constantly reprocessed with every itteration.
         public static readonly List< ThingDef > buildingCache = new List< ThingDef >();
-        public static readonly List< AdvancedResearchMod > researchModCache = new List< AdvancedResearchMod >();
+
         public static readonly List< HelpCategoryDef > helpCategoryCache = new List<HelpCategoryDef>();
+        public static readonly List< AdvancedResearchMod > researchModCache = new List< AdvancedResearchMod >();
+        private const int BaseUpdateTicks = TicksPerSecond / UpdatesPerSecond;
+        private const int TicksPerSecond = 60;
+        private const int UpdatesPerSecond = 2;
+        private static List<AdvancedResearchDef> _advancedResearch;
+        private static bool firstRun = true;
+        private static bool okToProcess;
+        private static int UpdateTicks;
+        private static bool wasGodMode;
+
+        #endregion Fields
 
         #region State Management
 
-        public static List< AdvancedResearchDef > AdvancedResearch
+        public ResearchController()
+        {
+            firstRun = true;
+        }
+
+        public static List<AdvancedResearchDef> AdvancedResearch
         {
             get
             {
-                if( _advancedResearch == null )
+                if ( _advancedResearch == null )
                 {
                     _advancedResearch = Controller.Data.AdvancedResearchDefs;
                 }
@@ -54,17 +57,17 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public                              ResearchController()
-        {
-            firstRun = true;
-        }
-
-        public static bool                  Initialize()
+        public static bool Initialize()
         {
             firstRun = false;
             okToProcess = false;
 
-            if( AdvancedResearch.NullOrEmpty() )
+            // detour the research makeProgress method.
+            MethodInfo source = typeof( ResearchManager ).GetMethod( "MakeProgress" );
+            MethodInfo destination = typeof( ResearchTree.Queue ).GetMethod( "MakeProgress" );
+            Detours.TryDetourFromTo( source, destination );
+
+            if ( AdvancedResearch.NullOrEmpty() )
             {
                 // No advanced research, hybernate
                 CCL_Log.Trace(
@@ -90,20 +93,20 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        void                                UpdateComponent()
+        private void UpdateComponent()
         {
-            if( firstRun )
+            if ( firstRun )
             {
                 Initialize();
             }
 
-            if( !okToProcess )
+            if ( !okToProcess )
             {
                 return;
             }
 
             UpdateTicks--;
-            if( UpdateTicks > 0 )
+            if ( UpdateTicks > 0 )
             {
                 return;
             }
@@ -115,27 +118,27 @@ namespace CommunityCoreLibrary
             CheckAdvancedResearch();
         }
 
-        #endregion
+        #endregion State Management
 
         #region Core Callbacks
 
-        public override void                MapComponentOnGUI()
+        public override void MapComponentOnGUI()
         {
             base.MapComponentOnGUI();
             UpdateComponent();
         }
 
-        public override void                MapComponentTick()
+        public override void MapComponentTick()
         {
             base.MapComponentTick();
             UpdateComponent();
         }
 
-        #endregion
+        #endregion Core Callbacks
 
         #region Cache Processing
 
-        static void                         PrepareCaches()
+        private static void PrepareCaches()
         {
             // Prepare the caches
             buildingCache.Clear();
@@ -143,66 +146,46 @@ namespace CommunityCoreLibrary
             helpCategoryCache.Clear();
         }
 
-        static void                         ProcessCaches( bool setInitialState = false )
+        private static void ProcessCaches( bool setInitialState = false )
         {
             // Process the caches
 
             // Recache the buildings recipes
-            if( buildingCache.Count > 0 )
+            if ( buildingCache.Count > 0 )
             {
-                foreach( var building in buildingCache )
+                foreach ( var building in buildingCache )
                 {
                     building.RecacheRecipes( !setInitialState );
                 }
             }
 
             // Apply all the research mods
-            if( researchModCache.Count > 0 )
+            if ( researchModCache.Count > 0 )
             {
-                foreach( var researchMod in researchModCache )
+                foreach ( var researchMod in researchModCache )
                 {
                     researchMod.Invoke( !setInitialState );
                 }
             }
 
             // Recache the help system
-            if( helpCategoryCache.Count > 0 )
+            if ( helpCategoryCache.Count > 0 )
             {
-                foreach( var helpCategory in helpCategoryCache )
+                foreach ( var helpCategory in helpCategoryCache )
                 {
                     helpCategory.Recache();
                 }
                 MainTabWindow_ModHelp.Recache();
             }
-
         }
 
-        #endregion
+        #endregion Cache Processing
 
         #region Research Processing
 
-        static void                         SetInitialState( bool firstTimeRun = false )
-        {   
-            // Set the initial state of the advanced research
-            PrepareCaches();
-
-            // Process each advanced research def in reverse order
-            for( int i = AdvancedResearch.Count - 1; i >= 0; i-- )
-            {
-                var Advanced = AdvancedResearch[ i ];
-
-                // Reset the project
-                Advanced.Disable( firstTimeRun );
-            }
-
-            // Now do the work!
-            ProcessCaches( true );
-
-        }
-
-        static void                         CheckAdvancedResearch()
+        private static void CheckAdvancedResearch()
         {
-            if(
+            if (
                 ( !Game.GodMode )&&
                 ( wasGodMode )
             )
@@ -216,12 +199,12 @@ namespace CommunityCoreLibrary
             PrepareCaches();
 
             // Scan advanced research for newly completed projects
-            foreach( var Advanced in AdvancedResearch )
+            foreach ( var Advanced in AdvancedResearch )
             {
-                if( Advanced.ResearchState != ResearchEnableMode.Complete )
+                if ( Advanced.ResearchState != ResearchEnableMode.Complete )
                 {
                     var enableMode = Advanced.EnableMode;
-                    if( enableMode != Advanced.ResearchState )
+                    if ( enableMode != Advanced.ResearchState )
                     {
                         // Enable this project
                         Advanced.Enable( enableMode );
@@ -233,8 +216,24 @@ namespace CommunityCoreLibrary
             ProcessCaches();
         }
 
-        #endregion
+        private static void SetInitialState( bool firstTimeRun = false )
+        {
+            // Set the initial state of the advanced research
+            PrepareCaches();
 
+            // Process each advanced research def in reverse order
+            for ( int i = AdvancedResearch.Count - 1; i >= 0; i-- )
+            {
+                var Advanced = AdvancedResearch[i];
+
+                // Reset the project
+                Advanced.Disable( firstTimeRun );
+            }
+
+            // Now do the work!
+            ProcessCaches( true );
+        }
+
+        #endregion Research Processing
     }
-
 }

@@ -26,15 +26,19 @@ namespace CommunityCoreLibrary.Commands
                 var addedToOutput = false;
                 var stringBuilder = new StringBuilder();
 
-                if( ( ClickByDef != null )&&
-                    ( parentThing.IsSameThingDefInRoom() ) )
+                if(
+                    ( ClickByDef != null )&&
+                    ( parentThing.IsSameThingDefInRoom() )
+                )
                 {
                     stringBuilder.Append( LabelByDef );
                     addedToOutput = true;
                 }
 
-                if( ( ClickByThingComp != null )&&
-                    ( parentThing.IsSameThingCompInRoom( parentType ) ) )
+                if(
+                    ( ClickByThingComp != null )&&
+                    ( parentThing.IsSameThingCompInRoom( parentType ) )
+                )
                 {
                     if( addedToOutput )
                     {
@@ -80,15 +84,19 @@ namespace CommunityCoreLibrary.Commands
             }
 
             // Left click (if assigned) all in room
-            if( ( ClickByDef != null )&&
+            if(
+                ( ClickByDef != null )&&
                 ( ev.button == 0 )&&
-                ( parentThing.IsSameThingDefInRoom() ) )
+                ( parentThing.IsSameThingDefInRoom() )
+            )
             {
                 ClickByDef.Invoke( parentThing.ListSameThingDefInRoom() );
             }
-            else if( ( ClickByThingComp != null )&&
+            else if(
+                ( ClickByThingComp != null )&&
                 ( ev.button == 1 )&&
-                ( parentThing.IsSameThingCompInRoom( parentType ) ) )
+                ( parentThing.IsSameThingCompInRoom( parentType ) )
+            )
             {
                 ClickByThingComp.Invoke( parentThing.ListSameThingCompInRoom( parentType ) );
             }

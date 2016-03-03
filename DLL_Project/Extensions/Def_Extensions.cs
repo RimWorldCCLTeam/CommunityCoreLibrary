@@ -110,8 +110,10 @@ namespace CommunityCoreLibrary
             }
 
             // built def != listed def
-            if ( tdef != null &&
-                 tdef.entityDefToBuild != null )
+            if(
+                ( tdef != null )&&
+                ( tdef.entityDefToBuild != null )
+            )
             {
                 _cachedIconColors.Add( def, tdef.entityDefToBuild.IconColor() );
                 return _cachedIconColors[def];
@@ -125,8 +127,10 @@ namespace CommunityCoreLibrary
             }
 
             // stuff used?
-            if ( tdef != null &&
-                 tdef.MadeFromStuff )
+            if(
+                ( tdef != null )&&
+                ( tdef.MadeFromStuff )
+            )
             {
                 ThingDef stuff = GenStuff.DefaultStuffFor( tdef );
                 _cachedIconColors.Add( def, stuff.stuffProps.color );
@@ -158,7 +162,10 @@ namespace CommunityCoreLibrary
             var rdef = def as RecipeDef;
 
             // recipes will be passed icon of first product, if defined.
-            if (rdef != null && !rdef.products.NullOrEmpty() )
+            if(
+                ( rdef != null )&&
+                ( !rdef.products.NullOrEmpty() )
+            )
             {
                 _cachedDefIcons.Add( def, rdef.products.First().thingDef.IconTexture() );
                 return _cachedDefIcons[def];

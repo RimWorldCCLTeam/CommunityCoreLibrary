@@ -170,8 +170,7 @@ namespace CommunityCoreLibrary
             {
                 // Add things in cell with matching def
                 var things = thing.ListSameThingDefInCell( cell );
-                if( ( things != null )&&
-                    ( things.Count > 0 ) )
+                if( !things.NullOrEmpty() )
                 {
                     list.AddRange( things );
                 }
@@ -195,8 +194,7 @@ namespace CommunityCoreLibrary
             {
                 // Add things in cell with matching graphic linker
                 var things = thing.ListSameGraphicLinkerInCell( cell );
-                if( ( things != null )&&
-                    ( things.Count > 0 ) )
+                if( !things.NullOrEmpty() )
                 {
                     list.AddRange( things );
                 }

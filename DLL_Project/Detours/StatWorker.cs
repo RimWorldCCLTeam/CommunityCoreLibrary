@@ -51,7 +51,9 @@ namespace CommunityCoreLibrary.Detour
             )
             {
                 if( thingDef != null )
+                {
                     return ( thingDef.category == ThingCategory.Pawn );
+                }
                 return false;
             }
             if(

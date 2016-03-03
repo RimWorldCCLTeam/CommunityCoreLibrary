@@ -124,7 +124,21 @@ namespace CommunityCoreLibrary
 #endif
 
 #if DEBUG
-            // Validate Automated Factory
+            // Validate "InUse"
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.InUse )&&
+                ( !parent.def.hasInteractionCell )
+            )
+            {
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Parent building must be have an interaction cell to use 'InUse'",
+                    "CompPowerLowIdleDraw"
+                );
+                return;
+            }
+            // Validate "Factory"
             if(
                 ( IdleProps.operationalMode == LowIdleDrawMode.Factory )&&
                 ( AutomatedFactory == null )
@@ -133,7 +147,7 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Parent building must be ThingClass Building_AutomatedFactory",
+                    "Parent building must be ThingClass Building_AutomatedFactory to use 'Factory'",
                     "CompPowerLowIdleDraw"
                 );
                 return;

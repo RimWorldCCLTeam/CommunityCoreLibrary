@@ -470,7 +470,10 @@ namespace CommunityCoreLibrary
             for( int index = 0; index < hopperSettings.Count; index++ )
             {
                 var settingA = hopperSettings[ index ];
-                if( settingA.settings.filter.AllowedDefCount > 1 )
+                if(
+                    ( settingA.categoryDef != null )&&
+                    ( settingA.settings.filter.AllowedDefCount > 1 )
+                )
                 {
                     for( int index2 = 0; index2 < hopperSettings.Count; index2++ )
                     {
