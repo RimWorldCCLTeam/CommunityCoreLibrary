@@ -15,7 +15,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>FoodSynthesizer</defName>
         <label>food synthesizer</label>
-        <thingClass>CommunityCoreLibrary.Building_FoodSynthesizer</thingClass>
+        <thingClass>CommunityCoreLibrary.Building_AutomatedFactory</thingClass>
         <graphicData>
             <texPath>Things/Building/Production/NutrientDispenser</texPath>
             <graphicClass>Graphic_Single</graphicClass>
@@ -48,6 +48,11 @@
             </li>
             <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
                 <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_AutomatedFactory">
+                <compClass>CommunityCoreLibrary.CompAutomatedFactory</compClass>
+                <outputVector>DirectToPawn</outputVector>
+                <productionMode>PawnInteractionOnly</productionMode>
             </li>
         </comps>
         <size>(3,4)</size>

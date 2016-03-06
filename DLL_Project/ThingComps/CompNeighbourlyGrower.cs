@@ -140,11 +140,7 @@ namespace CommunityCoreLibrary
 #endif
             // Get plant to grow
             var plantDef = thisGrower.GetPlantDefToGrow();
-            if(
-                ( plantDef == null )||
-                ( plantDef.plant == null )||
-                ( plantDef.plant.sowTags.NullOrEmpty() )
-            )
+            if( GenList.NullOrEmpty( plantDef?.plant?.sowTags ) )
             {
                 // "Plant" doesn't contain the required information
                 CCL_Log.TraceMod(
@@ -161,11 +157,7 @@ namespace CommunityCoreLibrary
                 // Should be a Building_PlantGrower
                 var grower = g as Building_PlantGrower;
 #if DEBUG
-                if(
-                    ( grower == null )||
-                    ( grower.def.building == null )||
-                    ( string.IsNullOrEmpty( grower.def.building.sowTag ) )
-                )
+                if( string.IsNullOrEmpty( grower?.def?.building.sowTag ) )
                 {
                     CCL_Log.TraceMod(
                         parent.def,

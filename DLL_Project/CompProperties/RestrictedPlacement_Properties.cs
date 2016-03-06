@@ -57,8 +57,7 @@ namespace CommunityCoreLibrary
                     restrictedTerrain = new List< TerrainDef >();
 
                     // Add xml defined terrain
-                    if( ( terrainDefs != null )&&
-                        ( terrainDefs.Count > 0 ) )
+                    if( !terrainDefs.NullOrEmpty() )
                     {
                         restrictedTerrain.AddRange( terrainDefs );
                     }
@@ -70,8 +69,7 @@ namespace CommunityCoreLibrary
                             .FindAll( t =>
                                 ( t.defName.Contains( "_Rough" ) )
                             );
-                        if( ( roughStone != null )&&
-                            ( roughStone.Count > 0 ) )
+                        if( !roughStone.NullOrEmpty() )
                         {
                             restrictedTerrain.AddRange( roughStone );
                         }
@@ -83,8 +81,7 @@ namespace CommunityCoreLibrary
                             .FindAll( t =>
                                 ( t.defName.Contains( "_Smooth" ) )
                             );
-                        if( ( smoothStone != null )&&
-                            ( smoothStone.Count > 0 ) )
+                        if( !smoothStone.NullOrEmpty() )
                         {
                             restrictedTerrain.AddRange( smoothStone );
                         }
@@ -105,8 +102,7 @@ namespace CommunityCoreLibrary
                     restrictedThing = new List< ThingDef >();
 
                     // Add xml defined things
-                    if( ( thingDefs != null )&&
-                        ( thingDefs.Count > 0 ) )
+                    if( !thingDefs.NullOrEmpty() )
                     {
                         restrictedThing.AddRange( thingDefs );
                     }

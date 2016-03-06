@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary.Detour
                 validator,
                 Find.ListerThings.AllThings.Where( t => (
                     ( t.def.IsAlcohol() )||
-                    ( t is Building_FoodSynthesizer )
+                    ( t is Building_AutomatedFactory )
                 ) ),
                 -1,
                 true );
@@ -65,13 +65,13 @@ namespace CommunityCoreLibrary.Detour
                     return false;
                 }
 
-                if( t is Building_FoodSynthesizer )
+                if( t is Building_AutomatedFactory )
                 {
-                    var FS = t as Building_FoodSynthesizer;
+                    var FS = t as Building_AutomatedFactory;
                     if(
                         ( !GenGrid.Standable( FS.InteractionCell ) )||
                         ( !FS.CompPowerTrader.PowerOn )||
-                        ( FS.BestAlcoholFrom() == null )
+                        ( FS.BestProduct( FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol ) == null )
                     )
                     {
                         return false;

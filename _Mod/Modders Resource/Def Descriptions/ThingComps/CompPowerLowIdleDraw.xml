@@ -33,10 +33,11 @@
     a cycle power may not be switched if the conditions would allow it to stay in that mode.
     The default values are as follows:
         
-        mode        low         high
-        InUse       30          500
-        WhenNear    30          500
-        Cycle       1000        500
+        mode        low     high    Example usage
+        InUse       30      500     Work benches
+        WhenNear    30      500     Auto doors
+        Cycle       1000    500     Hydroponics
+        Factory     30      100     Only works with Building_AutomatedFactory and child classes
     
     Usage:
     

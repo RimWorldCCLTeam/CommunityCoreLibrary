@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary
             }
 
             Rect labelRect;
-            if ( Def.IconTexture() != null )
+            if( Def.IconTexture() != null )
             {
                 Rect iconRect =
                 new Rect( cur.x + colWidths.x + ( Prefix.NullOrEmpty() ? 0 : 1 ) * HelpDetailSection._columnMargin,
@@ -102,8 +102,10 @@ namespace CommunityCoreLibrary
             // def interactions (if any)
             // if we have a window set up to catch jumps, and there is a helpdef available, draw a button on the def text.
             HelpDef helpDef = Def.GetHelpDef();
-            if( window != null && 
-                helpDef != null )
+            if(
+                ( window != null )&&
+                ( helpDef != null )
+            )
             {
                 TooltipHandler.TipRegion( labelRect, Def.description + (Def.description.NullOrEmpty() ? "" : "\n\n" ) + "JumpToTopic".Translate() );
                 if ( Widgets.InvisibleButton( labelRect ) )
@@ -118,8 +120,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-            if ( helpDef == null &&
-                 !Def.description.NullOrEmpty() )
+            if(
+                ( helpDef == null )&&
+                ( !Def.description.NullOrEmpty() )
+            )
             {
                 TooltipHandler.TipRegion( labelRect, Def.description );
             }

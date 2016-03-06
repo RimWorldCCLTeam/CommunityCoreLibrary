@@ -976,8 +976,10 @@ namespace CommunityCoreLibrary.Controller
                 // Get list of facilities that effect it
                 // TODO: This was never implemented?
                 var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
-                if( ( affectedBy != null ) &&
-                    ( !affectedBy.linkableFacilities.NullOrEmpty() ) )
+                if(
+                    ( affectedBy != null )&&
+                    ( !affectedBy.linkableFacilities.NullOrEmpty() )
+                )
                 {
                     HelpDetailSection facilitiesAffecting = new HelpDetailSection(
                         "AutoHelpListFacilitiesAffecting".Translate(),
@@ -1549,8 +1551,10 @@ namespace CommunityCoreLibrary.Controller
                                                                       BindingFlags.NonPublic | BindingFlags.Instance );
             IList diseases = diseasesFieldInfo.GetValue( biomeDef ) as IList;
 
-            if( diseases != null &&
-                 diseases.Count > 0 )
+            if(
+                ( diseases != null )&&
+                ( diseases.Count > 0 )
+            )
             {
                 foreach( object disease in diseases )
                 {
@@ -1865,9 +1869,9 @@ namespace CommunityCoreLibrary.Controller
             #endregion
 
             #region Reproduction
-            // egglayers
             if( kindDef.race.HasComp( typeof( CompEggLayer ) ) )
             {
+                // egglayers
                 var eggComp =  kindDef.race.GetCompProperties( typeof (CompEggLayer) );
                 string range;
                 if( eggComp.eggCountRange.min == eggComp.eggCountRange.max )
@@ -1886,17 +1890,21 @@ namespace CommunityCoreLibrary.Controller
                                    stringDescs.ToArray(), null, null ) );
                 stringDescs.Clear();
             }
-            // mammals
-            else if( race.hasGenders &&
-                      race.lifeStageAges.Any( lsa => lsa.def.reproductive ) )
+            else if(
+                ( race.hasGenders )&&
+                ( race.lifeStageAges.Any( lsa => lsa.def.reproductive ) )
+            )
             {
+                // mammals
                 List<StringDescTriplet> SDT = new List<StringDescTriplet>();
                 SDT.Add( new StringDescTriplet( 
                     ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod(),
                     "AutoHelpGestationPeriod".Translate() ) );
 
-                if( race.litterSizeCurve != null &&
-                     race.litterSizeCurve.PointsCount >= 3 )
+                if(
+                    ( race.litterSizeCurve != null )&&
+                    ( race.litterSizeCurve.PointsCount >= 3 )
+                )
                 {
                     // if size is three, there is actually only one option (weird boundary restrictions by Tynan require a +/- .5 min/max)
                     if( race.litterSizeCurve.PointsCount == 3 )
@@ -1933,11 +1941,11 @@ namespace CommunityCoreLibrary.Controller
             #region Biomes
 
             var kinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race ==  kindDef.race );
-            foreach ( PawnKindDef kind in kinds )
+            foreach( PawnKindDef kind in kinds )
             {
-                foreach ( BiomeDef biome in DefDatabase<BiomeDef>.AllDefsListForReading )
+                foreach( BiomeDef biome in DefDatabase<BiomeDef>.AllDefsListForReading )
                 {
-                    if ( biome.AllWildAnimals.Contains( kind ) )
+                    if( biome.AllWildAnimals.Contains( kind ) )
                     {
                         defs.Add( biome );
                     }
@@ -1945,7 +1953,7 @@ namespace CommunityCoreLibrary.Controller
             }
             defs = defs.Distinct().ToList();
 
-            if ( !defs.NullOrEmpty() )
+            if( !defs.NullOrEmpty() )
             {
                 linkParts.Add( new HelpDetailSection(
                                    "AutoHelpListAppearsInBiomes".Translate(),
@@ -1957,9 +1965,9 @@ namespace CommunityCoreLibrary.Controller
             #endregion
 
             #region Butcher products
-            // fleshy pawns ( meat + leather )
             if( race.isFlesh )
             {
+                // fleshy pawns ( meat + leather )
                 defs.Add( race.meatDef );
                 prefixes.Add( "~" + maxSize * StatDefOf.MeatAmount.defaultBaseValue );
 
@@ -1974,11 +1982,12 @@ namespace CommunityCoreLibrary.Controller
                     defs,
                     prefixes.ToArray() ) );
             }
-
-            // metallic pawns ( mechanoids )
-            else if( race.mechanoid &&
-                 !kindDef.race.butcherProducts.NullOrEmpty() )
+            else if(
+                ( race.mechanoid )&&
+                ( !kindDef.race.butcherProducts.NullOrEmpty() )
+            )
             {
+                // metallic pawns ( mechanoids )
                 linkParts.Add( new HelpDetailSection(
                                    "AutoHelpListDisassemble".Translate(),
                                     kindDef.race.butcherProducts.Select( tc => tc.thingDef ).ToList().ConvertAll( def => (Def)def ),
@@ -1993,7 +2002,7 @@ namespace CommunityCoreLibrary.Controller
 
             if( kindDef.race.HasComp( typeof( CompMilkable ) ) )
             {
-                var milkComp =  kindDef.race.GetCompProperties( typeof (CompMilkable) );
+                var milkComp =  kindDef.race.GetCompProperties( typeof( CompMilkable ) );
 
                 defs.Add( milkComp.milkDef );
                 prefixes.Add( milkComp.milkAmount.ToString() );
@@ -2013,10 +2022,14 @@ namespace CommunityCoreLibrary.Controller
 
             #region Shearing products
 
-            if( kindDef.race.HasComp( typeof( CompShearable ) ) )
-            {
-                var shearComp =  kindDef.race.GetCompProperties( typeof (CompShearable) );
+            // Need to handle subclasses (such as CompShearableRenameable)
+            var shearComp = kindDef.race.comps.Find( c => (
+                ( c.compClass == typeof( CompShearable ) )||
+                ( c.compClass.IsSubclassOf( typeof( CompShearable ) ) )
+            ) );
 
+            if( shearComp != null )
+            {
                 defs.Add( shearComp.woolDef );
                 prefixes.Add( shearComp.woolAmount.ToString() );
                 suffixes.Add( "AutoHelpEveryX".Translate( ( (float)shearComp.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );

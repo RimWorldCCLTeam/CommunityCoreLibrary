@@ -304,7 +304,10 @@ namespace CommunityCoreLibrary
                     foreach( var targetName in compSet.targetDefs )
                     {
                         var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                        if( targetDef != null && !targetDef.comps.Exists(s => s.compClass == compSet.compProps.compClass) )
+                        if(
+                            ( targetDef != null )&&
+                            ( !targetDef.comps.Exists( s => ( s.compClass == compSet.compProps.compClass ) ) )
+                        )
                         {
                             return false;
                         }

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RecipeDefs>
+
+    <RecipeDef>
+        <defName>AutomatedStonecutterSandstoneBlocks</defName>
+        <label>cut sandstone blocks</label>
+        <description>Cuts sandstone blocks from sandstone chunks</description>
+        <jobString>Cutting sandstone blocks.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>ChunkSandstone</li>
+                    </thingDefs>
+                </filter>
+                <count>1</count>
+            </li>
+        </ingredients>
+        <products>
+            <BlocksSandstone>20</BlocksSandstone>
+        </products>
+        <workAmount>1000</workAmount>
+    </RecipeDef>
+
+    <RecipeDef>
+        <defName>AutomatedStonecutterGraniteBlocks</defName>
+        <label>cut granite blocks</label>
+        <description>Cuts granite blocks from granite chunks</description>
+        <jobString>Cutting granite blocks.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>ChunkGranite</li>
+                    </thingDefs>
+                </filter>
+                <count>1</count>
+            </li>
+        </ingredients>
+        <products>
+            <BlocksGranite>20</BlocksGranite>
+        </products>
+        <workAmount>1000</workAmount>
+    </RecipeDef>
+
+    <RecipeDef>
+        <defName>AutomatedStonecutterLimestoneBlocks</defName>
+        <label>cut limestone blocks</label>
+        <description>Cuts limestone blocks from limestone chunks</description>
+        <jobString>Cutting limestone blocks.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>ChunkLimestone</li>
+                    </thingDefs>
+                </filter>
+                <count>1</count>
+            </li>
+        </ingredients>
+        <products>
+            <BlocksLimestone>20</BlocksLimestone>
+        </products>
+        <workAmount>1000</workAmount>
+    </RecipeDef>
+
+    <RecipeDef>
+        <defName>AutomatedStonecutterSlateBlocks</defName>
+        <label>cut slate blocks</label>
+        <description>Cuts slate blocks from slate chunks</description>
+        <jobString>Cutting slate blocks.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>ChunkSlate</li>
+                    </thingDefs>
+                </filter>
+                <count>1</count>
+            </li>
+        </ingredients>
+        <products>
+            <BlocksSlate>20</BlocksSlate>
+        </products>
+        <workAmount>1000</workAmount>
+    </RecipeDef>
+
+    <RecipeDef>
+        <defName>AutomatedStonecutterMarbleBlocks</defName>
+        <label>cut marble blocks</label>
+        <description>Cuts marble blocks from marble chunks</description>
+        <jobString>Cutting marble blocks.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>ChunkMarble</li>
+                    </thingDefs>
+                </filter>
+                <count>1</count>
+            </li>
+        </ingredients>
+        <products>
+            <BlocksMarble>20</BlocksMarble>
+        </products>
+        <workAmount>1000</workAmount>
+    </RecipeDef>
+
+</RecipeDefs>

@@ -268,8 +268,10 @@ namespace CommunityCoreLibrary.ResearchTree
                 if ( prerequisite != Research )
                 {
                     var parent = ResearchTree.Forest.FirstOrDefault( node => node.Research == prerequisite );
-                    if ( parent != null )
+                    if( parent != null )
+                    {
                         Parents.Add( parent );
+                    }
                 }
             }
 
@@ -284,8 +286,10 @@ namespace CommunityCoreLibrary.ResearchTree
                     if ( prerequisite != Research )
                     {
                         var parent = ResearchTree.Forest.FirstOrDefault( node => node.Research == prerequisite );
-                        if ( parent != null )
+                        if( parent != null )
+                        {
                             Parents.Add( parent );
+                        }
                     }
                 }
             }
@@ -301,8 +305,10 @@ namespace CommunityCoreLibrary.ResearchTree
                     if ( locked != Research )
                     {
                         var lockedNode = ResearchTree.Forest.FirstOrDefault( node => node.Research == locked );
-                        if ( lockedNode != null )
+                        if( lockedNode != null )
+                        {
                             Locks.Add( lockedNode );
+                        }
                     }
                 }
             }
@@ -529,11 +535,12 @@ namespace CommunityCoreLibrary.ResearchTree
                 if ( current.LockedState != LockedState.LockedOut )
                 {
                     // check advanced researches
-                    List<AdvancedResearchDef> advancedResearches = ResearchController.AdvancedResearch.Where( ard =>
-                       ard.IsResearchToggle &&
-                       !ard.IsLockedOut() &&
-                       !ard.HideDefs &&
-                       ard.effectedResearchDefs.Contains( current.Research ) ).ToList();
+                    List<AdvancedResearchDef> advancedResearches = ResearchController.AdvancedResearch.Where( ard => (
+                        ( ard.IsResearchToggle )&&
+                        ( !ard.IsLockedOut() )&&
+                        ( !ard.HideDefs )&&
+                        ( ard.effectedResearchDefs.Contains( current.Research ) )
+                    ) ).ToList();
 
                     if ( !advancedResearches.NullOrEmpty() )
                     {

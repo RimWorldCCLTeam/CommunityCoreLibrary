@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompAutomatedFactory
+    
+    Requires:   CompProperties_AutomatedFactory
+    
+    This comp stores flags and values for controlling the behaviour of Building_AutomatedFactory.  All the
+    flags and values are stored in this comps properties and are listed below.
+    
+    Comp Properties:
+    
+    type (default)  tag                 Details
+    
+    FactoryOutputVector                 [required] Controls how a product is dispensed when production is complete.
+        (Invalid)   outputVector        Valid values are "DirectToPawn", "Ground" and "InteractionCell".  "Ground"
+                                        output will try to output first to a storage building which accepts it's
+                                        output then, to an existing stack of that output which is beside the building
+                                        finally, to any free open cell around it.
+    
+    FactoryProductionMode               [required] Determines how the factory should operate.  "PawnInteractionOnly"
+        (None)      productionMode      will only produce when a pawn is directly try to take from the building (such
+                                        as a meal) and "Automatic" will keep producing recipes as long as the building
+                                        is powered and has resources in hoppers.
+    
+    Usage:      For an example on how to use this comp, see:
+                /Examples/ThingClasses/Building_AutomatedFactory/Automated Stonecutter
+                /Examples/ThingClasses/Building_AutomatedFactory/Food Synthesizer
+    
+    -->
+
+</Defs>

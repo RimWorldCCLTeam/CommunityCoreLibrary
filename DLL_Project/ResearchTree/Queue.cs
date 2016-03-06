@@ -100,7 +100,17 @@ namespace CommunityCoreLibrary.ResearchTree
 
             // try set the first research in the queue to be the current project.
             Node next = _queue.First();
-            Find.ResearchManager.currentProj = next?.Research; // null if next is null.
+            if(
+                ( next != null )&&
+                ( next.Research != null )
+            )
+            {
+                Find.ResearchManager.currentProj = next.Research; // null if next is null.
+            }
+            else
+            {
+                Find.ResearchManager.currentProj = null;
+            }
         }
 
         public static void EnqueueRange( IEnumerable<Node> nodes, bool add )
@@ -168,7 +178,7 @@ namespace CommunityCoreLibrary.ResearchTree
         /// <returns></returns>
         public static Node Pop()
         {
-            if ( _queue != null && _queue.Count > 0 )
+            if( !_queue.NullOrEmpty() )
             {
                 Node node = _queue[0];
                 _queue.RemoveAt( 0 );

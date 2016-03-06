@@ -60,7 +60,7 @@ namespace CommunityCoreLibrary.Detour
                     {
                         yield return Toils_Ingest.TakeMealFromDispenser( TargetIndex.A, obj.pawn );
                     }
-                    if( targetThingA is Building_FoodSynthesizer )
+                    if( targetThingA is Building_AutomatedFactory )
                     {
                         yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( TargetIndex.A, obj.pawn );
                     }
@@ -68,7 +68,7 @@ namespace CommunityCoreLibrary.Detour
                 else
                 {
                     // Alcohol
-                    if( targetThingB is Building_FoodSynthesizer )
+                    if( targetThingB is Building_AutomatedFactory )
                     {
                         yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer( TargetIndex.B, obj.pawn );
                     }

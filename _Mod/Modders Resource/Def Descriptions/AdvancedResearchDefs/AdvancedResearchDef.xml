@@ -44,10 +44,10 @@
         
         <ConsolidateHelp> set to true, when creating the description from the def data, it matches
         other advanced research defs by having the exact same researchDefs list (order-irrelavent).
-        This enabled it to aggregate information about all matching research into one help menu entry.
+        This enables it to aggregate information about all matching research into one help menu entry.
         
-        <recipeDefs>                    [optional: null] Recipes to toggle on buildings, requires <thingDefs>
-            <li>RecipeDef</li>          with <thingClass> implementing "IBillGiver"
+        <recipeDefs>                    [optional: null] Recipes to toggle on things (thingDefs must be
+            <li>RecipeDef</li>          thingClasses which will make use of recipes)
         </recipeDef>
         
         <sowTags>                       [optional: null] Plant sowTags to toggle, requires <thingDefs> with

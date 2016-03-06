@@ -68,11 +68,11 @@ namespace CommunityCoreLibrary.Detour
                     needsFilling = true;
                 }
                 else if(
-                    ( bestFoodSource is Building_FoodSynthesizer )&&
-                    ( ( (Building_FoodSynthesizer)bestFoodSource ).BestMealFrom() == null )
+                    ( bestFoodSource is Building_AutomatedFactory )&&
+                    ( ( (Building_AutomatedFactory)bestFoodSource ).BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal ) == null )
                 )
                 {
-                    hopper = ( (Building_FoodSynthesizer)bestFoodSource ).AdjacentReachableHopper( pawn );
+                    hopper = ( (Building_AutomatedFactory)bestFoodSource ).AdjacentReachableHopper( pawn );
                     needsFilling = true;
                 }
                 if( needsFilling )
@@ -131,8 +131,8 @@ namespace CommunityCoreLibrary.Detour
                         ( Building_NutrientPasteDispenser.IsAcceptableFeedstock( firstItem.def ) )
                     )||
                     (
-                        ( parent is Building_FoodSynthesizer )&&
-                        ( ( (Building_FoodSynthesizer)parent ).CompHopperUser.ResourceSettings.AllowedToAccept( firstItem ) )
+                        ( parent is Building_AutomatedFactory )&&
+                        ( ( (Building_AutomatedFactory)parent ).CompHopperUser.ResourceSettings.AllowedToAccept( firstItem ) )
                     )
                 )
                 {

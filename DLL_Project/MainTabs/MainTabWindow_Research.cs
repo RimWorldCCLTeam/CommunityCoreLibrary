@@ -119,8 +119,10 @@ namespace CommunityCoreLibrary
         public override void PreOpen()
         {
             base.PreOpen();
-            if ( Find.ResearchManager.currentProj != null )
+            if( Find.ResearchManager.currentProj != null )
+            {
                 SelectedProject = Find.ResearchManager.currentProj.GetHelpDef();
+            }
             _filter = "";
             _oldFilter = "";
             RefreshSource();

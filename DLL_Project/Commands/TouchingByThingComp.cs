@@ -23,8 +23,10 @@ namespace CommunityCoreLibrary.Commands
                 var addedToOutput = false;
                 var stringBuilder = new StringBuilder();
 
-                if( ( ClickLeft != null )&&
-                    ( parentThing.Position.IsInRoom() ) )
+                if(
+                    ( ClickLeft != null )&&
+                    ( parentThing.Position.IsInRoom() )
+                )
                 {
                     stringBuilder.Append( "CommandGroupOfThingsLClick".Translate() );
                     addedToOutput = true;
@@ -82,15 +84,19 @@ namespace CommunityCoreLibrary.Commands
             }
 
             // Left click (if assigned) all in room
-            if( ( ClickLeft != null )&&
+            if(
+                ( ClickLeft != null )&&
                 ( ev.button == 0 )&&
-                ( parentThing.Position.IsInRoom() ) )
+                ( parentThing.Position.IsInRoom() )
+            )
             {
                 ClickLeft.Invoke( parentThing.ListSameThingCompTouching( parentType, true ) );
             }
             // right click (if assigned) all on map
-            else if( ( ClickRight != null )&&
-                ( ev.button == 1 ) )
+            else if(
+                ( ClickRight != null )&&
+                ( ev.button == 1 )
+            )
             {
                 ClickRight.Invoke( parentThing.ListSameThingCompTouching( parentType, false ) );
             }

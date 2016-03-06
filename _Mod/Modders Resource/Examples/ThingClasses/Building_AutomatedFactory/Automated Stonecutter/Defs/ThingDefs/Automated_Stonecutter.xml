@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef Name="BuildingBase" Abstract="True">
+        <category>Building</category>
+        <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+        <selectable>true</selectable>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <repairEffect>Repair</repairEffect>
+        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <filthLeaving>BuildingRubble</filthLeaving>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>AutomatedStonecutter</defName>
+        <label>automated stonecutter</label>
+        <thingClass>CommunityCoreLibrary.Building_AutomatedFactory</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Production/TableStonecutter</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(3.5,1.5)</drawSize>
+        </graphicData>
+        <building>
+            <wantsHopperAdjacent>true</wantsHopperAdjacent>
+        </building>
+        <costStuffCount>75</costStuffCount>
+        <CostList>
+            <Steel>30</Steel>
+        </CostList>
+        <stuffCategories>
+            <li>Metallic</li>
+            <li>Woody</li>
+        </stuffCategories>
+        <AltitudeLayer>Waist</AltitudeLayer>
+        <fillPercent>0.5</fillPercent>
+        <useHitPoints>True</useHitPoints>
+        <statBases>
+            <WorkToMake>2000</WorkToMake>
+            <MaxHitPoints>180</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+            <Cleanliness>-5</Cleanliness>
+        </statBases>
+        <Size>(3,1)</Size>
+        <DesignationCategory>Production</DesignationCategory>
+        <Passability>PassThroughOnly</Passability>
+        <pathCost>70</pathCost>
+        <surfaceType>Item</surfaceType>
+        <tickerType>Normal</tickerType>
+        <comps>
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                <startElectricalFires>true</startElectricalFires>
+                <basePowerConsumption>300</basePowerConsumption>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                <operationalMode>Factory</operationalMode>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
+                <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_AutomatedFactory">
+                <compClass>CommunityCoreLibrary.CompAutomatedFactory</compClass>
+                <outputVector>Ground</outputVector>
+                <productionMode>Automatic</productionMode>
+            </li>
+        </comps>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
+        </placeWorkers>
+        <recipes>
+            <li>AutomatedStonecutterSandstoneBlocks</li>
+            <li>AutomatedStonecutterLimestoneBlocks</li>
+            <li>AutomatedStonecutterSlateBlocks</li>
+            <li>AutomatedStonecutterGraniteBlocks</li>
+            <li>AutomatedStonecutterMarbleBlocks</li>
+        </recipes>
+    </ThingDef>
+
+</Defs>
