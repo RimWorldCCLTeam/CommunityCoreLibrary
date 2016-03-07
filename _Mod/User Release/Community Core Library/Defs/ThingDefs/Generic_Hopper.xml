@@ -9,6 +9,9 @@
         <UsesGenericHoppers>true</UsesGenericHoppers>
         
         in your ModHelperDef!
+        
+        ModPack makers can enable these directly by overriding <researchPrerequisite>
+        with anything (including null) except CommunityCoreLibraryResearchLocker.
     -->
 
     <ThingDef Name="BuildingBase" Abstract="True">
