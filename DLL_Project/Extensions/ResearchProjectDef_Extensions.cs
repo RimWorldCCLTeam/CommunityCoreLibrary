@@ -49,7 +49,7 @@ namespace CommunityCoreLibrary
                             // Cyclical-prerequisite or parent locked means potential lock-out
 
                             // Check for possible unlock
-                            if ( !ResearchController.AdvancedResearch.Any( a => (
+                            if ( !Controller.Data.AdvancedResearchDefs.Any( a => (
                                  ( a.IsResearchToggle )&&
                                  ( !a.HideDefs )&&
                                  ( a.effectedResearchDefs.Contains( researchProjectDef ) )
@@ -84,7 +84,7 @@ namespace CommunityCoreLibrary
 
             // Check for an advanced research unlock
             return
-                ResearchController.AdvancedResearch.Any( a => (
+                Controller.Data.AdvancedResearchDefs.Any( a => (
                     ( a.IsResearchToggle )&&
                     ( !a.HideDefs )&&
                     ( a.effectedResearchDefs.Contains( researchProjectDef ) )
@@ -109,7 +109,7 @@ namespace CommunityCoreLibrary
             {
                 ResearchProjectDef current = queue.Dequeue();
 
-                if ( !ResearchController.AdvancedResearch.Any(
+                if ( !Controller.Data.AdvancedResearchDefs.Any(
                         ard => ard.IsResearchToggle &&
                                !ard.HideDefs &&
                                !ard.IsLockedOut() &&
@@ -207,7 +207,7 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
+                    var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                         ( a.IsResearchToggle )&&
                         ( !a.HideDefs )&&
                         ( a.effectedResearchDefs.Contains( researchProjectDef ) )
@@ -243,7 +243,7 @@ namespace CommunityCoreLibrary
 
             //CCL_Log.Message("Advanced");
             // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
-            var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                  ( a.IsResearchToggle ) &&
                  ( !a.HideDefs ) &&
                  ( a.researchDefs.Contains( researchProjectDef ) )
@@ -267,7 +267,7 @@ namespace CommunityCoreLibrary
             var researchDefs = new List<Def>();
 
             // Look in advanced research
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsResearchToggle )&&
                 ( a.HideDefs )&&
                 ( a.effectedResearchDefs.Contains( researchProjectDef ) )
@@ -308,7 +308,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research too
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsBuildingToggle )&&
                 ( !a.HideDefs )&&
                 ( a.researchDefs.Count == 1 )&&
@@ -388,7 +388,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research too
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.researchDefs.Count == 1 )&&
@@ -428,7 +428,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( a.HideDefs )&&
                 ( a.researchDefs.Count == 1 )&&
@@ -467,7 +467,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research to add plants and sow tags it unlocks
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsPlantToggle )&&
                 ( !a.HideDefs )&&
                 ( a.researchDefs.Count == 1 )&&
@@ -506,7 +506,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research to add plants and sow tags it unlocks
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsPlantToggle )&&
                 ( a.HideDefs )&&
                 ( a.researchDefs.Count == 1 )&&

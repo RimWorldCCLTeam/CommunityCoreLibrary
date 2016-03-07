@@ -15,30 +15,30 @@
         <AssemblyName>Community Core Library</AssemblyName>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>TRACE;DEBUG</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>full</DebugType>
+      <Optimize>false</Optimize>
+      <OutputPath>bin\Debug\</OutputPath>
+      <DefineConstants>TRACE;DEBUG</DefineConstants>
+      <ErrorReport>prompt</ErrorReport>
+      <WarningLevel>4</WarningLevel>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>RELEASE;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <Optimize>true</Optimize>
+      <OutputPath>bin\Release\</OutputPath>
+      <DefineConstants>RELEASE;TRACE</DefineConstants>
+      <ErrorReport>prompt</ErrorReport>
+      <WarningLevel>4</WarningLevel>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Developer|AnyCPU' ">
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug</OutputPath>
-        <WarningLevel>4</WarningLevel>
-        <DebugSymbols>true</DebugSymbols>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DefineConstants>TRACE;DEBUG;DEVELOPER</DefineConstants>
+      <Optimize>false</Optimize>
+      <OutputPath>bin\Debug</OutputPath>
+      <WarningLevel>4</WarningLevel>
+      <DebugSymbols>true</DebugSymbols>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DefineConstants>TRACE;DEBUG;DEVELOPER</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
@@ -153,17 +153,8 @@
         <Compile Include="Enumerations\ResearchEnableMode.cs" />
         <Compile Include="Extensions\ListerThings_Extensions.cs" />
         <Compile Include="Resources\Buildings_Hoppers.cs" />
-        <Compile Include="Resources\Injectors_PostLoad.cs" />
-        <Compile Include="Resources\Injectors_MapComponents.cs" />
-        <Compile Include="Resources\Injectors_Designators.cs" />
-        <Compile Include="Resources\Injectors_ThingComps.cs" />
-        <Compile Include="Resources\Injectors_Special.cs" />
-        <Compile Include="Validation\Validation_Mods.cs" />
-        <Compile Include="Validation\Validation_Research.cs" />
-        <Compile Include="Resources\Resources.cs" />
         <Compile Include="Version\Version.cs" />
         <Compile Include="Controller\Controller.cs" />
-        <Compile Include="Controller\Controller_Help.cs" />
         <Compile Include="Controller\Controller_Research.cs" />
         <Compile Include="Controller\Controller_MainMonoBehaviour.cs" />
         <Compile Include="Controller\Controller_Loader.cs" />
@@ -175,7 +166,6 @@
         <Compile Include="Extensions\Find_Extensions.cs" />
         <Compile Include="Enumerations\Verbosity.cs" />
         <Compile Include="Detours\GenSpawn.cs" />
-        <Compile Include="Detours\DetourInjector.cs" />
         <Compile Include="Detours\RegionMaker.cs" />
         <Compile Include="Detours\TargetingParameters.cs" />
         <Compile Include="Detours\GenPlant.cs" />
@@ -185,7 +175,6 @@
         <Compile Include="Detours\GhostDrawer.cs" />
         <Compile Include="Detours\GenPlace.cs" />
         <Compile Include="Detours\ThingDef.cs" />
-        <Compile Include="Validation\Validation_Core.cs" />
         <Compile Include="Detours\JobGiver_Binge.cs" />
         <Compile Include="Detours\BrokenStateWorker_Binging.cs" />
         <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
@@ -217,6 +206,17 @@
         <Compile Include="CompProperties\CompProperties_AutomatedFactory.cs" />
         <Compile Include="StaticClasses\FoodSynthesis.cs" />
         <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
+        <Compile Include="SpecialInjectors\DetourInjector.cs" />
+        <Compile Include="SpecialInjectors\CompRottableRefrigeratedInjector.cs" />
+        <Compile Include="SpecialInjectors\ResearchTreeDetourInjector.cs" />
+        <Compile Include="SubControllers\LibrarySubController.cs" />
+        <Compile Include="Controller\SubController.cs" />
+        <Compile Include="SubControllers\ResearchSubController.cs" />
+        <Compile Include="SubControllers\InjectionSubController.cs" />
+        <Compile Include="SubControllers\ResourceSubController.cs" />
+        <Compile Include="SubControllers\HelpSubController.cs" />
+        <Compile Include="StaticClasses\HelpBuilder.cs" />
+        <Compile Include="ResearchTree\Detours.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -235,5 +235,8 @@
     <ItemGroup>
         <Folder Include="ITabs\" />
         <Folder Include="MonoBehaviour\" />
+        <Folder Include="SpecialInjectors\" />
+        <Folder Include="SubControllers\" />
+        <Folder Include="Validation\" />
     </ItemGroup>
 </Project>

@@ -63,7 +63,7 @@ namespace CommunityCoreLibrary
                 if(
                     ( buildableDef.researchPrerequisite != null )&&
                     ( buildableDef.researchPrerequisite.IsLockedOut() )&&
-                    ( !ResearchController.AdvancedResearch.Any( a => (
+                    ( !Controller.Data.AdvancedResearchDefs.Any( a => (
                         ( a.IsBuildingToggle )&&
                         ( !a.HideDefs )&&
                         ( a.thingDefs.Contains( buildableDef as ThingDef ) )
@@ -96,7 +96,7 @@ namespace CommunityCoreLibrary
 
             // Check for an advanced research unlock
             return
-                ResearchController.AdvancedResearch.Any( a => (
+                Controller.Data.AdvancedResearchDefs.Any( a => (
                     ( a.IsBuildingToggle )&&
                     ( !a.HideDefs )&&
                     ( a.thingDefs.Contains( buildableDef as ThingDef ) )
@@ -126,7 +126,7 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
+                    var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                         ( a.IsBuildingToggle )&&
                         ( !a.HideDefs )&&
                         ( a.thingDefs.Contains( buildableDef as ThingDef ) )

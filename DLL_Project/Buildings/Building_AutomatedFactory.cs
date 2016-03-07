@@ -15,9 +15,20 @@ namespace CommunityCoreLibrary
     public class Building_AutomatedFactory : Building, IHopperUser
     {
 
-        private Dictionary<RecipeDef,bool>  productionAllowances;
+        public class Allowances
+        {
+            public RecipeDef                recipe;
+            public bool                     allowed;
 
-        Dictionary<ThingDef,RecipeDef>      productRecipes;
+            public                          Allowances( RecipeDef recipe, bool allowed )
+            {
+                this.recipe = recipe;
+                this.allowed = allowed;
+            }
+
+        }
+
+        private Dictionary<ThingDef,Allowances> productionAllowances;
 
         private RecipeDef                   currentRecipe;
         public RecipeDef                    CurrentRecipe
@@ -97,7 +108,7 @@ namespace CommunityCoreLibrary
             nextProductIndex = 0;
             currentRecipe = null;
             currentProductionTick = 0;
-            productionAllowances = new Dictionary<RecipeDef, bool>();
+            productionAllowances = new Dictionary<ThingDef, Allowances>();
         }
 
         #endregion
@@ -145,7 +156,10 @@ namespace CommunityCoreLibrary
         
         public override void                ExposeData()
         {
+            // Scribe base data
             base.ExposeData();
+
+            // Scribe current recipe
             string recipe = string.Empty;
             if( currentRecipe != null )
             {
@@ -156,8 +170,33 @@ namespace CommunityCoreLibrary
             {
                 currentRecipe = DefDatabase<RecipeDef>.GetNamed( recipe, true );
             }
+
+            // Scribe current production tick
             Scribe_Values.LookValue<int>( ref currentProductionTick, "currentProductionTick", 0 );
-            Scribe_Collections.LookDictionary<RecipeDef,bool>( ref productionAllowances, "productionAllowances", LookMode.DefReference, LookMode.Value );
+
+            // Scribe recipe allowances
+            var pa = new Dictionary<RecipeDef, bool>();
+            if( Scribe.mode == LoadSaveMode.Saving )
+            {
+                foreach( var entry in productionAllowances )
+                {
+                    if( !pa.ContainsKey( entry.Value.recipe ) )
+                    {
+                        pa.Add( entry.Value.recipe, entry.Value.allowed );
+                    }
+                }
+            }
+            Scribe_Collections.LookDictionary<RecipeDef,bool>( ref pa, "productionAllowances", LookMode.DefReference, LookMode.Value );
+            if( Scribe.mode == LoadSaveMode.LoadingVars )
+            {
+                foreach( var pair in pa )
+                {
+                    var key = pair.Key.products[0].thingDef;
+                    SetAllowed( pair.Key, pair.Value );
+                }
+            }
+
+            // Scribe current thing
             Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
         }
 
@@ -198,23 +237,6 @@ namespace CommunityCoreLibrary
 
         #region Tickers
 
-        private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
-        {
-            var recipe = FindRecipeForProduct( thingDef );
-            bool allowed = false;
-            if( productionAllowances.TryGetValue( recipe, out allowed ) )
-            {
-                if(
-                    ( allowed )&&
-                    ( HasEnoughResourcesInHoppersFor( thingDef ) )
-                )
-                {
-                    return recipe;
-                }
-            }
-            return (RecipeDef) null;
-        }
-
         private void                        ProductionTick( int ticks )
         {
             if( !CompPowerTrader.PowerOn )
@@ -238,44 +260,7 @@ namespace CommunityCoreLibrary
             // Find something to produce
             if( currentThing == null )
             {
-                if( currentRecipe == null )
-                {
-                    var products = AllProducts();
-                    RecipeDef recipe = null;
-                    for( int index = nextProductIndex; index < products.Count; index++ )
-                    {
-                        var thingDef = products[ index ];
-                        recipe = TryGetProductionReadyRecipeFor( thingDef );
-                        if( recipe != null )
-                        {
-                            break;
-                        }
-                    }
-                    if(
-                        ( recipe == null )&&
-                        ( nextProductIndex > 0 )
-                    )
-                    {
-                        for( int index = 0; index < nextProductIndex; index++ )
-                        {
-                            var thingDef = products[ index ];
-                            recipe = TryGetProductionReadyRecipeFor( thingDef );
-                            if( recipe != null )
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    nextProductIndex++;
-                    nextProductIndex %= products.Count;
-                    if( recipe == null )
-                    {
-                        return;
-                    }
-                    currentRecipe = recipe;
-                }
-                currentProductionTick = (int) currentRecipe.workAmount;
-                currentThing = TryProduceThingDef( currentRecipe.products[0].thingDef );
+                currentThing = NextProductToProduce();
                 return;
             }
 
@@ -286,132 +271,12 @@ namespace CommunityCoreLibrary
             IntVec3 useCell = IntVec3.Invalid;
             Thing stackWithThing = null;
 
-            switch( CompAutomatedFactory.Properties.outputVector )
+            if( !OutputThingTo( out stackWithThing, out useCell ) )
             {
-            case FactoryOutputVector.Ground:
-                var usableCells = new List<IntVec3>();
-                var preferedCells = new List<IntVec3>();
-                foreach( var cell in AdjacentNeighbouringCells )
-                {
-                    bool addToUsable = true;
-                    bool addToPrefered = false;
-                    foreach( var cellThing in cell.GetThingList() )
-                    {
-                        if( cellThing is IStoreSettingsParent )
-                        {
-                            addToUsable = false;
-                            var settings = cellThing as IStoreSettingsParent;
-                            if( settings.GetStoreSettings().AllowedToAccept( currentThing ) )
-                            {
-                                addToPrefered = true;
-                            }
-                        }
-                        else if(
-                            ( cellThing.CanStackWith( currentThing ) )&&
-                            ( cellThing.stackCount < cellThing.def.stackLimit )
-                        )
-                        {
-                            addToPrefered = true;
-                            if( stackWithThing == null )
-                            {
-                                stackWithThing = cellThing;
-                            }
-                        }
-                        else if(
-                            ( cellThing.def.EverHaulable )||
-                            ( cellThing.def.IsEdifice() )||
-                            ( cellThing.def.passability == Traversability.Impassable )
-                        )
-                        {
-                            addToUsable = false;
-                        }
-                    }
-                    if( addToUsable )
-                    {
-                        usableCells.Add( cell );
-                    }
-                    if( addToPrefered )
-                    {
-                        preferedCells.Add( cell );
-                    }
-                }
-                if(
-                    ( preferedCells.NullOrEmpty() )&&
-                    ( usableCells.NullOrEmpty() )&&
-                    ( stackWithThing == null )
-                )
-                {
-                    // No place to put new thing
-                    return;
-                }
-                if( !preferedCells.NullOrEmpty() )
-                {
-                    // Try a prefered cell first
-                    for( int index = 0; index < preferedCells.Count; ++index )
-                    {
-                        var cell = preferedCells[ index ];
-                        foreach( var cellThing in cell.GetThingList() )
-                        {
-                            if(
-                                ( cellThing.CanStackWith( currentThing ) )&&
-                                ( cellThing.stackCount < cellThing.def.stackLimit )
-                            )
-                            {
-                                stackWithThing = cellThing;
-                            }
-                            else if( cellThing.def.EverHaulable )
-                            {
-                                preferedCells.Remove( cell );
-                                break;
-                            }
-                        }
-                    }
-                    if(
-                        ( preferedCells.NullOrEmpty() )&&
-                        ( stackWithThing == null )
-                    )
-                    {
-                        return;
-                    }
-                    if( useCell == IntVec3.Invalid )
-                    {
-                        useCell = preferedCells.RandomElement();
-                    }
-                }
-                else
-                {
-                    useCell = usableCells.RandomElement();
-                }
-                break;
-
-            case FactoryOutputVector.InteractionCell:
-                useCell = this.InteractionCell;
-                foreach( var cellThing in useCell.GetThingList() )
-                {
-                    if( cellThing.def.passability == Traversability.Impassable )
-                    {
-                        return;
-                    }
-                    if( cellThing.CanStackWith( currentThing ) )
-                    {
-                        stackWithThing = cellThing;
-                        break;
-                    }
-                    if( cellThing.def.EverHaulable )
-                    {
-                        return;
-                    }
-                    if( cellThing is IStoreSettingsParent )
-                    {
-                        var settings = cellThing as IStoreSettingsParent;
-                        if( !settings.GetStoreSettings().AllowedToAccept( currentThing ) )
-                        {
-                            return;
-                        }
-                    }
-                }
-                break;
+                // No place to put the thing
+                return;
             }
+
             if( stackWithThing != null )
             {
                 if(
@@ -461,7 +326,7 @@ namespace CommunityCoreLibrary
                     resourceFilter.allowedHitPointsConfigurable = true;
                     resourceFilter.allowedQualitiesConfigurable = false;
 
-                    productRecipes = new Dictionary<ThingDef,RecipeDef>();
+                    //productionAllowances = new Dictionary<ThingDef, Allowances>();
 
                     // Scan recipes to build lists and resource filter
                     if( !def.AllRecipes.NullOrEmpty() )
@@ -469,35 +334,38 @@ namespace CommunityCoreLibrary
                         
                         foreach( var recipe in def.AllRecipes )
                         {
-                            bool addThisRecipe = true;
                             if( recipe.products.Count != 1 )
                             {
                                 CCL_Log.TraceMod(
                                     def,
                                     Verbosity.NonFatalErrors,
                                     "Building_AutomatedFactory can only use recipes which have one product :: '" + recipe.defName + "' contains " + recipe.products.Count + " products!" );
-                                addThisRecipe = false;
                             }
-                            foreach( var product in recipe.products )
+                            else
                             {
-                                RecipeDef existingRecipeDef = null;
-                                if( productRecipes.TryGetValue( product.thingDef, out existingRecipeDef ) )
+                                var product = recipe.products[ 0 ].thingDef;
+                                Allowances allowance;
+                                if( productionAllowances.TryGetValue( product, out allowance ) )
                                 {
-                                    CCL_Log.TraceMod(
-                                        def,
-                                        Verbosity.NonFatalErrors,
-                                        "Building_AutomatedFactory can not have multiple recipes producting the same thing :: A recipe which produces '" + product.thingDef.defName + "' already exists!" );
-                                    addThisRecipe = false;
+                                    if( allowance.recipe != recipe )
+                                    {
+                                        // Different recipe for same product
+                                        CCL_Log.TraceMod(
+                                            def,
+                                            Verbosity.NonFatalErrors,
+                                            "Building_AutomatedFactory can not have multiple recipes producing the same thing :: A recipe which produces '" + product.defName + "' already exists!" );
+                                    }
+                                    else
+                                    {
+                                        // Same recipe for product (may happen immediately after loading a save game
+                                        // or a recipe is unlocked via research as the dictionary is not cleared)
+                                    }
                                 }
-                            }
-                            if( addThisRecipe )
-                            {
-                                if( !productionAllowances.ContainsKey( recipe ) )
+                                else
                                 {
-                                    productionAllowances.Add( recipe, true );
+                                    productionAllowances.Add( product, new Allowances( recipe, true ) );
+                                    CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
                                 }
-                                productRecipes.Add( recipe.products[0].thingDef, recipe );
-                                CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
                             }
                         }
                     }
@@ -509,14 +377,296 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region System Interface
+        #region Production Allowances
 
-        private RecipeDef                   FindRecipeForProduct( ThingDef thingDef )
+        public void                         SetAllowed( ThingDef thingDef, bool allowed )
         {
-            RecipeDef recipe = null;
-            if( productRecipes.TryGetValue( thingDef, out recipe ) )
+            Allowances allowance;
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
-                return recipe;
+                allowance.allowed = allowed;
+                productionAllowances[ thingDef ] = allowance;
+            }
+        }
+
+        public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
+        {
+            var product = recipeDef.products[ 0 ].thingDef;
+            Allowances allowance;
+            if( productionAllowances.TryGetValue( product, out allowance ) )
+            {
+                allowance.allowed = allowed;
+                productionAllowances[ product ].allowed = allowed;
+            }
+            else
+            {
+                allowance = new Allowances( recipeDef, allowed );
+                productionAllowances.Add( product, allowance );
+            }
+        }
+
+        public bool                         GetAllowed( ThingDef thingDef )
+        {
+            Allowances allowance;
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
+            {
+                return allowance.allowed;
+            }
+            return false;
+        }
+
+        public bool                         GetAllowed( RecipeDef recipeDef )
+        {
+            foreach( var pair in productionAllowances )
+            {
+                if( pair.Value.recipe == recipeDef )
+                {
+                    return pair.Value.allowed;
+                }
+            }
+            return false;
+        }
+
+        public Allowances                   GetAllowance( ThingDef thingDef )
+        {
+            Allowances allowance;
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
+            {
+                return allowance;
+            }
+            return null;
+        }
+
+        public Allowances                   GetAllowance( RecipeDef recipeDef )
+        {
+            foreach( var pair in productionAllowances )
+            {
+                if( pair.Value.recipe == recipeDef )
+                {
+                    return pair.Value;
+                }
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Internal Interface
+
+        private Thing                       NextProductToProduce()
+        {
+            if( currentRecipe != null )
+            {
+                return null;
+            }
+
+            var products = AllProducts();
+            RecipeDef recipe = null;
+            for( int index = nextProductIndex; index < products.Count; index++ )
+            {
+                var thingDef = products[ index ];
+                recipe = TryGetProductionReadyRecipeFor( thingDef );
+                if( recipe != null )
+                {
+                    break;
+                }
+            }
+            if(
+                ( recipe == null )&&
+                ( nextProductIndex > 0 )
+            )
+            {
+                for( int index = 0; index < nextProductIndex; index++ )
+                {
+                    var thingDef = products[ index ];
+                    recipe = TryGetProductionReadyRecipeFor( thingDef );
+                    if( recipe != null )
+                    {
+                        break;
+                    }
+                }
+            }
+            nextProductIndex++;
+            nextProductIndex %= products.Count;
+            if( recipe == null )
+            {
+                return null;
+            }
+            currentRecipe = recipe;
+            currentProductionTick = (int) currentRecipe.workAmount;
+            return TryProduceThingDef( currentRecipe.products[0].thingDef );
+        }
+
+        private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
+        {
+            stackWith = null;
+            dropCell = IntVec3.Invalid;
+            switch( CompAutomatedFactory.Properties.outputVector )
+            {
+                case FactoryOutputVector.Ground:
+                var usableCells = new List<IntVec3>();
+                var preferedCells = new List<IntVec3>();
+                foreach( var cell in AdjacentNeighbouringCells )
+                {
+                    bool addToUsable = true;
+                    bool addToPrefered = false;
+                    foreach( var cellThing in cell.GetThingList() )
+                    {
+                        if( cellThing is IStoreSettingsParent )
+                        {
+                            addToUsable = false;
+                            var settings = cellThing as IStoreSettingsParent;
+                            if( settings.GetStoreSettings().AllowedToAccept( currentThing ) )
+                            {
+                                addToPrefered = true;
+                            }
+                        }
+                        else if(
+                            ( cellThing.CanStackWith( currentThing ) )&&
+                            ( cellThing.stackCount < cellThing.def.stackLimit )
+                        )
+                        {
+                            addToPrefered = true;
+                            if( stackWith == null )
+                            {
+                                stackWith = cellThing;
+                            }
+                        }
+                        else if(
+                            ( cellThing.def.EverHaulable )||
+                            ( cellThing.def.IsEdifice() )||
+                            ( cellThing.def.passability == Traversability.Impassable )
+                        )
+                        {
+                            addToUsable = false;
+                        }
+                    }
+                    if( addToUsable )
+                    {
+                        usableCells.Add( cell );
+                    }
+                    if( addToPrefered )
+                    {
+                        preferedCells.Add( cell );
+                    }
+                }
+                if(
+                    ( preferedCells.NullOrEmpty() )&&
+                    ( usableCells.NullOrEmpty() )&&
+                    ( stackWith == null )
+                )
+                {
+                    // No place to put new thing
+                    return false;
+                }
+                if( !preferedCells.NullOrEmpty() )
+                {
+                    // Try a prefered cell first
+                    for( int index = 0; index < preferedCells.Count; ++index )
+                    {
+                        var cell = preferedCells[ index ];
+                        foreach( var cellThing in cell.GetThingList() )
+                        {
+                            if(
+                                ( cellThing.CanStackWith( currentThing ) )&&
+                                ( cellThing.stackCount < cellThing.def.stackLimit )
+                            )
+                            {
+                                stackWith = cellThing;
+                            }
+                            else if( cellThing.def.EverHaulable )
+                            {
+                                preferedCells.Remove( cell );
+                                break;
+                            }
+                        }
+                    }
+                    if(
+                        ( preferedCells.NullOrEmpty() )&&
+                        ( stackWith == null )
+                    )
+                    {
+                        return false;
+                    }
+                    if( !preferedCells.NullOrEmpty() )
+                    {
+                        dropCell = preferedCells.RandomElement();
+                    }
+                }
+                else if( !usableCells.NullOrEmpty() )
+                {
+                    dropCell = usableCells.RandomElement();
+                }
+                break;
+
+                case FactoryOutputVector.InteractionCell:
+                dropCell = this.InteractionCell;
+                foreach( var cellThing in dropCell.GetThingList() )
+                {
+                    if( cellThing.def.passability == Traversability.Impassable )
+                    {
+                        return false;
+                    }
+                    if(
+                        ( cellThing.CanStackWith( currentThing ) )&&
+                        ( cellThing.stackCount < cellThing.def.stackLimit )
+                    )
+                    {
+                        stackWith = cellThing;
+                    }
+                    else if( cellThing.def.EverHaulable )
+                    {
+                        return false;
+                    }
+                    if( cellThing is IStoreSettingsParent )
+                    {
+                        var settings = cellThing as IStoreSettingsParent;
+                        if( !settings.GetStoreSettings().AllowedToAccept( currentThing ) )
+                        {
+                            return false;
+                        }
+                    }
+                }
+                break;
+            }
+            if(
+                ( dropCell != IntVec3.Invalid )||
+                ( stackWith != null )
+            )
+            {
+                // Found some place for it
+                return true;
+            }
+            // All output cells are blocked
+            return false;
+        }
+
+        private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
+        {
+            Allowances allowance;
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
+            {
+                if(
+                    ( allowance.allowed )&&
+                    ( HasEnoughResourcesInHoppersFor( thingDef ) )
+                )
+                {
+                    return allowance.recipe;
+                }
+            }
+            return (RecipeDef) null;
+        }
+
+        #endregion
+
+        #region Public Interface
+
+        public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
+        {
+            Allowances allowance;
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
+            {
+                return allowance.recipe;
             }
             return (RecipeDef) null;
         }
@@ -580,9 +730,22 @@ namespace CommunityCoreLibrary
         public List<ThingDef>               AllProducts()
         {
             var products = new List<ThingDef>();
-            foreach( var productRecipe in productRecipes )
+            foreach( var pair in productionAllowances )
             {
-                products.Add( productRecipe.Key );
+                products.Add( pair.Key );
+            }
+            return products;
+        }
+
+        public List<ThingDef>               AllowedProducts()
+        {
+            var products = new List<ThingDef>();
+            foreach( var pair in productionAllowances )
+            {
+                if( pair.Value.allowed )
+                {
+                    products.Add( pair.Key );
+                }
             }
             return products;
         }

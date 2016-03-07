@@ -535,7 +535,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 if ( current.LockedState != LockedState.LockedOut )
                 {
                     // check advanced researches
-                    List<AdvancedResearchDef> advancedResearches = ResearchController.AdvancedResearch.Where( ard => (
+                    List<AdvancedResearchDef> advancedResearches = Controller.Data.AdvancedResearchDefs.Where( ard => (
                         ( ard.IsResearchToggle )&&
                         ( !ard.IsLockedOut() )&&
                         ( !ard.HideDefs )&&

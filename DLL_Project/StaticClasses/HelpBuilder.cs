@@ -7,10 +7,12 @@ using System.Text;
 using RimWorld;
 using Verse;
 
-namespace CommunityCoreLibrary.Controller
+// TODO:  Move this to /StaticClasses/ and rename to HelpBuilder
+
+namespace CommunityCoreLibrary
 {
 
-    public static class Help
+    public static class HelpBuilder
     {
 
         //[Unsaved]
@@ -21,7 +23,7 @@ namespace CommunityCoreLibrary.Controller
 
         #region Process State
 
-        public static bool Initialize()
+        public static bool ResolveImpliedDefs()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -75,11 +77,6 @@ namespace CommunityCoreLibrary.Controller
             // Rebuild help caches
             ResolveReferences();
 
-            CCL_Log.Trace(
-                Verbosity.Validation,
-                "Initialized",
-                "Help System"
-            );
             return true;
         }
 
@@ -548,7 +545,7 @@ namespace CommunityCoreLibrary.Controller
 
             // Get advanced research database
             var advancedResearchDefs =
-                ResearchController.AdvancedResearch.Where( a => (
+                Controller.Data.AdvancedResearchDefs.Where( a => (
                     ( a.ResearchConsolidator == a )&&
                     ( a.HasHelp )
                 ) ).ToList();

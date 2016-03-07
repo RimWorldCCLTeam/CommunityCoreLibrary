@@ -9,8 +9,8 @@ namespace CommunityCoreLibrary.Controller
 
         public                              Loader()
         {
-            // Create the MonoBehaviour in an ITab so it will start after the
-            // PostLoad() sequence to avoid prematurely evaluating game data.
+            // Create the main controller (MonoBehaviour) in an ITab so it will start
+            // after the PostLoad() sequence to avoid prematurely evaluating game data.
 
             if( Controller.Data.UnityObject == null )
             {

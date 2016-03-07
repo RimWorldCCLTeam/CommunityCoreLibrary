@@ -22,6 +22,16 @@ namespace CommunityCoreLibrary.Controller
             // Log CCL version
             Version.Log();
 
+            // Create system controllers
+            Controller.Data.SubControllers = new SubController[]
+            {
+                new Controller.LibrarySubController(),
+                new Controller.ResearchSubController(),
+                new Controller.InjectionSubController(),
+                new Controller.ResourceSubController(),
+                new Controller.HelpSubController()
+            };
+
             // Detour Verse.ThingDef.PostLoad
             MethodInfo Verse_ThingDef_PostLoad = typeof( ThingDef ).GetMethod( "PostLoad", BindingFlags.Instance | BindingFlags.Public );
             MethodInfo CCL_ThingDef_PostLoad = typeof( Detour._ThingDef ).GetMethod( "_PostLoad", BindingFlags.Static | BindingFlags.NonPublic );

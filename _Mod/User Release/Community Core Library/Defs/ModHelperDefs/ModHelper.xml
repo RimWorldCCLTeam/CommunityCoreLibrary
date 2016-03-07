@@ -15,7 +15,7 @@
 
         <SpecialInjectors>
             <li>CommunityCoreLibrary.DetourInjector</li>
-            <li>CommunityCoreLibrary.CompRottableRefrigerated_Injector</li>
+            <li>CommunityCoreLibrary.CompRottableRefrigeratedInjector</li>
         </SpecialInjectors>
 
     </ModHelperDef>

@@ -15,7 +15,8 @@ namespace CommunityCoreLibrary.Controller
         #region Instance Data
 
         private static bool                 gameValid;
-        private static bool                 mapValid;
+
+        private List<SubController>         UpdateControllers = null;
 
         #endregion
 
@@ -26,71 +27,47 @@ namespace CommunityCoreLibrary.Controller
             enabled = false;
             gameValid = false;
 
-            // Check versions of mods and throw errors to the user if the
-            // mod version requirement is higher than the installed version
-            if( !Validation.Mods.Validate() )
+            var subControllers = Controller.Data.SubControllers.ToList();
+            if( subControllers.NullOrEmpty() )
             {
-                CCL_Log.Error( "Initialization Error!", "Mod Validation" );
+                CCL_Log.Error( "SubControllers array is empty!" );
                 return;
             }
 
-            // Check CCL load rank and version
-            if( !Validation.Core.Validate() )
+            // Validate all subs-systems
+            subControllers.Sort( (x,y) => ( x.ValidationPriority > y.ValidationPriority ) ? -1 : 1 );
+            foreach( var subsys in subControllers )
             {
-                CCL_Log.Error( "Initialization Error!", "Library Validation" );
-                return;
-
+                if( !subsys.Validate() )
+                {
+                    CCL_Log.Error( subsys.strReturn, subsys.Name );
+                    return;
+                }
+                if( subsys.strReturn != string.Empty )
+                {
+                    CCL_Log.Message( subsys.strReturn, subsys.Name );
+                }
             }
 
-            // Validate advanced research defs
-            if( !Validation.Research.Validate() )
+            // Initialize all sub-systems
+            subControllers.Sort( (x,y) => ( x.InitializationPriority > y.InitializationPriority ) ? -1 : 1 );
+            foreach( var subsys in subControllers )
             {
-                CCL_Log.Error( "Initialization Error!", "Research Validation" );
-                return;
-            }
-
-            // Do special injections
-            if( !Resources.Injectors.Special.Inject() )
-            {
-                CCL_Log.Error( "Initialization Error!", "Special Injection" );
-                return;
-            }
-
-            // Inject ThingComps into ThingsWithComps
-            if( !Resources.Injectors.ThingComps.Inject() )
-            {
-                CCL_Log.Error( "Initialization Error!", "ThingComp Injection" );
-                return;
-            }
-
-            // Enables CCL resources (hoppers, etc) for mods wanting them
-            if( !Resources.Enable() )
-            {
-                CCL_Log.Error( "Initialization Error!", "Resource Injection" );
-                return;
-            }
-
-            // Initialize research controller
-            // TODO: Alpha 13 API change
-            //Controller.Research.Initialize();
-            if( !ResearchController.Initialize() )
-            {
-                CCL_Log.Error( "Initialization Error!", "Advanced Research" );
-                return;
-            }
-
-            // Auto-generate help [category] defs
-            if( !Controller.Help.Initialize() )
-            {
-                CCL_Log.Error( "Initialization Error!", "Help Controller" );
-                return;
+                if( !subsys.Initialize() )
+                {
+                    CCL_Log.Error( subsys.strReturn, subsys.Name );
+                    return;
+                }
+                if( subsys.strReturn != string.Empty )
+                {
+                    CCL_Log.Message( subsys.strReturn, subsys.Name );
+                }
             }
 
             CCL_Log.Message( "Initialized" );
 
             // Yay!
             gameValid = true;
-            mapValid = true;
             enabled = true;
         }
 
@@ -98,7 +75,6 @@ namespace CommunityCoreLibrary.Controller
         {
             if(
                 ( !gameValid )||
-                ( !mapValid )||
                 ( Game.Mode != GameMode.MapPlaying )||
                 ( Find.Map == null )||
                 ( Find.Map.components == null )
@@ -108,43 +84,73 @@ namespace CommunityCoreLibrary.Controller
                 return;
             }
 
-            // Do post-load injections
-            if( !Resources.Injectors.PostLoad.Inject() )
+            if( Scribe.mode == LoadSaveMode.LoadingVars )
             {
-                CCL_Log.Error( "Initialization Error!", "Post-Load Injection" );
-                mapValid = false;
-                enabled = false;
+                // Call controller Initialize() on game load
+                var subControllers = Controller.Data.SubControllers.ToList();
+                subControllers.Sort( (x,y) => ( x.InitializationPriority > y.InitializationPriority ) ? -1 : 1 );
+
+                foreach( var subsys in subControllers )
+                {
+                    if(
+                        ( subsys.State >= SubControllerState._BaseOk )&&
+                        ( subsys.ReinitializeOnGameLoad )
+                    )
+                    {
+                        if( !subsys.Initialize() )
+                        {
+                            CCL_Log.Error( subsys.strReturn, subsys.Name );
+                            gameValid = false;
+                            enabled = false;
+                            return;
+                        }
+                        if( subsys.strReturn != string.Empty )
+                        {
+                            CCL_Log.Message( subsys.strReturn, subsys.Name );
+                        }
+                    }
+                }
+
+            }
+            if( Scribe.mode != LoadSaveMode.Inactive )
+            {
+                // Do nothing while a save/load sequence is happening
                 return;
             }
 
-            // Inject map components
-            if( !Resources.Injectors.MapComponents.Inject() )
+            if( UpdateControllers == null )
             {
-                CCL_Log.Error( "Initialization Error!", "Map Component Injection" );
-                mapValid = false;
-                enabled = false;
-                return;
+                // Create a list of sub controllers in update order
+                UpdateControllers = Controller.Data.SubControllers.ToList();
+                UpdateControllers.Sort( (x,y) => ( x.UpdatePriority > y.UpdatePriority ) ? -1 : 1 );
             }
 
-            // Designator injections
-            if( !Resources.Injectors.Designators.Inject() )
+            foreach( var subsys in UpdateControllers )
             {
-                CCL_Log.Error( "Initialization Error!", "Desginator Injection" );
-                mapValid = false;
-                enabled = false;
-                return;
+                if(
+                    ( subsys.State == SubControllerState.Ok )&&
+                    ( subsys.IsHashIntervalTick( Find.TickManager.TicksGame ) )
+                )
+                {
+                    if( !subsys.Update() )
+                    {
+                        CCL_Log.Error( subsys.strReturn, subsys.Name );
+                        return;
+                    }
+                    if( subsys.strReturn != string.Empty )
+                    {
+                        CCL_Log.Message( subsys.strReturn, subsys.Name );
+                    }
+                }
             }
 
-            // Post-load injections complete, stop calling this
-            CCL_Log.Message( "Post-load injection successful" );
-            enabled = false;
         }
 
         public void                         OnLevelWasLoaded( int level )
         {
             // Enable the frame update when the game and map are valid
             // Level 1 means we're in gameplay.
-            enabled = ( ( gameValid )&&( mapValid )&&( level == 1 ) ) ? true : false;
+            enabled = ( ( gameValid )&&( level == 1 ) ) ? true : false;
         }
 
         #endregion

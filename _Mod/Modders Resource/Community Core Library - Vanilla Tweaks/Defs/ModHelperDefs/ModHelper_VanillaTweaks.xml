@@ -12,6 +12,12 @@
 
         <HideVanillaHoppers>true</HideVanillaHoppers>
 
+        <!--
+        <SpecialInjectors>
+            <li>CommunityCoreLibrary.ResearchTreeDetourInjector</li>
+        </SpecialInjectors>
+        -->
+
     </ModHelperDef>
 
 </Defs>

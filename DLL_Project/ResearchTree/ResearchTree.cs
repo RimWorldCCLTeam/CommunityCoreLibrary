@@ -349,7 +349,7 @@ namespace CommunityCoreLibrary.ResearchTree
             Orphans.MaxDepth = Math.Max( Orphans.MaxDepth, nodesPerRow - 1 ); // zero-based
         }
 
-        public static void Initialize()
+        public static bool Initialize()
         {
             // populate all nodes
             Forest = new List<Node>( DefDatabase<ResearchProjectDef>.AllDefsListForReading
@@ -437,6 +437,7 @@ namespace CommunityCoreLibrary.ResearchTree
 
             // Done!
             Initialized = true;
+            return Initialized;
         }
 
         private static void OrderTrunks()

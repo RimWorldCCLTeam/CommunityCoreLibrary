@@ -29,6 +29,8 @@ namespace CommunityCoreLibrary.Controller
         public static bool                  GenericHoppersEnabled = false;
         public static bool                  VanillaHoppersDisabled = false;
 
+        internal static SubController[]     SubControllers;
+
         // For tracing in global functions
         private static ModHelperDef         _Trace_Current_Mod = null;
 

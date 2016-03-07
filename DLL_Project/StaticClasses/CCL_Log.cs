@@ -55,25 +55,140 @@ namespace CommunityCoreLibrary
         }
 #endif
 
+        public static bool                  AppendSection( ref StringBuilder s, string str, bool addSectionDivider = true )
+        {
+            if( addSectionDivider )
+            {
+                s.Append( " :: " );
+            }
+            s.Append( str );
+            return true;
+        }
+
+        public static bool                  AppendSectionNewLine( ref StringBuilder s, string str, bool addSectionDivider = true )
+        {
+            if( addSectionDivider )
+            {
+                s.Append( " :: " );
+            }
+            s.AppendLine( str );
+            return true;
+        }
+
+        /*
+        private static void                 AppendTrace( ref StringBuilder s, Def atFault, Verbosity Severity, string content, string category = null )
+        {
+#if RELEASE
+            if( Severity > Verbosity.Validation )
+            {
+                return;
+            }
+#endif
+            var mod = Find_Extensions.ModByDef( atFault );
+            var modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
+            if( !_TraceFor( ref modHelperDef, Severity, atFault ) )
+            {
+                return;
+            }
+            s.Append( "\t" );
+            _BuildTrace( ref s, modHelperDef, Severity, content, atFault, category, false );
+            s.AppendLine();
+        }
+
+        private static void                 AppendTrace( ref StringBuilder s, LoadedMod mod, Verbosity Severity, string content, string category = null )
+        {
+#if RELEASE
+            if( Severity > Verbosity.Validation )
+            {
+                return;
+            }
+#endif
+            var modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
+            if( !_TraceFor( ref modHelperDef, Severity, null ) )
+            {
+                return;
+            }
+            s.Append( "\t" );
+            _BuildTrace( ref s, modHelperDef, Severity, content, null, category, false );
+            s.AppendLine();
+        }
+        */
+
+        public static StringBuilder         BaseMessage( string content = null, string category = null )
+        {
+            var s = new StringBuilder();
+            s.Append( Controller.Data.UnityObjectName );
+
+            if( category != null )
+            {
+                AppendSection( ref s, category );
+            }
+
+            if( content != null )
+            {
+                AppendSection( ref s, content );
+            }
+
+            return s;
+        }
+
+        private static StringBuilder        captureTarget = null;
+
+        public static bool                  CaptureBegin( StringBuilder target )
+        {
+            if( captureTarget == null )
+            {
+                captureTarget = target;
+                return true;
+            }
+            if( captureTarget == target )
+            {
+                CCL_Log.Error( "Already capturing log", "Log Capture" );
+                return true;
+            }
+            return false;
+        }
+
+        public static bool                  CaptureEnd( StringBuilder target )
+        {
+            if( captureTarget == null )
+            {
+                CCL_Log.Error( "Log isn't being captured, no need to end capture", "Log Capture" );
+                return true;
+            }
+            if( captureTarget != target )
+            {
+                CCL_Log.Error( "Cannot end a capture on a different object", "Log Capture" );
+                return false;
+            }
+            captureTarget = null;
+            return true;
+        }
+
         /// <summary>
         /// Write a log => Community Core Library :: category(nullable) :: content
         /// </summary>
         public static void                  Message( string content, string category = null )
         {
-            var builder = new StringBuilder();
-            builder.Append( Controller.Data.UnityObjectName ).Append( " :: " );
-
-            if( category != null )
+            var s = captureTarget;
+            if( s == null )
             {
-                builder.Append( category ).Append( " :: " );
-            }
-
-            builder.Append( content );
-
+                s = BaseMessage( content, category );
+                Verse.Log.Message( s.ToString() );
 #if DEVELOPER
-            Write( builder.ToString() );
+                Write( s.ToString() );
 #endif
-            Verse.Log.Message( builder.ToString() );
+            }
+            else
+            {
+                s.Append( "\t" );
+                bool prefixNext = false;
+                if( category != null )
+                {
+                    prefixNext = AppendSection( ref s, category, false );
+                }
+                AppendSectionNewLine( ref s, content, prefixNext );
+            }
         }
 
         /// <summary>
@@ -81,20 +196,25 @@ namespace CommunityCoreLibrary
         /// </summary>
         public static void                  Error( string content, string category = null )
         {
-            var builder = new StringBuilder();
-            builder.Append( Controller.Data.UnityObjectName ).Append( " :: " );
-
-            if( category != null )
+            var s = captureTarget;
+            if( s == null )
             {
-                builder.Append( category ).Append( " :: " );
-            }
-
-            builder.Append( content );
-
+                s = BaseMessage( content, category );
+                Verse.Log.Error( s.ToString() );
 #if DEVELOPER
-            Write( builder.ToString() );
+                Write( s.ToString() );
 #endif
-            Verse.Log.Error( builder.ToString() );
+            }
+            else
+            {
+                s.Append( "\t" );
+                bool prefixNext = false;
+                if( category != null )
+                {
+                    prefixNext = AppendSection( ref s, category, false );
+                }
+                AppendSectionNewLine( ref s, content, prefixNext );
+            }
         }
 
         public static void                  Trace( Verbosity Severity, string content, string category = null )
@@ -128,6 +248,51 @@ namespace CommunityCoreLibrary
                 return;
             }
 #endif
+            if( !_TraceFor( ref modHelperDef, Severity, atFault ) )
+            {
+                return;
+            }
+            var s = captureTarget;
+            if( s == null )
+            {
+                s = BaseMessage();
+            }
+            else
+            {
+                s.Append( "\t" );
+            }
+
+            _BuildTrace( ref s, modHelperDef, Severity, content, atFault, category, ( captureTarget == null ) );
+
+            if( captureTarget == null )
+            {
+#if DEVELOPER
+                Write( s.ToString() );
+#endif
+                if( Severity <= Verbosity.NonFatalErrors )
+                {
+                    // Error
+                    Verse.Log.Error( s.ToString() );
+                }
+                else if ( Severity == Verbosity.Warnings )
+                {
+                    // Warning
+                    Verse.Log.Warning( s.ToString() );
+                }
+                else
+                {
+                    // Wall of text
+                    Verse.Log.Message( s.ToString() );
+                }
+            }
+            else
+            {
+                s.AppendLine();
+            }
+        }
+
+        private static bool                 _TraceFor( ref ModHelperDef modHelperDef, Verbosity Severity, Def atFault )
+        {
             Verbosity TraceAt = Verbosity.Default;
             if(
                 ( !Controller.Data.Mods.NullOrEmpty() )&&
@@ -157,56 +322,41 @@ namespace CommunityCoreLibrary
                     TraceAt = Find_Extensions.HightestVerbosity;
                 }
             }
-            if( TraceAt >= Severity )
-            {
-                var builder = new StringBuilder();
-                builder.Append( Controller.Data.UnityObjectName ).Append( " :: " );
-
-                if(
-                    ( modHelperDef != null )&&
-                    ( modHelperDef != Controller.Data.cclHelperDef )
-                )
-                {
-                    builder.Append( modHelperDef.ModName ).Append( " :: " );
-                }
-                if( category != null )
-                {
-                    builder.Append( category ).Append( " :: " );
-                }
-                if( atFault != null )
-                {
-                    // Name of class
-                    var defType = atFault.GetType().ToString();
-                    builder.Append( defType ).Append( " :: " ).Append( atFault.defName ).Append( " :: " );
-                }
-
-                builder.Append( content );
-
-                if( Severity <= Verbosity.NonFatalErrors )
-                {
-                    // Error
-#if DEVELOPER
-                    Write( builder.ToString() );
-#endif
-                    Verse.Log.Error( builder.ToString() );
-                }
-                else if ( Severity == Verbosity.Warnings )
-                {
-                    // Warning
-#if DEVELOPER
-                    Write( builder.ToString() );
-#endif
-                    Verse.Log.Warning( builder.ToString() );
-                }
-                else
-                {
-                    // Wall of text
-#if DEVELOPER
-                    Write( builder.ToString() );
-#endif
-                    Verse.Log.Message( builder.ToString() );
-                }
-            }
+            return ( TraceAt >= Severity );
         }
+
+        private static void                 _BuildTrace( ref StringBuilder s, ModHelperDef modHelperDef, Verbosity Severity, string content, Def atFault = null, string category = null, bool addInitialSectionDivider = true )
+        {
+            if( Severity <= Verbosity.NonFatalErrors )
+            {
+                addInitialSectionDivider = AppendSection( ref s, "(Error)", addInitialSectionDivider );
+            }
+            else if( Severity == Verbosity.Warnings )
+            {
+                addInitialSectionDivider = AppendSection( ref s, "(Warning)", addInitialSectionDivider );
+            }
+            if(
+                ( modHelperDef != null )&&
+                ( modHelperDef != Controller.Data.cclHelperDef )
+            )
+            {
+                addInitialSectionDivider = AppendSection( ref s, modHelperDef.ModName, addInitialSectionDivider );
+            }
+            if( category != null )
+            {
+                addInitialSectionDivider = AppendSection( ref s, category, addInitialSectionDivider );
+            }
+            if( atFault != null )
+            {
+                // Name of class
+                var defType = atFault.GetType().ToString();
+                addInitialSectionDivider = AppendSection( ref s, defType, addInitialSectionDivider );
+                addInitialSectionDivider = AppendSection( ref s, atFault.defName, addInitialSectionDivider );
+            }
+
+            addInitialSectionDivider = AppendSection( ref s, content, addInitialSectionDivider );
+        }
+
     }
+
 }

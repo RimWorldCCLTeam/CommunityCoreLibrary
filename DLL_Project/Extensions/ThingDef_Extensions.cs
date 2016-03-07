@@ -160,7 +160,7 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Look in advanced research too
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.thingDefs.Contains( thingDef ) )
@@ -204,7 +204,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( a.HideDefs )&&
                 ( a.thingDefs.Contains( thingDef ) )

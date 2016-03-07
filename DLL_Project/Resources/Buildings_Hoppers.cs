@@ -57,7 +57,6 @@ namespace CommunityCoreLibrary
                     ThingDefOf.Hopper.researchPrerequisite = Research.Locker;
 
                     // This will hide it in god mode
-                    ThingDefOf.Hopper.menuHidden = true;
                     var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( ThingDefOf.Hopper.designationCategory, true );
                     var designator = designationCategory.resolvedDesignators.Find( d => (
                         ( d is Designator_Build )&&
@@ -67,6 +66,7 @@ namespace CommunityCoreLibrary
                     {
                         designationCategory.resolvedDesignators.Remove( designator );
                     }
+                    ThingDefOf.Hopper.menuHidden = true;
                     ThingDefOf.Hopper.designationCategory = "None";
 
                     // Flag it as done

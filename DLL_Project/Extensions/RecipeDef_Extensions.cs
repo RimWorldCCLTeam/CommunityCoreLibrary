@@ -34,7 +34,7 @@ namespace CommunityCoreLibrary
                 );
 #endif
                 // Advanced research unlocking it?
-                if( ResearchController.AdvancedResearch.Any( a => (
+                if( Controller.Data.AdvancedResearchDefs.Any( a => (
                     ( a.IsRecipeToggle )&&
                     ( !a.HideDefs )&&
                     ( a.recipeDefs.Contains( recipeDef ) )
@@ -85,7 +85,7 @@ namespace CommunityCoreLibrary
             }
 
             // Check for an advanced research unlock
-            if( ResearchController.AdvancedResearch.Any( a => (
+            if( Controller.Data.AdvancedResearchDefs.Any( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.recipeDefs.Contains( recipeDef ) )
@@ -110,7 +110,7 @@ namespace CommunityCoreLibrary
                 thingsOn.AddRange( recipeDef.recipeUsers );
             }
 
-            var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( a.recipeDefs.Contains( recipeDef ) )&&
                 ( !a.HideDefs )
@@ -147,7 +147,7 @@ namespace CommunityCoreLibrary
                 researchDefs.Add( recipeDef.researchPrerequisite );
 
                 // Advanced requirement
-                var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
+                var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                     ( a.IsRecipeToggle )&&
                     ( a.recipeDefs.Contains( recipeDef ) )&&
                     ( !a.HideDefs )
@@ -247,7 +247,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research too
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.recipeDefs.Contains( recipeDef ) )
@@ -296,7 +296,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( a.HideDefs )&&
                 ( a.recipeDefs.Contains( recipeDef ) )

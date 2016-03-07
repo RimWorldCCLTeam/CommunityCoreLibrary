@@ -9,15 +9,18 @@ using Verse;
 // ReSharper disable PossibleNullReferenceException
 // reflection is dangerous - deal with it. Fluffy.
 
+// Moved dangerous cross-instance class jump to it's own detour class.
+// Created required static methods to perform the same access.  E.
+
 namespace CommunityCoreLibrary.ResearchTree
 {
-    public class Queue : MapComponent
+    
+    public static class Queue
     {
         #region Fields
 
         internal static readonly Texture2D      CircleFill = ContentFinder<Texture2D>.Get("UI/ResearchTree/circle-fill");
         private static readonly List<Node>      _queue     = new List<Node>();
-        private static List<ResearchProjectDef> _saveableQueue;
 
         #endregion Fields
 
@@ -187,104 +190,41 @@ namespace CommunityCoreLibrary.ResearchTree
             return null;
         }
 
-        public override void ExposeData()
+        public static int Count
         {
-            // store research defs as these are the defining elements
-            if ( Scribe.mode == LoadSaveMode.Saving )
+            get
             {
-                _saveableQueue = _queue.Select( node => node.Research ).ToList();
-            }
-
-            Scribe_Collections.LookList( ref _saveableQueue, "Queue", LookMode.DefReference );
-
-            if ( Scribe.mode == LoadSaveMode.PostLoadInit )
-            {
-                // initialize the tree if not initialized
-                if ( !ResearchTree.Initialized )
-                    ResearchTree.Initialize();
-
-                // initialize the queue
-                foreach ( ResearchProjectDef research in _saveableQueue )
-                {
-                    // find a node that matches the research - or null if none found
-                    Node node = ResearchTree.Forest.FirstOrDefault( n => n.Research == research );
-
-                    // enqueue the node
-                    if ( node != null )
-                    {
-                        Enqueue( node, true );
-                    }
-                }
+                return _queue.Count;
             }
         }
 
-        /// <summary>
-        /// Override for Verse.ResearchMananager.MakeProgress
-        ///
-        /// Changes default pop-up when research is complete to an inbox message, and starts the next research in the queue - if available.
-        /// </summary>
-        /// <param name="amount"></param>
-        public void MakeProgress( float amount )
+        public static Node First()
         {
-            // get research manager instance
-            ResearchManager researchManager = Find.ResearchManager;
+            return _queue.First();
+        }
 
-            // get progress dictionary
-            FieldInfo progressField = typeof( ResearchManager ).GetField( "progress", BindingFlags.Instance | BindingFlags.NonPublic );
-            IDictionary<ResearchProjectDef, float> progress = progressField.GetValue( researchManager ) as IDictionary<ResearchProjectDef, float>;
+        public static List<ResearchProjectDef>  ToList()
+        {
+            return _queue.Select( node => node.Research ).ToList();
+        }
 
-            // get global progress constant
-            FieldInfo globalProgressFactorField = typeof( ResearchManager ).GetField( "GlobalProgressFactor", BindingFlags.Instance | BindingFlags.NonPublic );
-            float globalProgressFactor = (float)globalProgressFactorField.GetValue( researchManager );
-
-            // make progress
-            if ( researchManager.currentProj == null )
+        public static void                      FromList( List<ResearchProjectDef> loadQueue )
+        {
+            // initialize the queue
+            foreach ( ResearchProjectDef research in loadQueue )
             {
-                Log.Error( "Researched without having an active project." );
-            }
-            else
-            {
-                amount *= globalProgressFactor;
-                if ( DebugSettings.fastResearch )
+                // find a node that matches the research - or null if none found
+                Node node = ResearchTree.Forest.FirstOrDefault( n => n.Research == research );
+
+                // enqueue the node
+                if ( node != null )
                 {
-                    amount *= 500f;
-                }
-                float curProgress = researchManager.ProgressOf( researchManager.currentProj );
-                curProgress += amount;
-                progress[researchManager.currentProj] = curProgress;
-
-                // do message if finished
-                if ( researchManager.currentProj.IsFinished )
-                {
-                    string label = "ResearchFinished".Translate( researchManager.currentProj.LabelCap );
-                    string text = "ResearchFinished".Translate( researchManager.currentProj.LabelCap ) + "\n\n" + researchManager.currentProj.DescriptionDiscovered;
-
-                    // remove from queue
-                    Pop();
-
-                    // if the completed research locks anything, notify it.
-                    researchManager.currentProj.Node().Locks.ForEach( node => { node.Notify_LockedOut( true ); node.Notify_WillBeLockedOut( false ); } );
-
-                    // if there's something on the queue start it, and push an appropriate message
-                    if ( _queue.Count > 0 )
-                    {
-                        researchManager.currentProj = _queue.First().Research;
-                        text += "\n\nNext in queue: " + researchManager.currentProj.LabelCap;
-                        Find.LetterStack.ReceiveLetter( label, text, LetterType.Good );
-                    }
-                    else
-                    {
-                        researchManager.currentProj = null;
-                        text += "\n\nNext in queue: none";
-                        Find.LetterStack.ReceiveLetter( label, text, LetterType.BadNonUrgent );
-                    }
-
-                    // apply research mods (Why this isn't being done in a targeted way I don't know, but it's core behaviour...)
-                    researchManager.ReapplyAllMods();
+                    Enqueue( node, true );
                 }
             }
         }
 
         #endregion Methods
     }
+
 }
