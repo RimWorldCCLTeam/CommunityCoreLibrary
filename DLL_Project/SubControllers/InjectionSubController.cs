@@ -73,6 +73,7 @@ namespace CommunityCoreLibrary.Controller
                             ModHelperDef,
                             Verbosity.NonFatalErrors,
                             "Cannot inject Special Injectors" );
+                        CCL_Log.CaptureEnd( stringBuilder );
                         strReturn = stringBuilder.ToString();
                         State = SubControllerState.InitializationError;
                         return false;
@@ -102,6 +103,7 @@ namespace CommunityCoreLibrary.Controller
                             ModHelperDef,
                             Verbosity.NonFatalErrors,
                             "Cannot inject ThingComps" );
+                        CCL_Log.CaptureEnd( stringBuilder );
                         strReturn = stringBuilder.ToString();
                         State = SubControllerState.InitializationError;
                         return false;

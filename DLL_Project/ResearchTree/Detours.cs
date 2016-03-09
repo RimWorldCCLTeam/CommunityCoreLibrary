@@ -82,7 +82,9 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
             }
         }
 
-        internal static void ExposeData( this ResearchManager researchManager )
+        private static List<ResearchProjectDef> storeQueue = null;
+
+        internal static void _ExposeData( this ResearchManager researchManager )
         {
             // get progress dictionary
             FieldInfo progressField = typeof( ResearchManager ).GetField( "progress", BindingFlags.Instance | BindingFlags.NonPublic );
@@ -92,13 +94,14 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
             Scribe_Defs.LookDef<ResearchProjectDef>( ref researchManager.currentProj, "currentProj" );
             Scribe_Collections.LookDictionary<ResearchProjectDef, float>( ref progress, "progress", LookMode.DefReference, LookMode.Value );
 
-            // Expose additional data
-            List<ResearchProjectDef> storeQueue = null;
-
             // Store research defs as these are the defining elements
             if ( Scribe.mode == LoadSaveMode.Saving )
             {
                 storeQueue = Queue.ToList();
+            }
+            else if( storeQueue == null )
+            {
+                storeQueue = new List<ResearchProjectDef>();
             }
 
             Scribe_Collections.LookList( ref storeQueue, "Queue", LookMode.DefReference );

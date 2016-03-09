@@ -178,6 +178,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 foreach ( Node node in tree.Trunk )
                 {
                     int bestPos = curY;
+
                     // trunks can have (but shouldn't have) more than one node at each depth.
                     while ( tree.Trunk.Any( otherNode => otherNode.Pos.z == bestPos && otherNode.Depth == node.Depth ) )
                     {
@@ -304,10 +305,6 @@ namespace CommunityCoreLibrary.ResearchTree
                     // get node
                     Node child = children.Pop();
 
-                    // continue if already positioned
-                    if ( child.Pos != IntVec2.Zero )
-                        continue;
-
                     // get width at current depth
                     int width;
                     if ( !widthAtDepth.ContainsKey( child.Depth ) )
@@ -315,6 +312,10 @@ namespace CommunityCoreLibrary.ResearchTree
                         widthAtDepth.Add( child.Depth, 0 );
                     }
                     width = widthAtDepth[child.Depth]++;
+
+                    // continue if already positioned
+                    if ( child.Pos != IntVec2.Zero )
+                        continue;
 
                     // set position
                     child.Pos = new IntVec2( child.Depth, curY + rootYOffset + width );

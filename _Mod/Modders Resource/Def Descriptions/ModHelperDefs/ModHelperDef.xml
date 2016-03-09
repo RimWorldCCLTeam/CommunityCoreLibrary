@@ -77,7 +77,8 @@
         StateChanges
         Stack (Use with caution, this will trace certain methods and some methods are recursive)
     
-    For both the user release and modders release the default verbosity is "Validation"
+    For the user release the default verbosity is "Validation", and;
+    The modders release the default verbosity is "Injections."
 
     While the user release will not report anything higher than validation, you should still remove (or comment) the xml tag
     for verbosity before releasing your mod.  The higher levels of verbosity will help track down bugs in both your mod and
