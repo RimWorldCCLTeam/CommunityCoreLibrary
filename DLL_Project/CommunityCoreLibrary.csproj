@@ -217,6 +217,19 @@
         <Compile Include="SubControllers\HelpSubController.cs" />
         <Compile Include="StaticClasses\HelpBuilder.cs" />
         <Compile Include="ResearchTree\Detours.cs" />
+        <Compile Include="PlaceWorkers\PlaceWorker_WatchBuildingParticipantCells.cs" />
+        <Compile Include="ThingComps\CompWatchBuildingParticipantCellDisplay.cs" />
+        <Compile Include="Structures\FacilityInjectionSet.cs" />
+        <Compile Include="Defs\ModHelperDef\SpecialInjectors.cs" />
+        <Compile Include="Defs\ModHelperDef\ThingComps.cs" />
+        <Compile Include="Defs\ModHelperDef\PostLoadInjectors.cs" />
+        <Compile Include="Defs\ModHelperDef\MapComponents.cs" />
+        <Compile Include="Defs\ModHelperDef\Designators.cs" />
+        <Compile Include="Interfaces\IInjector.cs" />
+        <Compile Include="StaticClasses\SpecialInjector.cs" />
+        <Compile Include="Defs\ModHelperDef\Facilities.cs" />
+        <Compile Include="Structures\StockGeneratorInjectionSet.cs" />
+        <Compile Include="Defs\ModHelperDef\TraderKinds.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -238,5 +251,6 @@
         <Folder Include="SpecialInjectors\" />
         <Folder Include="SubControllers\" />
         <Folder Include="Validation\" />
+        <Folder Include="Defs\ModHelperDef\" />
     </ItemGroup>
 </Project>

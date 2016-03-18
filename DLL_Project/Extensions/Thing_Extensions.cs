@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using RimWorld;
 using Verse;
+using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -457,6 +459,15 @@ namespace CommunityCoreLibrary
                 }
             }
             return cache;
+        }
+
+        #endregion
+
+        #region Joy Participant Cells (Watch Buildings)
+
+        public static List< IntVec3 >       GetParticipantCells( this Thing thing, bool getBlocked = false )
+        {
+            return thing.def.GetParticipantCells( thing.Position, thing.Rotation, getBlocked );
         }
 
         #endregion

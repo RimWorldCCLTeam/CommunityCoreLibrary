@@ -133,12 +133,14 @@ namespace CommunityCoreLibrary
         }
 
         private static StringBuilder        captureTarget = null;
+        private static Verbosity            captureVerbosity = Verbosity.Default;
 
         public static bool                  CaptureBegin( StringBuilder target )
         {
             if( captureTarget == null )
             {
                 captureTarget = target;
+                captureVerbosity = Verbosity.Default;
                 return true;
             }
             if( captureTarget == target )
@@ -149,7 +151,7 @@ namespace CommunityCoreLibrary
             return false;
         }
 
-        public static bool                  CaptureEnd( StringBuilder target )
+        public static bool                  CaptureEnd( StringBuilder target, string status = "" )
         {
             if( captureTarget == null )
             {
@@ -161,6 +163,12 @@ namespace CommunityCoreLibrary
                 CCL_Log.Error( "Cannot end a capture on a different object", "Log Capture" );
                 return false;
             }
+            if( status != "" )
+            {
+                var captureStatus = status + "\n";
+                captureTarget.Insert( 0, captureStatus );
+            }
+            captureVerbosity = Verbosity.Default;
             captureTarget = null;
             return true;
         }
@@ -316,6 +324,14 @@ namespace CommunityCoreLibrary
                 if( modHelperDef != null )
                 {
                     TraceAt = modHelperDef.Verbosity;
+                    if( modHelperDef.Verbosity > captureVerbosity )
+                    {
+                        captureVerbosity = modHelperDef.Verbosity;
+                    }
+                }
+                else if ( atFault == null )
+                {
+                    TraceAt = captureVerbosity;
                 }
                 else
                 {

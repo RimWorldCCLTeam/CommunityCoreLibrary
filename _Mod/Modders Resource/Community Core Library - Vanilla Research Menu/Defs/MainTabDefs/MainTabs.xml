@@ -5,7 +5,7 @@
         <defName>Research</defName>
         <label>research</label>
         <description>Examine and decide on research projects.</description>
-        <windowClass>CommunityCoreLibrary.MainTabWindow_Research</windowClass>
+        <windowClass>MainTabWindow_Research</windowClass>
         <order>90</order>
     </MainTabDef>
 

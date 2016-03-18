@@ -48,7 +48,7 @@ namespace CommunityCoreLibrary.Controller
                 State = SubControllerState.InitializationError;
                 return false;
             }
-            strReturn = "Implied HelpDefs created";
+            strReturn = "Initialized";
             State = SubControllerState.Hybernating;
             return true;
         }

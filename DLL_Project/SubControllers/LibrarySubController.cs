@@ -49,7 +49,6 @@ namespace CommunityCoreLibrary.Controller
             var stringBuilder = new StringBuilder();
 			var rVal = true;
 
-            stringBuilder.AppendLine( "Validation" );
             CCL_Log.CaptureBegin( stringBuilder );
 
 			// Limit one ModHelperDef per mod
@@ -60,7 +59,7 @@ namespace CommunityCoreLibrary.Controller
             {
 				var modHelperDef = (ModHelperDef)null;
 				var mod = allMods [i];
-				var modHelperDefs = Find_Extensions.DefListOfTypeForMod<ModHelperDef> (mod);
+				var modHelperDefs = Find_Extensions.DefListOfTypeForMod<ModHelperDef>( mod );
 				if( !modHelperDefs.NullOrEmpty() )
                 {
 					if( modHelperDefs.Count > 1 )
@@ -68,40 +67,48 @@ namespace CommunityCoreLibrary.Controller
                         stringBuilder.Append( "\t" + mod.name );
                         CCL_Log.AppendSectionNewLine( ref stringBuilder, "Multiple ModHelperDefs detected" );
 						rVal = false;
-					} else {
+					}
+                    else
+                    {
 						// Validate the def
 						modHelperDef = modHelperDefs.First ();
-						if (!modHelperDef.IsValid) {
+						if( !modHelperDef.IsValid )
+                        {
 							// Don't do anything special with broken mods
                             stringBuilder.Append( "\t" + mod.name );
                             CCL_Log.AppendSectionNewLine( ref stringBuilder, "ModHelperDef is invalid" );
 							rVal = false;
-						} else if (!modHelperDef.dummy) {
+						}
+                        else if( !modHelperDef.dummy )
+                        {
 							// Don't show validation message for dummy defs
                             stringBuilder.Append( "\t" + mod.name );
                             CCL_Log.AppendSection( ref stringBuilder, "ModHelperDef" );
                             CCL_Log.AppendSectionNewLine( ref stringBuilder, "Passed validation, requesting v" + modHelperDef.version );
 						}
 					}
-				} else if (rVal == true) {
+				} 
+                else if( rVal == true )
+                {
 					// Doesn't exist, create a dummy for logging but only
 					// create if we're not just checking for remaining errors
-					modHelperDef = new ModHelperDef ();
+					modHelperDef = new ModHelperDef();
 					modHelperDef.defName = mod.name + "_ModHelperDef";
-					modHelperDef.version = Version.Minimum.ToString ();
+					modHelperDef.version = Version.Minimum.ToString();
 					modHelperDef.ModName = mod.name;
 					modHelperDef.Verbosity = Verbosity.NonFatalErrors;
 					modHelperDef.dummy = true;
 				}
-				if (rVal == true) {
+				if( rVal == true )
+                {
 					// No errors, def is valid or a dummy
 					// Associate the def with the mod (the dictionary is to go the other way)
 					modHelperDef.mod = mod;
 					// Insert it into it's ordered place in the lists
-					Controller.Data.Mods.Insert (i, mod);
-					Controller.Data.ModHelperDefs.Insert (i, modHelperDef);
+					Controller.Data.Mods.Insert( i, mod );
+					Controller.Data.ModHelperDefs.Insert( i, modHelperDef );
 					// Add a dictionary entry
-					Controller.Data.DictModHelperDefs.Add (mod, modHelperDef);
+					Controller.Data.DictModHelperDefs.Add ( mod, modHelperDef );
 				}
 			}
 			// Should now be a complete pair of lists in mod load order
@@ -164,7 +171,10 @@ namespace CommunityCoreLibrary.Controller
             }
 
             // Should be all good or up until the first error encountered
-            CCL_Log.CaptureEnd( stringBuilder );
+            CCL_Log.CaptureEnd(
+                stringBuilder,
+                rVal ? "Validated" : "Errors during validation"
+            );
             strReturn = stringBuilder.ToString();
 
 			// Return true if all mods OK, false if any failed validation

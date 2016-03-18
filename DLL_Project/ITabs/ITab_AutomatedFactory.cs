@@ -18,8 +18,10 @@ namespace CommunityCoreLibrary
         private bool[]                          allowed;
         private TipSignal[]                     tips;
 
-        // TODO:  Write this!
-        // Should allow enabling and disabling of recipes on Building_AutomatedFactory, possibly more options too
+        // TODO:  Improve UI layout and how information is displayed
+        // Currently Displays/Has options for:
+        // + Factory name (parent.LabelCap)
+        // + Current recipes ([dis]allow checkbox, ingredients (tooltip))
 
         #region Private Properties
 

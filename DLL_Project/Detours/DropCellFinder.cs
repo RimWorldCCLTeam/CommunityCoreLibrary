@@ -22,7 +22,7 @@ namespace CommunityCoreLibrary.Detour
                 {
                     _DropCellFinder_IsGoodDropSpot = typeof( DropCellFinder ).GetMethod( "IsGoodDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
                 }
-                return DropCellFinder_IsGoodDropSpot;
+                return _DropCellFinder_IsGoodDropSpot;
             }
         }
 

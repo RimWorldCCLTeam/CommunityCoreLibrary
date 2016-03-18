@@ -80,7 +80,6 @@ namespace CommunityCoreLibrary.Controller
             var stringBuilder = new StringBuilder();
 			var rVal = true;
 
-            stringBuilder.AppendLine( "Validation" );
             CCL_Log.CaptureBegin( stringBuilder );
 
             var AdvancedResearchDefs = Controller.Data.AdvancedResearchDefs;
@@ -137,7 +136,10 @@ namespace CommunityCoreLibrary.Controller
 #endif
 
             // Should be empty or a laundry list
-            CCL_Log.CaptureEnd( stringBuilder );
+            CCL_Log.CaptureEnd(
+                stringBuilder,
+                rVal ? "Validated" : "Errors during validation"
+            );
             strReturn = stringBuilder.ToString();
 
 			// Return true if all mods OK, false if any failed validation

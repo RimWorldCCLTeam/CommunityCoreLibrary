@@ -51,7 +51,7 @@ namespace CommunityCoreLibrary.Controller
         {
             strReturn = string.Empty;
             State = SubControllerState.Uninitialized;
-            Hash = this.GetHashCode();
+            Hash = this.GetHashCode() & 0xFFFFF;
         }
 
         // Get sequence priorities

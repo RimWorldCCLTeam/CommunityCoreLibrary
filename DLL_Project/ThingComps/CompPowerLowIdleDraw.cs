@@ -152,6 +152,20 @@ namespace CommunityCoreLibrary
                 );
                 return;
             }
+            // Validate "GroupUse"
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.GroupUser )&&
+                ( parent.def.GetJoyDefUsing() == null )
+            )
+            {
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Parent building must be used as a thingDef by a JoyGiverDef to use 'GroupUse'",
+                    "CompPowerLowIdleDraw"
+                );
+                return;
+            }
 #endif
             
             // Generate the list of cells to check
@@ -220,6 +234,39 @@ namespace CommunityCoreLibrary
             }
         }
 
+        private static bool                 HasJobOnTarget( Pawn pawn, Thing target )
+        {
+            if(
+                ( pawn == null )||
+                ( pawn.CurJob == null )
+            )
+            {
+                return false;
+            }
+            if(
+                ( pawn.CurJob.targetA != null )&&
+                ( pawn.CurJob.targetA.Thing == target )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null )&&
+                ( pawn.CurJob.targetB.Thing == target )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null )&&
+                ( pawn.CurJob.targetB.Thing == target )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
+
         void                                PowerLevelToggle( int thisTickCount )
         {
             // If it's on, don't recheck until it times out
@@ -272,48 +319,15 @@ namespace CommunityCoreLibrary
                         }
 
                         // Look for a new user...
-
                         Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[0] );
                         if( pUser != null )
                         {
                             // ...A pawn is here!...
-
-                            if( pUser.CurJob != null )
+                            if( HasJobOnTarget( pUser, parent ) )
                             {
-                                // ...With a job!...
-
-                                // ...(checking targets)...
-                                if(
-                                    ( pUser.CurJob.targetA != null )&&
-                                    ( pUser.CurJob.targetA.Thing != null )&&
-                                    ( pUser.CurJob.targetA.Thing.def == parent.def )
-                                )
-                                {
-                                    turnItOn = true;
-                                }
-                                else if(
-                                    ( pUser.CurJob.targetB != null )&&
-                                    ( pUser.CurJob.targetB.Thing != null )&&
-                                    ( pUser.CurJob.targetB.Thing.def == parent.def )
-                                )
-                                {
-                                    turnItOn = true;
-                                }
-                                else if(
-                                    ( pUser.CurJob.targetC != null )&&
-                                    ( pUser.CurJob.targetC.Thing != null )&&
-                                    ( pUser.CurJob.targetC.Thing.def == parent.def )
-                                )
-                                {
-                                    turnItOn = true;
-                                }
-
-                                if( turnItOn )
-                                {
-                                    // ..Using this building!...
-                                    curUser = pUser;
-                                    curJob = pUser.CurJob;
-                                }
+                                // ..Using this building!...
+                                curUser = pUser;
+                                curJob = pUser.CurJob;
                             }
                         }
 
@@ -342,14 +356,24 @@ namespace CommunityCoreLibrary
             }
             else
             {
+                var joyGiverDef = parent.def.GetJoyDefUsing();
+                var isJoyJob = joyGiverDef != null;
+
                 // Full-power when any pawn is standing on any monitored cell...
                 foreach( IntVec3 curPos in scanPosition )
                 {
-                    if( Find.ThingGrid.ThingAt<Pawn>( curPos ) != null )
+                    var pawn = Find.ThingGrid.ThingAt<Pawn>( curPos );
+                    if( pawn != null )
                     {
-                        // Found a pawn, turn it on and early out
-                        turnItOn = true;
-                        break;
+                        if(
+                            ( !isJoyJob )||
+                            ( HasJobOnTarget( pawn, parent ) )
+                        )
+                        {
+                            // Found a pawn, turn it on and early out
+                            turnItOn = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -489,31 +513,14 @@ namespace CommunityCoreLibrary
                 // Force-add interaction cell
                 scanPosition.Add( parent.InteractionCell );
 
-                switch( IdleProps.operationalMode )
+                if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
                 {
-                case LowIdleDrawMode.WhenNear :
                     // And the adjacent cells too
                     foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
                     {
                         AddScanPositionIfAllowed( curPos );
                     }
                     onIfOn = true;
-                    break;
-                case LowIdleDrawMode.GroupUser :
-                    // Group user adds cells "in front" of it
-                    // Only really used by TVs
-                    // TODO:  Make this actually do something!
-                    /*
-                     * if( ( parent.def == ThingDefOf.Television )
-                        ||( parent.def == ThingDefOf.TelevisionLED ) ){
-
-                        foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
-                        {
-                            AddScanPositionIfAllowed( curPos );
-                        }
-                    }
-                    */
-                    break;
                 }
 
             }
@@ -522,9 +529,13 @@ namespace CommunityCoreLibrary
                 // Pawn standing on building means we need the buildings occupancy
                 onIfOn = true;
 
-                foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( parent ) )
+                if( parent.def.passability == Traversability.Standable )
                 {
-                    AddScanPositionIfAllowed( curPos );
+                    // Add building cells if it's standable
+                    foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( parent ) )
+                    {
+                        AddScanPositionIfAllowed( curPos );
+                    }
                 }
 
                 if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
@@ -535,7 +546,16 @@ namespace CommunityCoreLibrary
                         AddScanPositionIfAllowed( curPos );
                     }
                 }
-
+                if( IdleProps.operationalMode == LowIdleDrawMode.GroupUser )
+                {
+                    // Group user adds cells "in front" of it
+                    // Only really used by TVs
+                    var cells = parent.GetParticipantCells();
+                    foreach( var curPos in cells )
+                    {
+                        scanPosition.Add( curPos );
+                    }
+                }
             }
 
             // Set default scan tick intervals

@@ -45,7 +45,6 @@ namespace CommunityCoreLibrary.Controller
         public override bool                Initialize()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine( "Initialization" );
             CCL_Log.CaptureBegin( stringBuilder );
 
             var ModHelperDefs = Controller.Data.ModHelperDefs;
@@ -104,7 +103,7 @@ namespace CommunityCoreLibrary.Controller
                 }
             }
 
-            CCL_Log.CaptureEnd( stringBuilder );
+            CCL_Log.CaptureEnd( stringBuilder, "Initialized" );
             strReturn = stringBuilder.ToString();
             State = SubControllerState.Hybernating;
             return true;

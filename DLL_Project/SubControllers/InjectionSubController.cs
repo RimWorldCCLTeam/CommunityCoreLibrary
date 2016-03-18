@@ -25,6 +25,25 @@ namespace CommunityCoreLibrary.Controller
     internal class InjectionSubController : SubController
     {
 
+        private static IInjector[]          initInjectors;
+        private static IInjector[]          updateInjectors;
+
+        static                              InjectionSubController()
+        {
+            initInjectors = new IInjector[]
+            {
+                ModHelperDef.GetInjector( typeof( MHD_SpecialInjectors ) ),
+                ModHelperDef.GetInjector( typeof( MHD_ThingComps ) ),
+                ModHelperDef.GetInjector( typeof( MHD_Facilities ) )
+            };
+            updateInjectors = new IInjector[]
+            {
+                ModHelperDef.GetInjector( typeof( MHD_PostLoadInjectors ) ),
+                ModHelperDef.GetInjector( typeof( MHD_MapComponents ) ),
+                ModHelperDef.GetInjector( typeof( MHD_Designators ) )
+            };
+        }
+
         public override string              Name
         {
             get
@@ -52,74 +71,33 @@ namespace CommunityCoreLibrary.Controller
         public override bool                Initialize()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine( "Initialization" );
             CCL_Log.CaptureBegin( stringBuilder );
 
-            // Inject the special injectors into the system
-            var ModHelperDefs = Controller.Data.ModHelperDefs;
-            foreach( var ModHelperDef in ModHelperDefs )
+            foreach( var injector in initInjectors )
             {
-                if( !ModHelperDef.SpecialsInjected )
+                // Inject the group into the system
+                if( !ModHelperDef.InjectGroup( injector ) )
                 {
-                    // TODO:  Alpha 13 API change
-                    //if( ModHelperDef.InjectSpecials() )
-
-                    Controller.Data.Trace_Current_Mod = ModHelperDef;
-                    ModHelperDef.InjectSpecials();
-                    Controller.Data.Trace_Current_Mod = null;
-                    if( !ModHelperDef.SpecialsInjected )
-                    {
-                        CCL_Log.TraceMod(
-                            ModHelperDef,
-                            Verbosity.NonFatalErrors,
-                            "Cannot inject Special Injectors" );
-                        CCL_Log.CaptureEnd( stringBuilder );
-                        strReturn = stringBuilder.ToString();
-                        State = SubControllerState.InitializationError;
-                        return false;
-                    }
-#if DEBUG
-                    CCL_Log.TraceMod(
-                        ModHelperDef,
-                        Verbosity.Injections,
-                        "Special Injectors injected"
-                    );
-#endif
+                    CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
+                    strReturn = stringBuilder.ToString();
+                    State = SubControllerState.InitializationError;
+                    return false;
                 }
+#if DEBUG
+                CCL_Log.Trace(
+                    Verbosity.Injections,
+                    injector.InjectString
+                );
+#endif
             }
 
-            // Inject the thing comps into defs
-            foreach( var ModHelperDef in ModHelperDefs )
-            {
-                if( !ModHelperDef.ThingCompsInjected )
-                {
-                    // TODO:  Alpha 13 API change
-                    //if( ModHelperDef.InjectThingComps() )
+            MHD_Facilities.ReResolveDefs();
 
-                    ModHelperDef.InjectThingComps();
-                    if( !ModHelperDef.ThingCompsInjected )
-                    {
-                        CCL_Log.TraceMod(
-                            ModHelperDef,
-                            Verbosity.NonFatalErrors,
-                            "Cannot inject ThingComps" );
-                        CCL_Log.CaptureEnd( stringBuilder );
-                        strReturn = stringBuilder.ToString();
-                        State = SubControllerState.InitializationError;
-                        return false;
-                    }
-#if DEBUG
-                    CCL_Log.TraceMod(
-                        ModHelperDef,
-                        Verbosity.Injections,
-                        "ThingComps injected"
-                    );
-#endif
-                }
-            }
-
-            // Everything's ok for post load injections
-            CCL_Log.CaptureEnd( stringBuilder );
+            // Everything's ok for updates
+            CCL_Log.CaptureEnd(
+                stringBuilder,
+                "Initialized"
+            );
             strReturn = stringBuilder.ToString();
             State = SubControllerState.Ok;
             return true;
@@ -128,102 +106,28 @@ namespace CommunityCoreLibrary.Controller
         public override bool                Update()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine( "Update" );
             CCL_Log.CaptureBegin( stringBuilder );
 
-            // Inject the post load injectors into the game
-            var ModHelperDefs = Controller.Data.ModHelperDefs;
-            foreach( var ModHelperDef in ModHelperDefs )
+            foreach( var injector in updateInjectors )
             {
-                if( !ModHelperDef.PostLoadersInjected )
+                // Inject the group into the system
+                if( !ModHelperDef.InjectGroup( injector ) )
                 {
-                    // TODO:  Alpha 13 API change
-                    //if( ModHelperDef.InjectPostLoaders() )
-
-                    ModHelperDef.InjectPostLoaders();
-                    if( !ModHelperDef.PostLoadersInjected )
-                    {
-                        CCL_Log.TraceMod(
-                            ModHelperDef,
-                            Verbosity.NonFatalErrors,
-                            "Cannot inject Post Load Injectors" );
-                        CCL_Log.CaptureEnd( stringBuilder );
-                        strReturn = stringBuilder.ToString();
-                        State = SubControllerState.RuntimeError;
-                        return false;
-                    }
-#if DEBUG
-                    CCL_Log.TraceMod(
-                        ModHelperDef,
-                        Verbosity.Injections,
-                        "Post Loaders injected"
-                    );
-#endif
+                    CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
+                    strReturn = stringBuilder.ToString();
+                    State = SubControllerState.InitializationError;
+                    return false;
                 }
-            }
-
-            // Inject the map components into the game
-            foreach( var ModHelperDef in ModHelperDefs )
-            {
-                if( !ModHelperDef.MapComponentsInjected )
-                {
-                    // TODO:  Alpha 13 API change
-                    //if( ModHelperDef.InjectMapComponents() )
-
-                    ModHelperDef.InjectMapComponents();
-                    if( !ModHelperDef.MapComponentsInjected )
-                    {
-                        CCL_Log.TraceMod(
-                            ModHelperDef,
-                            Verbosity.NonFatalErrors,
-                            "Cannot inject MapComponents" );
-                        CCL_Log.CaptureEnd( stringBuilder );
-                        strReturn = stringBuilder.ToString();
-                        State = SubControllerState.RuntimeError;
-                        return false;
-                    }
 #if DEBUG
-                    CCL_Log.TraceMod(
-                        ModHelperDef,
-                        Verbosity.Injections,
-                        "MapComponents injected"
-                    );
+                CCL_Log.Trace(
+                    Verbosity.Injections,
+                    injector.InjectString
+                );
 #endif
-                }
-            }
-
-            // Inject the designators into their categories
-            foreach( var ModHelperDef in ModHelperDefs )
-            {
-                if( !ModHelperDef.DesignatorsInjected )
-                {
-                    // TODO:  Alpha 13 API change
-                    //if( ModHelperDef.InjectDesignators() )
-
-                    ModHelperDef.InjectDesignators();
-                    if( !ModHelperDef.DesignatorsInjected )
-                    {
-                        CCL_Log.TraceMod(
-                            ModHelperDef,
-                            Verbosity.NonFatalErrors,
-                            "Cannot inject Designators" );
-                        CCL_Log.CaptureEnd( stringBuilder );
-                        strReturn = stringBuilder.ToString();
-                        State = SubControllerState.RuntimeError;
-                        return false;
-                    }
-#if DEBUG
-                    CCL_Log.TraceMod(
-                        ModHelperDef,
-                        Verbosity.Injections,
-                        "Designators injected"
-                    );
-#endif
-                }
             }
 
             // Post-load injections complete, stop calling this
-            CCL_Log.CaptureEnd( stringBuilder );
+            CCL_Log.CaptureEnd( stringBuilder, "Updated" );
             strReturn = stringBuilder.ToString();
             State = SubControllerState.Hybernating;
             return true;

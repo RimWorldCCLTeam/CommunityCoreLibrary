@@ -5,7 +5,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public class CompInjectionSet
+    public struct CompInjectionSet
     {
 
         public List< string >               targetDefs;
@@ -13,4 +13,5 @@ namespace CommunityCoreLibrary
         public CompProperties               compProps;
 
     }
+
 }

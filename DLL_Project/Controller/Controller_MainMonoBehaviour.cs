@@ -16,6 +16,8 @@ namespace CommunityCoreLibrary.Controller
 
         private static bool                 gameValid;
 
+        private static int                  ticks;
+
         private List<SubController>         UpdateControllers = null;
 
         #endregion
@@ -40,12 +42,12 @@ namespace CommunityCoreLibrary.Controller
             {
                 if( !subsys.Validate() )
                 {
-                    CCL_Log.Error( subsys.strReturn, subsys.Name );
+                    CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Validation"  );
                     return;
                 }
                 if( subsys.strReturn != string.Empty )
                 {
-                    CCL_Log.Message( subsys.strReturn, subsys.Name );
+                    CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Validations" );
                 }
             }
 
@@ -55,12 +57,12 @@ namespace CommunityCoreLibrary.Controller
             {
                 if( !subsys.Initialize() )
                 {
-                    CCL_Log.Error( subsys.strReturn, subsys.Name );
+                    CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Initialization" );
                     return;
                 }
                 if( subsys.strReturn != string.Empty )
                 {
-                    CCL_Log.Message( subsys.strReturn, subsys.Name );
+                    CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Initialization" );
                 }
             }
 
@@ -69,10 +71,12 @@ namespace CommunityCoreLibrary.Controller
             // Yay!
             gameValid = true;
             enabled = true;
+            ticks = 0;
         }
 
         public void                         FixedUpdate()
         {
+            ticks++;
             if(
                 ( !gameValid )||
                 ( Game.Mode != GameMode.MapPlaying )||
@@ -99,18 +103,18 @@ namespace CommunityCoreLibrary.Controller
                     {
                         if( !subsys.Initialize() )
                         {
-                            CCL_Log.Error( subsys.strReturn, subsys.Name );
+                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Reinitialization" );
                             gameValid = false;
                             enabled = false;
                             return;
                         }
                         if( subsys.strReturn != string.Empty )
                         {
-                            CCL_Log.Message( subsys.strReturn, subsys.Name );
+                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Reinitialization" );
                         }
                     }
                 }
-
+                ticks = 0;
             }
             if( Scribe.mode != LoadSaveMode.Inactive )
             {
@@ -129,17 +133,17 @@ namespace CommunityCoreLibrary.Controller
             {
                 if(
                     ( subsys.State == SubControllerState.Ok )&&
-                    ( subsys.IsHashIntervalTick( Find.TickManager.TicksGame ) )
+                    ( subsys.IsHashIntervalTick( ticks ) )
                 )
                 {
                     if( !subsys.Update() )
                     {
-                        CCL_Log.Error( subsys.strReturn, subsys.Name );
+                        CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Update" );
                         return;
                     }
                     if( subsys.strReturn != string.Empty )
                     {
-                        CCL_Log.Message( subsys.strReturn, subsys.Name );
+                        CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Update" );
                     }
                 }
             }
