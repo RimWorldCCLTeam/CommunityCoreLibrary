@@ -38,17 +38,27 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            bool rVal = true;
+            bool isValid = true;
 
-            foreach( var traderKind in def.TraderKinds )
+            for( int index = 0; index < def.TraderKinds.Count; ++index )
             {
-                foreach( var stockGenerator in traderKind.stockGenerators )
+                var traderKind = def.TraderKinds[ index ];
+                if( traderKind.targetDef == null )
                 {
-                    stockGenerator.PostLoad();
+                    errors += string.Format( "\n\ttargetDef in TraderKinds {0} is null", index );
+                    isValid = false;
+                }
+                for( int index2 = 0; index2 < traderKind.stockGenerators.Count; ++index2 )
+                {
+                    if( traderKind.stockGenerators[ index2 ] == null )
+                    {
+                        errors += string.Format( "\n\tstockGenerator {0} in TraderKinds {1} is null", index2, index );
+                        isValid = false;
+                    }
                 }
             }
 
-            return rVal;
+            return isValid;
         }
 #endif
 
@@ -77,12 +87,12 @@ namespace CommunityCoreLibrary
 
             foreach( var traderKind in def.TraderKinds )
             {
-                foreach( var targetDef in traderKind.targetDefs )
+                var targetDef = traderKind.targetDef;
+                foreach( var stockGenerator in traderKind.stockGenerators )
                 {
-                    foreach( var stockGenerator in traderKind.stockGenerators )
-                    {
-                        targetDef.stockGenerators.Add( stockGenerator );
-                    }
+                    targetDef.stockGenerators.Add( stockGenerator );
+                    stockGenerator.PostLoad();
+                    stockGenerator.ResolveReferences();
                 }
             }
 

@@ -25,6 +25,7 @@ namespace CommunityCoreLibrary.Controller
     internal class InjectionSubController : SubController
     {
 
+        // Use arrays instead of lists to ensure order
         private static IInjector[]          initInjectors;
         private static IInjector[]          updateInjectors;
 
@@ -34,7 +35,8 @@ namespace CommunityCoreLibrary.Controller
             {
                 ModHelperDef.GetInjector( typeof( MHD_SpecialInjectors ) ),
                 ModHelperDef.GetInjector( typeof( MHD_ThingComps ) ),
-                ModHelperDef.GetInjector( typeof( MHD_Facilities ) )
+                ModHelperDef.GetInjector( typeof( MHD_Facilities ) ),
+                ModHelperDef.GetInjector( typeof( MHD_TraderKinds ) )
             };
             updateInjectors = new IInjector[]
             {
@@ -76,7 +78,7 @@ namespace CommunityCoreLibrary.Controller
             foreach( var injector in initInjectors )
             {
                 // Inject the group into the system
-                if( !ModHelperDef.InjectGroup( injector ) )
+                if( !Inject( injector ) )
                 {
                     CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
                     strReturn = stringBuilder.ToString();
@@ -111,7 +113,7 @@ namespace CommunityCoreLibrary.Controller
             foreach( var injector in updateInjectors )
             {
                 // Inject the group into the system
-                if( !ModHelperDef.InjectGroup( injector ) )
+                if( !Inject( injector ) )
                 {
                     CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
                     strReturn = stringBuilder.ToString();
@@ -131,6 +133,23 @@ namespace CommunityCoreLibrary.Controller
             strReturn = stringBuilder.ToString();
             State = SubControllerState.Hybernating;
             return true;
+        }
+
+        public bool                         Inject( IInjector injector )
+        {
+            bool result = true;
+
+            var modHelperDefs = Controller.Data.ModHelperDefs;
+
+            foreach( var modHelperDef in modHelperDefs )
+            {
+                if( !injector.Injected( modHelperDef ) )
+                {
+                    result &= modHelperDef.Inject( injector );
+                }
+            }
+
+            return result;
         }
 
     }

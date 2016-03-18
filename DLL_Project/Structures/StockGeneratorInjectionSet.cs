@@ -9,7 +9,7 @@ namespace CommunityCoreLibrary
     public struct                           StockGeneratorInjectionSet
     {
 
-        public List<TraderKindDef>          targetDefs;
+        public TraderKindDef                targetDef;
 
         public List<StockGenerator>         stockGenerators;
 

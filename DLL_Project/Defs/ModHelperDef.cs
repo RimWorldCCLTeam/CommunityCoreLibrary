@@ -63,6 +63,7 @@ namespace CommunityCoreLibrary
         public bool                         GameLevelInjectionsComplete;
 
         // Interfaces for different injectors
+        // Use an array instead of a list to ensure order
         public static IInjector[]           Injectors;
 
         #endregion
@@ -71,11 +72,15 @@ namespace CommunityCoreLibrary
 
         static                              ModHelperDef()
         {
+            // Add the injectors to the order-specific array
+            // These injectors will be validated in order
+            // Actual injection happens in the Injecton Sub Controller
             Injectors = new IInjector[]
             {
                 new MHD_SpecialInjectors(),
                 new MHD_ThingComps(),
                 new MHD_Facilities(),
+                new MHD_TraderKinds(),
                 new MHD_PostLoadInjectors(),
                 new MHD_MapComponents(),
                 new MHD_Designators()
@@ -176,23 +181,6 @@ namespace CommunityCoreLibrary
         public static IInjector             GetInjector( Type injector )
         {
             return Injectors.First( i => i.GetType() == injector );
-        }
-
-        public static bool                  InjectGroup( IInjector injector )
-        {
-            bool result = true;
-
-            var modHelperDefs = Controller.Data.ModHelperDefs;
-
-            foreach( var modHelperDef in modHelperDefs )
-            {
-                if( !injector.Injected( modHelperDef ) )
-                {
-                    result &= modHelperDef.Inject( injector );
-                }
-            }
-
-            return result;
         }
 
     }
