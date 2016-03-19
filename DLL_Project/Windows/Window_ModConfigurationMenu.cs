@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using RimWorld;
@@ -12,13 +13,43 @@ namespace CommunityCoreLibrary
     public class Window_ModConfigurationMenu : Window
     {
 
-        private class MenuWorkers
+        private class MenuWorkers : IExposable
         {
             public string                   Label;
             public ModConfigurationMenu     worker;
+
+            public MenuWorkers()
+            {
+                this.Label = "?";
+                this.worker = null;
+            }
+
+            public MenuWorkers( string Label, ModConfigurationMenu worker )
+            {
+                this.Label = Label;
+                this.worker = worker;
+            }
+
+            public void ExposeData()
+            {
+                if( worker == null )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.FatalErrors,
+                        string.Format( "worker is null in MenuWorkers for {0}", Label ),
+                        "Mod Configuration Menu" );
+                    return;
+                }
+                // Call the worker expose data
+                worker.ExposeData();
+            }
+
         }
 
         #region Control Constants
+
+        public const string                 ConfigFilePrefix        = "MCM_Data_";
+        public const string                 ConfigFileSuffix        = ".xml";
 
         public const float                  MinListWidth            = 200f;
 
@@ -89,6 +120,7 @@ namespace CommunityCoreLibrary
                         else
                         {
                             allMenus.Add( menu );
+                            LoadMCMData( menu );
                         }
                     }
                 }
@@ -106,6 +138,125 @@ namespace CommunityCoreLibrary
             closeOnEscapeKey = true;
             forcePause = true;
             filteredMenus = allMenus.ListFullCopy();
+        }
+
+        #endregion
+
+        #region Load/Save MCM Data
+
+        static string MCMFilePath( MenuWorkers menu )
+        {
+            // Generate the config file name
+            string filePath = Path.Combine( GenFilePaths.ConfigFolderPath, ConfigFilePrefix );
+            filePath += menu.Label;
+            filePath += ConfigFileSuffix;
+            return filePath;
+        }
+
+        static void LoadMCMData( MenuWorkers menu )
+        {
+            var filePath = MCMFilePath( menu );
+
+            if( !File.Exists( filePath ) )
+            {
+                return;
+            }
+
+            try
+            {
+                // Open it for reading
+                Scribe.InitLoading( filePath );
+                if( Scribe.mode == LoadSaveMode.LoadingVars )
+                {
+                    // Version check
+                    string version = "";
+                    Scribe_Values.LookValue<string>( ref version, "ccl_version" );
+
+                    bool okToLoad = true;
+                    var result = Version.Compare( version );
+                    if( result == Version.VersionCompare.GreaterThanMax )
+                    {
+                        CCL_Log.Trace(
+                            Verbosity.NonFatalErrors,
+                            string.Format( "Data for {0} is newer ({1}) than the version you are using ({2}).", menu.Label, version, Version.Current.ToString() ),
+                            "Mod Configuration Menu" );
+                        okToLoad = false;
+                    }
+                    else if( result == Version.VersionCompare.Invalid )
+                    {
+                        CCL_Log.Trace(
+                            Verbosity.NonFatalErrors,
+                            string.Format( "Data for {0} is corrupt and will be discarded", menu.Label ),
+                            "Mod Configuration Menu" );
+                        okToLoad = false;
+                    }
+
+                    if( okToLoad )
+                    {
+                        // Call the worker scribe
+                        var args = new object[]
+                        {
+                            menu.Label,
+                            menu.worker
+                        };
+                        Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.Label, args );
+                    }
+                }
+            }
+            catch( Exception e )
+            {
+                CCL_Log.Trace(
+                    Verbosity.NonFatalErrors,
+                    string.Format( "Unexpected error scribing data for mod {0}\n{1}", menu.Label, e.ToString() ),
+                    "Mod Configuration Menu" );
+            }
+            finally
+            {
+                // Finish
+                Scribe.FinalizeLoading();
+                Scribe.mode = LoadSaveMode.Inactive;
+            }
+        }
+
+        public override void PreClose()
+        {
+            base.PreClose();
+
+            for( int index = 0; index < allMenus.Count; ++index )
+            {
+                // Get menu to work with
+                var menu = allMenus[ index];
+                var filePath = MCMFilePath( menu );
+
+                // Open it for writing
+                try
+                {
+                    Scribe.InitWriting( filePath, "ModConfigurationData" );
+                    if( Scribe.mode == LoadSaveMode.Saving )
+                    {
+                        // Write this library version as the one saved with
+                        string version = Version.Current.ToString();
+                        Scribe_Values.LookValue<string>( ref version, "ccl_version" );
+
+                        // Call the worker scribe
+                        Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.Label );
+                    }
+                }
+                catch( Exception e )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.NonFatalErrors,
+                        string.Format( "Unexpected error scribing data for mod {0}\n{1}", menu.Label, e.ToString() ),
+                        "Mod Configuration Menu" );
+                }
+                finally
+                {
+                    // Finish
+                    Scribe.FinalizeWriting();
+                    Scribe.mode = LoadSaveMode.Inactive;
+                }
+            }
+
         }
 
         #endregion

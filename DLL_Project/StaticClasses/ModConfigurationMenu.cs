@@ -13,6 +13,8 @@ namespace CommunityCoreLibrary
         /// <param name="rect">Rect</param>
         public abstract float               DoWindowContents( Rect rect );
 
+        public abstract void                ExposeData();
+
     }
 
 }
