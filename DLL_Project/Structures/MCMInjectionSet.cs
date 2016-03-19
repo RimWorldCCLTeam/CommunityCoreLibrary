@@ -9,7 +9,7 @@ namespace CommunityCoreLibrary
 
         public string                       label;
 
-        public Type                         Window;
+        public Type                         mcmClass;
 
     }
 

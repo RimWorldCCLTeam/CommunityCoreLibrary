@@ -21,7 +21,7 @@ namespace CommunityCoreLibrary
 
         public Verbosity                    Verbosity = Verbosity.Default;
 
-        public List< MCMInjectionSet >      ConfigurationWindows;
+        public List< MCMInjectionSet >      ModConfigurationMenus;
 
         #endregion
 
@@ -141,13 +141,13 @@ namespace CommunityCoreLibrary
 
                 #region Mod Configuration Menu Validation
 #if DEBUG
-                if( !ConfigurationWindows.NullOrEmpty() )
+                if( !ModConfigurationMenus.NullOrEmpty() )
                 {
-                    foreach( var mcm in ConfigurationWindows )
+                    foreach( var mcm in ModConfigurationMenus )
                     {
-                        if( !mcm.Window.IsSubclassOf( typeof( ModConfigurationMenu ) ) )
+                        if( !mcm.mcmClass.IsSubclassOf( typeof( ModConfigurationMenu ) ) )
                         {
-                            errors += string.Format( "\n\tUnable to resolve Mod Configuration Menu '{0}'", mcm.Window.ToString() );
+                            errors += string.Format( "\n\tUnable to resolve Mod Configuration Menu '{0}'", mcm.mcmClass.ToString() );
                             isValid = false;
                         }
                     }
