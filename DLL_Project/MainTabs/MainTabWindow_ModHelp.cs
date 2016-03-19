@@ -82,9 +82,24 @@ namespace CommunityCoreLibrary
         {
             base.PostOpen();
 
-            this.currentWindowRect = new Rect( ( Screen.width - RequestedTabSize.x ) ,
-                                               ( Screen.height - RequestedTabSize.y - 35f ) ,
-                                               RequestedTabSize.x, RequestedTabSize.y );
+            if( Game.Mode == GameMode.Entry )
+            {
+                this.currentWindowRect = new Rect(
+                    ( Screen.width - RequestedTabSize.x ) / 2,
+                    ( Screen.height - RequestedTabSize.y ) / 2,
+                    RequestedTabSize.x,
+                    RequestedTabSize.y );
+                this.absorbInputAroundWindow = true;
+            }
+            else
+            {
+                this.currentWindowRect = new Rect(
+                    ( Screen.width - RequestedTabSize.x ),
+                    ( Screen.height - RequestedTabSize.y - 35f ),
+                    RequestedTabSize.x,
+                    RequestedTabSize.y );
+                this.absorbInputAroundWindow = false;
+            }
         }
 
         #endregion
@@ -275,13 +290,13 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Medium;
             Text.WordWrap = false;
             float titleWidth = Text.CalcSize( SelectedHelpDef.LabelCap ).x;
-            var titleRect = new Rect(rect.xMin, rect.yMin, titleWidth, 60f);
+            var titleRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, titleWidth, 60f );
             if(
                 ( SelectedHelpDef.keyDef != null )&&
                 ( SelectedHelpDef.keyDef.IconTexture() != null )
             )
             {
-                var iconRect = new Rect( titleRect.xMin + Margin, rect.yMin + Margin, 60f - 2 * Margin, 60f * Margin );
+                var iconRect = new Rect( titleRect.xMin + Margin, rect.yMin + Margin, 60f - 2 * Margin, 60f - 2 * Margin );
                 titleRect.x += 60f;
                 SelectedHelpDef.keyDef.DrawColouredIcon( iconRect );
             }

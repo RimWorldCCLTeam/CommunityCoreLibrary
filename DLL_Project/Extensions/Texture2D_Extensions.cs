@@ -28,6 +28,7 @@ namespace CommunityCoreLibrary
             // see note above
             return tex;
 
+            /*
             int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
             float proportion = (float)tex.width / (float)tex.height;
 
@@ -110,6 +111,7 @@ namespace CommunityCoreLibrary
             cropped.SetPixels( tex.GetPixels( xMin, yMin, xMax - xMin, yMax - yMin ) );
             cropped.Apply();
             return cropped;
+            */
         }
 
         public static void DrawFittedIn( this Texture2D tex, Rect rect )

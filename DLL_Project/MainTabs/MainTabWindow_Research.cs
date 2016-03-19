@@ -77,7 +77,7 @@ namespace CommunityCoreLibrary
             {
                 if ( _sourceTabs == null )
                 {
-                    List<TabRecord> _sourceTabs = new List<TabRecord>();
+                    _sourceTabs = new List<TabRecord>();
                     TabRecord item = new TabRecord( "RI.All".Translate(), delegate
                     {
                         this._showResearchedProjects = ShowResearch.All;

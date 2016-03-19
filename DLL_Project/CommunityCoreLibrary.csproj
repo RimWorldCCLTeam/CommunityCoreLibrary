@@ -230,6 +230,11 @@
         <Compile Include="Defs\ModHelperDef\Facilities.cs" />
         <Compile Include="Structures\StockGeneratorInjectionSet.cs" />
         <Compile Include="Defs\ModHelperDef\TraderKinds.cs" />
+        <Compile Include="StaticClasses\ModConfigurationMenu.cs" />
+        <Compile Include="Detours\MainMenuDrawer.cs" />
+        <Compile Include="Windows\Window_ModConfigurationMenu.cs" />
+        <Compile Include="Detours\MainTabWindow_Menu.cs" />
+        <Compile Include="Structures\MCMInjectionSet.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -252,5 +257,6 @@
         <Folder Include="SubControllers\" />
         <Folder Include="Validation\" />
         <Folder Include="Defs\ModHelperDef\" />
+        <Folder Include="Windows\" />
     </ItemGroup>
 </Project>

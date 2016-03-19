@@ -57,6 +57,11 @@
     <AutoHelpListNutrition>Nutritional value</AutoHelpListNutrition>
     <AutoHelpListNutritionPlant>Nutritional value (plant)</AutoHelpListNutritionPlant>
     <AutoHelpFacilityStats>Facility bonus</AutoHelpFacilityStats>
+    <AutoHelpRequired>Required</AutoHelpRequired>
+    <AutoHelpIdlePower>Idle Draw</AutoHelpIdlePower>
+    <AutoHelpGenerates>Generates</AutoHelpGenerates>
+    <AutoHelpStores>Stores</AutoHelpStores>
+    <AutoHelpEfficiency>Efficiency</AutoHelpEfficiency>
 
     <AutoHelpListPlantYield>Yields</AutoHelpListPlantYield>
     <AutoHelpListCanBePlantedIn>Can be sown in</AutoHelpListCanBePlantedIn>
@@ -106,6 +111,8 @@
     <AutoHelpEggLayer>Lays {0} eggs every {1}</AutoHelpEggLayer>
     <AutoHelpEveryX>every {0}</AutoHelpEveryX> 
 
+    <AutoHelpPower>Power</AutoHelpPower>
+    
     <!-- Misc -->
     <LetterYear>{0}y</LetterYear>
 

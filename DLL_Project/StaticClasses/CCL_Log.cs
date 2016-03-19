@@ -71,7 +71,8 @@ namespace CommunityCoreLibrary
             {
                 s.Append( " :: " );
             }
-            s.AppendLine( str );
+            s.Append( str );
+            s.Append( "\n" );
             return true;
         }
 
@@ -92,7 +93,7 @@ namespace CommunityCoreLibrary
             }
             s.Append( "\t" );
             _BuildTrace( ref s, modHelperDef, Severity, content, atFault, category, false );
-            s.AppendLine();
+            s.Append( "\n" );
         }
 
         private static void                 AppendTrace( ref StringBuilder s, LoadedMod mod, Verbosity Severity, string content, string category = null )
@@ -110,7 +111,7 @@ namespace CommunityCoreLibrary
             }
             s.Append( "\t" );
             _BuildTrace( ref s, modHelperDef, Severity, content, null, category, false );
-            s.AppendLine();
+            s.Append( "\n" );
         }
         */
 
@@ -295,7 +296,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                s.AppendLine();
+                s.Append( "\n" );
             }
         }
 

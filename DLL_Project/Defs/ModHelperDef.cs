@@ -21,6 +21,8 @@ namespace CommunityCoreLibrary
 
         public Verbosity                    Verbosity = Verbosity.Default;
 
+        public List< MCMInjectionSet >      ConfigurationWindows;
+
         #endregion
 
         #region Engine Level Injectors
@@ -137,6 +139,22 @@ namespace CommunityCoreLibrary
 
                 #endregion
 
+                #region Mod Configuration Menu Validation
+#if DEBUG
+                if( !ConfigurationWindows.NullOrEmpty() )
+                {
+                    foreach( var mcm in ConfigurationWindows )
+                    {
+                        if( !mcm.Window.IsSubclassOf( typeof( ModConfigurationMenu ) ) )
+                        {
+                            errors += string.Format( "\n\tUnable to resolve Mod Configuration Menu '{0}'", mcm.Window.ToString() );
+                            isValid = false;
+                        }
+                    }
+                }
+#endif
+                #endregion
+
                 #region Injector Validation
 #if DEBUG
                 foreach( var injector in Injectors )
@@ -163,6 +181,8 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        #region Injection
+
         public bool                         Inject( IInjector injector )
         {
             if( injector.Injected( this ) )
@@ -182,6 +202,8 @@ namespace CommunityCoreLibrary
         {
             return Injectors.First( i => i.GetType() == injector );
         }
+
+        #endregion
 
     }
 

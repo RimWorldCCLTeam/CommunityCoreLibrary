@@ -818,9 +818,9 @@ namespace CommunityCoreLibrary
                         new HelpDetailSection( statLabel, needDefs, null, suffixes.ToArray() ) );
                 }
 
-#endregion
+                #endregion
 
-#region Body Part Stats
+                #region Body Part Stats
 
                 if( ( !thingDef.thingCategories.NullOrEmpty() ) &&
                     ( thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyPartsAndImplants ) ) &&
@@ -828,16 +828,16 @@ namespace CommunityCoreLibrary
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
 
-#region Efficiency
+                    #region Efficiency
 
                     if( hediffDef.addedPartProps != null )
                     {
                         statParts.Add( new HelpDetailSection( "BodyPartEfficiency".Translate(), new[] { hediffDef.addedPartProps.partEfficiency.ToString( "P0" ) }, null, null ) );
                     }
 
-#endregion
+                    #endregion
 
-#region Capacities
+                    #region Capacities
                     if( ( !hediffDef.stages.NullOrEmpty() ) &&
                         ( hediffDef.stages.Exists( stage => (
                             ( !stage.capMods.NullOrEmpty() )
@@ -862,9 +862,9 @@ namespace CommunityCoreLibrary
                         statParts.Add( capacityMods );
                     }
 
-#endregion
+                    #endregion
 
-#region Components (Melee attack)
+                    #region Components (Melee attack)
 
                     if( ( !hediffDef.comps.NullOrEmpty() ) &&
                         ( hediffDef.comps.Exists( p => (
@@ -903,9 +903,9 @@ namespace CommunityCoreLibrary
                         }
                     }
 
-#endregion
+                    #endregion
 
-#region Body part fixed or replaced
+                    #region Body part fixed or replaced
                     var recipeDef = thingDef.GetImplantRecipeDef();
                     if( !recipeDef.appliedOnFixedBodyParts.NullOrEmpty() )
                     {
@@ -914,13 +914,13 @@ namespace CommunityCoreLibrary
                             recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll( def => (Def)def ) ) );
                     }
 
-#endregion
+                    #endregion
 
                 }
 
-#endregion
+                #endregion
 
-#region Recipes & Research (on building)
+                #region Recipes & Research (on building)
 
                 // Get list of recipes
                 recipeDefs = thingDef.AllRecipes;
@@ -966,9 +966,62 @@ namespace CommunityCoreLibrary
                     linkParts.Add( researchBy );
                 }
 
-#endregion (on building)
+                #endregion (on building)
 
-#region Facilities
+                #region Power
+
+                var powerSectionList = new List<StringDescTriplet>();
+
+                // Get power required or generated
+                var compPowerTrader = thingDef.GetCompProperties( typeof( CompPowerTrader ) );
+                if( compPowerTrader != null )
+                {
+                    if( compPowerTrader.basePowerConsumption > 0 )
+                    {
+                        var basePowerConsumption = (int) compPowerTrader.basePowerConsumption;
+                        powerSectionList.Add( new StringDescTriplet( "AutoHelpRequired".Translate(), null, basePowerConsumption.ToString() ) );
+
+                        var compPowerIdle = (CompProperties_LowIdleDraw) thingDef.GetCompProperties( typeof( CompPowerLowIdleDraw ) );
+                        if( compPowerIdle != null )
+                        {
+                            var idlePower = (int)( compPowerTrader.basePowerConsumption * compPowerIdle.idlePowerFactor );
+                            powerSectionList.Add( new StringDescTriplet( "AutoHelpIdlePower".Translate(), null, idlePower.ToString() ) );
+                        }
+                    }
+                    else if( compPowerTrader.basePowerConsumption < 0 )
+                    {
+                        if( thingDef.thingClass == typeof( Building_PowerPlantSolar ) )
+                        {
+                            powerSectionList.Add( new StringDescTriplet( "AutoHelpGenerates".Translate(), null, "1700" ) );
+                        }
+                        else
+                        {
+                            var basePowerConsumption = (int) -compPowerTrader.basePowerConsumption;
+                            powerSectionList.Add( new StringDescTriplet( "AutoHelpGenerates".Translate(), null, basePowerConsumption.ToString() ) );
+                        }
+                    }
+                }
+                var compBattery = thingDef.GetCompProperties( typeof( CompPowerBattery ) );
+                if( compBattery != null )
+                {
+                    var stored = (int) compBattery.storedEnergyMax;
+                    var efficiency = (int) ( compBattery.efficiency * 100f );
+                    powerSectionList.Add( new StringDescTriplet( "AutoHelpStores".Translate(), null, stored.ToString() ) );
+                    powerSectionList.Add( new StringDescTriplet( "AutoHelpEfficiency".Translate(), null, efficiency.ToString() + "%" ) );
+                }
+
+                if( !powerSectionList.NullOrEmpty() )
+                {
+                    HelpDetailSection powerSection = new HelpDetailSection(
+                        "AutoHelpPower".Translate(),
+                        null,
+                        powerSectionList );
+                    statParts.Add( powerSection );
+                }
+
+                #endregion
+
+                #region Facilities
 
                 // Get list of facilities that effect it
                 // TODO: This was never implemented?
@@ -1020,9 +1073,9 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-#endregion
+                #endregion
 
-#region Joy
+                #region Joy
 
                 // Get valid joy givers
                 var joyGiverDefs = DefDatabase< JoyGiverDef >.AllDefsListForReading
@@ -1053,7 +1106,7 @@ namespace CommunityCoreLibrary
                     }
                 }
 
-#endregion
+                #endregion
 
             }
 
