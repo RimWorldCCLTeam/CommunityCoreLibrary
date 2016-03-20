@@ -18,16 +18,31 @@ namespace CommunityCoreLibrary
 			public string Label;
 			public ModConfigurationMenu worker;
 
+            private string _key;
+            public string key
+            {
+                get
+                {
+                    if( string.IsNullOrEmpty( _key ) )
+                    {
+                        _key = Label.Replace( " ", "_" );
+                    }
+                    return _key;
+                }
+            }
+
 			public MenuWorkers()
 			{
 				this.Label = "?";
 				this.worker = null;
+                this._key = "";
 			}
 
 			public MenuWorkers( string Label, ModConfigurationMenu worker )
 			{
 				this.Label = Label;
 				this.worker = worker;
+                this._key = "";
 			}
 
 			public void ExposeData()
@@ -148,7 +163,7 @@ namespace CommunityCoreLibrary
 		{
 			// Generate the config file name
 			string filePath = Path.Combine( GenFilePaths.ConfigFolderPath, ConfigFilePrefix );
-			filePath += menu.Label;
+            filePath += menu.key;
 			filePath += ConfigFileSuffix;
 			return filePath;
 		}
@@ -199,7 +214,7 @@ namespace CommunityCoreLibrary
 							menu.Label,
 							menu.worker
 						};
-						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.Label, args );
+						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.key, args );
 					}
 				}
 			}
@@ -239,7 +254,7 @@ namespace CommunityCoreLibrary
 						Scribe_Values.LookValue<string>( ref version, "ccl_version" );
 
 						// Call the worker scribe
-						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.Label );
+						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.key );
 					}
 				}
 				catch( Exception e )
