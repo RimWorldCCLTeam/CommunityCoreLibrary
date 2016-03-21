@@ -10,6 +10,8 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+
 using UnityEngine;
 using Verse;
 
@@ -34,13 +36,19 @@ namespace CommunityCoreLibrary
 
                 // spit out debug info
 #if DEBUG
-                Log.Message( "ResearchTree :: duplicated positions:\n " + string.Join( "\n", ResearchTree.ResearchTree.Forest.Where( n => ResearchTree.ResearchTree.Forest.Any( n2 => n.Pos == n2.Pos && n != n2 ) ).Select( n => n.Pos + n.Research.LabelCap + " (" + n.Genus + ")" ).ToArray() ) );
+                var stringBuilder = new StringBuilder();
+                CCL_Log.CaptureBegin( stringBuilder );
+
+                CCL_Log.Message( "Duplicated positions:\n " + string.Join( "\n", ResearchTree.ResearchTree.Forest.Where( n => ResearchTree.ResearchTree.Forest.Any( n2 => n.Pos == n2.Pos && n != n2 ) ).Select( n => n.Pos + n.Research.LabelCap + " (" + n.Genus + ")" ).ToArray() ) );
 
                 foreach ( ResearchTree.Tree tree in ResearchTree.ResearchTree.Trees )
                 {
-                    Log.Message( tree.ToString() );
+                    CCL_Log.Message( tree.ToString() );
                 }
-                Log.Message( ResearchTree.ResearchTree.Orphans.ToString() );
+                CCL_Log.Message( ResearchTree.ResearchTree.Orphans.ToString() );
+
+                CCL_Log.CaptureEnd( stringBuilder, "Associations" );
+                CCL_Log.Message( stringBuilder.ToString(), "Research Tree" );
 #endif
             }
 

@@ -3,6 +3,8 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+
 using UnityEngine;
 using Verse;
 
@@ -86,6 +88,29 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
 
         internal static void _ExposeData( this ResearchManager researchManager )
         {
+            if ( !ResearchTree.Initialized )
+            {
+                // initialize tree
+                ResearchTree.Initialize();
+
+                // spit out debug info
+#if DEBUG
+                var stringBuilder = new StringBuilder();
+                CCL_Log.CaptureBegin( stringBuilder );
+
+                CCL_Log.Message( "Duplicated positions:\n " + string.Join( "\n", ResearchTree.Forest.Where( n => ResearchTree.Forest.Any( n2 => n.Pos == n2.Pos && n != n2 ) ).Select( n => n.Pos + n.Research.LabelCap + " (" + n.Genus + ")" ).ToArray() ) );
+
+                foreach ( Tree tree in ResearchTree.Trees )
+                {
+                    CCL_Log.Message( tree.ToString() );
+                }
+                CCL_Log.Message( ResearchTree.Orphans.ToString() );
+
+                CCL_Log.CaptureEnd( stringBuilder, "Associations" );
+                CCL_Log.Message( stringBuilder.ToString(), "Research Tree" );
+#endif
+            }
+
             // get progress dictionary
             FieldInfo progressField = typeof( ResearchManager ).GetField( "progress", BindingFlags.Instance | BindingFlags.NonPublic );
             Dictionary<ResearchProjectDef, float> progress = progressField.GetValue( researchManager ) as Dictionary<ResearchProjectDef, float>;

@@ -28,7 +28,7 @@ namespace CommunityCoreLibrary.ResearchTree
             Detours.TryDetourFromTo( RimWorld_ResearchManager_ExposeData, CCL_ResearchTree_ResearchManager_ExposeData );
 
             // Initialize the research tree
-            ResearchTree.Initialize();
+            //ResearchTree.Initialize();
 
             // TODO:  Alpha 13 API change
             //return true;
