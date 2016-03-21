@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary.ResearchTree
         public static Texture2D  MoreIcon     = ContentFinder<Texture2D>.Get( "UI/ResearchTree/more" );
         public static Texture2D  NS           = ContentFinder<Texture2D>.Get( "UI/ResearchTree/ns" );
         public static IntVec2    OrphanDepths;
-        public static Tree       Orphans;
+        public static Tree       Orphanage;
         public static int        OrphanWidth;
         public static Texture2D  ResearchIcon = ContentFinder<Texture2D>.Get( "UI/ResearchTree/Research" );
         public static List<Tree> Trees;
@@ -169,7 +169,7 @@ namespace CommunityCoreLibrary.ResearchTree
             GUI.color = Color.white;
         }
 
-        public static void FixPositions()
+        private static void FixPositions()
         {
             int curY = 0;
 
@@ -291,7 +291,7 @@ namespace CommunityCoreLibrary.ResearchTree
 
             // deal with non-tree nodes
             // try and get root nodes first
-            IEnumerable<Node> roots = Orphans.Leaves.Where( node => node.Children.Any() && !node.Parents.Any() ).OrderBy( node => node.Depth );
+            IEnumerable<Node> roots = Orphanage.Leaves.Where( node => node.Children.Any() && !node.Parents.Any() ).OrderBy( node => node.Depth );
             int rootYOffset = 0;
 
             foreach ( Node root in roots )
@@ -335,12 +335,12 @@ namespace CommunityCoreLibrary.ResearchTree
             }
 
             // update orphan width for mini tree(s)
-            ResearchTree.Orphans.Width = rootYOffset;
+            ResearchTree.Orphanage.Width = rootYOffset;
             curY += rootYOffset;
 
             // create orphan grid
             int nodesPerRow = (int)( Screen.width / ( Settings.NodeSize.x + Settings.NodeMargins.x ) );
-            List<Node> orphans = Orphans.Leaves.Where( node => !node.Parents.Any() && !node.Children.Any() ).OrderBy( node => node.Research.LabelCap ).ToList();
+            List<Node> orphans = Orphanage.Leaves.Where( node => !node.Parents.Any() && !node.Children.Any() ).OrderBy( node => node.Research.LabelCap ).ToList();
 
             // set positions
             for ( int i = 0; i < orphans.Count; i++ )
@@ -349,8 +349,8 @@ namespace CommunityCoreLibrary.ResearchTree
             }
 
             // update width + depth
-            Orphans.Width += Mathf.CeilToInt( (float)orphans.Count / (float)nodesPerRow );
-            Orphans.MaxDepth = Math.Max( Orphans.MaxDepth, nodesPerRow - 1 ); // zero-based
+            Orphanage.Width += Mathf.CeilToInt( (float)orphans.Count / (float)nodesPerRow );
+            Orphanage.MaxDepth = Math.Max( Orphanage.MaxDepth, nodesPerRow - 1 ); // zero-based
         }
 
         public static bool Initialize()
@@ -418,16 +418,47 @@ namespace CommunityCoreLibrary.ResearchTree
             // add too small Trees back into orphan list
             orphans.AddRange( trunks.Where( trunk => trunk.Value.Count < Settings.MinTrunkSize ).SelectMany( trunk => trunk.Value ) );
 
-            // The order in which Trees should appear; ideally we want Trees with lots of cross-references to appear together.
-            OrderTrunks();
-
             // Attach orphan nodes to the nearest Trunk, or the orphanage trunk
-            Orphans = new Tree( "orphans", new List<Node>() ) { Color = Color.grey };
+            Orphanage = new Tree( "orphans", new List<Node>() ) { Color = Color.grey };
+
+            // keep trying to attach orphans to trees until we make no more progress
+            // ( deals with a scenario where A -> C, B -> C; if B has a family but A does not, C will resolve to B's family but A will not. )
+            bool progress;
+            do
+            {
+                // assume we make no progress
+                progress = false;
+
+                // loop down to avoid having to deal with size changes in the orphans list.
+                for ( int i = orphans.Count; i >= 0; i-- )
+                {
+                    // find closest tree (in this iteration)
+                    Tree closest = orphans[i].ClosestTree();
+
+                    // we have a winner!
+                    if ( closest != null )
+                    {
+                        // we made some progress in this iteration
+                        progress = true;
+
+                        // add leaf to tree (which also handles setting the tree field on the leaf)
+                        closest.AddLeaf( orphans[i] );
+
+                        // remove from orphans list
+                        orphans.RemoveAt( i );
+                    }
+                }
+            }
+            while ( progress );
+
+            // add any orphans we couldn't deal with to orphanage
             foreach ( Node orphan in orphans )
             {
-                Tree closest = orphan.ClosestTree() ?? Orphans;
-                closest.AddLeaf( orphan );
+                Orphanage.AddLeaf( orphan );
             }
+
+            // The order in which Trees should appear; ideally we want Trees with lots of cross-references to appear together.
+            OrderTrunks();
 
             // Assign colors to trunks
             int n = Trees.Count;
@@ -443,11 +474,12 @@ namespace CommunityCoreLibrary.ResearchTree
 #if DEBUG
             var stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
+            CCL_Log.Message( "Duplicated positions:\n " + string.Join( "\n", Forest.Where( _node => Forest.Any( _otherNode => _node.Pos == _otherNode.Pos && _node != _otherNode ) ).Select( _node => _node.Pos + _node.Research.LabelCap + " (" + _node.Genus + ")" ).ToArray() ) );
             foreach ( Tree tree in Trees )
             {
                 CCL_Log.Message( tree.ToString() );
             }
-            CCL_Log.Message( Orphans.ToString() );
+            CCL_Log.Message( Orphanage.ToString() );
             CCL_Log.CaptureEnd( stringBuilder, "Associations" );
             CCL_Log.Message( stringBuilder.ToString(), "Research Tree" );
 #endif

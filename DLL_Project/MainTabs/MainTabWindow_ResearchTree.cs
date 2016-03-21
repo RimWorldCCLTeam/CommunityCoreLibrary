@@ -19,45 +19,18 @@ namespace CommunityCoreLibrary
 {
     public class MainTabWindow_ResearchTree : MainTabWindow
     {
-        internal static Vector2 _scrollPosition                     = Vector2.zero;
+        #region Fields
+
         public static List<Pair<Node, Node>> connections            = new List<Pair<Node, Node>>();
         public static List<Pair<Node, Node>> highlightedConnections = new List<Pair<Node, Node>>();
         public static Dictionary<Rect, List<String>> hubTips        = new Dictionary<Rect, List<string>>();
         public static List<Node> nodes                              = new List<Node>();
 
-        public override void PreOpen()
-        {
-            base.PreOpen();
+        internal static Vector2 _scrollPosition                     = Vector2.zero;
 
-            if ( !ResearchTree.ResearchTree.Initialized )
-            {
-                // initialize tree
-                ResearchTree.ResearchTree.Initialize();
+        #endregion Fields
 
-                // spit out debug info
-#if DEBUG
-                var stringBuilder = new StringBuilder();
-                CCL_Log.CaptureBegin( stringBuilder );
-
-                CCL_Log.Message( "Duplicated positions:\n " + string.Join( "\n", ResearchTree.ResearchTree.Forest.Where( n => ResearchTree.ResearchTree.Forest.Any( n2 => n.Pos == n2.Pos && n != n2 ) ).Select( n => n.Pos + n.Research.LabelCap + " (" + n.Genus + ")" ).ToArray() ) );
-
-                foreach ( ResearchTree.Tree tree in ResearchTree.ResearchTree.Trees )
-                {
-                    CCL_Log.Message( tree.ToString() );
-                }
-                CCL_Log.Message( ResearchTree.ResearchTree.Orphans.ToString() );
-
-                CCL_Log.CaptureEnd( stringBuilder, "Associations" );
-                CCL_Log.Message( stringBuilder.ToString(), "Research Tree" );
-#endif
-            }
-
-            // set to topleft (for some reason vanilla alignment overlaps bottom buttons).
-            currentWindowRect.x = 0f;
-            currentWindowRect.y = 0f;
-            currentWindowRect.width = Screen.width;
-            currentWindowRect.height = Screen.height - 35f;
-        }
+        #region Properties
 
         public override float TabButtonBarPercent
         {
@@ -71,38 +44,14 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion Properties
+
+        #region Methods
+
         public override void DoWindowContents( Rect canvas )
         {
             PrepareTreeForDrawing();
             DrawTree( canvas );
-        }
-
-        private void PrepareTreeForDrawing()
-        {
-            // loop through trees
-            foreach ( ResearchTree.Tree tree in ResearchTree.ResearchTree.Trees )
-            {
-                foreach ( Node node in tree.Trunk.Concat( tree.Leaves ) )
-                {
-                    nodes.Add( node );
-
-                    foreach ( Node parent in node.Parents )
-                    {
-                        connections.Add( new Pair<Node, Node>( node, parent ) );
-                    }
-                }
-            }
-
-            // add orphans
-            foreach ( Node node in ResearchTree.ResearchTree.Orphans.Leaves )
-            {
-                nodes.Add( node );
-
-                foreach ( Node parent in node.Parents )
-                {
-                    connections.Add( new Pair<Node, Node>( node, parent ) );
-                }
-            }
         }
 
         public void DrawTree( Rect canvas )
@@ -116,8 +65,8 @@ namespace CommunityCoreLibrary
                 totalWidth = ResearchTree.ResearchTree.Trees.Sum( tree => tree.Width );
             }
 
-            maxDepth = Math.Max( maxDepth, ResearchTree.ResearchTree.Orphans.MaxDepth );
-            totalWidth += ResearchTree.ResearchTree.Orphans.Width;
+            maxDepth = Math.Max( maxDepth, ResearchTree.ResearchTree.Orphanage.MaxDepth );
+            totalWidth += ResearchTree.ResearchTree.Orphanage.Width;
 
             float width = ( maxDepth + 1 ) * ( Settings.NodeSize.x + Settings.NodeMargins.x ); // zero based
             float height = totalWidth * ( Settings.NodeSize.y + Settings.NodeMargins.y );
@@ -173,5 +122,52 @@ namespace CommunityCoreLibrary
             GUI.EndGroup();
             Widgets.EndScrollView();
         }
+
+        public override void PreOpen()
+        {
+            base.PreOpen();
+
+            if ( !ResearchTree.ResearchTree.Initialized )
+            {
+                // initialize tree
+                ResearchTree.ResearchTree.Initialize();
+            }
+
+            // set to topleft (for some reason vanilla alignment overlaps bottom buttons).
+            currentWindowRect.x = 0f;
+            currentWindowRect.y = 0f;
+            currentWindowRect.width = Screen.width;
+            currentWindowRect.height = Screen.height - 35f;
+        }
+
+        private void PrepareTreeForDrawing()
+        {
+            // loop through trees
+            foreach ( ResearchTree.Tree tree in ResearchTree.ResearchTree.Trees )
+            {
+                foreach ( Node node in tree.Trunk.Concat( tree.Leaves ) )
+                {
+                    nodes.Add( node );
+
+                    foreach ( Node parent in node.Parents )
+                    {
+                        connections.Add( new Pair<Node, Node>( node, parent ) );
+                    }
+                }
+            }
+
+            // add orphans
+            foreach ( Node node in ResearchTree.ResearchTree.Orphanage.Leaves )
+            {
+                nodes.Add( node );
+
+                foreach ( Node parent in node.Parents )
+                {
+                    connections.Add( new Pair<Node, Node>( node, parent ) );
+                }
+            }
+        }
+
+        #endregion Methods
     }
 }

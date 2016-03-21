@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary.ResearchTree
 
     public class Node
     {
-        #region Public Fields
+        #region Fields
 
         public List<Node>             Children         = new List<Node>();
         public int                    Depth;
@@ -33,10 +33,6 @@ namespace CommunityCoreLibrary.ResearchTree
         public IntVec2                Pos;
         public ResearchProjectDef     Research;
         public Tree                   Tree;
-
-        #endregion Public Fields
-
-        #region Private Fields
 
         private const float           LabSize          = 30f;
         private const float           Offset           = 2f;
@@ -59,9 +55,9 @@ namespace CommunityCoreLibrary.ResearchTree
         private bool                  _rectSet;
         private Vector2               _right           = Vector2.zero;
 
-        #endregion Private Fields
+        #endregion Fields
 
-        #region Public Constructors
+        #region Constructors
 
         public Node( ResearchProjectDef research )
         {
@@ -75,19 +71,23 @@ namespace CommunityCoreLibrary.ResearchTree
                 Genus = parts.First();
             }
             else
-            // otherwise, strip the last word (intended to catch 1,2,3/ I,II,III,IV suffixes)
             {
                 parts = research.LabelCap.Split( " ".ToCharArray() ).ToList();
-                parts.Remove( parts.Last() );
+
+                // otherwise, strip the last word (intended to catch 1,2,3/ I,II,III,IV suffixes)
+                if ( parts.Count > 1 )
+                {
+                    parts.Remove( parts.Last() );
+                }
                 Genus = string.Join( " ", parts.ToArray() );
             }
             Parents = new List<Node>();
             Children = new List<Node>();
         }
 
-        #endregion Public Constructors
+        #endregion Constructors
 
-        #region Public Properties
+        #region Properties
 
         public Rect CostIconRect
         {
@@ -211,9 +211,9 @@ namespace CommunityCoreLibrary.ResearchTree
             }
         }
 
-        #endregion Public Properties
+        #endregion Properties
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Determine the closest tree by moving along parents and then children until a tree has been found. Returns first tree encountered, or NULL.
@@ -328,7 +328,7 @@ namespace CommunityCoreLibrary.ResearchTree
         /// <summary>
         /// Prints debug information.
         /// </summary>
-        public void Debug()
+        public string Debug()
         {
             StringBuilder text = new StringBuilder();
             text.AppendLine( Research.LabelCap + " (" + Depth + ", " + Genus + "):" );
@@ -343,7 +343,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 text.AppendLine( "-- " + child.Research.LabelCap );
             }
             text.AppendLine( "" );
-            Log.Message( text.ToString() );
+            return text.ToString();
         }
 
         /// <summary>
@@ -635,10 +635,6 @@ namespace CommunityCoreLibrary.ResearchTree
             return this.Research.LabelCap + this.Pos;
         }
 
-        #endregion Public Methods
-
-        #region Private Methods
-
         private void CreateRects()
         {
             // main rect
@@ -719,6 +715,6 @@ namespace CommunityCoreLibrary.ResearchTree
             return text.ToString();
         }
 
-        #endregion Private Methods
+        #endregion Methods
     }
 }

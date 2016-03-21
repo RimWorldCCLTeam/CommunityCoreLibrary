@@ -162,6 +162,16 @@ namespace CommunityCoreLibrary.ResearchTree
                 }
             }
 
+            text.AppendLine( "\n\nNode research details:" );
+            foreach ( Node node in Trunk )
+            {
+                text.AppendLine( node.Debug() );
+            }
+            foreach ( Node node in Leaves )
+            {
+                text.AppendLine( node.Debug() );
+            }
+
             return text.ToString();
         }
 
