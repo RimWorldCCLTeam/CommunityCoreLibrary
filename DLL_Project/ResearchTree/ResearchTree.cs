@@ -8,6 +8,8 @@ using CommunityCoreLibrary.ColorPicker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+
 using UnityEngine;
 using Verse;
 
@@ -439,11 +441,15 @@ namespace CommunityCoreLibrary.ResearchTree
 
             // some debug output
 #if DEBUG
+            var stringBuilder = new StringBuilder();
+            CCL_Log.CaptureBegin( stringBuilder );
             foreach ( Tree tree in Trees )
             {
-                Log.Message( tree.ToString() );
+                CCL_Log.Message( tree.ToString() );
             }
-            Log.Message( Orphans.ToString() );
+            CCL_Log.Message( Orphans.ToString() );
+            CCL_Log.CaptureEnd( stringBuilder, "Associations" );
+            CCL_Log.Message( stringBuilder.ToString(), "Research Tree" );
 #endif
 
             // Done!
