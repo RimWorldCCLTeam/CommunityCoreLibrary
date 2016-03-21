@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary.ResearchTree
 
     public class Node
     {
-        #region Fields
+        #region Public Fields
 
         public List<Node>             Children         = new List<Node>();
         public int                    Depth;
@@ -33,8 +33,15 @@ namespace CommunityCoreLibrary.ResearchTree
         public IntVec2                Pos;
         public ResearchProjectDef     Research;
         public Tree                   Tree;
+
+        #endregion Public Fields
+
+        #region Private Fields
+
         private const float           LabSize          = 30f;
         private const float           Offset           = 2f;
+
+        private static MainTabWindow_ModHelp _helpWindow = DefDatabase<MainTabDef>.GetNamed( "CCL_ModHelp", false ).Window as MainTabWindow_ModHelp;
 
         private bool                  _isLockedOut     = false,
                                       _willBeLockedOut = false;
@@ -51,11 +58,10 @@ namespace CommunityCoreLibrary.ResearchTree
 
         private bool                  _rectSet;
         private Vector2               _right           = Vector2.zero;
-        private MainTabWindow_ModHelp helpWindow       = DefDatabase<MainTabDef>.GetNamed( "CCL_ModHelp", false ).Window as MainTabWindow_ModHelp;
 
-        #endregion Fields
+        #endregion Private Fields
 
-        #region Constructors
+        #region Public Constructors
 
         public Node( ResearchProjectDef research )
         {
@@ -79,9 +85,9 @@ namespace CommunityCoreLibrary.ResearchTree
             Children = new List<Node>();
         }
 
-        #endregion Constructors
+        #endregion Public Constructors
 
-        #region Properties
+        #region Public Properties
 
         public Rect CostIconRect
         {
@@ -205,9 +211,9 @@ namespace CommunityCoreLibrary.ResearchTree
             }
         }
 
-        #endregion Properties
+        #endregion Public Properties
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Determine the closest tree by moving along parents and then children until a tree has been found. Returns first tree encountered, or NULL.
@@ -268,7 +274,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 if ( prerequisite != Research )
                 {
                     var parent = ResearchTree.Forest.FirstOrDefault( node => node.Research == prerequisite );
-                    if( parent != null )
+                    if ( parent != null )
                     {
                         Parents.Add( parent );
                     }
@@ -286,7 +292,7 @@ namespace CommunityCoreLibrary.ResearchTree
                     if ( prerequisite != Research )
                     {
                         var parent = ResearchTree.Forest.FirstOrDefault( node => node.Research == prerequisite );
-                        if( parent != null )
+                        if ( parent != null )
                         {
                             Parents.Add( parent );
                         }
@@ -305,7 +311,7 @@ namespace CommunityCoreLibrary.ResearchTree
                     if ( locked != Research )
                     {
                         var lockedNode = ResearchTree.Forest.FirstOrDefault( node => node.Research == locked );
-                        if( lockedNode != null )
+                        if ( lockedNode != null )
                         {
                             Locks.Add( lockedNode );
                         }
@@ -517,7 +523,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 else if ( Event.current.button == 1 )
                 {
                     // right click links to CCL help def.
-                    helpWindow.JumpTo( Research.GetHelpDef() );
+                    _helpWindow.JumpTo( Research.GetHelpDef() );
                 }
             }
         }
@@ -629,6 +635,10 @@ namespace CommunityCoreLibrary.ResearchTree
             return this.Research.LabelCap + this.Pos;
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         private void CreateRects()
         {
             // main rect
@@ -709,6 +719,6 @@ namespace CommunityCoreLibrary.ResearchTree
             return text.ToString();
         }
 
-        #endregion Methods
+        #endregion Private Methods
     }
 }

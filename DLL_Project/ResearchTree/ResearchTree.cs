@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary.ResearchTree
 {
     public class ResearchTree
     {
-        #region Fields
+        #region Public Fields
 
         public static Texture2D  Button       = ContentFinder<Texture2D>.Get( "UI/ResearchTree/button" );
         public static Texture2D  ButtonActive = ContentFinder<Texture2D>.Get( "UI/ResearchTree/button-active" );
@@ -33,9 +33,9 @@ namespace CommunityCoreLibrary.ResearchTree
         public static List<Tree> Trees;
         public static Texture2D  WarningIcon  = ContentFinder<Texture2D>.Get( "UI/ResearchTree/warning_shield" );
 
-        #endregion Fields
+        #endregion Public Fields
 
-        #region Methods
+        #region Public Methods
 
         public static void DrawLine( Pair<Node, Node> connection, Color color, bool reverseDirection = false )
         {
@@ -264,7 +264,7 @@ namespace CommunityCoreLibrary.ResearchTree
                                     }
                                     if ( switched[node] < 5 )
                                     {
-                                        Log.Message( "switched " + node.Research.LabelCap + "(" + node.Pos.z + ") and " + otherNode.Research.LabelCap + "(" + otherNode.Pos.z + ")" );
+                                        //Log.Message( "switched " + node.Research.LabelCap + "(" + node.Pos.z + ") and " + otherNode.Research.LabelCap + "(" + otherNode.Pos.z + ")" );
                                         otherNode.Pos.z = node.Pos.z;
                                         nodes.Enqueue( otherNode );
                                         switched[node]++;
@@ -354,8 +354,8 @@ namespace CommunityCoreLibrary.ResearchTree
         {
             // populate all nodes
             Forest = new List<Node>( DefDatabase<ResearchProjectDef>.AllDefsListForReading
-                                        // exclude hidden projects (prereq of itself is a common trick to hide research).
-                                        .Where( def => !def.prerequisites.Contains( def ) )
+                                        // exclude projects that can never be researched (it, or one of it's prerequisites has a prereq of itself, and no unlocks)
+                                        .Where( def => !def.IsLockedOut() )
                                         .Select( def => new Node( def ) ) );
 
             // mark, but do not remove redundant prerequisites.
@@ -367,7 +367,7 @@ namespace CommunityCoreLibrary.ResearchTree
                     if ( !ancestors.NullOrEmpty() &&
                         ( !node.Research.prerequisites?.Intersect( ancestors ).ToList().NullOrEmpty() ?? false ) )
                     {
-                        Log.Warning( "ResearchTree :: redundant prerequisites for " + node.Research.LabelCap + " the following research: " +
+                        Log.Warning( "ResearchTree :: redundant prerequisites for " + node.Research.LabelCap + ", has as prerequisites: " +
                             string.Join( ", ", node.Research.prerequisites.Intersect( ancestors ).Select( r => r.LabelCap ).ToArray() ) );
                     }
                 }
@@ -441,6 +441,10 @@ namespace CommunityCoreLibrary.ResearchTree
             return Initialized;
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         private static void OrderTrunks()
         {
             // if two or less Trees, optimization is pointless
@@ -476,6 +480,6 @@ namespace CommunityCoreLibrary.ResearchTree
             }
         }
 
-        #endregion Methods
+        #endregion Private Methods
     }
 }

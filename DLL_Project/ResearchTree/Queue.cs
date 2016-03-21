@@ -14,17 +14,33 @@ using Verse;
 
 namespace CommunityCoreLibrary.ResearchTree
 {
-    
     public static class Queue
     {
-        #region Fields
+        #region Internal Fields
 
         internal static readonly Texture2D      CircleFill = ContentFinder<Texture2D>.Get("UI/ResearchTree/circle-fill");
+
+        #endregion Internal Fields
+
+        #region Private Fields
+
         private static readonly List<Node>      _queue     = new List<Node>();
 
-        #endregion Fields
+        #endregion Private Fields
 
-        #region Methods
+        #region Public Properties
+
+        public static int Count
+        {
+            get
+            {
+                return _queue.Count;
+            }
+        }
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public static void Dequeue( Node node )
         {
@@ -103,7 +119,7 @@ namespace CommunityCoreLibrary.ResearchTree
 
             // try set the first research in the queue to be the current project.
             Node next = _queue.First();
-            if(
+            if (
                 ( next != null )&&
                 ( next.Research != null )
             )
@@ -162,6 +178,27 @@ namespace CommunityCoreLibrary.ResearchTree
             Find.ResearchManager.currentProj = first?.Research;
         }
 
+        public static Node First()
+        {
+            return _queue.First();
+        }
+
+        public static void FromList( List<ResearchProjectDef> loadQueue )
+        {
+            // initialize the queue
+            foreach ( ResearchProjectDef research in loadQueue )
+            {
+                // find a node that matches the research - or null if none found
+                Node node = ResearchTree.Forest.FirstOrDefault( n => n.Research == research );
+
+                // enqueue the node
+                if ( node != null )
+                {
+                    Enqueue( node, true );
+                }
+            }
+        }
+
         public static bool IsQueued( Node node )
         {
             return _queue.Contains( node );
@@ -181,7 +218,7 @@ namespace CommunityCoreLibrary.ResearchTree
         /// <returns></returns>
         public static Node Pop()
         {
-            if( !_queue.NullOrEmpty() )
+            if ( !_queue.NullOrEmpty() )
             {
                 Node node = _queue[0];
                 _queue.RemoveAt( 0 );
@@ -190,41 +227,11 @@ namespace CommunityCoreLibrary.ResearchTree
             return null;
         }
 
-        public static int Count
-        {
-            get
-            {
-                return _queue.Count;
-            }
-        }
-
-        public static Node First()
-        {
-            return _queue.First();
-        }
-
-        public static List<ResearchProjectDef>  ToList()
+        public static List<ResearchProjectDef> ToList()
         {
             return _queue.Select( node => node.Research ).ToList();
         }
 
-        public static void                      FromList( List<ResearchProjectDef> loadQueue )
-        {
-            // initialize the queue
-            foreach ( ResearchProjectDef research in loadQueue )
-            {
-                // find a node that matches the research - or null if none found
-                Node node = ResearchTree.Forest.FirstOrDefault( n => n.Research == research );
-
-                // enqueue the node
-                if ( node != null )
-                {
-                    Enqueue( node, true );
-                }
-            }
-        }
-
-        #endregion Methods
+        #endregion Public Methods
     }
-
 }
