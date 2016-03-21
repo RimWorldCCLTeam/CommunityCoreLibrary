@@ -430,7 +430,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 progress = false;
 
                 // loop down to avoid having to deal with size changes in the orphans list.
-                for ( int i = orphans.Count; i >= 0; i-- )
+                for ( int i = orphans.Count - 1; i >= 0; i-- )
                 {
                     // find closest tree (in this iteration)
                     Tree closest = orphans[i].ClosestTree();
