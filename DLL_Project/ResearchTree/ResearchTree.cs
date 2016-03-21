@@ -287,6 +287,7 @@ namespace CommunityCoreLibrary.ResearchTree
                 curY += tree.Width;
             }
 
+            // deal with non-tree nodes
             // try and get root nodes first
             IEnumerable<Node> roots = Orphans.Leaves.Where( node => node.Children.Any() && !node.Parents.Any() ).OrderBy( node => node.Depth );
             int rootYOffset = 0;
@@ -435,6 +436,15 @@ namespace CommunityCoreLibrary.ResearchTree
 
             // update nodes with position info
             FixPositions();
+
+            // some debug output
+#if DEBUG
+            foreach ( Tree tree in Trees )
+            {
+                Log.Message( tree.ToString() );
+            }
+            Log.Message( Orphans.ToString() );
+#endif
 
             // Done!
             Initialized = true;
