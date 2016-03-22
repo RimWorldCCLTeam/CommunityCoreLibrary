@@ -5,20 +5,20 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-    public class                            MainMenu_NewColony : IMainMenu
-    {
+	public class MainMenu_NewColony : IMainMenu
+	{
 
-        public bool                         RenderNow( bool anyWorldFiles, bool anyMapFiles )
-        {
-            return ( Game.Mode == GameMode.Entry )&&( anyWorldFiles );
-        }
+		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		{
+			return ( Game.Mode == GameMode.Entry ) && ( anyWorldFiles );
+		}
 
-        public void                         ClickAcion()
-        {
-            MapInitData.Reset();
-            Find.WindowStack.Add( (Window) new Page_SelectStoryteller() );
-        }
+		public void ClickAction()
+		{
+			MapInitData.Reset();
+			Find.WindowStack.Add( (Window)new Page_SelectStoryteller() );
+		}
 
-    }
+	}
 
 }

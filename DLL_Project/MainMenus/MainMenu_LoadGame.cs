@@ -5,19 +5,19 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-    public class                            MainMenu_LoadGame : IMainMenu
-    {
+	public class MainMenu_LoadGame : IMainMenu
+	{
 
-        public bool                         RenderNow( bool anyWorldFiles, bool anyMapFiles )
-        {
-            return ( anyMapFiles );
-        }
+		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		{
+			return ( anyMapFiles );
+		}
 
-        public void                         ClickAcion()
-        {
-            Find.WindowStack.Add( (Window) new Dialog_MapList_Load() );
-        }
+		public void ClickAction()
+		{
+			Find.WindowStack.Add( (Window)new Dialog_MapList_Load() );
+		}
 
-    }
+	}
 
 }

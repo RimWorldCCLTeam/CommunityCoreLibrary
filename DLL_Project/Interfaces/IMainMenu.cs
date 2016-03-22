@@ -8,7 +8,7 @@ namespace CommunityCoreLibrary
 
         bool                                RenderNow( bool anyWorldFiles, bool anyMapFiles );
 
-        void                                ClickAcion();
+        void                                ClickAction();
 
     }
 

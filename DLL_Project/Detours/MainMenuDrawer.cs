@@ -252,7 +252,7 @@ namespace CommunityCoreLibrary.Detour
         {
             MainMenuDef     menuDef;
 
-            public ListableOption_MainMenu( MainMenuDef def ) : base( def.label, def.menuWorker.ClickAcion )
+            public ListableOption_MainMenu( MainMenuDef def ) : base( def.label, def.menuWorker.ClickAction )
             {
                 menuDef = def;
             }
