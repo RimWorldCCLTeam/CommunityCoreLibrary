@@ -1,9 +1,15 @@
-[size=12pt][color=orange]As a modder, you will be interested in[/color][/size]
+[size=12pt][color=orange]Modding Features[/color][/size]
+
+[size=10pt]Remember to always refer to /Def Descriptions/ and /Examples/ for specific details about the xml involved.  C# features will require looking at the CCL source.  If you find something isn't covered that you feel should be, please give us feedback to help improve the documention.[/size]
+
 
 [size=10pt][color=orange]New Defs[/color] (xml)[/size]
-[list][li][color=orange]Advanced Research[/color] - Allows recipes and buildings to be locked and unlocked by multiple research requirements.[/li]
+[list]
+[li][color=orange]Advanced Research[/color] - Allows recipes and buildings to be locked and unlocked by multiple research requirements.[/li]
+[li][color=orange]Help [Category][/color] - Define in-game help which is accessible from the main tab beside research (by default).[/li]
+[li][color=orange]Main Menu[/color] - These defs define and control the main menu buttons.[/li]
 [li][color=orange]Mod Helper[/color][sup][size=8pt]4.1[/size][/sup] - Define MapComponents, Designators and ThingComps to be injected as well as minimum CCL version dependency.[/li]
-[li][color=orange]Help [Category][/color] - Define in-game help which is accessible from the main tab beside research (by default).[/li][/list]
+[/list]
 
 [size=10pt][color=orange]Def Extensions[/color] (xml)[/size]
 [list][li][color=orange]Terrain With Comps[/color] - Allows usage of special place workers with terrain.[/li][/list]
@@ -29,6 +35,7 @@
 [list]
 [li][color=orange]IHelpDefView[/color] - Applicable only to window classes, this interface is used to handle window interactions with HelpDefs.
 [li][color=orange]IHopperUser[/color] - A programmatic interface for programming hoppers.  This allows for more powerful programming of a hoppers resource filter.[/li]
+[li][color=orange]IMainMenu[/color] - Class interface for main menu buttons.[/li]
 [/list]
 
 [size=10pt][color=orange]Helper classes[/color] (C#)[/size]

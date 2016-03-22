@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    <MainMenuDef>
+        <defName>string</defName>       [required] Some unique identifier in class
+        
+        <label>string</label>           [required*] Text to display on menu button
+        <labelKey>string</labelKey>     [required*] Translation key for text to display on menu button
+        
+        <order>int</order>              [required] Order to insert menu button (higher values at top)
+        
+        <menuClass>IMainMenu</menuClass> [required] Class which implements IMainMenu for button
+        
+        <closeMainTab>bool</closeMainTab> [optional: false] Close the main menu tab before performing the button click action
+        
+    </MainMenuDef>
+    
+    -->
+    
+</Defs>

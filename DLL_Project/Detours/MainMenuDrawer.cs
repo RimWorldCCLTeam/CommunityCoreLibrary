@@ -37,6 +37,8 @@ namespace CommunityCoreLibrary.Detour
         private static FieldInfo    _TexLudeonLogo;
         private static FieldInfo    _LudeonLogoSize;
 
+        private static List<MainMenuDef>  mainMenu;
+
         static _MainMenuDrawer()
         {
             _CloseMainTab   = typeof( MainMenuDrawer ).GetMethod( "CloseMainTab", BindingFlags.Static | BindingFlags.NonPublic );
@@ -61,6 +63,7 @@ namespace CommunityCoreLibrary.Detour
 
             _TexLudeonLogo  = typeof( MainMenuDrawer ).GetField( "TexLudeonLogo", BindingFlags.Static | BindingFlags.NonPublic );
             _LudeonLogoSize = typeof( MainMenuDrawer ).GetField( "LudeonLogoSize", BindingFlags.Static | BindingFlags.NonPublic );
+
         }
 
         internal static void _MainMenuOnGUI()
@@ -156,58 +159,24 @@ namespace CommunityCoreLibrary.Detour
 
             List<ListableOption> mainOptions = new List<ListableOption>();
 
-            if( Game.Mode == GameMode.Entry )
+            if( mainMenu == null )
             {
-                mainOptions.Add( _CreateWorldOption() );
-
-                if( anyWorldFiles )
-                {
-                    mainOptions.Add( _NewColonyOption() );
-                }
+                mainMenu        = DefDatabase< MainMenuDef >.AllDefsListForReading;
+                mainMenu.Sort( (x, y) => x.order > y.order ? -1 : 1 );
             }
 
-            if( Game.Mode == GameMode.MapPlaying )
+            foreach( var menu in mainMenu )
             {
-                if( backToGameButtonAction != null )
+                if( string.IsNullOrEmpty( menu.label ) )
                 {
-                    mainOptions.Add( new ListableOption(
-                        "BackToGame".Translate(),
-                        backToGameButtonAction ) );
+                    menu.label = menu.labelKey.Translate();
                 }
 
-                mainOptions.Add( _SaveGameOption() );
+                if( menu.menuWorker.RenderNow( anyWorldFiles, anyMapFiles ) )
+                {
+                    mainOptions.Add( new ListableOption_MainMenu( menu ) );
+                }
             }
-
-            if( anyMapFiles )
-            {
-                mainOptions.Add( _LoadGameOption() );
-            }
-
-            mainOptions.Add( _MainOptionsOption() );
-
-            if( Game.Mode == GameMode.Entry )
-            {
-                mainOptions.Add( _ModsOption() );
-            }
-
-            // CCL Menu Insertion
-            if( Window_ModConfigurationMenu.AnyMenus )
-            {
-                mainOptions.Add( _ModOptionsOption() );
-            }
-
-            if( Game.Mode == GameMode.Entry )
-            {
-                mainOptions.Add( _HelpMenuOption() );
-                mainOptions.Add( _CreditsOption() );
-            }
-
-            if( Game.Mode == GameMode.MapPlaying )
-            {
-                mainOptions.Add( _QuitToMainOption() );
-            }
-
-            mainOptions.Add( _QuitToOSOption() );
 
             double mainOptionsHeight = (double) OptionListingUtility.DrawOptionListing( GenUI.ContractedBy( mainOptionRect, 17f ), mainOptions );
 
@@ -274,141 +243,35 @@ namespace CommunityCoreLibrary.Detour
 
         }
 
-        #region Option Buttons
-
-        internal static ListableOption  _CreateWorldOption()
+        internal static void            CloseMainTab()
         {
-            return new ListableOption(
-                "CreateWorld".Translate(),
-                () =>
-            {
-                MapInitData.Reset();
-                Find.WindowStack.Add( (Window) new Page_CreateWorldParams() );
-            } );
+            _CloseMainTab.Invoke( null, null );
         }
 
-        internal static ListableOption  _NewColonyOption()
+        internal class ListableOption_MainMenu : ListableOption
         {
-            return new ListableOption(
-                "NewColony".Translate(),
-                () =>
-            {
-                MapInitData.Reset();
-                Find.WindowStack.Add( (Window) new Page_SelectStoryteller() );
-            } );
-        }
+            MainMenuDef     menuDef;
 
-        internal static ListableOption  _SaveGameOption()
-        {
-            return new ListableOption(
-                "Save".Translate(),
-                () =>
+            public ListableOption_MainMenu( MainMenuDef def ) : base( def.label, def.menuWorker.ClickAcion )
             {
-                _CloseMainTab.Invoke( null, null );
-                Find.WindowStack.Add( (Window) new Dialog_MapList_Save() );
-            } );
-        }
-
-        internal static ListableOption  _LoadGameOption()
-        {
-            return new ListableOption(
-                "Load".Translate(),
-                () =>
-            {
-                _CloseMainTab.Invoke( null, null );
-                Find.WindowStack.Add( (Window) new Dialog_MapList_Load() );
-            } );
-        }
-
-        internal static ListableOption  _MainOptionsOption()
-        {
-            return new ListableOption(
-                "Options".Translate(),
-                () =>
-            {
-                _CloseMainTab.Invoke( null, null );
-                Find.WindowStack.Add( (Window) new Dialog_Options() );
-            } );
-        }
-
-        internal static ListableOption  _ModsOption()
-        {
-            return new ListableOption(
-                "Mods".Translate(),
-                () =>
-            {
-                Find.WindowStack.Add( (Window) new Page_ModsConfig() );
-            } );
-        }
-
-        internal static ListableOption  _ModOptionsOption()
-        {
-            return new ListableOption(
-                "ModConfigurationOptions".Translate(),
-                () =>
-            {
-                _CloseMainTab.Invoke( null, null );
-                Find.WindowStack.Add( (Window) new Window_ModConfigurationMenu() );
-            } );
-        }
-
-        internal static ListableOption  _HelpMenuOption()
-        {
-            return new ListableOption(
-                "HelpOTabTitle".Translate(),
-                () =>
-            {
-                Find.WindowStack.Add( (Window) new MainTabWindow_ModHelp() );
-            } );
-        }
-
-        internal static ListableOption  _CreditsOption()
-        {
-            return new ListableOption(
-                "Credits".Translate(),
-                () =>
-            {
-                Find.WindowStack.Add( (Window) new Page_Credits() );
-            } );
-        }
-
-        internal static ListableOption  _QuitToMainOption()
-        {
-            return new ListableOption(
-                "QuitToMainMenu".Translate(),
-                _ConfirmQuitToMain );
-        }
-
-        internal static ListableOption  _QuitToOSOption()
-        {
-            ListableOption option = null;
-            if( Game.Mode == GameMode.MapPlaying )
-            {
-                option = new ListableOption(
-                    "QuitToOS".Translate(),
-                    _ConfirmQuitToOS );
+                menuDef = def;
             }
-            else
+
+            public override float DrawOption( Vector2 pos, float width )
             {
-                option = new ListableOption(
-                    "QuitToOS".Translate(),
-                    Root.Shutdown );
+                float height = Mathf.Max( minHeight, Text.CalcHeight( label, width ) );
+                if( Widgets.TextButton( new Rect( pos.x, pos.y, width, height ), label, true, true ) )
+                {
+                    if( menuDef.closeMainTab )
+                    {
+                        CloseMainTab();
+                    }
+                    this.action();
+                }
+                return height;
             }
-            return option;
-        }
 
-        /*
-        internal static ListableOption  _Option()
-        {
-            return new ListableOption(
-                "".Translate(),
-                () =>
-            {
-            } );
         }
-        */
-
-        #endregion
 
         #region Link Buttons
 
@@ -485,31 +348,6 @@ namespace CommunityCoreLibrary.Detour
             );
         }
         */
-
-        #endregion
-
-        #region Quiter!
-
-        internal static void            _ConfirmQuitToMain()
-        {
-            Find.WindowStack.Add( (Window) new Dialog_Confirm(
-                "ConfirmQuit".Translate(),
-                () =>
-            {
-                Application.LoadLevel( "Entry" );
-            },
-                false
-            ) );
-        }
-
-        internal static void            _ConfirmQuitToOS()
-        {
-            Find.WindowStack.Add( (Window) new Dialog_Confirm(
-                "ConfirmQuit".Translate(),
-                Root.Shutdown,
-                false
-            ) );
-        }
 
         #endregion
 
