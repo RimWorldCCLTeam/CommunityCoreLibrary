@@ -19,8 +19,11 @@
     FactoryOutputVector                 [required] Controls how a product is dispensed when production is complete.
         (Invalid)   outputVector        Valid values are "DirectToPawn", "Ground" and "InteractionCell".  "Ground"
                                         output will try to output first to a storage building which accepts it's
-                                        output then, to an existing stack of that output which is beside the building
-                                        finally, to any free open cell around it.
+                                        output if one is found but there is not room, production will be suspended until
+                                        the building is clear.  If no valid storage building is found, it will look
+                                        for an existing stack of what it is trying to output which is beside the building.
+                                        Finally, if none of the above conditions are met, it will output to any free
+                                        open cell around it.
     
     FactoryProductionMode               [required] Determines how the factory should operate.  "PawnInteractionOnly"
         (None)      productionMode      will only produce when a pawn is directly try to take from the building (such

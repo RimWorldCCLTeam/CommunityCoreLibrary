@@ -220,31 +220,43 @@ namespace CommunityCoreLibrary
                 }
 
                 // Validate help
-                if( ( HasHelp )&&
-                    ( ResearchConsolidator == this ) )
+                if( researchDefs.Count > 1 )
                 {
-                    if( label.NullOrEmpty() )
+                    if( ResearchConsolidator == null )
                     {
                         // Error processing data
                         isValid = false;
                         CCL_Log.TraceMod(
                             this,
                             Verbosity.FatalErrors,
-                            "Help Consolidator requires missing label"
+                            string.Format( "No valid help consolidator for AdvancedResearchDef {0}", defName )
                         );
                     }
-                    if( description.NullOrEmpty() )
+                    if( ( HasHelp )&&
+                        ( ResearchConsolidator == this ) )
                     {
-                        // Error processing data
-                        isValid = false;
-                        CCL_Log.TraceMod(
-                            this,
-                            Verbosity.FatalErrors,
-                            "Help Consolidator requires missing description"
-                        );
+                        if( label.NullOrEmpty() )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                this,
+                                Verbosity.FatalErrors,
+                                "Help Consolidator requires missing label"
+                            );
+                        }
+                        if( description.NullOrEmpty() )
+                        {
+                            // Error processing data
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                this,
+                                Verbosity.FatalErrors,
+                                "Help Consolidator requires missing description"
+                            );
+                        }
                     }
                 }
-
 #endif
             }
             return isValid;
@@ -401,7 +413,7 @@ namespace CommunityCoreLibrary
                     var matching = Data.AdvancedResearchDefs.Where( a => (
                         ( HasMatchingResearch( a ) )
                     ) ).ToList();
-                    researchConsolidator = matching.FirstOrDefault( a => ( a.ConsolidateHelp ) );
+                    researchConsolidator = matching.FirstOrDefault( a => ( a.Priority == -1 )&&( a.ConsolidateHelp ) );
                     if( researchConsolidator == null )
                     {
                         researchConsolidator = matching.FirstOrDefault();

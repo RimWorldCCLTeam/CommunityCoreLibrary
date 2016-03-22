@@ -20,7 +20,10 @@
 
 [size=12pt][color=orange]Important Packaging & Release Notes[/color][/size]
 
-[list][li]Do [b]NOT[/b] include any of CCLs assets with your mod directly.[/li]
-[li]Do [b]NOT[/b] copy the dll to your mods assembly directory.[/li]
-[li]Do [b]NOT[/b] copy the xml, languages, textures, etc unless your are explicitly overriding them with new settings.  Doing so [b]WILL[/b] cause errors and will be the fault of the [i]modder[/i] who copies files they shouldn't.[/li][/list]
-If your mod needs CCL, then it needs CCL to be properly installed and loaded before your mod as a separate download, not included with.  This is true for all mods and "mod packs."  The only place users should be getting CCL from is the official github releases, any other place is not an "official" copy (although perfectly legitimate, see [url=http://unlicense.org/]the unlicense[/url]) or the [i]modder[/i] using CCL has made a colossal mistake by packaging CCL assets directly with their mod.
+[list]
+[li]You should [b]NOT[/b] include any of CCLs assets with your mod directly.[/li]
+[li]You should [b]NOT[/b] copy the dll to your mods assembly directory.[/li]
+[li]You should [b]NOT[/b] copy the xml, languages, textures, etc unless your are explicitly overriding them with new settings.  Doing so [b]WILL[/b] cause errors and will be the fault of the [i]modder[/i] who copies files they shouldn't.[/li]
+[li]Repackaging [b]ANY[/b] part of CCL with your mod automatically disqualifies you for assitance with your mod from the CCL team.  If you are repacking CCL assets (DLL, xml, textures, etc) you are accepting the responsibility of being an advanced modder and do not need help.
+[/list]
+Simply put - if your mod needs CCL, then it needs CCL to be properly installed and loaded before your mod as a separate download, not included with.  This is true for all mods and "mod packs."  The only place users should be getting CCL from is the official github releases, any other place is not an "official" copy (although perfectly legitimate, see [url=http://unlicense.org/]the unlicense[/url]) or the [i]modder[/i] using CCL has made a colossal mistake by packaging CCL assets directly with their mod.

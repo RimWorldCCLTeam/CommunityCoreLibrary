@@ -8,6 +8,9 @@ The list of auto-generated help includes virtually every in-game object and more
 [color=orange]Research Menu[/color]
 The research menu provides a lot more information than the core game research menu including the same information as the help menu on the topic as well as quick access to research requirements and children.
 
+[color=orange]Mod Configuration Menu[/color] (Mod Options)
+If any mods are installed with an MCM, the main menu will display a "Mod Options" button which will allow you to set configuration settings for the mod(s).
+
 [color=orange]Proper Refrigeration[/color]
 Buildings implementing refrigeration will refrigerate rottable items without the usual "rot-unrot" cycle.  CCL automatically replaces the vanilla rotting component on items with a new component which handles refrigerated buildings properly by simply not rotting the item.
 
@@ -16,7 +19,7 @@ Buildings implementing refrigeration will refrigerate rottable items without the
 [size=12pt][color=orange]What the "Vanilla Tweaks" mod offers[/color][/size]
 
 [color=orange]Power Savings[/color]
-Most buildings will not draw power when they are not in use. This includes the cookstove, machining table, etc but will remain connected to the power grid. Some exceptions include the comms console which always draws full power.
+Most buildings will not draw power when they are not in use. This includes the cookstove, television, etc but will remain connected to the power grid. Some exceptions include the comms console which always draws full power.
 
 Auto Doors draw less power when they are not actually opening or closing.
 
@@ -35,4 +38,4 @@ Hydroponic basins and plant pots can share growing information with other hydrop
 The nutrient paste dispensers use the generic hoppers provided with the core library and the vanilla hopper is hidden from use.  This allows easier management of the dispensers by automatically programming the hoppers connected to them.
 
 [color=orange]Remember![/color]
-All changes are defined in xml in the Vanilla Tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml!
+All changes are defined in xml in the Vanilla Tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml, so break out your text editor and tweak the tweaks until you're tweaked!

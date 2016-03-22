@@ -1,12 +1,14 @@
-[size=12pt][color=orange]The Team[/color][/size]
+[size=12pt][color=orange]Current Team Members[/color][/size]
 [url=https://ludeon.com/forums/index.php?action=profile;u=32730]1000101[/url]
-[url=https://ludeon.com/forums/index.php?action=profile;u=8625]mipen[/url]
-[url=https://ludeon.com/forums/index.php?action=profile;u=35458]Latta[/url]
 [url=https://ludeon.com/forums/index.php?action=profile;u=12611]Fluffy[/url]
 
 
+[size=12pt][color=orange]Inactive Team Members[/color][/size]
+[url=https://ludeon.com/forums/index.php?action=profile;u=8625]mipen[/url]
+[url=https://ludeon.com/forums/index.php?action=profile;u=35458]Latta[/url]
 
-[size=12pt][color=orange]Contributors[/color][/size]
+
+[size=12pt][color=orange]Contributors[/color][/size]*
 DAOWAce
 kaptain_kavern
 profound_darkness
@@ -14,17 +16,20 @@ mrofa
 isistoy
 noimageavailable
 
+* Hey!  We added something!  Be it code, a translation, graphics, etc!  Join our ranks by helping with CCL in some small way!
 
-[size=12pt][color=orange]Credit Where it's Due[/color][/size]
-[size=8pt](Excluding Tynan because it goes without saying.  Also, if you'd like to implement anything from this into RimWorld, you are welcome to all the code!)[/size]
+
+[size=12pt][color=orange]Credit Where it's Due[/color] [/size] [size=10pt](We didn't contribute directly but otherwise helped.)[/size]
+[size=8pt](Excluding Tynan because it goes without saying.  Also, if you'd like to implement anything from this into RimWorld, you are welcome to all the assets - code, graphics, etc!)[/size]
 
 Haplo for the [url=https://ludeon.com/forums/index.php?topic=3408.0]"How to make an [sic] .dll-mod"[/url] tutorial.
 mipen for his [url=https://ludeon.com/forums/index.php?topic=7380.0]Mechanical Defence 2[/url] mod and through it's dissection the AdvancedResearchDef was born.
-OpalMonkey for clueing me into [url=https://ludeon.com/forums/index.php?topic=12403.msg133986#msg133986]a better way to hide buildings[/url] behind research.
+OpalMonkey for clueing me [size=8pt](1000101)[/size] into [url=https://ludeon.com/forums/index.php?topic=12403.msg133986#msg133986]a better way to hide buildings[/url] behind research.
 soltysek for spending countless hours reviewing My Bad Code (tm).
 mrofa for wasting his time reading the help forum threads and his general ideas (of which there are lots!).
 Vas for CompLifespanPowered (requested in [url=https://ludeon.com/forums/index.php?topic=14249.0]here[/url]).
 TheGentlmen (GENT) for tracking down and reporting many subtle bugs.
 RawCode for figuring out unity4 / Mono x86 JIT method [url=https://ludeon.com/forums/index.php?topic=17143.0]detouring[/url], which is likely to be a gamechanger (pun intended).
+Everybody in the RimWorld Modders Slack for general feedback and testing the pre-releases.
 
 To anyone else who may have been forgotten, you know who you are and we appreciate the contributions and help you have provided.

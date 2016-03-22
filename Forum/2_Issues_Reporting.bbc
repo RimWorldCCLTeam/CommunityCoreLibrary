@@ -1,5 +1,7 @@
 [size=12pt][color=orange]Known Issues[/color][/size]
 
+RimWorld has a well known bug regarding the Mod menu.  Simply opening it will cause issues with mods.  Always restart RimWorld if you open the Mods menu.
+
 Changing languages and/or mod load order (including enabling mods) requires RimWorld to be restarted.
 
 There is a lot going on when RimWorld starts as far as CCL is concerned.  The best practice is to restart RimWorld if you change any setting more complicated than the volume.
@@ -20,5 +22,5 @@ What we need:
 
 
 
-[size=12pt][color=orange]Issue Tracker[/color][/size]
-[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/issues]github[/url]
+[size=12pt][color=orange]Report A Bug[/color][/size]
+[url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/issues]GitHub Issue Tracker[/url]

@@ -60,10 +60,6 @@ namespace CommunityCoreLibrary
         // Used to link directly to the mod which this def controls
         public LoadedMod                    mod;
 
-        // Used to flag level completion status
-        public bool                         EngineLevelInjectionsComplete;
-        public bool                         GameLevelInjectionsComplete;
-
         // Interfaces for different injectors
         // Use an array instead of a list to ensure order
         public static IInjector[]           Injectors;

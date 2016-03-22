@@ -1,9 +1,9 @@
 [center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
 v0.12.7
 
-[color="red"]This forum thread and the first 10 posts serve as the documentation.
+[color="red"]This forum thread and the first 10 posts serve as the documentation/manual.
 
-Be sure to RTFM every time you upgrade, things change, these posts are here to tell you how and how to avoid issue![/color][/center]
+Be sure to RTM every time you upgrade, things change, these posts are here to tell you how and how to avoid issue![/color][/center]
 
 
 
@@ -36,19 +36,26 @@ If you are a modder, download the modders resource or the source package.
 [b]ALWAYS[/b] delete any previous install of both the core library and the vanilla tweaks before installing a new version.  This will avoid most common problems.
 
 [size=12pt]Regular users download the "User Release" package.[/size]
-[list][li]Extract both the folders in the zip into your Mods folder.[/li]
+[list]
+[li]Extract both the folders in the zip into your Mods folder.[/li]
 [li]Enable "Community Core Library" immediately after "Core" - This is [b][i]REQUIRED[/i][/b] and an error will be thrown if the library does not detect the correct load order position.[/li]
-[li]The "Community Core Library - Vanilla Tweaks" is entirely optional but highly recommended.  It does not matter where in your load order it is but other mods may make changes to the same game objects.  Enable the tweaks before or after those mods depending on the functional changes you want to use.[/li][/list]
+[li]The "Community Core Library - Vanilla Tweaks" is entirely optional but highly recommended.  It does not matter where in your load order it is but other mods may make changes to the same game objects.  Enable the tweaks before or after those mods depending on the functional changes you want to use.[/li]
+[li]The "Community Core Library - Research Tree" is also optional and also highly recommended.  This will replace the research menu with a graphical tree depicting all research in the game.  Research projects can also be queued using this menu replacer.  Note, this will save additional queuing information in your save file and will need to be removed by manually editing your save game.[/li]
+[li]"Community Core Library - Vanilla Research Menu" will restore the vanilla research menu if you decide you don't like the default replacer or the research tree.[/li]
+[/list]
 
 [size=12pt]Modders download the "Modders Resource" package.[/size]
-[list][li]Do not unzip this into Mods.[/li]
-[li]Install the two mod folders ("Community Core Library" and "Community Core Library - Vanilla Tweaks") into your Mods directory and enable them as per the user release.[/li]
+[list]
+[li]Do not unzip this into Mods.[/li]
+[li]Install the mod folders into your Mods directory and enable them as per the user release.[/li]
 [li]Check your output_log.txt!  It will contain valuable information if CCL encounters errors when handling your mod!  This will help you fix those trivial bugs.[/li]
 [li]Always refer to "Def Descriptions" and "Examples" for how to use this library.[/li]
-[li]If something is not covered, please ask a question.  Be ready to be given a polite "rtfm" if it is covered in the docs. ;)[/li][/list]
+[li]If something is not covered, please ask a question.  Be ready to be given a polite "rtfm" if it is covered in the docs. ;)[/li]
+[li]As a modder, if you use the user release to develop your mod, no help or support will be given.  If you want help, use the modders release and refer your your log file and the manual [b]FIRST[/b].[/li]
+[/list]
 
 [size=12pt]C# Developers[/size]
-[list][li]If you are simply wanting to mod and take advantage of CCL, use the source download or fork from the master branch.[/li]
+[list][li]If you are simply wanting to mod and take advantage of CCL, use the source download or fork from the master branch (recommended).[/li]
 [li]If you want to contribute, bug fix, nitpick, etc, you should fork from the unstable development branch and propose changes through pull requests.[/li][/list]
 
 
@@ -67,4 +74,4 @@ This project started in Alpha 9, continued to be developed in Alpha 10 (some ide
 
 If all else fails, [i]read[/i] [b]all[/b] of the documentation (this forum thread posts #1-10), don't skim over anything.  Especially read "note" sections.
 
-Always do a "clean" install.  Delete the old version from /mods/ before copying the new version.  Do [i]not[/i] overwrite an existing copy.
+Always do a "clean" install.  Delete the old version from /Mods/ before copying the new version.  Do [i]not[/i] overwrite an existing copy.
