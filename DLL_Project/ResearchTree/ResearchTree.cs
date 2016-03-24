@@ -471,7 +471,7 @@ namespace CommunityCoreLibrary.ResearchTree
             FixPositions();
 
             // some debug output
-#if DEBUG
+#if DEVELOPER
             var stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
             CCL_Log.Message( "Duplicated positions:\n " + string.Join( "\n", Forest.Where( _node => Forest.Any( _otherNode => _node.Pos == _otherNode.Pos && _node != _otherNode ) ).Select( _node => _node.Pos + _node.Research.LabelCap + " (" + _node.Genus + ")" ).ToArray() ) );

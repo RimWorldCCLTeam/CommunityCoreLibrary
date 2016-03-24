@@ -10,7 +10,13 @@ namespace CommunityCoreLibrary
     public class CompHopper : ThingComp
     {
 
+        #region Instance Data
+
         private bool                        wasProgrammed;
+
+        #endregion
+
+        #region Properties
 
         public Building_Hopper              Building
         {
@@ -48,6 +54,10 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
+        #region Base Class Overrides
+
         public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
@@ -72,6 +82,10 @@ namespace CommunityCoreLibrary
             base.PostDeSpawn();
             DeprogramHopper();
         }
+
+        #endregion
+
+        #region Hopper Programming
 
         public void                         DeprogramHopper()
         {
@@ -119,14 +133,13 @@ namespace CommunityCoreLibrary
             WasProgrammed = true;
         }
 
+        #endregion
+
+        #region Resource Enumeration
+
         public StorageSettings              GetStoreSettings()
         {
             return Building.GetStoreSettings();
-        }
-
-        public Thing                        FindHopperUser()
-        {
-            return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
         }
 
         public Thing                        GetResource( ThingFilter acceptableResources )
@@ -181,6 +194,15 @@ namespace CommunityCoreLibrary
             return things;
         }
 
+        #endregion
+
+        #region Hopper User Enumeration
+
+        public Thing                        FindHopperUser()
+        {
+            return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
+        }
+
         public static Thing                 FindHopperUser( IntVec3 cell )
         {
             if( !cell.InBounds() )
@@ -205,6 +227,8 @@ namespace CommunityCoreLibrary
             // Nothing found
             return null;
         }
+
+        #endregion
 
     }
 

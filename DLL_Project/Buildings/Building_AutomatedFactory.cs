@@ -224,6 +224,7 @@ namespace CommunityCoreLibrary
             if( currentRecipe != null )
             {
                 str += currentRecipe.jobString;
+                str += "\n";
                 str += "Building_AutomatedFactory_WorkRemaining".Translate( currentProductionTick );
             }
             else if( currentThing != null )
@@ -305,7 +306,7 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Hopper Interface
+        #region IHopperUser
 
         private ThingFilter                 resourceFilter = null;
 
@@ -320,52 +321,58 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                if( def.AllRecipes.NullOrEmpty() )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.NonFatalErrors,
+                        "No recipes to build resources filter from" );
+                    return null;
+                }
+
                 if( resourceFilter == null )
                 {
                     resourceFilter = new ThingFilter();
-                    resourceFilter.allowedHitPointsConfigurable = true;
-                    resourceFilter.allowedQualitiesConfigurable = false;
+                    //resourceFilter.allowedHitPointsConfigurable = true;
+                    //resourceFilter.allowedQualitiesConfigurable = false;
 
                     //productionAllowances = new Dictionary<ThingDef, Allowances>();
 
                     // Scan recipes to build lists and resource filter
-                    if( !def.AllRecipes.NullOrEmpty() )
+                    foreach( var recipe in def.AllRecipes )
                     {
-                        
-                        foreach( var recipe in def.AllRecipes )
+                        if( recipe.products.Count != 1 )
                         {
-                            if( recipe.products.Count != 1 )
+                            CCL_Log.TraceMod(
+                                def,
+                                Verbosity.NonFatalErrors,
+                                "Building_AutomatedFactory can only use recipes which have one product :: '" + recipe.defName + "' contains " + recipe.products.Count + " products!" );
+                        }
+                        else
+                        {
+                            var product = recipe.products[ 0 ].thingDef;
+                            Allowances allowance;
+                            if( productionAllowances.TryGetValue( product, out allowance ) )
                             {
-                                CCL_Log.TraceMod(
-                                    def,
-                                    Verbosity.NonFatalErrors,
-                                    "Building_AutomatedFactory can only use recipes which have one product :: '" + recipe.defName + "' contains " + recipe.products.Count + " products!" );
+                                if( allowance.recipe != recipe )
+                                {
+                                    // Different recipe for same product
+                                    CCL_Log.TraceMod(
+                                        def,
+                                        Verbosity.NonFatalErrors,
+                                        "Building_AutomatedFactory can not have multiple recipes producing the same thing :: A recipe which produces '" + product.defName + "' already exists!" );
+                                }
+                                else if( !CompHopperUser.IsRecipeInFilter( recipe ) )
+                                {
+                                    // Same recipe for product (may happen immediately after loading a save game
+                                    // or a recipe is unlocked via research as the dictionary is not cleared)
+                                    CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
+                                }
                             }
                             else
                             {
-                                var product = recipe.products[ 0 ].thingDef;
-                                Allowances allowance;
-                                if( productionAllowances.TryGetValue( product, out allowance ) )
-                                {
-                                    if( allowance.recipe != recipe )
-                                    {
-                                        // Different recipe for same product
-                                        CCL_Log.TraceMod(
-                                            def,
-                                            Verbosity.NonFatalErrors,
-                                            "Building_AutomatedFactory can not have multiple recipes producing the same thing :: A recipe which produces '" + product.defName + "' already exists!" );
-                                    }
-                                    else
-                                    {
-                                        // Same recipe for product (may happen immediately after loading a save game
-                                        // or a recipe is unlocked via research as the dictionary is not cleared)
-                                    }
-                                }
-                                else
-                                {
-                                    productionAllowances.Add( product, new Allowances( recipe, true ) );
-                                    CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
-                                }
+                                productionAllowances.Add( product, new Allowances( recipe, true ) );
+                                CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
                             }
                         }
                     }

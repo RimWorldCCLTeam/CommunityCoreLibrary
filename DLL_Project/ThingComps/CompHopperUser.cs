@@ -355,6 +355,11 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         IsRecipeInFilter( RecipeDef recipe )
+        {
+            return recipeFilter.Contains( recipe );
+        }
+
         public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
         {
             if( recipeFilter.Contains( recipe ) )

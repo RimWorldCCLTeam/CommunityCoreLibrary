@@ -22,14 +22,23 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                var foo = parent.Position.GetThingList().Where( t => (
-                    ( t.TryGetComp<CompRefrigerated>() != null )
-                ) ).ToList();
-                if( !foo.NullOrEmpty() )
+                IntVec3 checkPos = IntVec3.Invalid;
+                if( parent.Position.InBounds() )
                 {
-                    return foo.First().TryGetComp<CompRefrigerated>();
+                    checkPos = parent.Position;
                 }
-                return null;
+                else if( parent.PositionHeld.InBounds() )
+                {
+                    checkPos = parent.PositionHeld;
+                }
+                if( checkPos == IntVec3.Invalid )
+                {
+                    return null;
+                }
+                var refrigerator = parent.Position.GetThingList().FirstOrDefault( t => (
+                    ( t.TryGetComp<CompRefrigerated>() != null )
+                ) );
+                return refrigerator?.TryGetComp<CompRefrigerated>();
             }
         }
 
