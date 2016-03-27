@@ -39,8 +39,8 @@ namespace CommunityCoreLibrary
             }
 
             // keep track of detours and spit out some messaging
-            string sourceString      = source.DeclaringType.FullName      + "." + source.Name;
-            string destinationString = destination.DeclaringType.FullName + "." + destination.Name;
+            string sourceString      = source.DeclaringType.FullName      + "." + source.Name      + " @ 0x" + source.MethodHandle.GetFunctionPointer().ToString( "X" + ( IntPtr.Size *  2 ).ToString() );
+            string destinationString = destination.DeclaringType.FullName + "." + destination.Name + " @ 0x" + destination.MethodHandle.GetFunctionPointer().ToString( "X" + ( IntPtr.Size *  2 ).ToString() );
 
 #if DEBUG
             if( detoured.Contains( sourceString ) )
