@@ -19,7 +19,7 @@
                                         [optional: null] If set, this def will generate a help menu entry in the specified category
         
         <ConsolidateHelp>bool</ConsolidateHelp>
-                                        [optional*: false] If true, this def will be find all other research projects with the same
+                                        [optional*: false] If true, this def will find all other research projects with the same
                                         research requirements and aggregate the data into one entry
         
         <HideUntilResearched>bool</HideUntilResearched>

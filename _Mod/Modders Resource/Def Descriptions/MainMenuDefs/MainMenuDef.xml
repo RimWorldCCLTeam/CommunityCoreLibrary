@@ -17,6 +17,8 @@
         
     </MainMenuDef>
     
+    * Either one of these is required but not both.  If using labelKey, a valid keyed translation must exist.
+    
     -->
     
 </Defs>
