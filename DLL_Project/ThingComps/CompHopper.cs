@@ -10,7 +10,13 @@ namespace CommunityCoreLibrary
     public class CompHopper : ThingComp
     {
 
+        #region Instance Data
+
         private bool                        wasProgrammed;
+
+        #endregion
+
+        #region Properties
 
         public Building_Hopper              Building
         {
@@ -40,19 +46,34 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         IsRefrigerated
+        {
+            get
+            {
+                return ( Building.TryGetComp<CompRefrigerated>() != null );
+            }
+        }
+
+        #endregion
+
+        #region Base Class Overrides
+
         public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
-            var userSettings = Building.GetParentStoreSettings();
-            if( userSettings == null )
+            if(
+                ( !WasProgrammed )&&
+                ( FindHopperUser() != null )
+            )
             {
-                return;
+                var hopperUser = FindHopperUser().TryGetComp<CompHopperUser>();
+                hopperUser.FindAndProgramHoppers();
             }
-            ProgramHopper( userSettings );
         }
 
         public override void                PostExposeData()
         {
+            base.PostExposeData();
             Scribe_Values.LookValue( ref wasProgrammed, "wasProgrammed", false );
         }
 
@@ -61,6 +82,10 @@ namespace CommunityCoreLibrary
             base.PostDeSpawn();
             DeprogramHopper();
         }
+
+        #endregion
+
+        #region Hopper Programming
 
         public void                         DeprogramHopper()
         {
@@ -76,7 +101,7 @@ namespace CommunityCoreLibrary
             }
 
             // Clear the programming
-            hopperSettings.filter.SetDisallowAll();
+            hopperSettings.filter = new ThingFilter();
 
             // Reset the flag
             WasProgrammed = false;
@@ -108,9 +133,13 @@ namespace CommunityCoreLibrary
             WasProgrammed = true;
         }
 
-        public Thing                        FindHopperUser()
+        #endregion
+
+        #region Resource Enumeration
+
+        public StorageSettings              GetStoreSettings()
         {
-            return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
+            return Building.GetStoreSettings();
         }
 
         public Thing                        GetResource( ThingFilter acceptableResources )
@@ -165,6 +194,15 @@ namespace CommunityCoreLibrary
             return things;
         }
 
+        #endregion
+
+        #region Hopper User Enumeration
+
+        public Thing                        FindHopperUser()
+        {
+            return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
+        }
+
         public static Thing                 FindHopperUser( IntVec3 cell )
         {
             if( !cell.InBounds() )
@@ -189,6 +227,8 @@ namespace CommunityCoreLibrary
             // Nothing found
             return null;
         }
+
+        #endregion
 
     }
 

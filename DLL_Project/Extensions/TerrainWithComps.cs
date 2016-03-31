@@ -30,8 +30,7 @@ namespace CommunityCoreLibrary
             base.PostLoad();
 
             // Validate place workers
-            if( ( placeWorkers != null )&&
-                ( placeWorkers.Count > 0 ) )
+            if( !placeWorkers.NullOrEmpty() )
             {
                 // Terrain with comps only supports a small set of place workers
                 foreach( var placeWorker in placeWorkers )
@@ -53,8 +52,7 @@ namespace CommunityCoreLibrary
             }
 
             // Validate comps
-            if( ( comps != null )&&
-                ( comps.Count > 0 ) )
+            if( !comps.NullOrEmpty() )
             {
                 // Terrain with comps only supports a small set of comps
                 for( int i = 0; i < comps.Count; ++i )

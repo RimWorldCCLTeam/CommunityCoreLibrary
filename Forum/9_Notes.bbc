@@ -1,0 +1,30 @@
+[size=12pt][color=orange]Notes[/color][/size]
+
+[sup][size=8pt]4.1[/size][/sup] A ModHelperDef is required for any mod using CCL.  Without this def, the library will throw an error.  There can only be one of these defs per mod or, again, an error will be thrown.  This was previously a soft requirement but is now a hard requirement.
+[sup][size=8pt]4.2[/size][/sup] Depending on the operational and output mode of the factory.  Two examples are provided, an automated stonecutter (fully automated) and a food synthesizer (pawn-interaction).
+[sup][size=8pt]4.3[/size][/sup] Building's which directly control their own power are the obvious exception (eg: heaters, coolers, etc).
+[sup][size=8pt]4.4[/size][/sup] Requires RestrictedPlacement_Comp and RestrictedPlacement_Properties for information and/or support ticking.
+[sup][size=8pt]4.5[/size][/sup] Want to place that building [i]on[/i] (instead of [i]near[/i]) a steam geyser?  You can, the core method which hard-codes steam geysers to geothermal generators has been detoured to allow any building with the PlaceWorker_OnSteamGeyser or PlaceWorker_OnlyOnThing to allow placement on steam geysers.
+[sup][size=8pt]4.6[/size][/sup] Depending on your needs, use a normal or rare ticker to fire the periodic check to make sure the supports still exist.  If the support is removed, the thing is destroyed and an alert is fired to inform the player.  Normal tickers only check every 250 ticks.
+
+[sup][size=8pt]5.1[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_Door will work.
+[sup][size=8pt]5.2[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_NutrientPasteDispenser will work.
+[sup][size=8pt]5.3[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_OrbitalTradeBeacon will work.
+[sup][size=8pt]5.4[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_CommsConsole will work.
+[sup][size=8pt]5.5[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, CommunityCoreLibrary.Building_AutomatedFactory with an output vector of "DirectToPawn" will work.
+[sup][size=8pt]5.6[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_ResearchBench will work.
+[sup][size=8pt]5.7[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Fire will work.
+
+[sup][size=8pt]8.1[/size][/sup] Please refer to the badging in the license section for linking to this thread.
+
+
+
+[size=12pt][color=orange]Important Packaging & Release Notes[/color][/size]
+
+[list]
+[li]You should [b]NOT[/b] include any of CCLs assets with your mod directly.[/li]
+[li]You should [b]NOT[/b] copy the dll to your mods assembly directory.[/li]
+[li]You should [b]NOT[/b] copy the xml, languages, textures, etc unless your are explicitly overriding them with new settings.  Doing so [b]WILL[/b] cause errors and will be the fault of the [i]modder[/i] who copies files they shouldn't.[/li]
+[li]Repackaging [b]ANY[/b] part of CCL with your mod automatically disqualifies you for assitance with your mod from the CCL team.  If you are repacking CCL assets (DLL, xml, textures, etc) you are accepting the responsibility of being an advanced modder and do not need help.
+[/list]
+Simply put - if your mod needs CCL, then it needs CCL to be properly installed and loaded before your mod as a separate download, not included with.  This is true for all mods and "mod packs."  The only place users should be getting CCL from is the official github releases, any other place is not an "official" copy (although perfectly legitimate, see [url=http://unlicense.org/]the unlicense[/url]) or the [i]modder[/i] using CCL has made a colossal mistake by packaging CCL assets directly with their mod.

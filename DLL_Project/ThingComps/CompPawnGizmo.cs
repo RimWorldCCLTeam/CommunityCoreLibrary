@@ -12,31 +12,25 @@ namespace CommunityCoreLibrary
                 ? pawn.equipment.Primary
                 : null;
 
-            var comp = equip != null
-                ? equip.AllComps.Find( s =>
+            if(
+                ( equip != null )&&
+                ( !equip.AllComps.NullOrEmpty() )
+            )
+            {
+                foreach( var comp in equip.AllComps )
+                {
+                    var gizmoGiver = comp as CompRangedGizmoGiver;
+                    if(
+                        ( gizmoGiver != null )&&
+                        ( gizmoGiver.isRangedGiver )
+                    )
                     {
-                        if( !s.GetType().IsSubclassOf( typeof( CompRangedGizmoGiver ) ) )
+                        foreach( var gizmo in gizmoGiver.CompGetGizmosExtra() )
                         {
-                            // Comp must be a subclass of ranged gizmo giver
-                            return false;
+                            yield return gizmo;
                         }
-
-                        var gizmoGiver = s as CompRangedGizmoGiver;
-                        return (
-                            ( gizmoGiver != null )&&
-                            ( gizmoGiver.isRangedGiver )
-                        );
-                    } )
-                : null;
-
-            if( comp == null )
-            {
-                yield break;
-            }
-
-            foreach( var current in comp.CompGetGizmosExtra() )
-            {
-                yield return current;
+                    }
+                }
             }
         }
 

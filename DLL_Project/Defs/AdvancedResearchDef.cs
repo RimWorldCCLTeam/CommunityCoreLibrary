@@ -5,6 +5,8 @@ using System.Text;
 using RimWorld;
 using Verse;
 
+using CommunityCoreLibrary.Controller;
+
 namespace CommunityCoreLibrary
 {
 
@@ -100,123 +102,136 @@ namespace CommunityCoreLibrary
 
         private bool                        isValidChecked = false;
         private bool                        isValid;
-        public bool                         IsValid
+        public bool                         IsValid()
         {
-            get
+            if( !isValidChecked )
             {
-                if( !isValidChecked )
+                // Hopefully...
+                isValid = true;
+
+                var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
+                modHelperDef = Find_Extensions.ModHelperDefForMod( loadedMod );
+
+                if(
+                    ( modHelperDef == null )||
+                    ( modHelperDef.dummy )
+                )
                 {
-                    // Hopefully...
-                    isValid = true;
-
-                    var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
-                    modHelperDef = Find_Extensions.ModHelperDefForMod( loadedMod );
-
-                    if(
-                        ( modHelperDef == null )||
-                        ( modHelperDef.dummy )
-                    )
-                    {
-                        // Missing ModHelperDef (not dummyable)
-                        isValid = false;
-                        CCL_Log.TraceMod(
-                            this,
-                            Verbosity.NonFatalErrors,
-                            "Requires ModHelperDef"
-                        );
-                    }
+                    // Missing ModHelperDef (not dummyable)
+                    isValid = false;
+                    CCL_Log.TraceMod(
+                        this,
+                        Verbosity.FatalErrors,
+                        "Requires ModHelperDef"
+                    );
+                }
 
 #if DEBUG
-                    // Validate research
-                    if( researchDefs.NullOrEmpty() )
+                // Validate research
+                if( researchDefs.NullOrEmpty() )
+                {
+                    // Invalid project
+                    isValid = false;
+                    CCL_Log.TraceMod(
+                        this,
+                        Verbosity.FatalErrors,
+                        "Missing researchDefs"
+                    );
+                }
+
+                // Validate recipes
+                if( IsRecipeToggle )
+                {
+                    // v0.12.7 - Obsoleted check to allow for automated machines
+                    // Make sure thingDefs are of the appropriate type (has ITab_Bills)
+                    /*
+                    foreach( var thingDef in thingDefs )
                     {
-                        // Invalid project
+                        if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            CCL_Log.AppendTrace(
+                                ref stringBuilder,
+                                this,
+                                Verbosity.FatalErrors,
+                                "ThingDef '" + thingDef.defName + "' does not implement IBillGiver"
+                            );
+                        }
+                    }
+                    */
+                }
+
+                // Validate plant sowTags
+                if( IsPlantToggle )
+                {
+                    // Make sure things are of the appropriate class (Plant)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if(
+                            ( thingDef.thingClass != typeof( Plant ) )&&
+                            ( !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
+                        )
+                        {
+                            // Invalid plant
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                this,
+                                Verbosity.FatalErrors,
+                                "ThingDef '" + thingDef.defName + "' ThingClass is not Plant based"
+                            );
+                        }
+                    }
+
+                    // Make sure sowTags are valid (!null or empty)
+                    for( int i = 0; i < sowTags.Count; i++ )
+                    {
+                        var sowTag = sowTags[ i ];
+                        if( sowTag.NullOrEmpty() )
+                        {
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                this,
+                                Verbosity.FatalErrors,
+                                "sowTag at index'" + i + "' is null or empty"
+                            );
+                        }
+                    }
+                }
+
+                // Validate buildings
+                if( IsBuildingToggle )
+                {
+                    // Make sure thingDefs are of the appropriate type (has proper designationCategory)
+                    foreach( var thingDef in thingDefs )
+                    {
+                        if( ( thingDef.designationCategory.NullOrEmpty() )||
+                            ( thingDef.designationCategory.ToLower() == "none" ) )
+                        {
+                            // Invalid project
+                            isValid = false;
+                            CCL_Log.TraceMod(
+                                this,
+                                Verbosity.FatalErrors,
+                                "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty"
+                            );
+                        }
+                    }
+                }
+
+                // Validate help
+                if( researchDefs.Count > 1 )
+                {
+                    if( ResearchConsolidator == null )
+                    {
+                        // Error processing data
                         isValid = false;
                         CCL_Log.TraceMod(
                             this,
                             Verbosity.FatalErrors,
-                            "Missing researchDefs"
+                            string.Format( "No valid help consolidator for AdvancedResearchDef {0}", defName )
                         );
                     }
-
-                    // Validate recipes
-                    if( IsRecipeToggle )
-                    {
-                        // Make sure thingDefs are of the appropriate type (has ITab_Bills)
-                        foreach( var thingDef in thingDefs )
-                        {
-                            if( thingDef.thingClass.GetInterface( "IBillGiver" ) == null )
-                            {
-                                // Invalid project
-                                isValid = false;
-                                CCL_Log.TraceMod(
-                                    this,
-                                    Verbosity.FatalErrors,
-                                    "ThingDef '" + thingDef.defName + "' does not implement IBillGiver"
-                                );
-                            }
-                        }
-
-                    }
-
-                    // Validate plant sowTags
-                    if( IsPlantToggle )
-                    {
-                        // Make sure things are of the appropriate class (Plant)
-                        foreach( var thingDef in thingDefs )
-                        {
-                            if(
-                                ( thingDef.thingClass != typeof( Plant ) )&&
-                                ( !thingDef.thingClass.IsSubclassOf( typeof(Plant) ) )
-                            )
-                            {
-                                // Invalid plant
-                                isValid = false;
-                                CCL_Log.TraceMod(
-                                    this,
-                                    Verbosity.FatalErrors,
-                                    "ThingDef '" + thingDef.defName + "' ThingClass is not Plant based"
-                                );
-                            }
-                        }
-
-                        // Make sure sowTags are valid (!null or empty)
-                        for( int i = 0; i < sowTags.Count; i++ )
-                        {
-                            var sowTag = sowTags[ i ];
-                            if( sowTag.NullOrEmpty() )
-                            {
-                                isValid = false;
-                                CCL_Log.TraceMod(
-                                    this,
-                                    Verbosity.FatalErrors,
-                                    "sowTag at index'" + i + "' is null or empty"
-                                );
-                            }
-                        }
-                    }
-
-                    // Validate buildings
-                    if( IsBuildingToggle )
-                    {
-                        // Make sure thingDefs are of the appropriate type (has proper designationCategory)
-                        foreach( var thingDef in thingDefs )
-                        {
-                            if( ( thingDef.designationCategory.NullOrEmpty() )||
-                                ( thingDef.designationCategory.ToLower() == "none" ) )
-                            {
-                                // Invalid project
-                                isValid = false;
-                                CCL_Log.TraceMod(
-                                    this,
-                                    Verbosity.FatalErrors,
-                                    "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty"
-                                );
-                            }
-                        }
-                    }
-
-                    // Validate help
                     if( ( HasHelp )&&
                         ( ResearchConsolidator == this ) )
                     {
@@ -241,11 +256,10 @@ namespace CommunityCoreLibrary
                             );
                         }
                     }
-
-#endif
                 }
-                return isValid;
+#endif
             }
+            return isValid;
         }
 
         public ResearchEnableMode EnableMode
@@ -396,10 +410,10 @@ namespace CommunityCoreLibrary
                 }
                 if( researchConsolidator == null )
                 {
-                    var matching = Controller.Data.AdvancedResearchDefs.Where( a => (
+                    var matching = Data.AdvancedResearchDefs.Where( a => (
                         ( HasMatchingResearch( a ) )
                     ) ).ToList();
-                    researchConsolidator = matching.FirstOrDefault( a => ( a.ConsolidateHelp ) );
+                    researchConsolidator = matching.FirstOrDefault( a => ( a.Priority == -1 )&&( a.ConsolidateHelp ) );
                     if( researchConsolidator == null )
                     {
                         researchConsolidator = matching.FirstOrDefault();
@@ -593,7 +607,7 @@ namespace CommunityCoreLibrary
                 }
 
                 // Add this building to the list to recache
-                ResearchController.buildingCache.Add( buildingDef );
+                ResearchSubController.buildingCache.Add( buildingDef );
             }
         }
 
@@ -670,7 +684,7 @@ namespace CommunityCoreLibrary
                 {
                     var researchMod = researchMods[ i ];
                     // Add the advanced research mod to the cache
-                    ResearchController.researchModCache.Add( researchMod );
+                    ResearchSubController.researchModCache.Add( researchMod );
                 }
             }
             else
@@ -680,7 +694,7 @@ namespace CommunityCoreLibrary
                 {
 
                     // Add the advanced research mod to the cache
-                    ResearchController.researchModCache.Add( researchMod );
+                    ResearchSubController.researchModCache.Add( researchMod );
                 }
             }
         }
@@ -706,7 +720,7 @@ namespace CommunityCoreLibrary
             }
 
             // Queue for recache
-            ResearchController.helpCategoryCache.Add( helpCategoryDef );
+            ResearchSubController.helpCategoryCache.Add( helpCategoryDef );
         }
 
         #endregion

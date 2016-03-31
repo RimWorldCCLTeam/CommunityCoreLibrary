@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    <MainMenuDef>
+        <defName>string</defName>       [required] Some unique identifier in class
+        
+        <label>string</label>           [required*] Text to display on menu button
+        <labelKey>string</labelKey>     [required*] Translation key for text to display on menu button
+        
+        <order>int</order>              [required] Order to insert menu button (higher values at top)
+        
+        <menuClass>MainMenu</menuClass>  [required] Class which inherits MainMenu to handle the button
+        
+        <closeMainTab>bool</closeMainTab> [optional: false] Close the main menu tab before performing the button click action
+        
+    </MainMenuDef>
+    
+    * Either one of these is required but not both.  If using labelKey, a valid keyed translation must exist
+    and it will override the label if both are provided.  If neither are provided, a non-fatal error will be
+    thrown and the menu will display the defName on the button.
+    
+    -->
+    
+</Defs>

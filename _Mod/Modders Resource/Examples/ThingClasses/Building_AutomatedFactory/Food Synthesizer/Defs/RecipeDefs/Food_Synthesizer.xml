@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RecipeDefs>
+
+    <RecipeDef Abstract="true" Name="SynthesizedMealBase">
+        <allowMixingIngredients>true</allowMixingIngredients>
+        <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+        <fixedIngredientFilter>
+            <categories>
+                <li>FoodRaw</li>
+            </categories>
+            <disallowedSpecialFilters>
+                <li>AllowPlantFood</li>
+            </disallowedSpecialFilters>
+        </fixedIngredientFilter>
+        <defaultIngredientFilter>
+            <categories>
+                <li>FoodRaw</li>
+            </categories>
+            <exceptedCategories>
+                <li>EggsFertilized</li>
+            </exceptedCategories>
+            <exceptedThingDefs>
+                <li>Human_Meat</li>
+                <li>Hay</li>
+            </exceptedThingDefs>
+        </defaultIngredientFilter>
+    </RecipeDef>
+
+    <RecipeDef ParentName="SynthesizedMealBase">
+        <defName>SynthesizeMealSimple</defName>
+        <label>synthesize simple meal</label>
+        <description>Synthesizes a straightforward meal from one ingredient.</description>
+        <jobString>Synthesizing simple meal.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <categories>
+                        <li>FoodRaw</li>
+                    </categories>
+                </filter>
+                <count>0.5</count>
+            </li>
+        </ingredients>
+        <products>
+            <MealSimple>1</MealSimple>
+        </products>
+        <workAmount>200</workAmount>
+    </RecipeDef>
+
+    <RecipeDef ParentName="SynthesizedMealBase">
+        <defName>SynthesizeMealFine</defName>
+        <label>synthesize fine meal</label>
+        <description>Synthesizes a somewhat complex meal from a combination of raw meat and raw plant ingredients.</description>
+        <jobString>Synthesizing fine meal.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <categories>
+                        <li>MeatRaw</li>
+                        <li>OtherFoodRaw</li>
+                    </categories>
+                </filter>
+                <count>0.25</count>
+            </li>
+            <li>
+                <filter>
+                    <categories>
+                        <li>PlantFoodRaw</li>
+                    </categories>
+                </filter>
+                <count>0.25</count>
+            </li>
+        </ingredients>
+        <products>
+            <MealFine>1</MealFine>
+        </products>
+        <workAmount>275</workAmount>
+    </RecipeDef>
+
+    <RecipeDef ParentName="SynthesizedMealBase">
+        <defName>SynthesizeMealLavish</defName>
+        <label>synthesize lavish meal</label>
+        <description>Synthesizes a very complex meal from a combination of raw meat and raw plant ingredients. Unlike a cooked meal, none of the ingredients are wasted but it still requires more ingredients than a fine meal.</description>
+        <jobString>Synthesizing lavish meal.</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <categories>
+                        <li>MeatRaw</li>
+                        <li>OtherFoodRaw</li>
+                    </categories>
+                </filter>
+                <count>0.375</count>
+            </li>
+            <li>
+                <filter>
+                    <categories>
+                        <li>PlantFoodRaw</li>
+                    </categories>
+                </filter>
+                <count>0.375</count>
+            </li>
+        </ingredients>
+        <products>
+            <MealLavish>1</MealLavish>
+        </products>
+        <workAmount>350</workAmount>
+    </RecipeDef>
+
+</RecipeDefs>

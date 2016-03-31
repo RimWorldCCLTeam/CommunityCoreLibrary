@@ -6,7 +6,8 @@
         InUse = 0,
         WhenNear,
         GroupUser,
-        Cycle
+        Cycle,
+        Factory
     }
 
 }

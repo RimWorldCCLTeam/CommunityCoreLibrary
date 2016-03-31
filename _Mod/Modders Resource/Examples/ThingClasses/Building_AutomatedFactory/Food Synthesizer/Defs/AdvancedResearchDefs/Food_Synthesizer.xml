@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <AdvancedResearchDef>
+
+        <defName>AdvancedFineMealSynthesis</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>FineMealSynthesis</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeMealFine</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>FoodSynthesizer</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+    <AdvancedResearchDef>
+
+        <defName>AdvancedLavishMealSynthesis</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>LavishMealSynthesis</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeMealLavish</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>FoodSynthesizer</li>
+        </thingDefs>
+
+    </AdvancedResearchDef>
+
+</Defs>

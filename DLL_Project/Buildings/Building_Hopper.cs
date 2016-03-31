@@ -7,12 +7,20 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+    
     public class Building_Hopper : Building, IStoreSettingsParent, ISlotGroupParent
     {
+
+        #region Instance Data
+
         public SlotGroup                    slotGroup;
         public StorageSettings              settings;
 
         private IEnumerable<IntVec3>        cachedOccupiedCells;
+
+        #endregion
+
+        #region Properties
 
         private CompHopper                  CompHopper
         {
@@ -22,39 +30,16 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
+        #region IStoreSettingsParent
+
         public bool                         StorageTabVisible
         {
             get
             {
                 return true;
             }
-        }
-
-        public SlotGroup                    GetSlotGroup()
-        {
-            return slotGroup;
-        }
-
-        public virtual void                 Notify_ReceivedThing(Thing newItem)
-        {
-        }
-
-        public virtual void                 Notify_LostThing(Thing newItem)
-        {
-        }
-
-        public virtual IEnumerable<IntVec3> AllSlotCells()
-        {
-            if( cachedOccupiedCells == null )
-            {
-                cachedOccupiedCells = this.OccupiedRect().Cells;
-            }
-            return cachedOccupiedCells;
-        }
-
-        public List<IntVec3>                AllSlotCellsList()
-        {
-            return AllSlotCells().ToList();
         }
 
         public StorageSettings              GetStoreSettings()
@@ -77,10 +62,45 @@ namespace CommunityCoreLibrary
             return compHopperUser.ResourceSettings;
         }
 
+        #endregion
+
+        #region ISlotGroupParent
+
+        public virtual IEnumerable<IntVec3> AllSlotCells()
+        {
+            if( cachedOccupiedCells == null )
+            {
+                cachedOccupiedCells = this.OccupiedRect().Cells;
+            }
+            return cachedOccupiedCells;
+        }
+
+        public List<IntVec3>                AllSlotCellsList()
+        {
+            return AllSlotCells().ToList();
+        }
+
+        public virtual void                 Notify_ReceivedThing(Thing newItem)
+        {
+        }
+
+        public virtual void                 Notify_LostThing(Thing newItem)
+        {
+        }
+
         public string                       SlotYielderLabel()
         {
             return LabelCap;
         }
+
+        public SlotGroup                    GetSlotGroup()
+        {
+            return slotGroup;
+        }
+
+        #endregion
+
+        #region Base Class Overrides
 
         public override void                PostMake()
         {
@@ -88,16 +108,16 @@ namespace CommunityCoreLibrary
             settings = new StorageSettings((IStoreSettingsParent) this);
             if( def.building.defaultStorageSettings != null )
             {
-                settings.CopyFrom(def.building.defaultStorageSettings);
+                settings.CopyFrom( def.building.defaultStorageSettings );
             }
-            settings.filter.BlockDefaultAcceptanceFilters();
+            //settings.filter.BlockDefaultAcceptanceFilters();
             settings.filter.ResolveReferences();
         }
 
         public override void                SpawnSetup()
         {
             base.SpawnSetup();
-            slotGroup = new SlotGroup((ISlotGroupParent) this);
+            slotGroup = new SlotGroup( (ISlotGroupParent) this );
             cachedOccupiedCells = this.OccupiedRect().Cells;
         }
 
@@ -107,17 +127,19 @@ namespace CommunityCoreLibrary
             Scribe_Deep.LookDeep<StorageSettings>(ref settings, "settings", new Object[1]{ this } );
 
             // Disallow quality
-            settings.filter.allowedQualitiesConfigurable = false;
+            //settings.filter.allowedQualitiesConfigurable = false;
 
             // Block default special filters
-            settings.filter.BlockDefaultAcceptanceFilters( GetParentStoreSettings() );
+            //settings.filter.BlockDefaultAcceptanceFilters( GetParentStoreSettings() );
         }
 
         public override void                Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            if (slotGroup != null)
+            if( slotGroup != null )
+            {
                 slotGroup.Notify_ParentDestroying();
-            base.Destroy(mode);
+            }
+            base.Destroy( mode );
         }
 
         public override IEnumerable<Gizmo>  GetGizmos()
@@ -133,5 +155,8 @@ namespace CommunityCoreLibrary
             }
         }
 
+        #endregion
+
     }
+
 }

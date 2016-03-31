@@ -15,10 +15,7 @@
     Optional:   CompGlower
     
     CompPowerLowIdleDraw (comp idle power), will modify the power usage of a building based on
-    it's operational mode.  Modes curently include "InUse" (work tables), "WhenNear" (pawn is in
-    any cell the building uses or in any adjacent cell to the building) and "Cycle" (operates in
-    "full power" mode for a specified number of ticks then in "low power" mode for a specified
-    number of ticks, cycling between modes).
+    it's operational mode.  The mode options, default values and useage examples are listed below.
     
     Comp Properties:
     
@@ -33,10 +30,14 @@
     a cycle power may not be switched if the conditions would allow it to stay in that mode.
     The default values are as follows:
         
-        mode        low         high
-        InUse       30          500
-        WhenNear    30          500
-        Cycle       1000        500
+        mode        low     high    Example usage
+        InUse       30      500     Work benches
+        WhenNear    30      500     Auto doors
+        Cycle       1000    500     Hydroponics
+        GroupUser** 30      100     Television
+        Factory     30      100     Only works with Building_AutomatedFactory and child classes
+    
+    ** GroupUser requires a JoyGiverDef with matching thingDef and a minRange and maxRange > 0
     
     Usage:
     

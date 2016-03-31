@@ -63,7 +63,7 @@ namespace CommunityCoreLibrary
                 if(
                     ( buildableDef.researchPrerequisite != null )&&
                     ( buildableDef.researchPrerequisite.IsLockedOut() )&&
-                    ( !ResearchController.AdvancedResearch.Any( a => (
+                    ( !Controller.Data.AdvancedResearchDefs.Any( a => (
                         ( a.IsBuildingToggle )&&
                         ( !a.HideDefs )&&
                         ( a.thingDefs.Contains( buildableDef as ThingDef ) )
@@ -96,7 +96,7 @@ namespace CommunityCoreLibrary
 
             // Check for an advanced research unlock
             return
-                ResearchController.AdvancedResearch.Any( a => (
+                Controller.Data.AdvancedResearchDefs.Any( a => (
                     ( a.IsBuildingToggle )&&
                     ( !a.HideDefs )&&
                     ( a.thingDefs.Contains( buildableDef as ThingDef ) )
@@ -126,7 +126,7 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    var advancedResearchDefs = ResearchController.AdvancedResearch.Where( a => (
+                    var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                         ( a.IsBuildingToggle )&&
                         ( !a.HideDefs )&&
                         ( a.thingDefs.Contains( buildableDef as ThingDef ) )
@@ -147,10 +147,6 @@ namespace CommunityCoreLibrary
 
         public static List< RecipeDef >     GetRecipeDefs( this BuildableDef buildableDef )
         {
-            // TODO: See if I can track down special product recipes ( butchery / smelting ).
-            // stone blocks, meat and metal (mechanoids) can all be butchered. 
-            // smelting returns stuff from item, and has been applied on cloth as well (recycling mod).
-
             return
                 DefDatabase<RecipeDef>.AllDefsListForReading.Where(
                     r => r.products.Any( tc => tc.thingDef == buildableDef as ThingDef ) ).ToList();

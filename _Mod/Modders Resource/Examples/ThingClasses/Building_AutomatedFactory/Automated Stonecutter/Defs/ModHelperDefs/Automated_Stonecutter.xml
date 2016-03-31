@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>AutomatedStonecutterVersion</defName>
+
+        <ModName>Modders Resource: Automated Stonecutter</ModName>
+
+        <version>0.12.7</version>
+
+        <UsesGenericHoppers>true</UsesGenericHoppers>
+
+    </ModHelperDef>
+
+</Defs>

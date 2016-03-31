@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_HopperUserMagnifier
+    
+    This will highlight buildings which will connect to a hopper upon construction.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_HopperUserMagnifier</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

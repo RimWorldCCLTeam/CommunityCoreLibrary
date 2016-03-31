@@ -11,9 +11,68 @@
 
         <version>version</version>      [required] Minimum version of CCL required
 
+        <Verbosity>enum*</Verbosity>    [optional] Sets the level of logging output CCL will perform when performing tasks specific to your mod
+
+        <ModConfigurationMenus>         [optional] List of Mod Configuration Menus (MCM) for mod
+            <li>
+                <label>string</label>   [required] Name** to be displayed in the Mod Options menu
+                <mcmClass>ModConfigurationMenu</mcmClass>
+                                        [required] Class name of Mod Configuration Menu
+            </li>
+        </ModConfigurationMenus>
+
+        < -- Engine Level Injectors -- >
+
         <SpecialInjectors>              [optional] Class names of SpecialInjectors to execute after mod validation and before any other injection
             <li>SpecialInjector</li>
         </SpecialInjectors>
+
+        <ThingComps>                    [optional] List of ThingComps to inject
+            <li>
+                <compProps>             [required] Property of ThingComp to inject
+
+                    <compClass>ThingComp</compClass>
+                    ...
+
+                </compProps>
+                <targetDefs>            [required] List of ThingDefs to inject ThingComp into
+                    <li>ThingDef</li>
+                </targetDefs>
+
+            </li>
+        </ThingComps>
+
+        <Facilities>                    [optional] List of facilities (buildings with CompFacility) to inject into buildings with CompAffectedByFacilities
+            <li>
+                <facility>ThingDef</facility>
+                                        [required] Facility to inject into buildings
+                <targetDefs>
+                    <li>ThingDef</li>   [required] Building to inject facility into
+                </targetDefs>
+            </li>
+        </Facilities>
+
+        <TraderKinds>                   [optional] List of StockGenerators to inject into TraderKindDefs
+            <li>
+                <targetDef>TraderKindDef</targetDef>
+                                        [required] Trader to inject StockGenerator into
+                <stockGenerators>
+                    <li>StockGenerator</li>
+                                        [required] StockGenerator to inject into trader
+                </stockGenerators>
+            </li>
+        </TraderKinds>
+
+        <UsesGenericHoppers>bool</UsesGenericHoppers>
+                                        [optional] Enables the generic hoppers for use with buildings, hoppers
+                                        are hidden by default from player use unless a mod enables them
+
+        <HideVanillaHoppers>bool</HideVanillaHoppers>
+                                        [optional] Disables the vanilla hoppers, preventing them from being built.
+                                        The use of this is not recommended outside of modpacks to prevent
+                                        incompatibilities with mods which may use the vanilla hopper.
+
+        < -- Game Level Injectors -- >
 
         <PostLoadInjectors>             [optional] Class names of SpecialInjectors to execute after starting a new game or loading save games
             <li>SpecialInjector</li>
@@ -36,27 +95,6 @@
             </li>
         </Designators>
 
-        <ThingComps>                    [optional] List of ThingComps to inject
-            <li>
-                <compProps>             [required] Property of ThingComp to inject
-
-                    <compClass>ThingComp</compClass>
-                    ...
-
-                </compProps>
-                <targetDefs>            [required] List of ThingDefs to inject ThingComp into
-                    <li>ThingDef</li>
-                </targetDefs>
-
-            </li>
-        </ThingComps>
-
-        <UsesGenericHoppers>bool</UsesGenericHoppers>
-                                        [optional] Enables the generic hoppers for use with buildings, hoppers
-                                        are hidden by default from player use unless a mod enables them
-
-        <Verbosity>enum*</Verbosity>    [optional] Sets the level of logging output CCL will perform when performing tasks specific to your mod
-
     </ModHelperDef>
 
     * Verbosity is an enumeration and works with named levels, each level adds more and more information to the output log.
@@ -72,11 +110,16 @@
         StateChanges
         Stack (Use with caution, this will trace certain methods and some methods are recursive)
     
-    For both the user release and modders release the default verbosity is "Validation"
+    For the user release the default verbosity is "Validation", and;
+    The modders release the default verbosity is "Injections."
 
     While the user release will not report anything higher than validation, you should still remove (or comment) the xml tag
     for verbosity before releasing your mod.  The higher levels of verbosity will help track down bugs in both your mod and
     potentially within CCL itself for reporting to the github issues tracker.
+
+    ** The label for the MCM is also used as the save key for the mod data.  Mod data is stored in the same directory as the
+    core games configuration files.  It will be called "MCM_Data_[keyName].xml" where keyName is the label with spaces replaced
+    with underscores.
 
     NOTE:  Only create one ModHelperDef for your mod, if more than one is found then an error will be thrown and any advanced
     functionality requiring information contained within the ModHelperDef (such as injections, AdvancedResearchDefs, etc) will be

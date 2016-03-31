@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using RimWorld;
 using Verse;
+using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -170,8 +172,7 @@ namespace CommunityCoreLibrary
             {
                 // Add things in cell with matching def
                 var things = thing.ListSameThingDefInCell( cell );
-                if( ( things != null )&&
-                    ( things.Count > 0 ) )
+                if( !things.NullOrEmpty() )
                 {
                     list.AddRange( things );
                 }
@@ -195,8 +196,7 @@ namespace CommunityCoreLibrary
             {
                 // Add things in cell with matching graphic linker
                 var things = thing.ListSameGraphicLinkerInCell( cell );
-                if( ( things != null )&&
-                    ( things.Count > 0 ) )
+                if( !things.NullOrEmpty() )
                 {
                     list.AddRange( things );
                 }
@@ -459,6 +459,15 @@ namespace CommunityCoreLibrary
                 }
             }
             return cache;
+        }
+
+        #endregion
+
+        #region Joy Participant Cells (Watch Buildings)
+
+        public static List< IntVec3 >       GetParticipantCells( this Thing thing, bool getBlocked = false )
+        {
+            return thing.def.GetParticipantCells( thing.Position, thing.Rotation, getBlocked );
         }
 
         #endregion

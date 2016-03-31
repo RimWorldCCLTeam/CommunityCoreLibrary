@@ -8,37 +8,6 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public class CompRottableRefrigerated_Injector : SpecialInjector
-    {
-
-        // TODO:  Alpha 13 API change
-        //public override bool Inject()
-        public override void                Inject()
-        {
-            // Replace CompRottable on ThingDefs
-            var thingDefs = DefDatabase< ThingDef >.AllDefsListForReading;
-            if( !thingDefs.NullOrEmpty() )
-            {
-                foreach( var thingDef in thingDefs )
-                {
-                    if( !thingDef.comps.NullOrEmpty() )
-                    {
-                        foreach( var prop in thingDef.comps )
-                        {
-                            if( prop.GetType() == typeof( CompProperties_Rottable ) )
-                            {
-                                prop.compClass = typeof( CompRottableRefrigerated );
-                            }
-                        }
-                    }
-                }
-            }
-            // TODO:  Alpha 13 API change
-            //return true;
-        }
-
-    }
-
     public class CompRottableRefrigerated : CompRottable
     {
         private CompProperties_Rottable     PropsRot
@@ -53,14 +22,23 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                var foo = parent.Position.GetThingList().Where( t => (
-                    ( t.TryGetComp<CompRefrigerated>() != null )
-                ) ).ToList();
-                if( !foo.NullOrEmpty() )
+                IntVec3 checkPos = IntVec3.Invalid;
+                if( parent.Position.InBounds() )
                 {
-                    return foo.First().TryGetComp<CompRefrigerated>();
+                    checkPos = parent.Position;
                 }
-                return null;
+                else if( parent.PositionHeld.InBounds() )
+                {
+                    checkPos = parent.PositionHeld;
+                }
+                if( checkPos == IntVec3.Invalid )
+                {
+                    return null;
+                }
+                var refrigerator = parent.Position.GetThingList().FirstOrDefault( t => (
+                    ( t.TryGetComp<CompRefrigerated>() != null )
+                ) );
+                return refrigerator?.TryGetComp<CompRefrigerated>();
             }
         }
 

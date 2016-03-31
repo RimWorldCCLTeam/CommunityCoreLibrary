@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingClass: Building_AutomatedFactory
+    
+    Requires:   CompHopperUser
+                CompPowerTrader
+                CompAutomatedFactory
+                CompProperties_AutomatedFactory
+    
+    tickerType: Normal* or Rare
+    
+    Optional:   PlaceWorker_HopperMagnifier
+                ITab_AutomatedFactory
+    
+    This class of buildings will create products from recipes by taking resources from connected hoppers.  It
+    can create work on a single recipe at a time and complete recipes which have a single product output.
+    Currently, this building does not support recipes which create stuffable items.  This building is tied
+    directly into the food sub-system so pawns can take meals directly from a factory in their normal course
+    of searching for food.  When looking for meals, pawns will use the nutritional value of the meals which
+    the building can provide and similarily for alcohol, pawns will use the joy factor.
+    
+    Recipes can be added or removed from the building via research and ticking is required to check for changes
+    in the available recipes.  Recipes must have a single product.  Factories which directly output to pawns
+    should only produce a single stack item (ie, a single meal instead of a stack of meals).  Factories which
+    aren't used to produce meals or other ingestible items direct to pawns have no stack size restrictions.
+    
+    Ticking can be normal or rare, however, normal ticking will be more responsive*.
+    
+    The ITab_AutomatedFactory allows the player to control what recipes can be produced at any given time and supplies
+    information about ingredients are required for the recipes.
+    
+    Recipes used with this building don't use the workers skills and don't need any tags relating to them.
+    The only recipe tags which are relevant are as follows:
+        defName
+        label
+        description**
+        jobString***
+        allowMixingIngredients
+        ingredients
+        fixedIngredientFilter
+        defaultIngredientFilter
+        products
+        workAmount
+    
+    * Production ticking happens per tick, recipe checks happens once every 60 ticks.  Rare ticking counts 250 production ticks.
+    ** Recipe description is only visible in the help menu.
+    *** Recipe jobString is displayed in the buildings inspect string when it's producing
+    
+    Usage:      For an example on how to use this building, see:
+                /Examples/ThingClasses/Building_AutomatedFactory/Automated Stonecutter
+                /Examples/ThingClasses/Building_AutomatedFactory/Food Synthesizer
+    
+    -->
+
+</Defs>

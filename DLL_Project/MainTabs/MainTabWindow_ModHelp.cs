@@ -7,7 +7,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public class MainTabWindow_ModHelp : MainTabWindow
+    public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
     {
 
         #region Instance Data
@@ -18,6 +18,8 @@ namespace CommunityCoreLibrary
         public const float                  Margin                  = 6f; // 15 is way too much.
         public const float                  EntryHeight             = 30f;
         public const float                  EntryIndent             = 15f;
+        public const float                  ParagraphMargin         = 8f;
+        public const float                  LineHeigthOffset        = 6f; // CalcSize overestimates required height by roughly this much.
 
         protected Rect                      SelectionRect;
         protected Rect                      DisplayRect;
@@ -26,8 +28,8 @@ namespace CommunityCoreLibrary
         protected Vector2                   SelectionScrollPos      = default(Vector2);
         protected Vector2                   DisplayScrollPos        = default(Vector2);
 
-        public const float                  MinWidth                = 600f;
-        public const float                  MinHeight               = 400f;
+        public const float                  MinWidth                = 800f;
+        public const float                  MinHeight               = 600f;
         public const float                  MinListWidth            = 200f;
         public float                        ContentHeight           = 9999f;
         public float                        SelectionHeight         = 9999f;
@@ -37,14 +39,6 @@ namespace CommunityCoreLibrary
         private int                         _lastFilterTick;
         private bool                        _filtered;
         private bool                        _jump;
-
-        public override MainTabWindowAnchor Anchor
-        {
-            get
-            {
-                return MainTabWindowAnchor.Right;
-            }
-        }
 
         public override Vector2 RequestedTabSize
         {
@@ -78,6 +72,34 @@ namespace CommunityCoreLibrary
             doCloseButton = false;
             doCloseX = true;
             closeOnEscapeKey = true;
+            forcePause = true;
+        }
+
+        #endregion
+
+        #region Positioning overrides
+        public override void PostOpen()
+        {
+            base.PostOpen();
+
+            if( Game.Mode == GameMode.Entry )
+            {
+                this.currentWindowRect = new Rect(
+                    ( Screen.width - RequestedTabSize.x ) / 2,
+                    ( Screen.height - RequestedTabSize.y ) / 2,
+                    RequestedTabSize.x,
+                    RequestedTabSize.y );
+                this.absorbInputAroundWindow = true;
+            }
+            else
+            {
+                this.currentWindowRect = new Rect(
+                    ( Screen.width - RequestedTabSize.x ),
+                    ( Screen.height - RequestedTabSize.y - 35f ),
+                    RequestedTabSize.x,
+                    RequestedTabSize.y );
+                this.absorbInputAroundWindow = false;
+            }
         }
 
         #endregion
@@ -158,7 +180,7 @@ namespace CommunityCoreLibrary
         {
             base.PreOpen();
 
-            //Set whether the window forces a pause
+            // Set whether the window forces a pause
             // Not entirely sure why force pause warrants an xml setting? - Fluffy.
             if( TabDef != null )
             {
@@ -239,8 +261,6 @@ namespace CommunityCoreLibrary
 
         public override void DoWindowContents( Rect rect )
         {
-            base.DoWindowContents( rect );
-
             Text.Font = GameFont.Small;
 
             GUI.BeginGroup( rect );
@@ -260,9 +280,6 @@ namespace CommunityCoreLibrary
 
         void DrawDisplayArea( Rect rect )
         {
-            float paragraphMargin = 8f;
-            float inset = 30f;
-
             Widgets.DrawMenuSection( rect );
 
             if( SelectedHelpDef == null )
@@ -270,12 +287,24 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            var titleRect = new Rect(rect.xMin, rect.yMin, rect.width, 60f);
             Text.Font = GameFont.Medium;
+            Text.WordWrap = false;
+            float titleWidth = Text.CalcSize( SelectedHelpDef.LabelCap ).x;
+            var titleRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, titleWidth, 60f );
+            if(
+                ( SelectedHelpDef.keyDef != null )&&
+                ( SelectedHelpDef.keyDef.IconTexture() != null )
+            )
+            {
+                var iconRect = new Rect( titleRect.xMin + Margin, rect.yMin + Margin, 60f - 2 * Margin, 60f - 2 * Margin );
+                titleRect.x += 60f;
+                SelectedHelpDef.keyDef.DrawColouredIcon( iconRect );
+            }
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label( titleRect, SelectedHelpDef.LabelCap );
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
+            Text.WordWrap = true;
 
             Rect outRect = rect.ContractedBy(Margin);
             outRect.yMin += 60f;
@@ -288,40 +317,13 @@ namespace CommunityCoreLibrary
 
             Vector2 cur = Vector2.zero;
 
-            HelpDetailSectionHelper.DrawText( ref cur, viewRect, SelectedHelpDef.description );
+            HelpDetailSectionHelper.DrawText( ref cur, viewRect.width, SelectedHelpDef.description );
 
-            cur.y += paragraphMargin;
+            cur.y += ParagraphMargin;
 
-            foreach( HelpDetailSection section in SelectedHelpDef.HelpDetailSections )
+            foreach ( HelpDetailSection section in SelectedHelpDef.HelpDetailSections )
             {
-                cur.x = 0f;
-                if( !string.IsNullOrEmpty( section.Label ) )
-                {
-                    HelpDetailSectionHelper.DrawText( ref cur, viewRect, section.Label );
-                    cur.x = inset;
-                }
-                if( section.StringDescs != null )
-                {
-                    foreach( string s in section.StringDescs )
-                    {
-                        HelpDetailSectionHelper.DrawText( ref cur, viewRect, s );
-                    }
-                }
-                if( section.KeyDefs != null )
-                {
-                    foreach( DefStringTriplet defStringTriplet in section.KeyDefs )
-                    {
-                        if( HelpDetailSectionHelper.DrawDefLink( ref cur, viewRect, defStringTriplet ) )
-                        {
-                            // bit ugly, but since the helper can't return true if the helpdef doesn't exist, we can fetch it again here -Fluffy.
-                            // TODO: better way of passing along helpdef. Perhaps make a resolve references step to add helpdef so we don't have to find it in realtime?
-                            HelpDef helpDef = DefDatabase<HelpDef>.AllDefsListForReading.First(hd => hd.keyDef == defStringTriplet.Def);
-                            SelectedHelpDef = helpDef;
-                            JumpToDef( helpDef );
-                        }
-                    }
-                }
-                cur.y += paragraphMargin;
+                section.Draw( ref cur, viewRect.width, this );
             }
 
             ContentHeight = cur.y;
@@ -498,16 +500,28 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void JumpToDef( HelpDef helpDef )
+        public void JumpTo( HelpDef helpDef )
         {
+            Find.MainTabsRoot.SetCurrentTab( this.def );
             ResetFilter();
             _jump = true;
-            HelpCategoryDef cat =
-                DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
+            SelectedHelpDef = helpDef;
+            HelpCategoryDef cat = DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
             cat.Expanded = true;
             ModCategory mod = CachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
             mod.Expanded = true;
         }
+
+        public bool Accept( HelpDef def )
+        {
+            return true;
+        }
+
+        public IHelpDefView SecondaryView( HelpDef def )
+        {
+            return null;
+        }
+
         #endregion
 
     }

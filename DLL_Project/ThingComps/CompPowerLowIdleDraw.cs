@@ -21,14 +21,14 @@ namespace CommunityCoreLibrary
         // minIdleDraw is to prevent idlePower from being 0.0f
         // This is important so that the device stays connected to the
         // power net without actually drawing off of it when not in use.
-        const float                         minIdleDraw = -0.01f;
-        float                               idlePower;
+        public const float                  MinIdleDraw = -0.01f;
+        public float                        IdlePower;
         float                               curPower = 1f;
         bool                                onIfOn;
 
         int                                 keepOnTicks;
 
-        CompProperties_LowIdleDraw          IdleProps;
+        public CompProperties_LowIdleDraw   IdleProps;
 
         #endregion
 
@@ -50,6 +50,14 @@ namespace CommunityCoreLibrary
             }
         }
 
+        Building_AutomatedFactory           AutomatedFactory
+        {
+            get
+            {
+                return parent as Building_AutomatedFactory;
+            }
+        }
+
         #endregion
 
         #region Query State
@@ -58,7 +66,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return !( PowerTrader.PowerOutput < idlePower );
+                return !( PowerTrader.PowerOutput < IdlePower );
             }
         }
 
@@ -93,7 +101,8 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompPowerTrader"
+                    "Missing CompPowerTrader",
+                    "CompPowerLowIdleDraw"
                 );
                 return;
             }
@@ -107,28 +116,74 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompProperties_LowIdleDraw"
+                    "Missing CompProperties_LowIdleDraw",
+                    "CompPowerLowIdleDraw"
                 );
                 return;
             }
 #endif
 
+#if DEBUG
+            // Validate "InUse"
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.InUse )&&
+                ( !parent.def.hasInteractionCell )
+            )
+            {
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Parent building must be have an interaction cell to use 'InUse'",
+                    "CompPowerLowIdleDraw"
+                );
+                return;
+            }
+            // Validate "Factory"
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.Factory )&&
+                ( AutomatedFactory == null )
+            )
+            {
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Parent building must be ThingClass Building_AutomatedFactory to use 'Factory'",
+                    "CompPowerLowIdleDraw"
+                );
+                return;
+            }
+            // Validate "GroupUse"
+            if(
+                ( IdleProps.operationalMode == LowIdleDrawMode.GroupUser )&&
+                ( parent.def.GetJoyDefUsing() == null )
+            )
+            {
+                CCL_Log.TraceMod(
+                    parent.def,
+                    Verbosity.FatalErrors,
+                    "Parent building must be used as a thingDef by a JoyGiverDef to use 'GroupUse'",
+                    "CompPowerLowIdleDraw"
+                );
+                return;
+            }
+#endif
+            
             // Generate the list of cells to check
             BuildScanList();
 
             // Calculate low-power mode consumption
-            idlePower = IdleProps.idlePowerFactor * -PowerTrader.props.basePowerConsumption;
-            if( idlePower > minIdleDraw )
+            IdlePower = IdleProps.idlePowerFactor * -PowerTrader.props.basePowerConsumption;
+            if( IdlePower > MinIdleDraw )
             {
-                idlePower = minIdleDraw;
+                IdlePower = MinIdleDraw;
             }
 
             // Initial state...
 
-            if( curPower > idlePower )
+            if( curPower > IdlePower )
             {
                 // ...Default off...
-                curPower = idlePower;
+                curPower = IdlePower;
             }
 
             // Set power usage
@@ -177,6 +232,39 @@ namespace CommunityCoreLibrary
                 // Force toggle now
                 PowerLevelToggle( 1000000 );
             }
+        }
+
+        private static bool                 HasJobOnTarget( Pawn pawn, Thing target )
+        {
+            if(
+                ( pawn == null )||
+                ( pawn.CurJob == null )
+            )
+            {
+                return false;
+            }
+            if(
+                ( pawn.CurJob.targetA != null )&&
+                ( pawn.CurJob.targetA.Thing == target )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null )&&
+                ( pawn.CurJob.targetB.Thing == target )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null )&&
+                ( pawn.CurJob.targetB.Thing == target )
+            )
+            {
+                return true;
+            }
+            return false;
         }
 
         void                                PowerLevelToggle( int thisTickCount )
@@ -231,48 +319,15 @@ namespace CommunityCoreLibrary
                         }
 
                         // Look for a new user...
-
                         Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[0] );
                         if( pUser != null )
                         {
                             // ...A pawn is here!...
-
-                            if( pUser.CurJob != null )
+                            if( HasJobOnTarget( pUser, parent ) )
                             {
-                                // ...With a job!...
-
-                                // ...(checking targets)...
-                                if(
-                                    ( pUser.CurJob.targetA != null )&&
-                                    ( pUser.CurJob.targetA.Thing != null )&&
-                                    ( pUser.CurJob.targetA.Thing.def == parent.def )
-                                )
-                                {
-                                    turnItOn = true;
-                                }
-                                else if(
-                                    ( pUser.CurJob.targetB != null )&&
-                                    ( pUser.CurJob.targetB.Thing != null )&&
-                                    ( pUser.CurJob.targetB.Thing.def == parent.def )
-                                )
-                                {
-                                    turnItOn = true;
-                                }
-                                else if(
-                                    ( pUser.CurJob.targetC != null )&&
-                                    ( pUser.CurJob.targetC.Thing != null )&&
-                                    ( pUser.CurJob.targetC.Thing.def == parent.def )
-                                )
-                                {
-                                    turnItOn = true;
-                                }
-
-                                if( turnItOn )
-                                {
-                                    // ..Using this building!...
-                                    curUser = pUser;
-                                    curJob = pUser.CurJob;
-                                }
+                                // ..Using this building!...
+                                curUser = pUser;
+                                curJob = pUser.CurJob;
                             }
                         }
 
@@ -290,18 +345,35 @@ namespace CommunityCoreLibrary
                         turnItOn = true;
                     }
                     break;
+                case LowIdleDrawMode.Factory :
+                    // Automated Factory production
+                    if( AutomatedFactory.CurrentRecipe != null )
+                    {
+                        turnItOn = true;
+                    }
+                    break;
                 }
             }
             else
             {
+                var joyGiverDef = parent.def.GetJoyDefUsing();
+                var isJoyJob = joyGiverDef != null;
+
                 // Full-power when any pawn is standing on any monitored cell...
                 foreach( IntVec3 curPos in scanPosition )
                 {
-                    if( Find.ThingGrid.ThingAt<Pawn>( curPos ) != null )
+                    var pawn = Find.ThingGrid.ThingAt<Pawn>( curPos );
+                    if( pawn != null )
                     {
-                        // Found a pawn, turn it on and early out
-                        turnItOn = true;
-                        break;
+                        if(
+                            ( !isJoyJob )||
+                            ( HasJobOnTarget( pawn, parent ) )
+                        )
+                        {
+                            // Found a pawn, turn it on and early out
+                            turnItOn = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -325,6 +397,11 @@ namespace CommunityCoreLibrary
             {
                 // ...Is not idle, go to idle mode
                 TogglePower();
+            }
+            else
+            {
+                // ..maintain idle state
+                keepOnTicks = IdleProps.cycleLowTicks;
             }
 
             if(
@@ -350,7 +427,7 @@ namespace CommunityCoreLibrary
             else
             {
                 // Is not idle, power down
-                curPower = idlePower;
+                curPower = IdlePower;
                 PowerTrader.PowerOutput = curPower;
                 keepOnTicks = IdleProps.cycleLowTicks;
                 curUser = null;
@@ -411,6 +488,21 @@ namespace CommunityCoreLibrary
 
                 return;
             }
+            else if ( IdleProps.operationalMode == LowIdleDrawMode.Factory )
+            {
+                // Set default scan tick intervals
+                if( IdleProps.cycleLowTicks < 0 )
+                {
+                    IdleProps.cycleLowTicks = 30;
+                }
+
+                if( IdleProps.cycleHighTicks < 0 )
+                {
+                    IdleProps.cycleHighTicks = 100;
+                }
+
+                return;
+            }
 
             // List of cells to check
             scanPosition = new List<IntVec3>();
@@ -421,32 +513,14 @@ namespace CommunityCoreLibrary
                 // Force-add interaction cell
                 scanPosition.Add( parent.InteractionCell );
 
-                switch( IdleProps.operationalMode )
+                if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
                 {
-                case LowIdleDrawMode.WhenNear :
-                    // And the adjacent cells too???
-                    // Only really used by NPDs as they "need time to prepare"
+                    // And the adjacent cells too
                     foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
                     {
                         AddScanPositionIfAllowed( curPos );
                     }
                     onIfOn = true;
-                    break;
-                case LowIdleDrawMode.GroupUser :
-                    // Group user adds cells "in front" of it
-                    // Only really used by TVs
-                    // TODO:  Make this actually do something!
-                    /*
-                     * if( ( parent.def == ThingDefOf.Television )
-                        ||( parent.def == ThingDefOf.TelevisionLED ) ){
-
-                        foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
-                        {
-                            AddScanPositionIfAllowed( curPos );
-                        }
-                    }
-                    */
-                    break;
                 }
 
             }
@@ -455,9 +529,13 @@ namespace CommunityCoreLibrary
                 // Pawn standing on building means we need the buildings occupancy
                 onIfOn = true;
 
-                foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( parent ) )
+                if( parent.def.passability == Traversability.Standable )
                 {
-                    AddScanPositionIfAllowed( curPos );
+                    // Add building cells if it's standable
+                    foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( parent ) )
+                    {
+                        AddScanPositionIfAllowed( curPos );
+                    }
                 }
 
                 if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
@@ -468,7 +546,16 @@ namespace CommunityCoreLibrary
                         AddScanPositionIfAllowed( curPos );
                     }
                 }
-
+                if( IdleProps.operationalMode == LowIdleDrawMode.GroupUser )
+                {
+                    // Group user adds cells "in front" of it
+                    // Only really used by TVs
+                    var cells = parent.GetParticipantCells();
+                    foreach( var curPos in cells )
+                    {
+                        scanPosition.Add( curPos );
+                    }
+                }
             }
 
             // Set default scan tick intervals

@@ -13,10 +13,13 @@ namespace CommunityCoreLibrary
 
         private const int                   REHIDE_TICKS = 20;
 
-        private readonly List<Thing>        itemHide = new List<Thing>();
-        private readonly List<Thing>        itemShow = new List<Thing>();
+        private static readonly List<Thing> itemHide = new List<Thing>();
+        private static readonly List<Thing> itemShow = new List<Thing>();
 
-        private int                         tickCount = REHIDE_TICKS;
+        private static int                  tickCount = REHIDE_TICKS;
+
+        private static readonly Dictionary<IntVec3,Thing>
+                                            hiderBuildings = new Dictionary<IntVec3, Thing>();
 
         private static List<Thing>          listHasGUIOverlay
         {
@@ -70,7 +73,25 @@ namespace CommunityCoreLibrary
 
         }
 
-        public void                         RegisterForHide( Thing item )
+        public static void                  RegisterBuilding( Thing building )
+        {
+            var occupiedCells = building.OccupiedRect();
+            foreach( var cell in occupiedCells )
+            {
+                hiderBuildings.Add( cell, building );
+            }
+        }
+
+        public static void                  DeregisterBuilding( Thing building )
+        {
+            var occupiedCells = building.OccupiedRect();
+            foreach( var cell in occupiedCells )
+            {
+                hiderBuildings.Remove( cell );
+            }
+        }
+
+        public static void                  RegisterForHide( Thing item )
         {
             if(
                 ( item.def.drawerType != DrawerType.MapMeshOnly )&&
@@ -81,7 +102,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         RegisterForShow( Thing item )
+        public static void                  RegisterForShow( Thing item )
         {
             if(
                 ( item.def.drawerType != DrawerType.MapMeshOnly )&&
@@ -94,6 +115,21 @@ namespace CommunityCoreLibrary
                     itemHide.Remove( item );
                 }
             }
+        }
+
+        public static bool                  PreventItemSelection( Thing item )
+        {
+            Thing hiderBuilding;
+            if( !hiderBuildings.TryGetValue( item.Position, out hiderBuilding ) )
+            {
+                return false;
+            }
+            var comp = hiderBuilding.TryGetComp<CompHideItem>();
+            if( comp == null )
+            {
+                return false;
+            }
+            return comp.Properties.preventItemSelection;
         }
 
     }

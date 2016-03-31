@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    PlaceWorker:PlaceWorker_HopperMagnifier
+    
+    This will highlight hoppers which will be connected to the building upon construction.
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <placeWorkers>
+            ...
+            
+            <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
+            
+            ...
+        </placeWorkers>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

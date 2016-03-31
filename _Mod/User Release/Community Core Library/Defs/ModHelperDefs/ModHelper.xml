@@ -6,15 +6,15 @@
 
         <ModName>Community Core Library</ModName>
 
-        <version>0.12.6</version>
+        <version>0.12.7</version>
 
         <MapComponents>
-            <li>CommunityCoreLibrary.ResearchController</li>
             <li>CommunityCoreLibrary.HideItemManager</li>
         </MapComponents>
 
         <SpecialInjectors>
-            <li>CommunityCoreLibrary.CompRottableRefrigerated_Injector</li>
+            <li>CommunityCoreLibrary.DetourInjector</li>
+            <li>CommunityCoreLibrary.CompRottableRefrigeratedInjector</li>
         </SpecialInjectors>
 
     </ModHelperDef>

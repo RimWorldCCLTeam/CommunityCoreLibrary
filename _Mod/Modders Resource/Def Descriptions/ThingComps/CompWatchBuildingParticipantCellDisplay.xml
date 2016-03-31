@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompWatchBuildingParticipantCellDisplay
+    
+    Requires:   JoyGiverDef with matching thingDef and a minRange and maxRange > 0
+    
+    Optional:   PlaceWorker_WatchBuildingParticipantCells
+    
+    This comp adds a gizmo to "watch" buildings (TV) to allow the player to toggle displaying the valid
+    participant cells (white outline) and the blocked participant cells (yellow outline).
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CommunityCoreLibrary.CompWatchBuildingParticipantCellDisplay</compClass>
+                ...
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

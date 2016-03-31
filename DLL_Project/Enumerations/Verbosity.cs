@@ -11,7 +11,11 @@
         AutoGenCreation = 5,
         StateChanges    = 6,
         Stack           = 7,
+#if RELEASE
         Default         = Validation
+#else
+        Default         = Injections
+#endif
     }
 
 }

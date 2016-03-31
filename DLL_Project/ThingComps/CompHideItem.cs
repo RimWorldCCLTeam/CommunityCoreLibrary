@@ -16,24 +16,16 @@ namespace CommunityCoreLibrary
         private readonly List<Thing>        knownItems = new List<Thing>();
         private int                         tickCount;
 
-        private HideItemManager             _HideItemManager;
-        private HideItemManager             HideItemManager
+        private CompProperties_HideItem      _Properties = null;
+        public CompProperties_HideItem      Properties
         {
             get
             {
-                if( _HideItemManager == null )
+                if( _Properties == null )
                 {
-                    _HideItemManager = (HideItemManager) Find_Extensions.MapComponent( typeof( HideItemManager ) );
-                    if( _HideItemManager == null )
-                    {
-                        CCL_Log.TraceMod(
-                            parent.def,
-                            Verbosity.FatalErrors,
-                            "MapComponent missing :: HideItemManager"
-                        );
-                    }
+                    _Properties = parent.def.GetCompProperties( typeof( CompHideItem ) ) as CompProperties_HideItem;
                 }
-                return _HideItemManager;
+                return _Properties;
             }
         }
 
@@ -41,6 +33,21 @@ namespace CommunityCoreLibrary
         {
             base.PostSpawnSetup();
             tickCount = parent.GetHashCode() % RECHECK_TICKS;
+            HideItemManager.RegisterBuilding( parent );
+        }
+
+        public override void                PostDestroy( DestroyMode mode = DestroyMode.Vanish )
+        {
+            base.PostDestroy( mode );
+            if( knownItems.NullOrEmpty() )
+            {
+                return;
+            }
+            foreach( var item in knownItems )
+            {
+                HideItemManager.RegisterForShow( item );
+            }
+            HideItemManager.DeregisterBuilding( parent );
         }
 
         public override void                PostDraw()
@@ -78,10 +85,6 @@ namespace CommunityCoreLibrary
 
         public void                         ReceivedThing( Thing item )
         {
-            if( HideItemManager == null )
-            {
-                return;
-            }
             if(
                 ( item.def.category == ThingCategory.Item )&&
                 ( !knownItems.Contains( item ) )
@@ -94,10 +97,6 @@ namespace CommunityCoreLibrary
 
         public void                         LostThing( Thing item )
         {
-            if( HideItemManager == null )
-            {
-                return;
-            }
             if( knownItems.Contains( item ) )
             {
                 HideItemManager.RegisterForShow( item );

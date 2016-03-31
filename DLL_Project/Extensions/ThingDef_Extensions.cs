@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 using RimWorld;
 using Verse;
+using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -36,13 +38,16 @@ namespace CommunityCoreLibrary
             foreach( var building in buildings )
             {
                 var BillGiver = building as IBillGiver;
-                for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
+                if( BillGiver != null )
                 {
-                    var bill = BillGiver.BillStack[ i ];
-                    if( !recipes.Exists( r => bill.recipe == r ) )
+                    for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
                     {
-                        BillGiver.BillStack.Delete( bill );
-                        continue;
+                        var bill = BillGiver.BillStack[ i ];
+                        if( !recipes.Exists( r => bill.recipe == r ) )
+                        {
+                            BillGiver.BillStack.Delete( bill );
+                            continue;
+                        }
                     }
                 }
             }
@@ -52,6 +57,34 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Availability
+
+        public static bool                  IsIngestible( this ThingDef thingDef )
+        {
+            if(
+                (
+                    ( thingDef.thingClass == typeof( Meal ) )||
+                    ( thingDef.thingClass.IsSubclassOf( typeof( Meal ) ) )
+                )&&
+                ( thingDef.ingestible != null )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool                  IsAlcohol( this ThingDef thingDef )
+        {
+            if(
+                ( thingDef.IsIngestible() )&&
+                ( !thingDef.ingestible.hediffGivers.NullOrEmpty() )&&
+                ( thingDef.ingestible.hediffGivers.Exists( d => d.hediffDef == HediffDefOf.Alcohol ) )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
 
         public static bool                  IsImplant( this ThingDef thingDef )
         {
@@ -100,6 +133,11 @@ namespace CommunityCoreLibrary
             );
         }
 
+        public static JoyGiverDef           GetJoyDefUsing( this ThingDef thingDef )
+        {
+            return DefDatabase<JoyGiverDef>.AllDefs.FirstOrDefault( def => def.thingDef == thingDef );
+        }
+
         #endregion
 
         #region Lists of affected data
@@ -129,7 +167,7 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Look in advanced research too
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( !a.HideDefs )&&
                 ( a.thingDefs.Contains( thingDef ) )
@@ -173,7 +211,7 @@ namespace CommunityCoreLibrary
             }
 
             // Look in advanced research
-            var advancedResearch = ResearchController.AdvancedResearch.Where( a => (
+            var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsRecipeToggle )&&
                 ( a.HideDefs )&&
                 ( a.thingDefs.Contains( thingDef ) )
@@ -237,6 +275,20 @@ namespace CommunityCoreLibrary
 
         #region Comp Properties
 
+        // Get CompProperties by CompProperties class
+        // Similar to GetCompProperties which gets CompProperties by compClass
+        public static CompProperties        GetCompProperty( this ThingDef thingDef, Type find )
+        {
+            foreach( var comp in thingDef.comps )
+            {
+                if( comp.GetType() == find )
+                {
+                    return comp;
+                }
+            }
+            return null;
+        }
+
         public static CommunityCoreLibrary.CompProperties_ColoredLight CompProperties_ColoredLight ( this ThingDef thingDef )
         {
             return thingDef.GetCompProperties( typeof( CommunityCoreLibrary.CompColoredLight ) ) as CommunityCoreLibrary.CompProperties_ColoredLight;
@@ -250,6 +302,96 @@ namespace CommunityCoreLibrary
         public static Verse.CompProperties_Rottable CompProperties_Rottable ( this ThingDef thingDef )
         {
             return thingDef.GetCompProperties( typeof( RimWorld.CompRottable ) ) as Verse.CompProperties_Rottable;
+        }
+
+        #endregion
+
+        #region Joy Participant Cells (Watch Buildings)
+
+        public static List< IntVec3 >       GetParticipantCells( this ThingDef thingDef, IntVec3 position, Rot4 rotation, bool getBlocked = false )
+        {
+            var joyGiverDef = thingDef.GetJoyDefUsing();
+            if( joyGiverDef == null )
+            {
+                // No joy giver which uses this def
+                return null;
+            }
+            if(
+                ( joyGiverDef.standDistanceRange.min < 1 )||
+                ( joyGiverDef.standDistanceRange.max < 1 )
+            )
+            {
+                // no range?
+                return null;
+            }
+            var returnCells = new List<IntVec3>();
+            var allowedDirections = new List<int>();
+            if( thingDef.rotatable )
+            {
+                allowedDirections.Add( rotation.AsInt );
+            }
+            else
+            {
+                for( int i = 0; i < 4; ++i )
+                {
+                    allowedDirections.Add( i );
+                }
+            }
+            for( int index1 = 0; index1 < allowedDirections.Count; ++index1 )
+            {
+                CellRect cellRect;
+                if( new Rot4( allowedDirections[ index1 ] ).IsHorizontal )
+                {
+                    int a = position.x + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].x * joyGiverDef.standDistanceRange.min;
+                    int b = position.x + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].x * joyGiverDef.standDistanceRange.max;
+                    int num = position.z + 1;
+                    int minZ = position.z - 1;
+                    cellRect = new CellRect(
+                        Mathf.Min( a, b ),
+                        minZ,
+                        Mathf.Abs( a - b ) + 1,
+                        num - minZ + 1 );
+                }
+                else
+                {
+                    int a = position.z + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].z * joyGiverDef.standDistanceRange.min;
+                    int b = position.z + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].z * joyGiverDef.standDistanceRange.max;
+                    int num = position.x + 1;
+                    int minX = position.x - 1;
+                    cellRect = new CellRect(
+                        minX,
+                        Mathf.Min( a, b ),
+                        num - minX + 1,
+                        Mathf.Abs( a - b ) + 1 );
+                }
+                IntVec3 center = cellRect.Center;
+                int num1 = cellRect.Area * 4;
+                for( int index2 = 0; index2 < num1; ++index2 )
+                {
+                    IntVec3 intVec3 = center + GenRadial.RadialPattern[ index2 ];
+                    if( cellRect.Contains( intVec3 ) )
+                    {
+                        if(
+                            (
+                                ( getBlocked )&&
+                                (
+                                    ( !GenGrid.Standable( intVec3 ) )||
+                                    ( !GenSight.LineOfSight( intVec3, position, false ) )
+                                )
+                            )||
+                            (
+                                ( !getBlocked )&&
+                                ( GenGrid.Standable( intVec3 ) )&&
+                                ( GenSight.LineOfSight( intVec3, position, false ) )
+                            )
+                        )
+                        {
+                            returnCells.Add( intVec3 );
+                        }
+                    }
+                }
+            }
+            return returnCells;
         }
 
         #endregion

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Namespace:  CommunityCoreLibrary
+
+    ThingComp:  CompPawnGizmo
+
+    Requires:   ThingComp inheriting CompRangedGizmoGiver
+
+    This can injected via a SpecialInjector to allow pawns to have specific gizmos.
+
+    -->
+
+</Defs>

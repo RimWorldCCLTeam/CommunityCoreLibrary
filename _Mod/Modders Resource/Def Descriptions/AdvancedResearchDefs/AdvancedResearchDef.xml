@@ -7,7 +7,7 @@
     
         <defName>string</defName>       [required] Some unique identifier in class
         
-        <Priority>int</Priority>        [required] Lower values is happen first
+        <Priority>int</Priority>        [required*] Lower values is happen first
         
         <researchDefs>                  [required] All the research listed must be complete for anything to happen
             <li>ResearchProjectDef</li>
@@ -19,16 +19,16 @@
                                         [optional: null] If set, this def will generate a help menu entry in the specified category
         
         <ConsolidateHelp>bool</ConsolidateHelp>
-                                        [optional: false] If true, this def will be find all other research projects with the same
+                                        [optional*: false] If true, this def will find all other research projects with the same
                                         research requirements and aggregate the data into one entry
         
         <HideUntilResearched>bool</HideUntilResearched>
                                         [optional: false] If true, the help menu entry for this def will not be shown in the help
                                         menu until the research to unlock it is complete.
         
-        <label>string</label>           [optional: null] If set, this will be used for the HelpDef label
+        <label>string</label>           [optional*: null] If set, this will be used for the HelpDef label
         
-        <description>string</description> [optional: null] If set, this will be used for the base HelpDef description
+        <description>string</description> [optional*: null] If set, this will be used for the base HelpDef description
 
         Notes on generating HelpDefs:
         
@@ -36,18 +36,19 @@
         used to generate a help menu entry for a single research project, typicially with the
         ConsolidateHelp flag set to true.  (See the Vanilla Tweaks Help Menu Builders)
         
+        If <ConsolidateHelp> is set to true, when creating the description from the def data, it matches
+        other advanced research defs by having the exact same researchDefs list (order-irrelavent).
+        This enables it to aggregate information about all matching research into one help menu entry.
+        
         If there is only one researchDef for the def, the <label> and <description> tags can be
         left null to use the label and description from the researchDef.
         
-        If there is more than one researchDef, the <label> and <description> must be supplied
-        and must not be null.
+        * If there is more than one researchDef, there must be at least one entry with a <Priority> of
+        -1, this def must have the <ConsolidateHelp> set to true, the <label> and <description> must be
+        supplied must not be null.
         
-        <ConsolidateHelp> set to true, when creating the description from the def data, it matches
-        other advanced research defs by having the exact same researchDefs list (order-irrelavent).
-        This enabled it to aggregate information about all matching research into one help menu entry.
-        
-        <recipeDefs>                    [optional: null] Recipes to toggle on buildings, requires <thingDefs>
-            <li>RecipeDef</li>          with <thingClass> implementing "IBillGiver"
+        <recipeDefs>                    [optional: null] Recipes to toggle on things (thingDefs must be
+            <li>RecipeDef</li>          thingClasses which will make use of recipes)
         </recipeDef>
         
         <sowTags>                       [optional: null] Plant sowTags to toggle, requires <thingDefs> with
