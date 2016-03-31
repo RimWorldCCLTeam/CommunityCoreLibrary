@@ -2,7 +2,7 @@
 
 RimWorld has a well known bug regarding the Mod menu.  Simply opening it will cause issues with mods.  Always restart RimWorld if you open the Mods menu.
 
-Changing languages and/or mod load order (including enabling mods) requires RimWorld to be restarted.
+Changing languages, mod load order (including enabling mods) and certain game options requires RimWorld to be restarted.
 
 There is a lot going on when RimWorld starts as far as CCL is concerned.  The best practice is to restart RimWorld if you change any setting more complicated than the volume.
 
@@ -14,10 +14,10 @@ Software of any complexity is bound to have bugs, CCL is no different.  Please r
 
 What we need:
 [list]
-[li]You to use the github issues tracker.  Going forward, issue reports on the forums [b]will[/b] be deleted.  (Either by a member of the CCL team or at the request of a forum moderator.)[/li]
+[li]You to use the github issues tracker.  Going forward, issue reports on the forums will be directed to the issues tracker.  Using the forums, issues can be lost.  Help us by using the issues tracker.[/li]
 [li]Your full game log file found in /RimWorld[build][platform]_Data/ ([i]not[/i] a screen shot of).  eg, RimWorld914Win_Data/output_log.txt[/li]
 [li]If the issue is gameplay related, as much detail as possible on how to reproduce the error and [i]if relevant[/i] a screen shot of the problem.[/li]
-[li]Your save game and world file if the issue is save/load related.  [i]Please[/i] zip the files before sending them.[/li]
+[li]Your save game and world file if the issue is save/load related.  [i]Please[/i] zip these files before sending them.[/li]
 [/list]
 
 

@@ -1,16 +1,17 @@
 [size=12pt][color=orange]Notes[/color][/size]
 
 [sup][size=8pt]4.1[/size][/sup] A ModHelperDef is required for any mod using CCL.  Without this def, the library will throw an error.  There can only be one of these defs per mod or, again, an error will be thrown.  This was previously a soft requirement but is now a hard requirement.
-[sup][size=8pt]4.2[/size][/sup] Building's which directly control their own power are the obvious exception (eg: heaters, coolers, etc).
-[sup][size=8pt]4.3[/size][/sup] Requires RestrictedPlacement_Comp and RestrictedPlacement_Properties for information and/or support ticking.
-[sup][size=8pt]4.4[/size][/sup] Want to place that building [i]on[/i] (instead of [i]near[/i]) a steam geyser?  You can, the core method which hard-codes steam geysers to geothermal generators has been detoured to allow any building with the PlaceWorker_OnSteamGeyser or PlaceWorker_OnlyOnThing to allow placement on steam geysers.
-[sup][size=8pt]4.5[/size][/sup] Depending on your needs, use a normal or rare ticker to fire the periodic check to make sure the supports still exist.  If the support is removed, the thing is destroyed and an alert is fired to inform the player.  Normal tickers only check every 250 ticks.
+[sup][size=8pt]4.2[/size][/sup] Depending on the operational and output mode of the factory.  Two examples are provided, an automated stonecutter (fully automated) and a food synthesizer (pawn-interaction).
+[sup][size=8pt]4.3[/size][/sup] Building's which directly control their own power are the obvious exception (eg: heaters, coolers, etc).
+[sup][size=8pt]4.4[/size][/sup] Requires RestrictedPlacement_Comp and RestrictedPlacement_Properties for information and/or support ticking.
+[sup][size=8pt]4.5[/size][/sup] Want to place that building [i]on[/i] (instead of [i]near[/i]) a steam geyser?  You can, the core method which hard-codes steam geysers to geothermal generators has been detoured to allow any building with the PlaceWorker_OnSteamGeyser or PlaceWorker_OnlyOnThing to allow placement on steam geysers.
+[sup][size=8pt]4.6[/size][/sup] Depending on your needs, use a normal or rare ticker to fire the periodic check to make sure the supports still exist.  If the support is removed, the thing is destroyed and an alert is fired to inform the player.  Normal tickers only check every 250 ticks.
 
 [sup][size=8pt]5.1[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_Door will work.
 [sup][size=8pt]5.2[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_NutrientPasteDispenser will work.
 [sup][size=8pt]5.3[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_OrbitalTradeBeacon will work.
 [sup][size=8pt]5.4[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_CommsConsole will work.
-[sup][size=8pt]5.5[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, CommunityCoreLibrary.Building_FoodSynthesizer will work.
+[sup][size=8pt]5.5[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, CommunityCoreLibrary.Building_AutomatedFactory with an output vector of "DirectToPawn" will work.
 [sup][size=8pt]5.6[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_ResearchBench will work.
 [sup][size=8pt]5.7[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Fire will work.
 

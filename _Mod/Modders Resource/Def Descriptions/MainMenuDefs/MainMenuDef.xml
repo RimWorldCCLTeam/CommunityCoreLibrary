@@ -17,7 +17,9 @@
         
     </MainMenuDef>
     
-    * Either one of these is required but not both.  If using labelKey, a valid keyed translation must exist.
+    * Either one of these is required but not both.  If using labelKey, a valid keyed translation must exist
+    and it will override the label if both are provided.  If neither are provided, a non-fatal error will be
+    thrown and the menu will display the defName on the button.
     
     -->
     
