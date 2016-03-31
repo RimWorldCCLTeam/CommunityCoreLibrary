@@ -5,15 +5,10 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_QuitToOS : IMainMenu
+	public class MainMenu_QuitToOS : MainMenu
 	{
 
-		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
-		{
-			return true;
-		}
-
-		public void ClickAction()
+		public override void ClickAction()
 		{
 			if( Game.Mode == GameMode.MapPlaying )
 			{

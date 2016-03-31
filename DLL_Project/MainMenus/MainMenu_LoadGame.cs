@@ -5,15 +5,15 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_LoadGame : IMainMenu
+	public class MainMenu_LoadGame : MainMenu
 	{
 
-		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
 			return ( anyMapFiles );
 		}
 
-		public void ClickAction()
+		public override void ClickAction()
 		{
 			Find.WindowStack.Add( (Window)new Dialog_MapList_Load() );
 		}

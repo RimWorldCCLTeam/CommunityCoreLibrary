@@ -5,15 +5,10 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_Options : IMainMenu
+	public class MainMenu_Options : MainMenu
 	{
 
-		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
-		{
-			return true;
-		}
-
-		public void ClickAction()
+		public override void ClickAction()
 		{
 			Find.WindowStack.Add( (Window)new Dialog_Options() );
 		}

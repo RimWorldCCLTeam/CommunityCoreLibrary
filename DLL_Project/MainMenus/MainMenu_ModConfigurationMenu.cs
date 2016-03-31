@@ -5,15 +5,15 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_ModConfigurationMenu : IMainMenu
+	public class MainMenu_ModConfigurationMenu : MainMenu
 	{
 
-		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
 			return ( Window_ModConfigurationMenu.AnyMenus );
 		}
 
-		public void ClickAction()
+		public override void ClickAction()
 		{
 			Find.WindowStack.Add( (Window)new Window_ModConfigurationMenu() );
 		}

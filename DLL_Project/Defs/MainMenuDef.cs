@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        public IMainMenu            menuWorker;
+        public MainMenu             menuWorker;
 
         #endregion
 
@@ -34,38 +34,38 @@ namespace CommunityCoreLibrary
         {
             base.PostLoad();
 
-            if( string.IsNullOrEmpty( labelKey ) )
+            if(
+                ( string.IsNullOrEmpty( labelKey ) )&&
+                ( string.IsNullOrEmpty( label ) )
+            )
             {
-                if( string.IsNullOrEmpty( label ) )
+                CCL_Log.TraceMod(
+                    this,
+                    Verbosity.NonFatalErrors,
+                    "Def must have a valid label or labelKey for translation"
+                );
+                label = defName;
+            }
+
+            if( !menuClass.IsSubclassOf( typeof( MainMenu ) ) )
+            {
+                CCL_Log.TraceMod(
+                    this,
+                    Verbosity.FatalErrors,
+                    string.Format( "{0} is not a valid main menu class, does not inherit from MainMenu", menuClass.ToString() )
+                );
+            }
+            else
+            {
+                menuWorker = (MainMenu) Activator.CreateInstance( menuClass );
+                if( menuWorker == null )
                 {
                     CCL_Log.TraceMod(
                         this,
                         Verbosity.FatalErrors,
-                        "Def must have a valid label or labelKey for translation"
-                    );
-                    return;
+                        string.Format( "Unable to create instance of {0}", menuClass.ToString() ),
+                        "MainMenuDef" );
                 }
-            }
-
-            if( menuClass.GetInterface( "IMainMenu" ) == null )
-            {
-                CCL_Log.TraceMod(
-                    this,
-                    Verbosity.FatalErrors,
-                    string.Format( "{0} is not a valid main menu class, does not implement IMainMenu", menuClass.ToString() )
-                );
-                return;
-            }
-
-            menuWorker = (IMainMenu) Activator.CreateInstance( menuClass );
-            if( menuWorker == null )
-            {
-                CCL_Log.TraceMod(
-                    this,
-                    Verbosity.FatalErrors,
-                    string.Format( "Unable to create instance of {0}", menuClass.ToString() ),
-                    "MainMenuDef" );
-                return;
             }
 
         }

@@ -5,15 +5,15 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_QuitToMain : IMainMenu
+	public class MainMenu_QuitToMain : MainMenu
 	{
 
-		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
 			return ( Game.Mode == GameMode.MapPlaying );
 		}
 
-		public void ClickAction()
+		public override void ClickAction()
 		{
 			Find.WindowStack.Add( (Window)new Dialog_Confirm(
 				"ConfirmQuit".Translate(),

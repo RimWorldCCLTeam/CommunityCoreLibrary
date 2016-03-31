@@ -52,11 +52,6 @@ namespace CommunityCoreLibrary.Controller
             MethodInfo CCL_MainMenuDrawer_DoMainMenuButtons = typeof( Detour._MainMenuDrawer ).GetMethod( "_DoMainMenuButtons", BindingFlags.Static | BindingFlags.NonPublic );
             InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_DoMainMenuButtons, CCL_MainMenuDrawer_DoMainMenuButtons );
 
-            // Detour RimWorld.MainTabWindow_Menu.RequestedTabSize
-            MethodInfo RimWorld_MainTabWindow_Menu_RequestedTabSize = typeof( MainTabWindow_Menu ).GetProperty( "RequestedTabSize", BindingFlags.Instance | BindingFlags.Public ).GetGetMethod();
-            MethodInfo CCL_MainTabWindow_Menu_RequestedTabSize = typeof( Detour._MainTabWindow_Menu ).GetMethod( "_RequestedTabSize", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainTabWindow_Menu_RequestedTabSize, CCL_MainTabWindow_Menu_RequestedTabSize );
-
             CCL_Log.CaptureEnd(
                 stringBuilder,
                 InjectionsOk ? "Initialized" : "Errors during injection"

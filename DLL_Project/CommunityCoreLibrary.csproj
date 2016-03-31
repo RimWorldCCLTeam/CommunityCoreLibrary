@@ -233,12 +233,10 @@
         <Compile Include="StaticClasses\ModConfigurationMenu.cs" />
         <Compile Include="Detours\MainMenuDrawer.cs" />
         <Compile Include="Windows\Window_ModConfigurationMenu.cs" />
-        <Compile Include="Detours\MainTabWindow_Menu.cs" />
         <Compile Include="Structures\MCMInjectionSet.cs" />
         <Compile Include="Extensions\GenTemperature_Extensions.cs" />
         <Compile Include="Defs\MainMenuDef.cs" />
         <Compile Include="MainMenus\MainMenu_CreateWorld.cs" />
-        <Compile Include="Interfaces\IMainMenu.cs" />
         <Compile Include="MainMenus\MainMenu_NewColony.cs" />
         <Compile Include="MainMenus\MainMenu_LoadGame.cs" />
         <Compile Include="MainMenus\MainMenu_SaveGame.cs" />
@@ -249,6 +247,7 @@
         <Compile Include="MainMenus\MainMenu_QuitToMain.cs" />
         <Compile Include="MainMenus\MainMenu_QuitToOS.cs" />
         <Compile Include="MainMenus\MainMenu_Options.cs" />
+        <Compile Include="StaticClasses\MainMenu.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

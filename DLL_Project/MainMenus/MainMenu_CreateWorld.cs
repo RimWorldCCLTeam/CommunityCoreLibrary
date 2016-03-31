@@ -5,15 +5,15 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_CreateWorld : IMainMenu
+	public class MainMenu_CreateWorld : MainMenu
 	{
 
-		public bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
 			return ( Game.Mode == GameMode.Entry );
 		}
 
-		public void ClickAction()
+		public override void ClickAction()
 		{
 			MapInitData.Reset();
 			Find.WindowStack.Add( (Window)new Page_CreateWorldParams() );

@@ -27,10 +27,10 @@ namespace CommunityCoreLibrary
             {
                 command.defaultLabel = "Show area";
             }
-            command.icon = ContentFinder<Texture2D>.Get( "UI/Commands/AssignOwner", true );
+            command.icon = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/ToggleParticipantCells", true );
             command.isActive = () =>
             {
-                return !showCells;
+                return showCells;
             };
             command.toggleAction = () =>
             {
