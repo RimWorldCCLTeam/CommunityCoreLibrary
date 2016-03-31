@@ -1,6 +1,9 @@
 [size=12pt][color=orange]Detours of Core Methods[/color] (Internal)[/size]
 
 CCL detours many core methods to allow greater flexibility and functionality for modders when creating new game objects (xml defs, C# classes, etc).  The following list represents the core methods which have been detoured and the reason for it.  Generally speaking, the changes are to allow for custom assets to follow the same core logic as their vanilla counterparts (ie, a custom door[sup][size=8pt]5.1[/size][/sup] should behave the same as a vanilla door).
+
+These detours are done automatically by CCL and require nothing other than having CCL installed.  This section is simply for reference if you choose to detour methods and want to know what CCL is already detouring.
+
 [list]
 [li][color=orange]RimWorld.Alert_PasteDispenserNeedsHopper.Report[/color] - Allows custom nutrient paste dispensers[sup][size=8pt]5.2[/size][/sup] to use generic hoppers.[/li]
 [li][color=orange]RimWorld.Building_Door.AlignQualityAgainst[/color] - Custom doors[sup][size=8pt]5.1[/size][/sup] will align with walls and other doors properly.[/li]
