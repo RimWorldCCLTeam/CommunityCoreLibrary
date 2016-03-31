@@ -11,7 +11,7 @@
         
         <order>int</order>              [required] Order to insert menu button (higher values at top)
         
-        <menuClass>IMainMenu</menuClass> [required] Class which implements IMainMenu for button
+        <menuClass>MainMenu</menuClass>  [required] Class which inherits MainMenu to handle the button
         
         <closeMainTab>bool</closeMainTab> [optional: false] Close the main menu tab before performing the button click action
         
