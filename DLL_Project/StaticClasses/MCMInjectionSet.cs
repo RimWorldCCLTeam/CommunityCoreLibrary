@@ -4,7 +4,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public struct MCMInjectionSet
+    public class MCMInjectionSet
     {
 
         public string                       label;
