@@ -33,7 +33,7 @@
 
 [size=10pt][color=orange]New Interfaces[/color] (C#)[/size]
 [list]
-[li][color=orange]IHelpDefView[/color] - Applicable only to window classes, this interface is used to handle window interactions with HelpDefs.
+[li][color=orange]IHelpDefView[/color] - Applicable only to window classes, this interface is used to handle window interactions with HelpDefs.[/li]
 [li][color=orange]IHopperUser[/color] - A programmatic interface for programming hoppers.  This allows for more powerful programming of a hoppers resource filter.[/li]
 [/list]
 
