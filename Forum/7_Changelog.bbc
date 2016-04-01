@@ -1,8 +1,9 @@
 [size=12pt][color=orange]Changelog[/color][/size]
 
-For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/62]commit log[/url].  This section is just for convenience sake.
+For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/64]commit log[/url].  This section is just for convenience sake.
 
-[code]v0.12.7 - Detouring of core methods, automated factories, main menu def, mod configuation menu, research tree, more changes and additions to the help menu system, tighter control of the mod load order (CCL must be #2), as always more bugs quashed and different ones introduced.
+[code]v0.12.7.1 - Small change to the MCM
+v0.12.7 - Detouring of core methods, automated factories, main menu def, mod configuation menu, research tree, more changes and additions to the help menu system, tighter control of the mod load order (CCL must be #2), as always more bugs quashed and different ones introduced.
 v0.12.6 - Per-mod verbosity for debugging, help for terrain & flooring, helper functions for getting a mod by def, even more bugs fixed.
 v0.12.5.x - (Modder pre-release of new features) - More bugs fixed, internal refactoring, hidden storage comp, color picker and method detouring.
 v0.12.4 - Many, many bugs fixed, help menu overhaul, research menu overhaul, new comp & property.
