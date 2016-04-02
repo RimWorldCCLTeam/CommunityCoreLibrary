@@ -88,19 +88,41 @@ namespace CommunityCoreLibrary
 
             bool isValid = true;
 
-            foreach( var facility in def.Facilities )
+            for( int index = 0; index < def.Facilities.Count; ++index )
             {
-                // Get comps
-                if( facility.facility.GetCompProperties( typeof( CompFacility ) ) == null )
+                var facilitySet = def.Facilities[ index ];
+                if( facilitySet.facility.NullOrEmpty() )
                 {
-                    errors += string.Format( "'{0}' is missing CompFacility for facility injection", facility.facility.defName );
+                    errors += string.Format( "\n\tfacility in Facilities {0} is null", index );
                     isValid = false;
                 }
-                foreach( var targetDef in facility.targetDefs )
+                else
                 {
-                    if( targetDef.GetCompProperties( typeof( CompAffectedByFacilities ) ) == null )
+                    var facilityDef = DefDatabase<ThingDef>.GetNamed( facilitySet.facility, false );
+                    if( facilityDef == null )
                     {
-                        errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", targetDef.defName );
+                        errors += string.Format( "Unable to resolve facility '{0}' in Facilities", facilitySet.facility );
+                        isValid = false;
+                    }
+                    else if( facilityDef.GetCompProperties( typeof( CompFacility ) ) == null )
+                    {
+                        // Check comps
+                        errors += string.Format( "'{0}' is missing CompFacility for facility injection", facilitySet.facility );
+                        isValid = false;
+                    }
+                }
+                for( int index2 = 0; index2 < facilitySet.targetDefs.Count; ++index2 )
+                {
+                    var target = facilitySet.targetDefs[ index2 ];
+                    var targetDef = DefDatabase<ThingDef>.GetNamed( target, false );
+                    if( targetDef == null )
+                    {
+                        errors += string.Format( "Unable to resolve targetDef '{0}' in Facilities", target );
+                        isValid = false;
+                    }
+                    else if( targetDef.GetCompProperties( typeof( CompAffectedByFacilities ) ) == null )
+                    {
+                        errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", target );
                         isValid = false;
                     }
                 }
@@ -119,10 +141,13 @@ namespace CommunityCoreLibrary
 
             foreach( var facility in def.Facilities )
             {
-                foreach( var targetDef in facility.targetDefs )
+                var facilityDef = DefDatabase<ThingDef>.GetNamed( facility.facility );
+
+                foreach( var target in facility.targetDefs )
                 {
+                    var targetDef = DefDatabase<ThingDef>.GetNamed( target );
                     var targetComp = targetDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
-                    if( !targetComp.linkableFacilities.Contains( facility.facility ) )
+                    if( !targetComp.linkableFacilities.Contains( facilityDef ) )
                     {
                         return false;
                     }
@@ -141,9 +166,11 @@ namespace CommunityCoreLibrary
 
             foreach( var facility in def.Facilities )
             {
-                foreach( var targetDef in facility.targetDefs )
+                var facilityDef = DefDatabase<ThingDef>.GetNamed( facility.facility );
+                foreach( var target in facility.targetDefs )
                 {
-                    LinkFacility( targetDef, facility.facility );
+                    var targetDef = DefDatabase<ThingDef>.GetNamed( target );
+                    LinkFacility( targetDef, facilityDef );
                 }
             }
 

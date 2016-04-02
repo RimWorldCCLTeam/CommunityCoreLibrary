@@ -43,10 +43,20 @@ namespace CommunityCoreLibrary
             for( int index = 0; index < def.TraderKinds.Count; ++index )
             {
                 var traderKind = def.TraderKinds[ index ];
-                if( traderKind.targetDef == null )
+                if( traderKind.targetDef.NullOrEmpty() )
                 {
                     errors += string.Format( "\n\ttargetDef in TraderKinds {0} is null", index );
                     isValid = false;
+                }
+                else
+                {
+                    var target = traderKind.targetDef;
+                    var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( target, false );
+                    if( traderKindDef == null )
+                    {
+                        errors += string.Format( "Unable to resolve targetDef '{0}' in TraderKinds", target );
+                        isValid = false;
+                    }
                 }
                 for( int index2 = 0; index2 < traderKind.stockGenerators.Count; ++index2 )
                 {
@@ -90,9 +100,15 @@ namespace CommunityCoreLibrary
                 var targetDef = traderKind.targetDef;
                 foreach( var stockGenerator in traderKind.stockGenerators )
                 {
-                    targetDef.stockGenerators.Add( stockGenerator );
+                    var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( targetDef, false );
+                    traderKindDef.stockGenerators.Add( stockGenerator );
                     stockGenerator.PostLoad();
                     stockGenerator.ResolveReferences();
+                    CCL_Log.TraceMod(
+                        def,
+                        Verbosity.Injections,
+                        string.Format( "Injecting {0} into {1}", stockGenerator.GetType().Name, traderKindDef.label ),
+                        "TraderKinds" );
                 }
             }
 

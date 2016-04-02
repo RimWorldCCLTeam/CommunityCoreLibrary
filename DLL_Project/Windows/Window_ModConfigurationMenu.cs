@@ -134,6 +134,8 @@ namespace CommunityCoreLibrary
 						}
 						else
 						{
+                            menu.worker.InjectionSet = mcm;
+                            menu.worker.Initialize();
 							allMenus.Add( menu );
 							LoadMCMData( menu );
 						}

@@ -15,6 +15,12 @@ namespace CommunityCoreLibrary
 
         public abstract void                ExposeData();
 
+        public virtual void                 Initialize()
+        {
+        }
+
+        public MCMInjectionSet              InjectionSet;
+
     }
 
 }
