@@ -177,7 +177,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get the ModHelperDef for a mod
-        public static ModHelperDef           ModHelperDefForMod( LoadedMod mod )
+        public static ModHelperDef          ModHelperDefForMod( LoadedMod mod )
         {
             if( mod == null )
             {

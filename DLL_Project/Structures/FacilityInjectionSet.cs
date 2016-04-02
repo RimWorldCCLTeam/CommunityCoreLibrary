@@ -8,9 +8,9 @@ namespace CommunityCoreLibrary
     public struct                           FacilityInjectionSet
     {
 
-        public ThingDef                     facility;
+        public string                       facility;
 
-        public List<ThingDef>               targetDefs;
+        public List<string>                 targetDefs;
 
     }
 

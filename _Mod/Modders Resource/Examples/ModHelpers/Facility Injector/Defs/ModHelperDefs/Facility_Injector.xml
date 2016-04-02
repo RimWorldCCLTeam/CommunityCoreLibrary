@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>FacilityInjector</defName>
+        
+        <ModName>Facility Injector</ModName>
+        
+        <version>0.12.7</version>
+        
+        <Facilities>
+            <li>
+                <facility>ToolCabinet</facility>
+
+                <targetDefs>
+                    <li>Bed</li>
+                    <li>RoyalBed</li>
+                </targetDefs>
+            </li>
+        </Facilities>
+        
+    </ModHelperDef>
+
+</Defs>

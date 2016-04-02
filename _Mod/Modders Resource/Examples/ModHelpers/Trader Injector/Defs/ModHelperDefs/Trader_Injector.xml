@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>TraderInjector</defName>
+
+        <ModName>Trader Injector</ModName>
+
+        <version>0.12.7</version>
+
+        <TraderKinds>
+            <li>
+                <targetDef>PirateMerchant</targetDef>
+
+                <stockGenerators>
+                    <li Class="StockGenerator_SingleDef">
+                        <thingDef>Silver</thingDef>
+                        <countRange>
+                            <min>100000</min>
+                            <max>200000</max>
+                        </countRange>
+                    </li>
+                </stockGenerators>
+            </li>
+        </TraderKinds>
+
+    </ModHelperDef>
+
+</Defs>
