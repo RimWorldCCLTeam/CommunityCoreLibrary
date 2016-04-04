@@ -172,7 +172,7 @@ namespace CommunityCoreLibrary
             BuildScanList();
 
             // Calculate low-power mode consumption
-            IdlePower = IdleProps.idlePowerFactor * -PowerTrader.props.basePowerConsumption;
+            IdlePower = IdleProps.idlePowerFactor * -PowerTrader.Props.basePowerConsumption;
             if( IdlePower > MinIdleDraw )
             {
                 IdlePower = MinIdleDraw;
@@ -406,12 +406,11 @@ namespace CommunityCoreLibrary
 
             if(
                 ( LowPowerMode )&&
-                ( CompGlower != null )&&
-                ( CompGlower.Lit )
+                ( CompGlower != null )
             )
             {
                 // Glower on while idle???
-                ToggleGlower( false );
+                CompGlower.UpdateLit();
             }
         }
 
@@ -420,7 +419,7 @@ namespace CommunityCoreLibrary
             if( LowPowerMode )
             {
                 // Is idle, power up
-                curPower = -PowerTrader.props.basePowerConsumption;
+                curPower = -PowerTrader.Props.basePowerConsumption;
                 PowerTrader.PowerOutput = curPower;
                 keepOnTicks = IdleProps.cycleHighTicks;
             }
@@ -453,17 +452,8 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            // If no state change, abort
-            if( turnItOn == CompGlower.Lit )
-            {
-                return;
-            }
-
             // Toggle and update glow grid
-            CompGlower.Lit = turnItOn;
-            Find.GlowGrid.MarkGlowGridDirty( parent.Position );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
+            CompGlower.UpdateLit();
         }
 
         void                                BuildScanList()
@@ -476,7 +466,6 @@ namespace CommunityCoreLibrary
             if( IdleProps.operationalMode == LowIdleDrawMode.Cycle )
             {
                 // Set default scan tick intervals
-                if( IdleProps.cycleLowTicks < 0 )
                 {
                     IdleProps.cycleLowTicks = 1000;
                 }
