@@ -310,6 +310,7 @@ namespace CommunityCoreLibrary
 
         public static List<IntVec3> GetParticipantCells(this ThingDef thingDef, IntVec3 position, Rot4 rotation, bool getBlocked = false)
         {
+            // TODO: May need to manually calculate cells
             var returnCells = new List<IntVec3>();
             var watchCells = WatchBuildingUtility.CalculateWatchCells(thingDef, position, rotation);
             foreach (var intVec3 in watchCells)
