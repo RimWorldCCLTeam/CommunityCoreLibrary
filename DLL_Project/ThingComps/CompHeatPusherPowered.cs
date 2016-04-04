@@ -23,6 +23,14 @@ namespace CommunityCoreLibrary
             }
         }
 
+        CompHeatPusher HeatPusher
+        {
+            get
+            {
+                return parent.TryGetComp<CompHeatPusher>();
+            }
+        }
+
 #if DEBUG
         public override void                PostSpawnSetup()
         {
@@ -75,13 +83,13 @@ namespace CommunityCoreLibrary
             }
 
             // If the local temp is higher than the max heat pushed, abort
-            if( parent.Position.GetTemperature() >= props.heatPushMaxTemperature )
+            if( parent.Position.GetTemperature() >= HeatPusher.Props.heatPushMaxTemperature )
             {
                 return;
             }
 
             // Push some heat
-            GenTemperature.PushHeat( parent.Position, props.heatPerSecond );
+            GenTemperature.PushHeat( parent.Position, HeatPusher.Props.heatPerSecond );
         }
 
     }
