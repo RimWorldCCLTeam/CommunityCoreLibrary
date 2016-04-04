@@ -147,7 +147,7 @@ namespace CommunityCoreLibrary
             }
 
             // Get the glow radius
-            lightRadius = CompGlower.props.glowRadius;
+            lightRadius = CompGlower.Props.glowRadius;
 
             // Set the light color
             if ( ColorProps.useColorPicker )
@@ -276,7 +276,7 @@ namespace CommunityCoreLibrary
                         // Change it's color
                         if ( ColorProps.useColorPicker && otherLight.ColorProps.useColorPicker )
                         {
-                            otherLight.ChangeColor( CompGlower.props.glowColor );
+                            otherLight.ChangeColor( CompGlower.Props.glowColor );
                         }
                         else
                         {
@@ -313,14 +313,8 @@ namespace CommunityCoreLibrary
             // Get glower
             var glower = CompGlower;
 
-            // Current lit state of glower
-            bool wasLit = glower.Lit;
-
-            // Turn off glower
-            glower.Lit = false;
-
             // New glower properties
-            var newProps = new CompProperties();
+            var newProps = new CompProperties_Glower();
             if( newProps == null )
             {
                 CCL_Log.Error( "CompColoredLight unable to create new CompProperties!", parent.def.defName );
@@ -336,12 +330,7 @@ namespace CommunityCoreLibrary
             glower.Initialize( newProps );
 
             // Update glow grid
-            Find.GlowGrid.MarkGlowGridDirty( parent.Position );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
-
-            // Turn light on if appropriate
-            glower.Lit = wasLit;
+            glower.UpdateLit();
         }
 
         #endregion
