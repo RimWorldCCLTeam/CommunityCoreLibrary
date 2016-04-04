@@ -23,19 +23,22 @@ namespace CommunityCoreLibrary
             get
             {
                 IntVec3 checkPos = IntVec3.Invalid;
-                if( parent.Position.InBounds() )
-                {
-                    checkPos = parent.Position;
-                }
-                else if( parent.PositionHeld.InBounds() )
+                if( parent.holder != null )
                 {
                     checkPos = parent.PositionHeld;
                 }
-                if( checkPos == IntVec3.Invalid )
+                else
+                {
+                    checkPos = parent.Position;
+                }
+                if(
+                    ( checkPos == IntVec3.Invalid )||
+                    ( !checkPos.InBounds() )
+                )
                 {
                     return null;
                 }
-                var refrigerator = parent.Position.GetThingList().FirstOrDefault( t => (
+                var refrigerator = checkPos.GetThingList().FirstOrDefault( t => (
                     ( t.TryGetComp<CompRefrigerated>() != null )
                 ) );
                 return refrigerator?.TryGetComp<CompRefrigerated>();

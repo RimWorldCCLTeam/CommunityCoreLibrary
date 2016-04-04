@@ -488,7 +488,7 @@ namespace CommunityCoreLibrary
                     if( helpDef == null )
                     {
                         // Make a new one
-                        //Log.Message( "HelpGen :: " + recipeDef.defName );
+                        //Log.Message( "Help System :: " + recipeDef.defName );
                         helpDef = HelpForRecipe( thingDef, recipeDef, helpCategoryDef );
 
                         // Inject the def
@@ -647,7 +647,7 @@ namespace CommunityCoreLibrary
             }
             if( def is RecipeDef )
             {
-                CCL_Log.Error( "HelpForDef() cannot be used for recipedefs. Use HelpForRecipeDef() directly.", "HelpGen" );
+                CCL_Log.Error( "HelpForDef() cannot be used for recipedefs. Use HelpForRecipeDef() directly.", "Help System" );
                 return null;
             }
             if ( def is BiomeDef )
@@ -655,7 +655,7 @@ namespace CommunityCoreLibrary
                 return HelpForBiome( def as BiomeDef, category );
             }
 
-            CCL_Log.Error( "HelpForDef() used with a def type (" + def.GetType().ToString() + ") that is not handled.", "HelpGen" );
+            CCL_Log.Error( "HelpForDef() used with a def type (" + def.GetType().ToString() + ") that is not handled.", "Help System" );
             return null;
         }
 
@@ -782,7 +782,11 @@ namespace CommunityCoreLibrary
 #if DEBUG
                     else 
                     {
-                        Log.Message("Loading 'available on' failed for " + thingDef.LabelCap );
+                        CCL_Log.TraceMod(
+                            buildableDef,
+                            Verbosity.NonFatalErrors,
+                            "Loading 'available on' failed for " + thingDef.defName,
+                            "Help System" );
                     }
 #endif
                 }
