@@ -425,13 +425,13 @@ namespace CommunityCoreLibrary
             ResolveDefList( pawnkinds, category );
 
             // mechanoids
-            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race.race.mechanoid ).ToList();
+            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race.race.IsMechanoid ).ToList();
             category = HelpCategoryForKey( HelpCategoryDefOf.Mechanoids, "AutoHelpSubCategoryMechanoids".Translate(),
                                            "AutoHelpCategoryFloraAndFauna".Translate() );
             ResolveDefList( pawnkinds, category );
 
             // humanoids
-            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => !t.race.race.Animal && !t.race.race.mechanoid ).ToList();
+            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => !t.race.race.Animal && !t.race.race.IsMechanoid).ToList();
             category = HelpCategoryForKey( HelpCategoryDefOf.Humanoids, "AutoHelpSubCategoryHumanoids".Translate(),
                                            "AutoHelpCategoryFloraAndFauna".Translate() );
             ResolveDefList( pawnkinds, category );
@@ -973,7 +973,7 @@ namespace CommunityCoreLibrary
                 var powerSectionList = new List<StringDescTriplet>();
 
                 // Get power required or generated
-                var compPowerTrader = thingDef.GetCompProperties( typeof( CompPowerTrader ) );
+                var compPowerTrader = thingDef.GetCompProperties<CompProperties_Power>();
                 if( compPowerTrader != null )
                 {
                     if( compPowerTrader.basePowerConsumption > 0 )
@@ -981,7 +981,7 @@ namespace CommunityCoreLibrary
                         var basePowerConsumption = (int) compPowerTrader.basePowerConsumption;
                         powerSectionList.Add( new StringDescTriplet( "AutoHelpRequired".Translate(), null, basePowerConsumption.ToString() ) );
 
-                        var compPowerIdle = (CompProperties_LowIdleDraw) thingDef.GetCompProperties( typeof( CompPowerLowIdleDraw ) );
+                        var compPowerIdle = thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
                         if( compPowerIdle != null )
                         {
                             var idlePower = (int)( compPowerTrader.basePowerConsumption * compPowerIdle.idlePowerFactor );
@@ -1001,7 +1001,7 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-                var compBattery = thingDef.GetCompProperties( typeof( CompPowerBattery ) );
+                var compBattery = thingDef.GetCompProperties<CompProperties_Battery>();
                 if( compBattery != null )
                 {
                     var stored = (int) compBattery.storedEnergyMax;
@@ -1025,8 +1025,8 @@ namespace CommunityCoreLibrary
 
                 // Get list of facilities that effect it
                 // TODO: This was never implemented?
-                var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
-                if(
+                var affectedBy = thingDef.GetCompProperties<CompProperties_AffectedByFacilities>();
+                if (
                     ( affectedBy != null )&&
                     ( !affectedBy.linkableFacilities.NullOrEmpty() )
                 )
@@ -1042,13 +1042,13 @@ namespace CommunityCoreLibrary
                     var effectsBuildings = DefDatabase< ThingDef >.AllDefsListForReading
                         .Where( f => (
                             ( f.HasComp( typeof( CompAffectedByFacilities ) ) )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ) != null )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities != null )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities.Contains( thingDef ) )
+                            ( f.GetCompProperties<CompProperties_AffectedByFacilities>() != null )&&
+                            ( f.GetCompProperties<CompProperties_AffectedByFacilities>().linkableFacilities != null )&&
+                            ( f.GetCompProperties<CompProperties_AffectedByFacilities>().linkableFacilities.Contains( thingDef ) )
                         ) ).ToList();
                     if( !effectsBuildings.NullOrEmpty() )
                     {
-                        var facilityProperties = thingDef.GetCompProperties( typeof( CompFacility ) );
+                        var facilityProperties = thingDef.GetCompProperties<CompProperties_Facility>();
 
                         List<DefStringTriplet> facilityDefs = new List<DefStringTriplet>();
                         List<StringDescTriplet> facilityStrings = new List<StringDescTriplet>();
@@ -1080,7 +1080,7 @@ namespace CommunityCoreLibrary
                 // Get valid joy givers
                 var joyGiverDefs = DefDatabase< JoyGiverDef >.AllDefsListForReading
                     .Where( j => (
-                        ( j.thingDef == thingDef )&&
+                        ( j.thingDefs != null )&&
                         ( j.jobDef != null )
                     ) ).ToList();
 
@@ -1608,7 +1608,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( object disease in diseases )
                 {
-                    defs.Add( ( (BiomeDiseaseRecord)disease ).diseaseInc.disease );
+                    defs.Add( ( (BiomeDiseaseRecord)disease ).diseaseInc.diseaseIncident);
                     chances.Add( ( ( (BiomeDiseaseRecord)disease ).mtbDays / GenDate.DaysPerYear ).ToStringPercent() );
                 }
 
@@ -1828,8 +1828,8 @@ namespace CommunityCoreLibrary
                 new []
                 {
                     ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
-                    race.lifeExpectancy.ToStringApproximateTimePeriod(),
-                    race.diet.ToString().Translate(),
+                    race.lifeExpectancy.ToStringApproxAge(),
+                    race.foodType.ToString().Translate(),
                     race.trainableIntelligence.ToString()
                 },
                 new []
@@ -1894,14 +1894,14 @@ namespace CommunityCoreLibrary
                 // final lifestage
                 if( i == race.lifeStageAges.Count - 1 )
                 {
-                    suffixes.Add( ages[i].ToStringApproximateTimePeriod() + " - ~" +
-                                  race.lifeExpectancy.ToStringApproximateTimePeriod() );
+                    suffixes.Add( ages[i].ToStringApproxAge() + " - ~" +
+                                  race.lifeExpectancy.ToStringApproxAge() );
                 }
                 else
                 // other lifestages
                 {
-                    suffixes.Add( ages[i].ToStringApproximateTimePeriod() + " - " +
-                                  ages[i + 1].ToStringApproximateTimePeriod() );
+                    suffixes.Add( ages[i].ToStringApproxAge() + " - " +
+                                  ages[i + 1].ToStringApproxAge() );
                 }
             }
 
@@ -1922,7 +1922,7 @@ namespace CommunityCoreLibrary
             if( kindDef.race.HasComp( typeof( CompEggLayer ) ) )
             {
                 // egglayers
-                var eggComp =  kindDef.race.GetCompProperties( typeof (CompEggLayer) );
+                var eggComp =  kindDef.race.GetCompProperties<CompProperties_EggLayer>();
                 string range;
                 if( eggComp.eggCountRange.min == eggComp.eggCountRange.max )
                 {
@@ -1933,7 +1933,7 @@ namespace CommunityCoreLibrary
                     range = eggComp.eggCountRange.ToString();
                 }
                 stringDescs.Add( "AutoHelpEggLayer".Translate( range,
-                    ( eggComp.eggLayIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+                    ( eggComp.eggLayIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
 
                 statParts.Add( new HelpDetailSection(
                                    "AutoHelpListReproduction".Translate(),
@@ -1948,7 +1948,7 @@ namespace CommunityCoreLibrary
                 // mammals
                 List<StringDescTriplet> SDT = new List<StringDescTriplet>();
                 SDT.Add( new StringDescTriplet( 
-                    ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod(),
+                    ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge(),
                     "AutoHelpGestationPeriod".Translate() ) );
 
                 if(
@@ -2015,7 +2015,7 @@ namespace CommunityCoreLibrary
             #endregion
 
             #region Butcher products
-            if( race.isFlesh )
+            if( race.IsFlesh )
             {
                 // fleshy pawns ( meat + leather )
                 defs.Add( race.meatDef );
@@ -2033,7 +2033,7 @@ namespace CommunityCoreLibrary
                     prefixes.ToArray() ) );
             }
             else if(
-                ( race.mechanoid )&&
+                ( race.IsMechanoid )&&
                 ( !kindDef.race.butcherProducts.NullOrEmpty() )
             )
             {
@@ -2052,11 +2052,11 @@ namespace CommunityCoreLibrary
 
             if( kindDef.race.HasComp( typeof( CompMilkable ) ) )
             {
-                var milkComp =  kindDef.race.GetCompProperties( typeof( CompMilkable ) );
+                var milkComp =  kindDef.race.GetCompProperties<CompProperties_Milkable>();
 
                 defs.Add( milkComp.milkDef );
                 prefixes.Add( milkComp.milkAmount.ToString() );
-                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
 
                 linkParts.Add( new HelpDetailSection(
                                    "AutoHelpListMilk".Translate(),
