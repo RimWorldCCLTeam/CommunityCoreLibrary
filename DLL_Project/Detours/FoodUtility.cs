@@ -29,9 +29,6 @@ namespace CommunityCoreLibrary.Detour
             float num = dist;
             switch( def.ingestible.preferability )
             {
-            case FoodPreferability.Plant:
-                num += 500f;
-                break;
             case FoodPreferability.NeverForNutrition:
                 return FoodOptimalityUnusable;
             case FoodPreferability.DesperateOnly:
