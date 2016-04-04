@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary.Detour
         {
             var JobGiver_Binge_DrinkAlchohol = new _JobGiver_Binge._DrinkAlchohol();
             JobGiver_Binge_DrinkAlchohol.pawn = pawn;
-            JobGiver_Binge_DrinkAlchohol.ignoreForbid = JobGiver_Binge_DrinkAlchohol.pawn.BrokenStateDef != null;
+            JobGiver_Binge_DrinkAlchohol.ignoreForbid = JobGiver_Binge_DrinkAlchohol.pawn.MentalStateDef != null;
 
             Predicate<Thing> validator = new Predicate<Thing>( JobGiver_Binge_DrinkAlchohol.CanBingeOn );
             Thing thing = GenClosest.ClosestThingReachable(
