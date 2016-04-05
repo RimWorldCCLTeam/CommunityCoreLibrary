@@ -44,7 +44,8 @@ namespace CommunityCoreLibrary.Detour
             return resFood;
         }
 
-        internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_Ingest obj )
+        // TODO: see other todos
+        /*internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_Ingest obj )
         {
             var targetThingA = obj.TargetThingA();
             var targetThingB = obj.TargetThingB();
@@ -132,7 +133,7 @@ namespace CommunityCoreLibrary.Detour
             var durationMultiplier = 1f / obj.pawn.GetStatValue( StatDefOf.EatingSpeed, true );
             yield return Toils_Ingest.ChewIngestible( obj.pawn, durationMultiplier, TargetIndex.B ).FailOnDespawnedOrNull( TargetIndex.A );
             yield return Toils_Ingest.FinalizeIngest( obj.pawn, TargetIndex.A );
-        }
+        }*/
 
     }
 
