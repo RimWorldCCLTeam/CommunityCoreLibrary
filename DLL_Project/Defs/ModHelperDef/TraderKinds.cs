@@ -103,7 +103,7 @@ namespace CommunityCoreLibrary
                     var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( targetDef, false );
                     traderKindDef.stockGenerators.Add( stockGenerator );
                     stockGenerator.PostLoad();
-                    stockGenerator.ResolveReferences();
+                    stockGenerator.ResolveReferences(traderKindDef);
                     CCL_Log.TraceMod(
                         def,
                         Verbosity.Injections,
