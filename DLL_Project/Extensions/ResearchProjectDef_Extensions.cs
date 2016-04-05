@@ -298,8 +298,8 @@ namespace CommunityCoreLibrary
             var thingsOn = new List<ThingDef>();
             var researchThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( !t.IsLockedOut() )&&
-                ( t.researchPrerequisite != null )&&
-                ( t.researchPrerequisite == researchProjectDef )
+                (t.GetResearchRequirements() != null) &&
+                (t.GetResearchRequirements().Contains(researchProjectDef))
             ) ).ToList();
 
             if ( !researchThings.NullOrEmpty() )
@@ -340,8 +340,8 @@ namespace CommunityCoreLibrary
             var thingsOn = new List<TerrainDef>();
             var researchThings = DefDatabase<TerrainDef>.AllDefsListForReading.Where( t => (
                 ( !t.IsLockedOut() )&&
-                ( t.researchPrerequisite != null )&&
-                ( t.researchPrerequisite == researchProjectDef )
+                ( t.GetResearchRequirements() != null )&&
+                ( t.GetResearchRequirements().Contains(researchProjectDef))
             ) ).ToList();
 
             if ( !researchThings.NullOrEmpty() )
