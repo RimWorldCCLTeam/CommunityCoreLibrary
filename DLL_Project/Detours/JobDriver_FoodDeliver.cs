@@ -15,8 +15,8 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _JobDriver_FoodDeliver
     {
-        
-        internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodDeliver obj )
+        // TODO: see other todos
+        /*internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodDeliver obj )
         {
             yield return Toils_Reserve.Reserve( TargetIndex.B, 1 );
 
@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary.Detour
             );
             dropFoodAtTarget.defaultCompleteMode = ToilCompleteMode.Instant;
             yield return dropFoodAtTarget;
-        }
+        }*/
 
     }
 
