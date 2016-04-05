@@ -52,7 +52,7 @@ namespace CommunityCoreLibrary.Detour
                     pawn.pather.StartPath( job.targetC, PathEndMode.OnCell );
                 }
             );
-            pathToTarget.FailOnDestroyedOrForbidden( TargetIndex.B );
+            pathToTarget.FailOnDestroyedNullOrForbidden( TargetIndex.B );
             pathToTarget.AddFailCondition( ( Func<bool> )(() =>
                 {
                     Pawn pawn = (Pawn) obj.pawn.jobs.curJob.targetB.Thing;
