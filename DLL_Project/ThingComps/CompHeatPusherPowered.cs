@@ -61,7 +61,8 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public override void                CompTick()
+        // TODO: see other todos
+        /*public override void                CompTick()
         {
             base.CompTick();
 
@@ -90,7 +91,7 @@ namespace CommunityCoreLibrary
 
             // Push some heat
             GenTemperature.PushHeat( parent.Position, HeatPusher.Props.heatPerSecond );
-        }
+        }*/
 
     }
 
