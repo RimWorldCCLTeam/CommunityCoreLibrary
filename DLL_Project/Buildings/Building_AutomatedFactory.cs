@@ -28,7 +28,8 @@ namespace CommunityCoreLibrary
 
         }
 
-        private Dictionary<ThingDef,Allowances> productionAllowances;
+        // TODO: see other todos
+        //private Dictionary<ThingDef,Allowances> productionAllowances;
 
         private RecipeDef                   currentRecipe;
         public RecipeDef                    CurrentRecipe
@@ -157,7 +158,8 @@ namespace CommunityCoreLibrary
         }
 #endif
         
-        public override void                ExposeData()
+        // TODO: see other todos
+        /*public override void                ExposeData()
         {
             // Scribe base data
             base.ExposeData();
@@ -201,7 +203,7 @@ namespace CommunityCoreLibrary
 
             // Scribe current thing
             Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
-        }
+        }*/
 
         // TODO: see other todos in hopper files
         /*public override void                Tick()
@@ -396,7 +398,8 @@ namespace CommunityCoreLibrary
 
         #region Production Allowances
 
-        public void                         SetAllowed( ThingDef thingDef, bool allowed )
+        // TODO: see other todos
+        /*public void                         SetAllowed( ThingDef thingDef, bool allowed )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -404,9 +407,10 @@ namespace CommunityCoreLibrary
                 allowance.allowed = allowed;
                 productionAllowances[ thingDef ] = allowance;
             }
-        }
+        }*/
 
-        public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
+        // TODO: see other todos
+        /*public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
         {
             var product = recipeDef.products[ 0 ].thingDef;
             Allowances allowance;
@@ -420,9 +424,10 @@ namespace CommunityCoreLibrary
                 allowance = new Allowances( recipeDef, allowed );
                 productionAllowances.Add( product, allowance );
             }
-        }
+        }*/
 
-        public bool                         GetAllowed( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         GetAllowed( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -430,9 +435,10 @@ namespace CommunityCoreLibrary
                 return allowance.allowed;
             }
             return false;
-        }
+        }*/
 
-        public bool                         GetAllowed( RecipeDef recipeDef )
+        // TODO: see other todos
+        /*public bool                         GetAllowed( RecipeDef recipeDef )
         {
             foreach( var pair in productionAllowances )
             {
@@ -442,9 +448,10 @@ namespace CommunityCoreLibrary
                 }
             }
             return false;
-        }
+        }*/
 
-        public Allowances                   GetAllowance( ThingDef thingDef )
+        // TODO: see other todos
+        /*public Allowances                   GetAllowance( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -452,9 +459,10 @@ namespace CommunityCoreLibrary
                 return allowance;
             }
             return null;
-        }
+        }*/
 
-        public Allowances                   GetAllowance( RecipeDef recipeDef )
+        // TODO: see other todos
+        /*public Allowances                   GetAllowance( RecipeDef recipeDef )
         {
             foreach( var pair in productionAllowances )
             {
@@ -464,7 +472,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return null;
-        }
+        }*/
 
         #endregion
 
@@ -680,7 +688,8 @@ namespace CommunityCoreLibrary
 
         #region Public Interface
 
-        public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
+        // TODO: see other todos
+        /*public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -688,9 +697,10 @@ namespace CommunityCoreLibrary
                 return allowance.recipe;
             }
             return (RecipeDef) null;
-        }
+        }*/
 
-        public int                          ProductionTicks( ThingDef thingDef )
+        // TODO: see other todos
+        /*public int                          ProductionTicks( ThingDef thingDef )
         {
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
@@ -698,7 +708,7 @@ namespace CommunityCoreLibrary
                 return 50;
             }
             return (int) recipe.workAmount;
-        }
+        }*/
 
         // TODO: see other todos
         /*public bool                         CanDispenseNow( ThingDef thingDef )
@@ -710,10 +720,11 @@ namespace CommunityCoreLibrary
             return false;
         }*/
 
-        public bool                         CanProduce( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         CanProduce( ThingDef thingDef )
         {
             return FindRecipeForProduct( thingDef ) != null;
-        }
+        }*/
 
         public Building                     AdjacentReachableHopper( Pawn reacher )
         {
@@ -748,7 +759,8 @@ namespace CommunityCoreLibrary
             return CompHopperUser.EnoughResourcesInHoppers( recipe );
         }*/
 
-        public List<ThingDef>               AllProducts()
+        // TODO: see other todos
+        /*public List<ThingDef>               AllProducts()
         {
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
@@ -756,9 +768,10 @@ namespace CommunityCoreLibrary
                 products.Add( pair.Key );
             }
             return products;
-        }
+        }*/
 
-        public List<ThingDef>               AllowedProducts()
+        // TODO: see other todos
+        /*public List<ThingDef>               AllowedProducts()
         {
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
@@ -769,7 +782,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return products;
-        }
+        }*/
 
         // TODO: see other todos
         /*public ThingDef                     BestProduct( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
