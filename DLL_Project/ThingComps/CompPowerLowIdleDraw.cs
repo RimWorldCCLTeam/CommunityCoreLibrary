@@ -190,7 +190,8 @@ namespace CommunityCoreLibrary
             PowerTrader.PowerOutput = curPower;
         }
 
-        public override void                CompTick()
+        // TODO: see other todos
+        /*public override void                CompTick()
         {
             base.CompTick();
 
@@ -232,7 +233,7 @@ namespace CommunityCoreLibrary
                 // Force toggle now
                 PowerLevelToggle( 1000000 );
             }
-        }
+        }*/
 
         private static bool                 HasJobOnTarget( Pawn pawn, Thing target )
         {
@@ -267,7 +268,8 @@ namespace CommunityCoreLibrary
             return false;
         }
 
-        void                                PowerLevelToggle( int thisTickCount )
+        // TODO: see other todos
+        /*void                                PowerLevelToggle( int thisTickCount )
         {
             // If it's on, don't recheck until it times out
             keepOnTicks -= thisTickCount;
@@ -412,7 +414,7 @@ namespace CommunityCoreLibrary
                 // Glower on while idle???
                 CompGlower.UpdateLit();
             }
-        }
+        }*/
 
         void                                TogglePower()
         {
