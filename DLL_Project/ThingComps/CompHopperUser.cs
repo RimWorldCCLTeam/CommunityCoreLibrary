@@ -159,7 +159,8 @@ namespace CommunityCoreLibrary
 
         private List<HopperSettingsAmount>  hopperSettings = new List<HopperSettingsAmount>();
 
-        private bool                        settingsBuilt = false;
+        // TODO:see other todos
+        //private bool                        settingsBuilt = false;
 
         #region Neighbouring Cell Enumeration
 
@@ -227,13 +228,14 @@ namespace CommunityCoreLibrary
 
         #region Storage Settings
 
-        public void                         ResetResourceSettings()
+        // TODO: see other todos
+        /*public void                         ResetResourceSettings()
         {
             recipeFilter.Clear();
             hopperSettings.Clear();
             resourceSettings = null;
             settingsBuilt = false;
-        }
+        }*/
 
         // TODO: see other todos
         /*public StorageSettings              ResourceSettings
