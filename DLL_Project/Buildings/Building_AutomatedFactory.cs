@@ -12,7 +12,7 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-    public class Building_AutomatedFactory : Building, IHopperUser
+    public class Building_AutomatedFactory : Building // TODO: reinstate IHopperUser once other issues in file are fixed
     {
 
         public class Allowances
@@ -200,7 +200,8 @@ namespace CommunityCoreLibrary
             Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
         }
 
-        public override void                Tick()
+        // TODO: see other todos in hopper files
+        /*public override void                Tick()
         {
             base.Tick();
             ProductionTick( 1 );
@@ -209,14 +210,15 @@ namespace CommunityCoreLibrary
                 return;
             }
             RescanTick();
-        }
+        }*/
 
-        public override void                TickRare()
+        // TODO: see other todos in hopper files
+        /*public override void                TickRare()
         {
             base.TickRare();
             ProductionTick( 250 );
             RescanTick();
-        }
+        }*/
 
         public override string              GetInspectString()
         {
@@ -296,13 +298,14 @@ namespace CommunityCoreLibrary
             currentProductionTick = 0;
         }
 
-        private void                        RescanTick()
+        // TODO: see other todos in hopper files
+        /*private void                        RescanTick()
         {
             if( currentRecipeCount != this.def.AllRecipes.Count )
             {
                 ResetAndReprogramHoppers();
             }
-        }
+        }*/
 
         #endregion
 
@@ -310,14 +313,16 @@ namespace CommunityCoreLibrary
 
         private ThingFilter                 resourceFilter = null;
 
-        private void                        ResetAndReprogramHoppers()
+        // TODO: see other todos in hopper files
+        /*private void                        ResetAndReprogramHoppers()
         {
             resourceFilter = null;
             CompHopperUser.ResetResourceSettings();
             CompHopperUser.FindAndProgramHoppers();
-        }
+        }*/
 
-        public ThingFilter                  ResourceFilter
+        // TODO: see other todos in hopper files
+        /*public ThingFilter                  ResourceFilter
         {
             get
             {
@@ -380,7 +385,7 @@ namespace CommunityCoreLibrary
                 }
                 return resourceFilter;
             }
-        }
+        }*/
 
         #endregion
 
