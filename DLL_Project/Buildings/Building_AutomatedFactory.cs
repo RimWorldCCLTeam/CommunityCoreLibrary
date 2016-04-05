@@ -31,17 +31,17 @@ namespace CommunityCoreLibrary
         // TODO: see other todos
         //private Dictionary<ThingDef,Allowances> productionAllowances;
 
-        private RecipeDef                   currentRecipe;
-        public RecipeDef                    CurrentRecipe
+        //private RecipeDef                   currentRecipe;
+        /*public RecipeDef                    CurrentRecipe
         {
             get
             {
                 return currentRecipe;
             }
-        }
+        }*/
 
-        private int                         currentProductionTick;
-        private Thing                       currentThing;
+        //private int                         currentProductionTick;
+        //private Thing                       currentThing;
 
         // TODO: see other todos
         //private int                         nextProductIndex;
@@ -225,7 +225,7 @@ namespace CommunityCoreLibrary
             RescanTick();
         }*/
 
-        public override string              GetInspectString()
+        /*public override string              GetInspectString()
         {
             string str = base.GetInspectString();
             if( currentRecipe != null )
@@ -239,7 +239,7 @@ namespace CommunityCoreLibrary
                 str += "Building_AutomatedFactory_WaitingToDispense".Translate( currentThing.def.label );
             }
             return str;
-        }
+        }*/
 
         #endregion
 
@@ -523,7 +523,7 @@ namespace CommunityCoreLibrary
             return TryProduceThingDef( currentRecipe.products[0].thingDef );
         }*/
 
-        private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
+        /*private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
         {
             stackWith = null;
             dropCell = IntVec3.Invalid;
@@ -665,7 +665,7 @@ namespace CommunityCoreLibrary
             }
             // All output cells are blocked
             return false;
-        }
+        }*/
 
         // TODO: see other todos
         /*private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
