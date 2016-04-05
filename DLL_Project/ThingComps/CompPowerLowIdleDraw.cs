@@ -24,7 +24,8 @@ namespace CommunityCoreLibrary
         public const float                  MinIdleDraw = -0.01f;
         public float                        IdlePower;
         float                               curPower = 1f;
-        bool                                onIfOn;
+        // TODO: see other todos
+        //bool                                onIfOn;
 
         int                                 keepOnTicks;
 
@@ -89,7 +90,8 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override void                PostSpawnSetup()
+        // TODO: see other todos
+        /*public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
 
@@ -188,7 +190,7 @@ namespace CommunityCoreLibrary
 
             // Set power usage
             PowerTrader.PowerOutput = curPower;
-        }
+        }*/
 
         // TODO: see other todos
         /*public override void                CompTick()
@@ -458,7 +460,8 @@ namespace CommunityCoreLibrary
             CompGlower.UpdateLit();
         }
 
-        void                                BuildScanList()
+        // TODO: see other todos
+        /*void                                BuildScanList()
         {
             // Default to interaction cell only, is also means that a pawn must
             // be using the building so star-gazers aren't turning the stove on.
@@ -568,7 +571,7 @@ namespace CommunityCoreLibrary
                     IdleProps.cycleHighTicks = 500;
                 }
             }
-        }
+        }*/
 
         void                                AddScanPositionIfAllowed( IntVec3 position )
         {
