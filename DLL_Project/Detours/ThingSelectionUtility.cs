@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary.Detour
         {
             if(
                 ( !t.def.selectable )||
-                ( !t.SpawnedInWorld )||
+                ( !t.Spawned )||
                 ( HideItemManager.PreventItemSelection( t ) )
             )
             {
