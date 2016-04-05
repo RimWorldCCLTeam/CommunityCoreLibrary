@@ -634,14 +634,15 @@ namespace CommunityCoreLibrary
         static HelpDef HelpForDef<T>( T def, HelpCategoryDef category ) where T : Def
         {
             // both thingdefs (buildings, items) and terraindefs (floors) are derived from buildableDef
-            if( def is BuildableDef )
+            // TODO: see other todos to fix this
+            /*if( def is BuildableDef )
             {
                 return HelpForBuildable( def as BuildableDef, category );
             }
             if( def is ResearchProjectDef )
             {
                 return HelpForResearch( def as ResearchProjectDef, category );
-            }
+            }*/
             if( def is AdvancedResearchDef )
             {
                 return HelpForAdvancedResearch( def as AdvancedResearchDef, category );
@@ -664,7 +665,8 @@ namespace CommunityCoreLibrary
             return null;
         }
 
-        static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
+        // TODO: see todos in RecipeDef_Extensions
+        /*static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -1142,9 +1144,10 @@ namespace CommunityCoreLibrary
             helpDef.HelpDetailSections.AddRange( linkParts );
 
             return helpDef;
-        }
+        }*/
 
-        static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
+        // TODO:see todos in RecipeDef_Extentions
+        /*static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -1416,7 +1419,7 @@ namespace CommunityCoreLibrary
 #endregion
 
             return helpDef;
-        }
+        }*/
 
         static HelpDef HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
         {
