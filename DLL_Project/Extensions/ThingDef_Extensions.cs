@@ -115,23 +115,25 @@ namespace CommunityCoreLibrary
                     : null;
         }
 
-        public static bool                  EverHasRecipes( this ThingDef thingDef )
+        // TODO: see other todos
+        /*public static bool                  EverHasRecipes( this ThingDef thingDef )
         {
             return (
                 ( !thingDef.GetRecipesCurrent().NullOrEmpty() )||
                 ( !thingDef.GetRecipesUnlocked( ref nullDefs ).NullOrEmpty() )||
                 ( !thingDef.GetRecipesLocked( ref nullDefs ).NullOrEmpty() )
             );
-        }
+        }*/
 
-        public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
+        // TODO: see other todos
+        /*public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
         {
             return (
                 ( thingDef.GetRecipesCurrent().Contains( recipeDef ) )||
                 ( thingDef.GetRecipesUnlocked( ref nullDefs ).Contains( recipeDef ) )||
                 ( thingDef.GetRecipesLocked( ref nullDefs ).Contains( recipeDef ) )
             );
-        }
+        }*/
 
         public static List<JoyGiverDef> GetJoyDefUsing(this ThingDef thingDef)
         {
@@ -142,7 +144,8 @@ namespace CommunityCoreLibrary
 
         #region Lists of affected data
 
-        public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
+        // TODO: see other todos in recipe files
+        /*public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -192,7 +195,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return recipeDefs;
-        }
+        }*/
 
         public static List< RecipeDef >     GetRecipesLocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
@@ -252,7 +255,8 @@ namespace CommunityCoreLibrary
             return thingDef.AllRecipes;
         }
 
-        public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
+        // TODO:see other todos
+        /*public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -269,7 +273,7 @@ namespace CommunityCoreLibrary
             recipeDefs.AddRange( thingDef.GetRecipesLocked( ref nullDefs ) );
 
             return recipeDefs;
-        }
+        }*/
 
         #endregion
 
