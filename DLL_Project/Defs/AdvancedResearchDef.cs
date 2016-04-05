@@ -650,7 +650,7 @@ namespace CommunityCoreLibrary
             // Go through each building
             foreach( var buildingDef in thingDefs )
             {
-                buildingDef.researchPrerequisites = Hide ? new List<ResearchProjectDef>(){ Research.Locker }: null;
+                buildingDef.researchPrerequisites = Hide ? Research.Lockers : Research.Unlockers;
             }
         }
 
