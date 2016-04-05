@@ -11,8 +11,8 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _JobGiver_Binge
     {
-
-        internal static Job _DrinkAlcoholJob( Pawn pawn )
+        // TODO: see other todos
+        /*internal static Job _DrinkAlcoholJob( Pawn pawn )
         {
             var JobGiver_Binge_DrinkAlchohol = new _JobGiver_Binge._DrinkAlchohol();
             JobGiver_Binge_DrinkAlchohol.pawn = pawn;
@@ -44,9 +44,10 @@ namespace CommunityCoreLibrary.Detour
                 thing.def.ingestible.maxNumToIngestAtOnce );
             job.ignoreForbidden = JobGiver_Binge_DrinkAlchohol.ignoreForbid;
             return job;
-        }
+        }*/
 
-        internal sealed class _DrinkAlchohol
+        // TODO: see other todos
+        /*internal sealed class _DrinkAlchohol
         {
             internal bool                       ignoreForbid;
             internal Pawn                       pawn;
@@ -79,7 +80,7 @@ namespace CommunityCoreLibrary.Detour
                 }
                 return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
             }
-        }
+        }*/
 
     }
 
