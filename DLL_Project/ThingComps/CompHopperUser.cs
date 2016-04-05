@@ -235,7 +235,8 @@ namespace CommunityCoreLibrary
             settingsBuilt = false;
         }
 
-        public StorageSettings              ResourceSettings
+        // TODO: see other todos
+        /*public StorageSettings              ResourceSettings
         {
             get
             {
@@ -290,7 +291,7 @@ namespace CommunityCoreLibrary
                 }
                 return resourceSettings;
             }
-        }
+        }*/
 
         public ThingFilter                  Resources
         {
@@ -561,14 +562,15 @@ namespace CommunityCoreLibrary
 
         #region Hopper Programming
 
-        private void                        ProgramHoppersSimple( List<CompHopper> hoppers )
+        // TODO: see other todos
+        /*private void                        ProgramHoppersSimple( List<CompHopper> hoppers )
         {
             // Blanket all hoppers with the main filter
             foreach( var hopper in hoppers )
             {
                 hopper.ProgramHopper( ResourceSettings );
             }
-        }
+        }*/
 
         private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
         {
@@ -841,7 +843,8 @@ namespace CommunityCoreLibrary
             return null;
         }
 
-        public CompHopper                   FindBestHopperForResources()
+        // TODO: see other todos
+        /*public CompHopper                   FindBestHopperForResources()
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -872,7 +875,7 @@ namespace CommunityCoreLibrary
             }
             // Return the best hopper
             return bestHopper;
-        }
+        }*/
 
         #endregion
 
@@ -911,7 +914,8 @@ namespace CommunityCoreLibrary
             return ( resourceCount <= 0 );
         }
 
-        public bool                         RemoveResourcesFromHoppers( int resourceCount )
+        // TODO: see other todos
+        /*public bool                         RemoveResourcesFromHoppers( int resourceCount )
         {
             if( !EnoughResourcesInHoppers( resourceCount ) )
             {
@@ -945,9 +949,10 @@ namespace CommunityCoreLibrary
             }
             // Should always be true...
             return ( resourceCount <= 0 );
-        }
+        }*/
 
-        public bool                         RemoveResourcesFromHoppers( RecipeDef recipe, List<ThingAmount> chosen )
+        // TODO: see other todos
+        /*public bool                         RemoveResourcesFromHoppers( RecipeDef recipe, List<ThingAmount> chosen )
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -993,7 +998,7 @@ namespace CommunityCoreLibrary
             }
 
             return true;
-        }
+        }*/
 
         #endregion
 
@@ -1004,12 +1009,14 @@ namespace CommunityCoreLibrary
             return ( CountResourceInHoppers( resourceDef ) >= resourceCount );
         }
 
-        public bool                         EnoughResourcesInHoppers( int resourceCount )
+        // TODO: see other todos
+        /*public bool                         EnoughResourcesInHoppers( int resourceCount )
         {
             return ( CountResourcesInHoppers() >= resourceCount );
-        }
+        }*/
 
-        public bool                         EnoughResourcesInHoppers( RecipeDef recipe )
+        // TODO: see other todos
+        /*public bool                         EnoughResourcesInHoppers( RecipeDef recipe )
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -1045,7 +1052,7 @@ namespace CommunityCoreLibrary
             }
 
             return false;
-        }
+        }*/
 
         #endregion
 
@@ -1074,7 +1081,8 @@ namespace CommunityCoreLibrary
             return availableResources;
         }
 
-        public int                          CountResourcesInHoppers()
+        // TODO: see other todos
+        /*public int                          CountResourcesInHoppers()
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -1095,7 +1103,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return availableResources;
-        }
+        }*/
 
         public bool                         CountResourcesInHoppers( List<ResourceAmount> resources )
         {
