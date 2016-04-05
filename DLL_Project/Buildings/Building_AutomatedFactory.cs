@@ -41,9 +41,11 @@ namespace CommunityCoreLibrary
 
         private int                         currentProductionTick;
         private Thing                       currentThing;
-        private int                         nextProductIndex;
 
-        private int                         currentRecipeCount = -1;
+        // TODO: see other todos
+        //private int                         nextProductIndex;
+        // TODO: see other todos
+        //private int                         currentRecipeCount = -1;
 
         private List<IntVec3>               _adjacentNeighbouringCells;
         private List<IntVec3>               AdjacentNeighbouringCells
@@ -103,13 +105,14 @@ namespace CommunityCoreLibrary
 
         #region Class Constructor
 
-        public                              Building_AutomatedFactory()
+        // TODO: see other todos
+        /*public                              Building_AutomatedFactory()
         {
             nextProductIndex = 0;
             currentRecipe = null;
             currentProductionTick = 0;
             productionAllowances = new Dictionary<ThingDef, Allowances>();
-        }
+        }*/
 
         #endregion
 
@@ -312,7 +315,8 @@ namespace CommunityCoreLibrary
 
         #region IHopperUser
 
-        private ThingFilter                 resourceFilter = null;
+        // TODO: see other todos
+        //private ThingFilter                 resourceFilter = null;
 
         // TODO: see other todos in hopper files
         /*private void                        ResetAndReprogramHoppers()
