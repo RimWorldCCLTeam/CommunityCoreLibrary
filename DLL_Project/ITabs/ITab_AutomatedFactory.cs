@@ -14,9 +14,10 @@ namespace CommunityCoreLibrary
 
         private static readonly Vector2         WinSize;
 
-        private List<ThingDef>                  products;
-        private bool[]                          allowed;
-        private TipSignal[]                     tips;
+        // TODO: see other todos
+        //private List<ThingDef>                  products;
+        //private bool[]                          allowed;
+        //private TipSignal[]                     tips;
 
         // TODO:  Improve UI layout and how information is displayed
         // Currently Displays/Has options for:
@@ -100,7 +101,8 @@ namespace CommunityCoreLibrary
             }
         }*/
 
-        protected override void                 FillTab()
+        // TODO: see other todos
+        /*protected override void                 FillTab()
         {
             Rect rect1 = GenUI.ContractedBy( new Rect( 0.0f, 0.0f, ITab_AutomatedFactory.WinSize.x, ITab_AutomatedFactory.WinSize.y ), 10f );
             Text.Font = GameFont.Medium;
@@ -118,7 +120,7 @@ namespace CommunityCoreLibrary
                 rect2.yMin += 20f;
                 vector.y += 20f;
             }
-        }
+        }*/
 
         // TODO: see other todos
         /*public override void                    TabUpdate()
