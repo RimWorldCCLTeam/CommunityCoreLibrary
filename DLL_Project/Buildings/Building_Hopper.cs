@@ -7,8 +7,8 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
-    public class Building_Hopper : Building, IStoreSettingsParent, ISlotGroupParent
+    // TODO: reimplement IStoreSettingsParent, ISlotGroupParent when file is fixed
+    public class Building_Hopper : Building
     {
 
         #region Instance Data
@@ -47,7 +47,8 @@ namespace CommunityCoreLibrary
             return settings;
         }
 
-        public StorageSettings              GetParentStoreSettings()
+        // TODO: see other todos
+        /*public StorageSettings              GetParentStoreSettings()
         {
             var hopperUser = CompHopper.FindHopperUser();
             if( hopperUser == null )
@@ -60,7 +61,7 @@ namespace CommunityCoreLibrary
                 return null;
             }
             return compHopperUser.ResourceSettings;
-        }
+        }*/
 
         #endregion
 
