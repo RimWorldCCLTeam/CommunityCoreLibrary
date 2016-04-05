@@ -152,7 +152,8 @@ namespace CommunityCoreLibrary
 
         }
 
-        private StorageSettings             resourceSettings;
+        // TODO: See other todos
+        //private StorageSettings             resourceSettings;
         private ThingFilter                 xmlResources;
 
         private List<RecipeDef>             recipeFilter = new List<RecipeDef>();
@@ -574,7 +575,8 @@ namespace CommunityCoreLibrary
             }
         }*/
 
-        private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
+        // TODO: seeother todos
+        /*private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
         {
             // Try to find hoppers which match already
             var freeHoppers = new List<CompHopper>();
@@ -725,7 +727,7 @@ namespace CommunityCoreLibrary
                     hopper.ProgramHopper( hopperSetting.settings );
                 }
             }
-        }
+        }*/
 
         // TODO: see other todos in file
         /*public void                         FindAndProgramHoppers()
