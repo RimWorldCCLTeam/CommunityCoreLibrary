@@ -329,7 +329,7 @@ namespace CommunityCoreLibrary
                     Widgets.Label( buttonRect, "InProgress".Translate() );
                     Text.Anchor = TextAnchor.UpperLeft;
                 }
-                else if ( !selectedResearchProjectDef.PrereqsFulfilled )
+                else if ( !selectedResearchProjectDef.ResearchPrereqsFulfilled )
                 {
                     Widgets.DrawMenuSection( buttonRect );
                     Text.Anchor = TextAnchor.MiddleCenter;
@@ -441,7 +441,7 @@ namespace CommunityCoreLibrary
                 {
                     textColor = new Color( 1f, 1f, 1f );
                 }
-                else if ( !( (ResearchProjectDef)def ).PrereqsFulfilled )
+                else if ( !( (ResearchProjectDef)def ).ResearchPrereqsFulfilled)
                 {
                     textColor = new Color( .6f, .6f, .6f );
                 }
@@ -482,7 +482,7 @@ namespace CommunityCoreLibrary
             else if ( _showResearchedProjects == ShowResearch.Available )
             {
                 _source = from hd in _researchDefs
-                          where !hd.IsFinished && hd.PrereqsFulfilled && hd.GetHelpDef() != null
+                          where !hd.IsFinished && hd.ResearchPrereqsFulfilled && hd.GetHelpDef() != null
                           select hd.GetHelpDef();
             }
             else if ( _showResearchedProjects == ShowResearch.Advanced )
