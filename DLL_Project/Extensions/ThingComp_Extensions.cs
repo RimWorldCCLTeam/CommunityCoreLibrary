@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-
 using Verse;
+using RimWorld;
 
 namespace CommunityCoreLibrary
 {
@@ -20,9 +20,9 @@ namespace CommunityCoreLibrary
             return thingComp.props as CommunityCoreLibrary.CompProperties_LowIdleDraw;
         }
 
-        public static Verse.CompProperties_Rottable CompProperties_Rottable ( this ThingComp thingComp )
+        public static CompProperties_Rottable CompProperties_Rottable ( this ThingComp thingComp )
         {
-            return thingComp.props as Verse.CompProperties_Rottable;
+            return thingComp.props as CompProperties_Rottable;
         }
 
         public static CommunityCoreLibrary.RestrictedPlacement_Properties    RestrictedPlacement_Properties ( this ThingComp thingComp )
