@@ -56,8 +56,9 @@ namespace CommunityCoreLibrary
             // TODO: Add tradertags
 
             // Buildings
-            ResolveBuildings();
-            ResolveMinifiableOnly();
+            // TODO: see other todos in file
+            //ResolveBuildings();
+            //ResolveMinifiableOnly();
 
             // Terrain
             ResolveTerrain();
@@ -68,7 +69,8 @@ namespace CommunityCoreLibrary
             ResolveBiomes();
 
             // Recipes
-            ResolveRecipes();
+            // TODO: see other todos in file
+            //ResolveRecipes();
 
             // Research
             ResolveResearch();
@@ -267,7 +269,8 @@ namespace CommunityCoreLibrary
 
         #region Building Resolvers
 
-        static void ResolveBuildings()
+        // TODO: fix ResolveDefList here
+        /*static void ResolveBuildings()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -299,9 +302,10 @@ namespace CommunityCoreLibrary
                     );
                 }
             }
-        }
+        }*/
 
-        static void ResolveMinifiableOnly()
+        // TODO: Fix ResolveDefList and ThingDef issues here
+        /*static void ResolveMinifiableOnly()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -337,7 +341,7 @@ namespace CommunityCoreLibrary
                 thingDefs,
                 helpCategoryDef
             );
-        }
+        }*/
 
         #endregion
 
@@ -450,7 +454,8 @@ namespace CommunityCoreLibrary
 
         #region Recipe Resolvers
 
-        static void ResolveRecipes()
+        // TODO: fix thingdef issues here
+        /*static void ResolveRecipes()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -499,7 +504,7 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
         #endregion
 
@@ -2077,8 +2082,8 @@ namespace CommunityCoreLibrary
                 ( c.compClass == typeof( CompShearable ) )||
                 ( c.compClass.IsSubclassOf( typeof( CompShearable ) ) )
             ) );
-
-            if( shearComp != null )
+            // TODO: Issues with shearcomp and wooldef needed here
+            /*if( shearComp != null )
             {
                 defs.Add( shearComp.woolDef );
                 prefixes.Add( shearComp.woolAmount.ToString() );
@@ -2089,7 +2094,7 @@ namespace CommunityCoreLibrary
                                    defs,
                                    prefixes.ToArray(),
                                    suffixes.ToArray() ) );
-            }
+            }*/
             defs.Clear();
             prefixes.Clear();
             suffixes.Clear();
