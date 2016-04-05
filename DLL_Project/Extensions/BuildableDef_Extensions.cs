@@ -166,7 +166,7 @@ namespace CommunityCoreLibrary
             else if ( buildableDef is ThingDef )
             {
                 // Thing with comps
-                return ( (ThingDef)buildableDef ).GetCompProperties( typeof( RestrictedPlacement_Comp ) ) as RestrictedPlacement_Properties;
+                return ( (ThingDef)buildableDef ).GetCompProperties<RestrictedPlacement_Properties>();
             }
 
             // Something else
