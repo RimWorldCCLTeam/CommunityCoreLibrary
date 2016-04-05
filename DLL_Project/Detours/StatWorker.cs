@@ -38,7 +38,7 @@ namespace CommunityCoreLibrary.Detour
                     )||
                     (
                         ( !_stat.showOnMechanoids )&&
-                        ( thingDef.race.mechanoid )
+                        ( thingDef.race.IsMechanoid )
                     )
                 )
             )
