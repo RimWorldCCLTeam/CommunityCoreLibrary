@@ -146,12 +146,13 @@ namespace CommunityCoreLibrary.Detour
             return 0.0f;
         }*/
 
-        internal struct MealValidator
+        // TODO: see other todos
+        /*internal struct MealValidator
         {
             internal Thing              thing;
             internal ThingDef           def;
             internal float              score;
-        }
+        }*/
 
         // TODO: see other todos
         /*internal sealed class DispenserValidator
