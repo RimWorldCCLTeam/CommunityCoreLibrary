@@ -240,7 +240,8 @@ namespace CommunityCoreLibrary
 
         #region Tickers
 
-        private void                        ProductionTick( int ticks )
+        // TODO: see other todos
+        /*private void                        ProductionTick( int ticks )
         {
             if( !CompPowerTrader.PowerOn )
             {
@@ -296,7 +297,7 @@ namespace CommunityCoreLibrary
             }
             currentThing = null;
             currentProductionTick = 0;
-        }
+        }*/
 
         // TODO: see other todos in hopper files
         /*private void                        RescanTick()
@@ -465,7 +466,8 @@ namespace CommunityCoreLibrary
 
         #region Internal Interface
 
-        private Thing                       NextProductToProduce()
+        // TODO: see other todos
+        /*private Thing                       NextProductToProduce()
         {
             if( currentRecipe != null )
             {
@@ -507,7 +509,7 @@ namespace CommunityCoreLibrary
             currentRecipe = recipe;
             currentProductionTick = (int) currentRecipe.workAmount;
             return TryProduceThingDef( currentRecipe.products[0].thingDef );
-        }
+        }*/
 
         private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
         {
@@ -653,7 +655,8 @@ namespace CommunityCoreLibrary
             return false;
         }
 
-        private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
+        // TODO: see other todos
+        /*private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -667,7 +670,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return (RecipeDef) null;
-        }
+        }*/
 
         #endregion
 
@@ -693,14 +696,15 @@ namespace CommunityCoreLibrary
             return (int) recipe.workAmount;
         }
 
-        public bool                         CanDispenseNow( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         CanDispenseNow( ThingDef thingDef )
         {
             if( CompPowerTrader.PowerOn )
             {
                 return HasEnoughResourcesInHoppersFor( thingDef );
             }
             return false;
-        }
+        }*/
 
         public bool                         CanProduce( ThingDef thingDef )
         {
@@ -729,7 +733,8 @@ namespace CommunityCoreLibrary
             return (Building) null;
         }
 
-        public bool                         HasEnoughResourcesInHoppersFor( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         HasEnoughResourcesInHoppersFor( ThingDef thingDef )
         {
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
@@ -737,7 +742,7 @@ namespace CommunityCoreLibrary
                 return false;
             }
             return CompHopperUser.EnoughResourcesInHoppers( recipe );
-        }
+        }*/
 
         public List<ThingDef>               AllProducts()
         {
@@ -762,7 +767,8 @@ namespace CommunityCoreLibrary
             return products;
         }
 
-        public ThingDef                     BestProduct( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
+        // TODO: see other todos
+        /*public ThingDef                     BestProduct( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
         {
             var thingDefs = AllProducts().Where( where.Invoke ).ToList();
             thingDefs.Sort( sort.Invoke );
@@ -776,9 +782,10 @@ namespace CommunityCoreLibrary
                 }
             }
             return (ThingDef) null;
-        }
+        }*/
 
-        public Thing                        TryProduceThingDef( ThingDef thingDef )
+        // TODO: see other todos
+        /*public Thing                        TryProduceThingDef( ThingDef thingDef )
         {
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
@@ -804,7 +811,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return thing;
-        }
+        }*/
 
         #endregion
 
