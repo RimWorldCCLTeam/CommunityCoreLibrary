@@ -150,7 +150,7 @@ namespace CommunityCoreLibrary.Detour
             List<Thing> list =
                 resourceDef != null
                 ? Find.Map.listerThings.ThingsOfDef( resourceDef )
-                : Find.Map.listerThings.ThingsInGroup( ThingRequestGroup.FoodNotPlant );
+                : Find.Map.listerThings.ThingsInGroup( ThingRequestGroup.FoodNotPlantOrTree );
             for( int index = 0; index < list.Count; ++index )
             {
                 Thing t = list[ index ];
