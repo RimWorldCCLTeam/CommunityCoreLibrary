@@ -19,7 +19,7 @@ namespace CommunityCoreLibrary
             {
                 if( _Properties == null )
                 {
-                    _Properties = parent.def.GetCompProperties( typeof( CompAutomatedFactory ) ) as CompProperties_AutomatedFactory;
+                    _Properties = parent.def.GetCompProperties<CompProperties_AutomatedFactory>();
                 }
                 return _Properties;
             }
