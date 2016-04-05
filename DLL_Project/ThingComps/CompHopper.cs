@@ -58,7 +58,8 @@ namespace CommunityCoreLibrary
 
         #region Base Class Overrides
 
-        public override void                PostSpawnSetup()
+        // TODO: see other todos in hopper files
+        /*public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
             if(
@@ -69,7 +70,7 @@ namespace CommunityCoreLibrary
                 var hopperUser = FindHopperUser().TryGetComp<CompHopperUser>();
                 hopperUser.FindAndProgramHoppers();
             }
-        }
+        }*/
 
         public override void                PostExposeData()
         {
