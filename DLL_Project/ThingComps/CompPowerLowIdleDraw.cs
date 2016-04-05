@@ -14,8 +14,9 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        CompPowerTrader                     PowerTrader;
-        List<IntVec3>                       scanPosition;
+        // TODO: see other todos
+        //CompPowerTrader                     PowerTrader;
+        //List<IntVec3>                       scanPosition;
         Pawn                                curUser;
         Job                                 curJob;
         // minIdleDraw is to prevent idlePower from being 0.0f
@@ -63,13 +64,14 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
-        public bool                         LowPowerMode
+        // TODO: see other todos
+        /*public bool                         LowPowerMode
         {
             get
             {
                 return !( PowerTrader.PowerOutput < IdlePower );
             }
-        }
+        }*/
 
         #endregion
 
@@ -418,7 +420,8 @@ namespace CommunityCoreLibrary
             }
         }*/
 
-        void                                TogglePower()
+        // TODO: see other todos
+        /*void                                TogglePower()
         {
             if( LowPowerMode )
             {
@@ -443,7 +446,7 @@ namespace CommunityCoreLibrary
                 // ...if it exists
                 ToggleGlower( !LowPowerMode );
             }
-        }
+        }*/
 
         void                                ToggleGlower( bool turnItOn )
         {
@@ -573,7 +576,8 @@ namespace CommunityCoreLibrary
             }
         }*/
 
-        void                                AddScanPositionIfAllowed( IntVec3 position )
+        // TODO: see other todos
+        /*void                                AddScanPositionIfAllowed( IntVec3 position )
         {
             // Look at each thing at this position and check it's passability
             foreach( Thing curThing in Find.ThingGrid.ThingsListAt( position ) )
@@ -589,7 +593,7 @@ namespace CommunityCoreLibrary
             }
             // All things are passable, add cell
             scanPosition.Add( position );
-        }
+        }*/
 
     }
 
