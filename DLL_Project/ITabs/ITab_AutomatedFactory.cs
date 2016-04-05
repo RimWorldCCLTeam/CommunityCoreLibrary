@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
-
-    public class ITab_AutomatedFactory : ITab
+    // TODO: see other todos
+    /*public class ITab_AutomatedFactory : ITab
     {
 
         private static readonly Vector2         WinSize;
@@ -75,8 +75,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        // TODO: see other todos
-        /*public override void                    OnOpen()
+        public override void                    OnOpen()
         {
             products = SelectedFactory.AllProducts();
             allowed = new bool[ products.Count ];
@@ -99,10 +98,9 @@ namespace CommunityCoreLibrary
                 }
                 tips[ index ].text = tipText;
             }
-        }*/
+        }
 
-        // TODO: see other todos
-        /*protected override void                 FillTab()
+        protected override void                 FillTab()
         {
             Rect rect1 = GenUI.ContractedBy( new Rect( 0.0f, 0.0f, ITab_AutomatedFactory.WinSize.x, ITab_AutomatedFactory.WinSize.y ), 10f );
             Text.Font = GameFont.Medium;
@@ -120,19 +118,18 @@ namespace CommunityCoreLibrary
                 rect2.yMin += 20f;
                 vector.y += 20f;
             }
-        }*/
+        }
 
-        // TODO: see other todos
-        /*public override void                    TabUpdate()
+        public override void                    TabUpdate()
         {
             for( int index = 0; index < products.Count; ++index )
             {
                 SelectedFactory.SetAllowed( products[ index ], allowed[ index ] );
             }
-        }*/
+        }
 
         #endregion
 
-    }
+    }*/
 
 }
