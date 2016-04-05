@@ -1336,13 +1336,15 @@ namespace CommunityCoreLibrary
             List<Def> buildableDefs = new List<Def>();
 
             // items and buildings
-            buildableDefs.AddRange( researchProjectDef.GetThingsUnlocked().ConvertAll<Def>( def => (Def)def ) );
+            // TODO: see todos in ResearchProjectDef
+            //buildableDefs.AddRange( researchProjectDef.GetThingsUnlocked().ConvertAll<Def>( def => (Def)def ) );
 
             // terrain
-            buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def) );
+            // TODO: see todos in ResearchProjectDef
+            //buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def) );
 
             // create help section
-            if( !buildableDefs.NullOrEmpty() )
+            if ( !buildableDefs.NullOrEmpty() )
             {
                 HelpDetailSection thingsUnlocked = new HelpDetailSection(
                     "AutoHelpListThingsUnlocked".Translate(),
