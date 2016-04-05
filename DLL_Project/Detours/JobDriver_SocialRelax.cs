@@ -34,7 +34,8 @@ namespace CommunityCoreLibrary.Detour
             return (Pawn_DrawTracker)_GetPawnDrawTracker.GetValue(pawn);
         }
 
-        internal static IEnumerable<Toil> _MakeNewToils(this JobDriver_SocialRelax obj)
+        // TODO: see other todos
+        /*internal static IEnumerable<Toil> _MakeNewToils(this JobDriver_SocialRelax obj)
         {
             obj.EndOnDespawnedOrNull(TargetIndex.A, JobCondition.Incompletable);
 
@@ -88,7 +89,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 yield return Toils_Ingest.FinalizeIngest(obj.pawn, TargetIndex.C);
             }
-        }
+        }*/
 
     }
 
