@@ -21,7 +21,8 @@ namespace CommunityCoreLibrary.Detour
             return (Job)_IngestJob.Invoke( obj, new System.Object[] { pawn, food } );
         }
 
-        internal static Job _TryGiveTerminalJob( this JobGiver_GetFood obj, Pawn pawn )
+        // TODO: see other todos
+        /*internal static Job _TryGiveTerminalJob( this JobGiver_GetFood obj, Pawn pawn )
         {
             Thing foodInInventory = FoodUtility.FoodInInventory( pawn, (Pawn) null, FoodPreferability.Awful, FoodPreferability.Lavish, 0.0f );
             if( foodInInventory != null )
@@ -105,9 +106,10 @@ namespace CommunityCoreLibrary.Detour
             Job ingestJob = new Job( JobDefOf.Ingest, (TargetInfo) bestFoodSource );
             ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
             return ingestJob;
-        }
+        }*/
 
-        internal static Job HopperFillFoodJob( Pawn pawn, ISlotGroupParent hopperSgp, Thing parent )
+        // TODO: see other todos
+        /*internal static Job HopperFillFoodJob( Pawn pawn, ISlotGroupParent hopperSgp, Thing parent )
         {
             Building building = hopperSgp as Building;
             if(
@@ -171,7 +173,7 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             return (Job) null;
-        }
+        }*/
 
     }
 
