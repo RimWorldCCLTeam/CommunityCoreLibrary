@@ -200,12 +200,13 @@ namespace CommunityCoreLibrary
 
         #region Core Comp Overrides
 
-        public override void                PostSpawnSetup()
+        // TODO: see other todos in file
+        /*public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
 
             FindAndProgramHoppers();
-        }
+        }*/
 
         public override void                PostDeSpawn()
         {
@@ -314,7 +315,8 @@ namespace CommunityCoreLibrary
 
         #region Filter Builders
 
-        private void                        MergeIngredientIntoFilter( ThingFilter filter, IngredientCount ingredient )
+        // TDOD: private stuff is booooo
+        /*private void                        MergeIngredientIntoFilter( ThingFilter filter, IngredientCount ingredient )
         {
             if( ingredient.filter != null )
             {
@@ -334,9 +336,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
-        private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
+        // TODO: Private stuf is really booooo
+        /*private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
         {
             if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
             {
@@ -353,14 +356,15 @@ namespace CommunityCoreLibrary
                     filter.SetAllow( thingDef, false );
                 }
             }
-        }
+        }*/
 
         public bool                         IsRecipeInFilter( RecipeDef recipe )
         {
             return recipeFilter.Contains( recipe );
         }
 
-        public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
+        // TODO: see other todos in file
+        /*public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
         {
             if( recipeFilter.Contains( recipe ) )
             {
@@ -382,9 +386,10 @@ namespace CommunityCoreLibrary
             {
                 MergeExceptionsIntoFilter( filter, recipe.fixedIngredientFilter );
             }
-        }
+        }*/
 
-        private void                        MergeIngredientIntoHopperSettings( IngredientCount ingredient, RecipeDef recipe )
+        // TODO: private is really really booooo
+        /*private void                        MergeIngredientIntoHopperSettings( IngredientCount ingredient, RecipeDef recipe )
         {
             if( ingredient.filter != null )
             {
@@ -404,9 +409,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
-        private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
+        // TODO: booooooooo
+        /*private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
         {
             if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
             {
@@ -429,9 +435,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
-        private void                        BuildHopperSettings()
+        // TODO: see other todos in file
+        /*private void                        BuildHopperSettings()
         {
             // Create initial list of hopper settings from recipe ingredients
             foreach( var recipe in recipeFilter )
@@ -548,7 +555,7 @@ namespace CommunityCoreLibrary
             }
 
             settingsBuilt = true;
-        }
+        }*/
 
         #endregion
 
@@ -716,7 +723,8 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public void                         FindAndProgramHoppers()
+        // TODO: see other todos in file
+        /*public void                         FindAndProgramHoppers()
         {
             if( ResourceSettings == null )
             {
@@ -747,7 +755,7 @@ namespace CommunityCoreLibrary
                 // Program individual hoppers with individual settings
                 ProgramHoppersIndividual( hoppers );
             }
-        }
+        }*/
 
         #endregion
 
