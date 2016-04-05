@@ -98,8 +98,8 @@ namespace CommunityCoreLibrary
             Detours.TryDetourFromTo( RimWorld_JobGiver_Binge_DrinkAlcoholJob, CCL_JobGiver_Binge_DrinkAlcoholJob );
 
             // Detour Verse.BrokenStateWorker_Binging.StateCanOccur
-            MethodInfo Verse_BrokenStateWorker_Binging_StateCanOccur = typeof( BrokenStateWorker_Binging ).GetMethod( "StateCanOccur", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_BrokenStateWorker_Binging_StateCanOccur = typeof( Detour._BrokenStateWorker_Binging ).GetMethod( "_StateCanOccur", BindingFlags.Static | BindingFlags.NonPublic );
+            MethodInfo Verse_BrokenStateWorker_Binging_StateCanOccur = typeof( MentalStateWorker_Binging ).GetMethod( "StateCanOccur", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_BrokenStateWorker_Binging_StateCanOccur = typeof( Detour._MentalStateWorker_Binging).GetMethod( "_StateCanOccur", BindingFlags.Static | BindingFlags.NonPublic );
             Detours.TryDetourFromTo( Verse_BrokenStateWorker_Binging_StateCanOccur, CCL_BrokenStateWorker_Binging_StateCanOccur );
 
             // Detour RimWorld.JoyGiver_SocialRelax.TryGiveJob
@@ -131,11 +131,6 @@ namespace CommunityCoreLibrary
             MethodInfo RimWorld_PassingShop_Depart = typeof( PassingShip ).GetMethod( "Depart", BindingFlags.Instance | BindingFlags.NonPublic );
             MethodInfo CCL_PassingShop_Depart = typeof( Detour._PassingShip ).GetMethod( "_Depart", BindingFlags.Static | BindingFlags.NonPublic );
             Detours.TryDetourFromTo( RimWorld_PassingShop_Depart, CCL_PassingShop_Depart );
-
-            // Detour RimWorld.IncidentWorker_TraderArrival.TryExecute
-            MethodInfo RimWorld_IncidentWorker_TraderArrival_TryExecute = typeof( IncidentWorker_TraderArrival ).GetMethod( "TryExecute", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_IncidentWorker_TraderArrival_TryExecute = typeof( Detour._IncidentWorker_TraderArrival ).GetMethod( "_TryExecute", BindingFlags.Static | BindingFlags.NonPublic );
-            Detours.TryDetourFromTo( RimWorld_IncidentWorker_TraderArrival_TryExecute, CCL_IncidentWorker_TraderArrival_TryExecute );
 
             // Detour RimWorld.FoodUtility.BestFoodSourceFor
             MethodInfo RimWorld_FoodUtility_BestFoodSourceFor = typeof( FoodUtility ).GetMethod( "BestFoodSourceFor", BindingFlags.Static | BindingFlags.Public );
