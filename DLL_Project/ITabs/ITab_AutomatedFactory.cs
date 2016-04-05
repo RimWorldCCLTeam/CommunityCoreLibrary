@@ -74,7 +74,8 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override void                    OnOpen()
+        // TODO: see other todos
+        /*public override void                    OnOpen()
         {
             products = SelectedFactory.AllProducts();
             allowed = new bool[ products.Count ];
@@ -97,7 +98,7 @@ namespace CommunityCoreLibrary
                 }
                 tips[ index ].text = tipText;
             }
-        }
+        }*/
 
         protected override void                 FillTab()
         {
@@ -119,13 +120,14 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override void                    TabUpdate()
+        // TODO: see other todos
+        /*public override void                    TabUpdate()
         {
             for( int index = 0; index < products.Count; ++index )
             {
                 SelectedFactory.SetAllowed( products[ index ], allowed[ index ] );
             }
-        }
+        }*/
 
         #endregion
 
