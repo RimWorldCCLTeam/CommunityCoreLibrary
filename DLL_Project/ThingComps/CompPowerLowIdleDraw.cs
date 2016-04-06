@@ -14,8 +14,9 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        CompPowerTrader                     PowerTrader;
-        List<IntVec3>                       scanPosition;
+        // TODO: see other todos
+        //CompPowerTrader                     PowerTrader;
+        //List<IntVec3>                       scanPosition;
         Pawn                                curUser;
         Job                                 curJob;
         // minIdleDraw is to prevent idlePower from being 0.0f
@@ -24,7 +25,8 @@ namespace CommunityCoreLibrary
         public const float                  MinIdleDraw = -0.01f;
         public float                        IdlePower;
         float                               curPower = 1f;
-        bool                                onIfOn;
+        // TODO: see other todos
+        //bool                                onIfOn;
 
         int                                 keepOnTicks;
 
@@ -62,13 +64,14 @@ namespace CommunityCoreLibrary
 
         #region Query State
 
-        public bool                         LowPowerMode
+        // TODO: see other todos
+        /*public bool                         LowPowerMode
         {
             get
             {
                 return !( PowerTrader.PowerOutput < IdlePower );
             }
-        }
+        }*/
 
         #endregion
 
@@ -89,7 +92,8 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override void                PostSpawnSetup()
+        // TODO: see other todos
+        /*public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
 
@@ -172,7 +176,7 @@ namespace CommunityCoreLibrary
             BuildScanList();
 
             // Calculate low-power mode consumption
-            IdlePower = IdleProps.idlePowerFactor * -PowerTrader.props.basePowerConsumption;
+            IdlePower = IdleProps.idlePowerFactor * -PowerTrader.Props.basePowerConsumption;
             if( IdlePower > MinIdleDraw )
             {
                 IdlePower = MinIdleDraw;
@@ -188,9 +192,10 @@ namespace CommunityCoreLibrary
 
             // Set power usage
             PowerTrader.PowerOutput = curPower;
-        }
+        }*/
 
-        public override void                CompTick()
+        // TODO: see other todos
+        /*public override void                CompTick()
         {
             base.CompTick();
 
@@ -232,7 +237,7 @@ namespace CommunityCoreLibrary
                 // Force toggle now
                 PowerLevelToggle( 1000000 );
             }
-        }
+        }*/
 
         private static bool                 HasJobOnTarget( Pawn pawn, Thing target )
         {
@@ -267,7 +272,8 @@ namespace CommunityCoreLibrary
             return false;
         }
 
-        void                                PowerLevelToggle( int thisTickCount )
+        // TODO: see other todos
+        /*void                                PowerLevelToggle( int thisTickCount )
         {
             // If it's on, don't recheck until it times out
             keepOnTicks -= thisTickCount;
@@ -406,21 +412,21 @@ namespace CommunityCoreLibrary
 
             if(
                 ( LowPowerMode )&&
-                ( CompGlower != null )&&
-                ( CompGlower.Lit )
+                ( CompGlower != null )
             )
             {
                 // Glower on while idle???
-                ToggleGlower( false );
+                CompGlower.UpdateLit();
             }
-        }
+        }*/
 
-        void                                TogglePower()
+        // TODO: see other todos
+        /*void                                TogglePower()
         {
             if( LowPowerMode )
             {
                 // Is idle, power up
-                curPower = -PowerTrader.props.basePowerConsumption;
+                curPower = -PowerTrader.Props.basePowerConsumption;
                 PowerTrader.PowerOutput = curPower;
                 keepOnTicks = IdleProps.cycleHighTicks;
             }
@@ -440,7 +446,7 @@ namespace CommunityCoreLibrary
                 // ...if it exists
                 ToggleGlower( !LowPowerMode );
             }
-        }
+        }*/
 
         void                                ToggleGlower( bool turnItOn )
         {
@@ -453,20 +459,12 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            // If no state change, abort
-            if( turnItOn == CompGlower.Lit )
-            {
-                return;
-            }
-
             // Toggle and update glow grid
-            CompGlower.Lit = turnItOn;
-            Find.GlowGrid.MarkGlowGridDirty( parent.Position );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
+            CompGlower.UpdateLit();
         }
 
-        void                                BuildScanList()
+        // TODO: see other todos
+        /*void                                BuildScanList()
         {
             // Default to interaction cell only, is also means that a pawn must
             // be using the building so star-gazers aren't turning the stove on.
@@ -476,7 +474,6 @@ namespace CommunityCoreLibrary
             if( IdleProps.operationalMode == LowIdleDrawMode.Cycle )
             {
                 // Set default scan tick intervals
-                if( IdleProps.cycleLowTicks < 0 )
                 {
                     IdleProps.cycleLowTicks = 1000;
                 }
@@ -577,9 +574,10 @@ namespace CommunityCoreLibrary
                     IdleProps.cycleHighTicks = 500;
                 }
             }
-        }
+        }*/
 
-        void                                AddScanPositionIfAllowed( IntVec3 position )
+        // TODO: see other todos
+        /*void                                AddScanPositionIfAllowed( IntVec3 position )
         {
             // Look at each thing at this position and check it's passability
             foreach( Thing curThing in Find.ThingGrid.ThingsListAt( position ) )
@@ -595,7 +593,7 @@ namespace CommunityCoreLibrary
             }
             // All things are passable, add cell
             scanPosition.Add( position );
-        }
+        }*/
 
     }
 

@@ -29,9 +29,6 @@ namespace CommunityCoreLibrary.Detour
             float num = dist;
             switch( def.ingestible.preferability )
             {
-            case FoodPreferability.Plant:
-                num += 500f;
-                break;
             case FoodPreferability.NeverForNutrition:
                 return FoodOptimalityUnusable;
             case FoodPreferability.DesperateOnly:
@@ -59,7 +56,8 @@ namespace CommunityCoreLibrary.Detour
             return -num;
         }
 
-        internal static Thing _BestFoodSourceFor( Pawn getter, Pawn eater, bool fullDispensersOnly, out ThingDef foodDef )
+        // TODO: see other todos
+        /*internal static Thing _BestFoodSourceFor( Pawn getter, Pawn eater, bool fullDispensersOnly, out ThingDef foodDef )
         {
             var dispenserValidator = new DispenserValidator();
             dispenserValidator.getter = getter;
@@ -110,9 +108,10 @@ namespace CommunityCoreLibrary.Detour
             }
             foodDef = spawnedMeal == null ? (ThingDef) null : spawnedMeal.def;
             return spawnedMeal;
-        }
+        }*/
 
-        internal static float _NutritionAvailableFromFor( Thing t, Pawn p )
+        // TODO: see other todos
+        /*internal static float _NutritionAvailableFromFor( Thing t, Pawn p )
         {
             if(
                 ( t.def.IsNutritionSource )&&
@@ -145,16 +144,18 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             return 0.0f;
-        }
+        }*/
 
-        internal struct MealValidator
+        // TODO: see other todos
+        /*internal struct MealValidator
         {
             internal Thing              thing;
             internal ThingDef           def;
             internal float              score;
-        }
+        }*/
 
-        internal sealed class DispenserValidator
+        // TODO: see other todos
+        /*internal sealed class DispenserValidator
         {
             internal Pawn               getter;
             internal bool               fullDispensersOnly;
@@ -223,7 +224,7 @@ namespace CommunityCoreLibrary.Detour
                 return false;
             }
 
-        }
+        }*/
 
     }
 

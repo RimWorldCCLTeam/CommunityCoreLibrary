@@ -26,7 +26,8 @@ namespace CommunityCoreLibrary.Detour
             _RadialPatternMiddleOutward = typeof( JoyGiver_SocialRelax ).GetField( "RadialPatternMiddleOutward", BindingFlags.Static | BindingFlags.NonPublic ).GetValue( null ) as List<IntVec3>;
         }
 
-        internal static Job _TryGiveJob( this JoyGiver_SocialRelax obj, Pawn pawn)
+        // TODO: see other todos
+        /*internal static Job _TryGiveJob( this JoyGiver_SocialRelax obj, Pawn pawn)
         {
             var JoyGiver_SocialRelax_TryUseThing = new _JoyGiver_SocialRelax._TryUseThing();
             JoyGiver_SocialRelax_TryUseThing.pawn = pawn;
@@ -169,9 +170,10 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             return (Job) null;
-        }
+        }*/
 
-        internal sealed class _TryUseThing
+        // TODO:see other todos
+        /*internal sealed class _TryUseThing
         {
             internal Pawn pawn;
 
@@ -200,7 +202,7 @@ namespace CommunityCoreLibrary.Detour
                 }
                 return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
             }
-        }
+        }*/
 
     }
 

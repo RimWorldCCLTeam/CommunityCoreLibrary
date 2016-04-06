@@ -15,8 +15,8 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _JobDriver_FoodDeliver
     {
-        
-        internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodDeliver obj )
+        // TODO: see other todos
+        /*internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodDeliver obj )
         {
             yield return Toils_Reserve.Reserve( TargetIndex.B, 1 );
 
@@ -52,7 +52,7 @@ namespace CommunityCoreLibrary.Detour
                     pawn.pather.StartPath( job.targetC, PathEndMode.OnCell );
                 }
             );
-            pathToTarget.FailOnDestroyedOrForbidden( TargetIndex.B );
+            pathToTarget.FailOnDestroyedNullOrForbidden( TargetIndex.B );
             pathToTarget.AddFailCondition( ( Func<bool> )(() =>
                 {
                     Pawn pawn = (Pawn) obj.pawn.jobs.curJob.targetB.Thing;
@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary.Detour
             );
             dropFoodAtTarget.defaultCompleteMode = ToilCompleteMode.Instant;
             yield return dropFoodAtTarget;
-        }
+        }*/
 
     }
 

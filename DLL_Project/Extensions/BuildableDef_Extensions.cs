@@ -19,7 +19,8 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
-        public static bool                  IsLockedOut( this BuildableDef buildableDef )
+        // TODO: ResearchPrerequisites list changes need fixing here
+        /*public static bool                  IsLockedOut( this BuildableDef buildableDef )
         {
             bool rVal;
             if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
@@ -76,7 +77,7 @@ namespace CommunityCoreLibrary
                 isLockedOut.Add( buildableDef, rVal );
             }
             return rVal;
-        }
+        }*/
 
         public static bool                  HasResearchRequirement( this BuildableDef buildableDef )
         {
@@ -87,12 +88,13 @@ namespace CommunityCoreLibrary
                 "HasResearchRequirement()"
             );
 #endif
+            // TODO: ResearchPrerequisites list changes needed here.
             // Can't entirely rely on this one check as it's state may change mid-game
-            if( buildableDef.researchPrerequisite != null )
+            /*if( buildableDef.researchPrerequisite != null )
             {
                 // Easiest check, do it first
                 return true;
-            }
+            }*/
 
             // Check for an advanced research unlock
             return
@@ -118,7 +120,8 @@ namespace CommunityCoreLibrary
 #endif
             var researchDefs = new List< Def >();
 
-            if( buildableDef.researchPrerequisite != null )
+            // TODO: 
+            /*if( buildableDef.researchPrerequisite != null )
             {
                 if( buildableDef.researchPrerequisite != Research.Locker )
                 {
@@ -139,7 +142,7 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-            }
+            }*/
 
             // Return the list of research required
             return researchDefs;
@@ -166,7 +169,7 @@ namespace CommunityCoreLibrary
             else if ( buildableDef is ThingDef )
             {
                 // Thing with comps
-                return ( (ThingDef)buildableDef ).GetCompProperties( typeof( RestrictedPlacement_Comp ) ) as RestrictedPlacement_Properties;
+                return ( (ThingDef)buildableDef ).GetCompProperties<RestrictedPlacement_Properties>();
             }
 
             // Something else

@@ -33,10 +33,10 @@ namespace CommunityCoreLibrary
 
                     foreach( var hopper in hoppers )
                     {
-                        if( hopper.researchPrerequisite == Research.Locker )
+                        if( hopper.researchPrerequisites.Contains(Research.Locker ))
                         {
                             // Only change the prerequisite if it's using the default locker
-                            hopper.researchPrerequisite = null;
+                            hopper.researchPrerequisites = null;
                         }
                     }
 
@@ -54,7 +54,7 @@ namespace CommunityCoreLibrary
                     }
 
                     // This will hide it "normally"
-                    ThingDefOf.Hopper.researchPrerequisite = Research.Locker;
+                    ThingDefOf.Hopper.researchPrerequisites.Contains(Research.Locker);
 
                     // This will hide it in god mode
                     var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( ThingDefOf.Hopper.designationCategory, true );

@@ -23,6 +23,14 @@ namespace CommunityCoreLibrary
             }
         }
 
+        CompLifespan CompLifeSpan
+        {
+            get
+            {
+                return parent.TryGetComp<CompLifespan>();
+            }
+        }
+
         public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
@@ -42,14 +50,14 @@ namespace CommunityCoreLibrary
 
             if( remainingTicks < 0 )
             {
-                remainingTicks = props.lifespanTicks;
+                remainingTicks = CompLifeSpan.Props.lifespanTicks;
             }
         }
 
         public override void                PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.LookValue<int>( ref remainingTicks, "remainingTicks", props.lifespanTicks, true );
+            Scribe_Values.LookValue<int>( ref remainingTicks, "remainingTicks", CompLifeSpan.Props.lifespanTicks, true );
         }
 
         public override void                CompTick()
@@ -84,8 +92,9 @@ namespace CommunityCoreLibrary
         {
             if( remainingTicks > 0 )
             {
+                int num = CompLifeSpan.Props.lifespanTicks - CompLifeSpan.age;
                 return "LifespanExpiry".Translate() + " " +
-                    remainingTicks.TickstoDaysAndHoursString() + "\n" +
+                    num.TicksToPeriodString(true) + "\n" +
                     base.CompInspectStringExtra();
             }
             return base.CompInspectStringExtra();

@@ -125,7 +125,8 @@ namespace CommunityCoreLibrary.Detour
             return (Thing) null;
         }
 
-        internal static bool _HasEnoughFeedstockInHoppers( this Building_NutrientPasteDispenser obj )
+        // TODO: see other todos
+        /*internal static bool _HasEnoughFeedstockInHoppers( this Building_NutrientPasteDispenser obj )
         {
             int costPerDispense = obj.def.building.foodCostPerDispense;
             if( ResearchProjectDef.Named( "NutrientResynthesis" ).IsFinished )
@@ -179,7 +180,7 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             return false;
-        }
+        }*/
 
     }
 

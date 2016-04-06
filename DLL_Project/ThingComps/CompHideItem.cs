@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary
             {
                 if( _Properties == null )
                 {
-                    _Properties = parent.def.GetCompProperties( typeof( CompHideItem ) ) as CompProperties_HideItem;
+                    _Properties = parent.def.GetCompProperties<CompProperties_HideItem>();
                 }
                 return _Properties;
             }
@@ -36,9 +36,9 @@ namespace CommunityCoreLibrary
             HideItemManager.RegisterBuilding( parent );
         }
 
-        public override void                PostDestroy( DestroyMode mode = DestroyMode.Vanish )
+        public override void                PostDestroy( DestroyMode mode, bool wasSpawned )
         {
-            base.PostDestroy( mode );
+            base.PostDestroy( mode, wasSpawned );
             if( knownItems.NullOrEmpty() )
             {
                 return;

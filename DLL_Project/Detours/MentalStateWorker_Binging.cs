@@ -9,10 +9,10 @@ using Verse.AI;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _BrokenStateWorker_Binging
+    internal static class _MentalStateWorker_Binging
     {
         
-        internal static bool _StateCanOccur( this BrokenStateWorker_Binging obj, Pawn pawn )
+        internal static bool _StateCanOccur( this MentalStateWorker_Binging obj, Pawn pawn )
         {
             if(
                 ( pawn.Faction != Faction.OfColony )||

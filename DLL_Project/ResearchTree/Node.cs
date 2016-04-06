@@ -352,7 +352,7 @@ namespace CommunityCoreLibrary.ResearchTree
         public void Draw()
         {
             // set color
-            GUI.color = !Research.PrereqsFulfilled ? Tree.GreyedColor : Tree.MediumColor;
+            GUI.color = !Research.ResearchPrereqsFulfilled ? Tree.GreyedColor : Tree.MediumColor;
             if ( LockedState == LockedState.LockedOut )
                 GUI.color = new Color( .4f, .4f, .4f );
             bool prereqLocks = false;

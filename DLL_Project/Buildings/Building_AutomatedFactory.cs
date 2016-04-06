@@ -12,7 +12,7 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-    public class Building_AutomatedFactory : Building, IHopperUser
+    public class Building_AutomatedFactory : Building // TODO: reinstate IHopperUser once other issues in file are fixed
     {
 
         public class Allowances
@@ -28,22 +28,25 @@ namespace CommunityCoreLibrary
 
         }
 
-        private Dictionary<ThingDef,Allowances> productionAllowances;
+        // TODO: see other todos
+        //private Dictionary<ThingDef,Allowances> productionAllowances;
 
-        private RecipeDef                   currentRecipe;
-        public RecipeDef                    CurrentRecipe
+        //private RecipeDef                   currentRecipe;
+        /*public RecipeDef                    CurrentRecipe
         {
             get
             {
                 return currentRecipe;
             }
-        }
+        }*/
 
-        private int                         currentProductionTick;
-        private Thing                       currentThing;
-        private int                         nextProductIndex;
+        //private int                         currentProductionTick;
+        //private Thing                       currentThing;
 
-        private int                         currentRecipeCount = -1;
+        // TODO: see other todos
+        //private int                         nextProductIndex;
+        // TODO: see other todos
+        //private int                         currentRecipeCount = -1;
 
         private List<IntVec3>               _adjacentNeighbouringCells;
         private List<IntVec3>               AdjacentNeighbouringCells
@@ -103,13 +106,14 @@ namespace CommunityCoreLibrary
 
         #region Class Constructor
 
-        public                              Building_AutomatedFactory()
+        // TODO: see other todos
+        /*public                              Building_AutomatedFactory()
         {
             nextProductIndex = 0;
             currentRecipe = null;
             currentProductionTick = 0;
             productionAllowances = new Dictionary<ThingDef, Allowances>();
-        }
+        }*/
 
         #endregion
 
@@ -154,7 +158,8 @@ namespace CommunityCoreLibrary
         }
 #endif
         
-        public override void                ExposeData()
+        // TODO: see other todos
+        /*public override void                ExposeData()
         {
             // Scribe base data
             base.ExposeData();
@@ -198,9 +203,10 @@ namespace CommunityCoreLibrary
 
             // Scribe current thing
             Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
-        }
+        }*/
 
-        public override void                Tick()
+        // TODO: see other todos in hopper files
+        /*public override void                Tick()
         {
             base.Tick();
             ProductionTick( 1 );
@@ -209,16 +215,17 @@ namespace CommunityCoreLibrary
                 return;
             }
             RescanTick();
-        }
+        }*/
 
-        public override void                TickRare()
+        // TODO: see other todos in hopper files
+        /*public override void                TickRare()
         {
             base.TickRare();
             ProductionTick( 250 );
             RescanTick();
-        }
+        }*/
 
-        public override string              GetInspectString()
+        /*public override string              GetInspectString()
         {
             string str = base.GetInspectString();
             if( currentRecipe != null )
@@ -232,13 +239,14 @@ namespace CommunityCoreLibrary
                 str += "Building_AutomatedFactory_WaitingToDispense".Translate( currentThing.def.label );
             }
             return str;
-        }
+        }*/
 
         #endregion
 
         #region Tickers
 
-        private void                        ProductionTick( int ticks )
+        // TODO: see other todos
+        /*private void                        ProductionTick( int ticks )
         {
             if( !CompPowerTrader.PowerOn )
             {
@@ -294,30 +302,34 @@ namespace CommunityCoreLibrary
             }
             currentThing = null;
             currentProductionTick = 0;
-        }
+        }*/
 
-        private void                        RescanTick()
+        // TODO: see other todos in hopper files
+        /*private void                        RescanTick()
         {
             if( currentRecipeCount != this.def.AllRecipes.Count )
             {
                 ResetAndReprogramHoppers();
             }
-        }
+        }*/
 
         #endregion
 
         #region IHopperUser
 
-        private ThingFilter                 resourceFilter = null;
+        // TODO: see other todos
+        //private ThingFilter                 resourceFilter = null;
 
-        private void                        ResetAndReprogramHoppers()
+        // TODO: see other todos in hopper files
+        /*private void                        ResetAndReprogramHoppers()
         {
             resourceFilter = null;
             CompHopperUser.ResetResourceSettings();
             CompHopperUser.FindAndProgramHoppers();
-        }
+        }*/
 
-        public ThingFilter                  ResourceFilter
+        // TODO: see other todos in hopper files
+        /*public ThingFilter                  ResourceFilter
         {
             get
             {
@@ -380,13 +392,14 @@ namespace CommunityCoreLibrary
                 }
                 return resourceFilter;
             }
-        }
+        }*/
 
         #endregion
 
         #region Production Allowances
 
-        public void                         SetAllowed( ThingDef thingDef, bool allowed )
+        // TODO: see other todos
+        /*public void                         SetAllowed( ThingDef thingDef, bool allowed )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -394,9 +407,10 @@ namespace CommunityCoreLibrary
                 allowance.allowed = allowed;
                 productionAllowances[ thingDef ] = allowance;
             }
-        }
+        }*/
 
-        public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
+        // TODO: see other todos
+        /*public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
         {
             var product = recipeDef.products[ 0 ].thingDef;
             Allowances allowance;
@@ -410,9 +424,10 @@ namespace CommunityCoreLibrary
                 allowance = new Allowances( recipeDef, allowed );
                 productionAllowances.Add( product, allowance );
             }
-        }
+        }*/
 
-        public bool                         GetAllowed( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         GetAllowed( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -420,9 +435,10 @@ namespace CommunityCoreLibrary
                 return allowance.allowed;
             }
             return false;
-        }
+        }*/
 
-        public bool                         GetAllowed( RecipeDef recipeDef )
+        // TODO: see other todos
+        /*public bool                         GetAllowed( RecipeDef recipeDef )
         {
             foreach( var pair in productionAllowances )
             {
@@ -432,9 +448,10 @@ namespace CommunityCoreLibrary
                 }
             }
             return false;
-        }
+        }*/
 
-        public Allowances                   GetAllowance( ThingDef thingDef )
+        // TODO: see other todos
+        /*public Allowances                   GetAllowance( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -442,9 +459,10 @@ namespace CommunityCoreLibrary
                 return allowance;
             }
             return null;
-        }
+        }*/
 
-        public Allowances                   GetAllowance( RecipeDef recipeDef )
+        // TODO: see other todos
+        /*public Allowances                   GetAllowance( RecipeDef recipeDef )
         {
             foreach( var pair in productionAllowances )
             {
@@ -454,13 +472,14 @@ namespace CommunityCoreLibrary
                 }
             }
             return null;
-        }
+        }*/
 
         #endregion
 
         #region Internal Interface
 
-        private Thing                       NextProductToProduce()
+        // TODO: see other todos
+        /*private Thing                       NextProductToProduce()
         {
             if( currentRecipe != null )
             {
@@ -502,9 +521,9 @@ namespace CommunityCoreLibrary
             currentRecipe = recipe;
             currentProductionTick = (int) currentRecipe.workAmount;
             return TryProduceThingDef( currentRecipe.products[0].thingDef );
-        }
+        }*/
 
-        private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
+        /*private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
         {
             stackWith = null;
             dropCell = IntVec3.Invalid;
@@ -646,9 +665,10 @@ namespace CommunityCoreLibrary
             }
             // All output cells are blocked
             return false;
-        }
+        }*/
 
-        private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
+        // TODO: see other todos
+        /*private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -662,13 +682,14 @@ namespace CommunityCoreLibrary
                 }
             }
             return (RecipeDef) null;
-        }
+        }*/
 
         #endregion
 
         #region Public Interface
 
-        public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
+        // TODO: see other todos
+        /*public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
         {
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
@@ -676,9 +697,10 @@ namespace CommunityCoreLibrary
                 return allowance.recipe;
             }
             return (RecipeDef) null;
-        }
+        }*/
 
-        public int                          ProductionTicks( ThingDef thingDef )
+        // TODO: see other todos
+        /*public int                          ProductionTicks( ThingDef thingDef )
         {
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
@@ -686,21 +708,23 @@ namespace CommunityCoreLibrary
                 return 50;
             }
             return (int) recipe.workAmount;
-        }
+        }*/
 
-        public bool                         CanDispenseNow( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         CanDispenseNow( ThingDef thingDef )
         {
             if( CompPowerTrader.PowerOn )
             {
                 return HasEnoughResourcesInHoppersFor( thingDef );
             }
             return false;
-        }
+        }*/
 
-        public bool                         CanProduce( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         CanProduce( ThingDef thingDef )
         {
             return FindRecipeForProduct( thingDef ) != null;
-        }
+        }*/
 
         public Building                     AdjacentReachableHopper( Pawn reacher )
         {
@@ -724,7 +748,8 @@ namespace CommunityCoreLibrary
             return (Building) null;
         }
 
-        public bool                         HasEnoughResourcesInHoppersFor( ThingDef thingDef )
+        // TODO: see other todos
+        /*public bool                         HasEnoughResourcesInHoppersFor( ThingDef thingDef )
         {
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
@@ -732,9 +757,10 @@ namespace CommunityCoreLibrary
                 return false;
             }
             return CompHopperUser.EnoughResourcesInHoppers( recipe );
-        }
+        }*/
 
-        public List<ThingDef>               AllProducts()
+        // TODO: see other todos
+        /*public List<ThingDef>               AllProducts()
         {
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
@@ -742,9 +768,10 @@ namespace CommunityCoreLibrary
                 products.Add( pair.Key );
             }
             return products;
-        }
+        }*/
 
-        public List<ThingDef>               AllowedProducts()
+        // TODO: see other todos
+        /*public List<ThingDef>               AllowedProducts()
         {
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
@@ -755,9 +782,10 @@ namespace CommunityCoreLibrary
                 }
             }
             return products;
-        }
+        }*/
 
-        public ThingDef                     BestProduct( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
+        // TODO: see other todos
+        /*public ThingDef                     BestProduct( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
         {
             var thingDefs = AllProducts().Where( where.Invoke ).ToList();
             thingDefs.Sort( sort.Invoke );
@@ -771,9 +799,10 @@ namespace CommunityCoreLibrary
                 }
             }
             return (ThingDef) null;
-        }
+        }*/
 
-        public Thing                        TryProduceThingDef( ThingDef thingDef )
+        // TODO: see other todos
+        /*public Thing                        TryProduceThingDef( ThingDef thingDef )
         {
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
@@ -799,7 +828,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return thing;
-        }
+        }*/
 
         #endregion
 

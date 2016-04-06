@@ -152,14 +152,16 @@ namespace CommunityCoreLibrary
 
         }
 
-        private StorageSettings             resourceSettings;
+        // TODO: See other todos
+        //private StorageSettings             resourceSettings;
         private ThingFilter                 xmlResources;
 
         private List<RecipeDef>             recipeFilter = new List<RecipeDef>();
 
         private List<HopperSettingsAmount>  hopperSettings = new List<HopperSettingsAmount>();
 
-        private bool                        settingsBuilt = false;
+        // TODO:see other todos
+        //private bool                        settingsBuilt = false;
 
         #region Neighbouring Cell Enumeration
 
@@ -200,12 +202,13 @@ namespace CommunityCoreLibrary
 
         #region Core Comp Overrides
 
-        public override void                PostSpawnSetup()
+        // TODO: see other todos in file
+        /*public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
 
             FindAndProgramHoppers();
-        }
+        }*/
 
         public override void                PostDeSpawn()
         {
@@ -226,15 +229,17 @@ namespace CommunityCoreLibrary
 
         #region Storage Settings
 
-        public void                         ResetResourceSettings()
+        // TODO: see other todos
+        /*public void                         ResetResourceSettings()
         {
             recipeFilter.Clear();
             hopperSettings.Clear();
             resourceSettings = null;
             settingsBuilt = false;
-        }
+        }*/
 
-        public StorageSettings              ResourceSettings
+        // TODO: see other todos
+        /*public StorageSettings              ResourceSettings
         {
             get
             {
@@ -289,7 +294,7 @@ namespace CommunityCoreLibrary
                 }
                 return resourceSettings;
             }
-        }
+        }*/
 
         public ThingFilter                  Resources
         {
@@ -314,7 +319,8 @@ namespace CommunityCoreLibrary
 
         #region Filter Builders
 
-        private void                        MergeIngredientIntoFilter( ThingFilter filter, IngredientCount ingredient )
+        // TDOD: private stuff is booooo
+        /*private void                        MergeIngredientIntoFilter( ThingFilter filter, IngredientCount ingredient )
         {
             if( ingredient.filter != null )
             {
@@ -334,9 +340,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
-        private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
+        // TODO: Private stuf is really booooo
+        /*private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
         {
             if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
             {
@@ -353,14 +360,15 @@ namespace CommunityCoreLibrary
                     filter.SetAllow( thingDef, false );
                 }
             }
-        }
+        }*/
 
         public bool                         IsRecipeInFilter( RecipeDef recipe )
         {
             return recipeFilter.Contains( recipe );
         }
 
-        public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
+        // TODO: see other todos in file
+        /*public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
         {
             if( recipeFilter.Contains( recipe ) )
             {
@@ -382,9 +390,10 @@ namespace CommunityCoreLibrary
             {
                 MergeExceptionsIntoFilter( filter, recipe.fixedIngredientFilter );
             }
-        }
+        }*/
 
-        private void                        MergeIngredientIntoHopperSettings( IngredientCount ingredient, RecipeDef recipe )
+        // TODO: private is really really booooo
+        /*private void                        MergeIngredientIntoHopperSettings( IngredientCount ingredient, RecipeDef recipe )
         {
             if( ingredient.filter != null )
             {
@@ -404,9 +413,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
-        private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
+        // TODO: booooooooo
+        /*private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
         {
             if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
             {
@@ -429,9 +439,10 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
-        private void                        BuildHopperSettings()
+        // TODO: see other todos in file
+        /*private void                        BuildHopperSettings()
         {
             // Create initial list of hopper settings from recipe ingredients
             foreach( var recipe in recipeFilter )
@@ -548,22 +559,24 @@ namespace CommunityCoreLibrary
             }
 
             settingsBuilt = true;
-        }
+        }*/
 
         #endregion
 
         #region Hopper Programming
 
-        private void                        ProgramHoppersSimple( List<CompHopper> hoppers )
+        // TODO: see other todos
+        /*private void                        ProgramHoppersSimple( List<CompHopper> hoppers )
         {
             // Blanket all hoppers with the main filter
             foreach( var hopper in hoppers )
             {
                 hopper.ProgramHopper( ResourceSettings );
             }
-        }
+        }*/
 
-        private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
+        // TODO: seeother todos
+        /*private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
         {
             // Try to find hoppers which match already
             var freeHoppers = new List<CompHopper>();
@@ -714,9 +727,10 @@ namespace CommunityCoreLibrary
                     hopper.ProgramHopper( hopperSetting.settings );
                 }
             }
-        }
+        }*/
 
-        public void                         FindAndProgramHoppers()
+        // TODO: see other todos in file
+        /*public void                         FindAndProgramHoppers()
         {
             if( ResourceSettings == null )
             {
@@ -747,7 +761,7 @@ namespace CommunityCoreLibrary
                 // Program individual hoppers with individual settings
                 ProgramHoppersIndividual( hoppers );
             }
-        }
+        }*/
 
         #endregion
 
@@ -833,7 +847,8 @@ namespace CommunityCoreLibrary
             return null;
         }
 
-        public CompHopper                   FindBestHopperForResources()
+        // TODO: see other todos
+        /*public CompHopper                   FindBestHopperForResources()
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -864,7 +879,7 @@ namespace CommunityCoreLibrary
             }
             // Return the best hopper
             return bestHopper;
-        }
+        }*/
 
         #endregion
 
@@ -903,7 +918,8 @@ namespace CommunityCoreLibrary
             return ( resourceCount <= 0 );
         }
 
-        public bool                         RemoveResourcesFromHoppers( int resourceCount )
+        // TODO: see other todos
+        /*public bool                         RemoveResourcesFromHoppers( int resourceCount )
         {
             if( !EnoughResourcesInHoppers( resourceCount ) )
             {
@@ -937,9 +953,10 @@ namespace CommunityCoreLibrary
             }
             // Should always be true...
             return ( resourceCount <= 0 );
-        }
+        }*/
 
-        public bool                         RemoveResourcesFromHoppers( RecipeDef recipe, List<ThingAmount> chosen )
+        // TODO: see other todos
+        /*public bool                         RemoveResourcesFromHoppers( RecipeDef recipe, List<ThingAmount> chosen )
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -985,7 +1002,7 @@ namespace CommunityCoreLibrary
             }
 
             return true;
-        }
+        }*/
 
         #endregion
 
@@ -996,12 +1013,14 @@ namespace CommunityCoreLibrary
             return ( CountResourceInHoppers( resourceDef ) >= resourceCount );
         }
 
-        public bool                         EnoughResourcesInHoppers( int resourceCount )
+        // TODO: see other todos
+        /*public bool                         EnoughResourcesInHoppers( int resourceCount )
         {
             return ( CountResourcesInHoppers() >= resourceCount );
-        }
+        }*/
 
-        public bool                         EnoughResourcesInHoppers( RecipeDef recipe )
+        // TODO: see other todos
+        /*public bool                         EnoughResourcesInHoppers( RecipeDef recipe )
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -1037,7 +1056,7 @@ namespace CommunityCoreLibrary
             }
 
             return false;
-        }
+        }*/
 
         #endregion
 
@@ -1066,7 +1085,8 @@ namespace CommunityCoreLibrary
             return availableResources;
         }
 
-        public int                          CountResourcesInHoppers()
+        // TODO: see other todos
+        /*public int                          CountResourcesInHoppers()
         {
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
@@ -1087,7 +1107,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return availableResources;
-        }
+        }*/
 
         public bool                         CountResourcesInHoppers( List<ResourceAmount> resources )
         {

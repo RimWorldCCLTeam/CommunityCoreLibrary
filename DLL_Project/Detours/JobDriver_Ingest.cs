@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary.Detour
                         return;
                     }
                     if(
-                        ( !thing.SpawnedInWorld )||
+                        ( !thing.Spawned )||
                         ( !Find.Reservations.CanReserve( pawn, (TargetInfo) thing, 1 ) )
                     )
                     {
@@ -44,14 +44,15 @@ namespace CommunityCoreLibrary.Detour
             return resFood;
         }
 
-        internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_Ingest obj )
+        // TODO: see other todos
+        /*internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_Ingest obj )
         {
             var targetThingA = obj.TargetThingA();
             var targetThingB = obj.TargetThingB();
 
             if( targetThingA is Building )
             {
-                yield return Toils_Goto.GotoThing( TargetIndex.A, PathEndMode.InteractionCell ).FailOnDespawnedOrForbidden( TargetIndex.A );
+                yield return Toils_Goto.GotoThing( TargetIndex.A, PathEndMode.InteractionCell ).FailOnDespawnedNullOrForbidden( TargetIndex.A );
 
                 if( targetThingB == null )
                 {
@@ -73,8 +74,8 @@ namespace CommunityCoreLibrary.Detour
                         yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer( TargetIndex.B, obj.pawn );
                     }
                 }
-                yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedOrForbidden( TargetIndex.A );
-                yield return Toils_Ingest.PlaceItemForIngestion( TargetIndex.A );
+                yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedNullOrForbidden( TargetIndex.A );
+                yield return Toils_Ingest.FindAdjacentEatSurface( TargetIndex.A, TargetIndex.B );
             }
             else
             {
@@ -113,10 +114,10 @@ namespace CommunityCoreLibrary.Detour
 
                 if( obj.pawn.RaceProps.ToolUser )
                 {
-                    yield return Toils_Goto.GotoThing( TargetIndex.A, PathEndMode.ClosestTouch ).FailOnDespawnedOrForbidden( TargetIndex.A );
+                    yield return Toils_Goto.GotoThing( TargetIndex.A, PathEndMode.ClosestTouch ).FailOnDespawnedNullOrForbidden( TargetIndex.A );
                     yield return Toils_Ingest.PickupIngestible( TargetIndex.A, obj.pawn );
-                    yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedOrForbidden( TargetIndex.A );
-                    yield return Toils_Ingest.PlaceItemForIngestion( TargetIndex.A );
+                    yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedNullOrForbidden( TargetIndex.A );
+                    yield return Toils_Ingest.FindAdjacentEatSurface( TargetIndex.A, TargetIndex.B );
                 }
                 else
                 {
@@ -130,9 +131,9 @@ namespace CommunityCoreLibrary.Detour
             }
 
             var durationMultiplier = 1f / obj.pawn.GetStatValue( StatDefOf.EatingSpeed, true );
-            yield return Toils_Ingest.ChewIngestible( obj.pawn, durationMultiplier ).FailOnDespawned( TargetIndex.A );
+            yield return Toils_Ingest.ChewIngestible( obj.pawn, durationMultiplier, TargetIndex.B ).FailOnDespawnedOrNull( TargetIndex.A );
             yield return Toils_Ingest.FinalizeIngest( obj.pawn, TargetIndex.A );
-        }
+        }*/
 
     }
 

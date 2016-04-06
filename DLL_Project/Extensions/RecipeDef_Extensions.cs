@@ -21,7 +21,8 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
-        public static bool                  IsLockedOut( this RecipeDef recipeDef )
+        // TODO: fix thingdef issues here
+        /*public static bool                  IsLockedOut( this RecipeDef recipeDef )
         {
             bool rVal = false;
             if( !isLockedOut.TryGetValue( recipeDef, out rVal ) )
@@ -66,9 +67,10 @@ namespace CommunityCoreLibrary
                 isLockedOut.Add( recipeDef, rVal );
             }
             return rVal;
-        }
+        }*/
 
-        public static bool                  HasResearchRequirement( this RecipeDef recipeDef )
+        // TODO: fix def issues here
+        /*public static bool                  HasResearchRequirement( this RecipeDef recipeDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -124,13 +126,14 @@ namespace CommunityCoreLibrary
             }
             // Now check for an absolute requirement
             return ( thingsOn.All( t => t.HasResearchRequirement() ) );
-        }
+        }*/
 
         #endregion
 
         #region Lists of affected data
 
-        public static List< Def >           GetResearchRequirements( this RecipeDef recipeDef )
+        // TODO: fix recipethings here
+        /*public static List< Def >           GetResearchRequirements( this RecipeDef recipeDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -196,9 +199,10 @@ namespace CommunityCoreLibrary
 
             // Return the list of research required
             return researchDefs;
-        }
+        }*/
 
-        public static List<ThingDef>        GetRecipeUsers( this RecipeDef recipeDef )
+        // TODO: fix thingdef here
+        /*public static List<ThingDef>        GetRecipeUsers( this RecipeDef recipeDef )
         {
 
 #if DEBUG
@@ -219,7 +223,7 @@ namespace CommunityCoreLibrary
                 return thingDefs;
             }
             return new List<ThingDef>();
-        }
+        }*/
 
         public static List< ThingDef >      GetThingsUnlocked( this RecipeDef recipeDef, ref List< Def > researchDefs )
         {

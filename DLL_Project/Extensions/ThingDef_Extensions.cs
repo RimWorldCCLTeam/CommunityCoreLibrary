@@ -115,34 +115,37 @@ namespace CommunityCoreLibrary
                     : null;
         }
 
-        public static bool                  EverHasRecipes( this ThingDef thingDef )
+        // TODO: see other todos
+        /*public static bool                  EverHasRecipes( this ThingDef thingDef )
         {
             return (
                 ( !thingDef.GetRecipesCurrent().NullOrEmpty() )||
                 ( !thingDef.GetRecipesUnlocked( ref nullDefs ).NullOrEmpty() )||
                 ( !thingDef.GetRecipesLocked( ref nullDefs ).NullOrEmpty() )
             );
-        }
+        }*/
 
-        public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
+        // TODO: see other todos
+        /*public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
         {
             return (
                 ( thingDef.GetRecipesCurrent().Contains( recipeDef ) )||
                 ( thingDef.GetRecipesUnlocked( ref nullDefs ).Contains( recipeDef ) )||
                 ( thingDef.GetRecipesLocked( ref nullDefs ).Contains( recipeDef ) )
             );
-        }
+        }*/
 
-        public static JoyGiverDef           GetJoyDefUsing( this ThingDef thingDef )
+        public static List<JoyGiverDef> GetJoyDefUsing(this ThingDef thingDef)
         {
-            return DefDatabase<JoyGiverDef>.AllDefs.FirstOrDefault( def => def.thingDef == thingDef );
+            return DefDatabase<JoyGiverDef>.AllDefs.Where(def => def.thingDefs.Contains(thingDef)).ToList();
         }
 
         #endregion
 
         #region Lists of affected data
 
-        public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
+        // TODO: see other todos in recipe files
+        /*public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -192,7 +195,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return recipeDefs;
-        }
+        }*/
 
         public static List< RecipeDef >     GetRecipesLocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
@@ -252,7 +255,8 @@ namespace CommunityCoreLibrary
             return thingDef.AllRecipes;
         }
 
-        public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
+        // TODO:see other todos
+        /*public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -269,7 +273,7 @@ namespace CommunityCoreLibrary
             recipeDefs.AddRange( thingDef.GetRecipesLocked( ref nullDefs ) );
 
             return recipeDefs;
-        }
+        }*/
 
         #endregion
 
@@ -291,104 +295,46 @@ namespace CommunityCoreLibrary
 
         public static CommunityCoreLibrary.CompProperties_ColoredLight CompProperties_ColoredLight ( this ThingDef thingDef )
         {
-            return thingDef.GetCompProperties( typeof( CommunityCoreLibrary.CompColoredLight ) ) as CommunityCoreLibrary.CompProperties_ColoredLight;
+            return thingDef.GetCompProperties<CompProperties_ColoredLight>();
         }
 
         public static CommunityCoreLibrary.CompProperties_LowIdleDraw CompProperties_LowIdleDraw ( this ThingDef thingDef )
         {
-            return thingDef.GetCompProperties( typeof( CommunityCoreLibrary.CompPowerLowIdleDraw ) ) as CommunityCoreLibrary.CompProperties_LowIdleDraw;
+            return thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
         }
 
-        public static Verse.CompProperties_Rottable CompProperties_Rottable ( this ThingDef thingDef )
+        public static CompProperties_Rottable CompProperties_Rottable ( this ThingDef thingDef )
         {
-            return thingDef.GetCompProperties( typeof( RimWorld.CompRottable ) ) as Verse.CompProperties_Rottable;
+            return thingDef.GetCompProperties<CompProperties_Rottable>();
         }
 
         #endregion
 
         #region Joy Participant Cells (Watch Buildings)
 
-        public static List< IntVec3 >       GetParticipantCells( this ThingDef thingDef, IntVec3 position, Rot4 rotation, bool getBlocked = false )
+        public static List<IntVec3> GetParticipantCells(this ThingDef thingDef, IntVec3 position, Rot4 rotation, bool getBlocked = false)
         {
-            var joyGiverDef = thingDef.GetJoyDefUsing();
-            if( joyGiverDef == null )
-            {
-                // No joy giver which uses this def
-                return null;
-            }
-            if(
-                ( joyGiverDef.standDistanceRange.min < 1 )||
-                ( joyGiverDef.standDistanceRange.max < 1 )
-            )
-            {
-                // no range?
-                return null;
-            }
+            // TODO: May need to manually calculate cells
             var returnCells = new List<IntVec3>();
-            var allowedDirections = new List<int>();
-            if( thingDef.rotatable )
+            var watchCells = WatchBuildingUtility.CalculateWatchCells(thingDef, position, rotation);
+            foreach (var intVec3 in watchCells)
             {
-                allowedDirections.Add( rotation.AsInt );
-            }
-            else
-            {
-                for( int i = 0; i < 4; ++i )
-                {
-                    allowedDirections.Add( i );
-                }
-            }
-            for( int index1 = 0; index1 < allowedDirections.Count; ++index1 )
-            {
-                CellRect cellRect;
-                if( new Rot4( allowedDirections[ index1 ] ).IsHorizontal )
-                {
-                    int a = position.x + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].x * joyGiverDef.standDistanceRange.min;
-                    int b = position.x + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].x * joyGiverDef.standDistanceRange.max;
-                    int num = position.z + 1;
-                    int minZ = position.z - 1;
-                    cellRect = new CellRect(
-                        Mathf.Min( a, b ),
-                        minZ,
-                        Mathf.Abs( a - b ) + 1,
-                        num - minZ + 1 );
-                }
-                else
-                {
-                    int a = position.z + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].z * joyGiverDef.standDistanceRange.min;
-                    int b = position.z + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].z * joyGiverDef.standDistanceRange.max;
-                    int num = position.x + 1;
-                    int minX = position.x - 1;
-                    cellRect = new CellRect(
-                        minX,
-                        Mathf.Min( a, b ),
-                        num - minX + 1,
-                        Mathf.Abs( a - b ) + 1 );
-                }
-                IntVec3 center = cellRect.Center;
-                int num1 = cellRect.Area * 4;
-                for( int index2 = 0; index2 < num1; ++index2 )
-                {
-                    IntVec3 intVec3 = center + GenRadial.RadialPattern[ index2 ];
-                    if( cellRect.Contains( intVec3 ) )
-                    {
-                        if(
-                            (
-                                ( getBlocked )&&
-                                (
-                                    ( !GenGrid.Standable( intVec3 ) )||
-                                    ( !GenSight.LineOfSight( intVec3, position, false ) )
-                                )
-                            )||
-                            (
-                                ( !getBlocked )&&
-                                ( GenGrid.Standable( intVec3 ) )&&
-                                ( GenSight.LineOfSight( intVec3, position, false ) )
-                            )
+                if (
+                    (
+                        (getBlocked) &&
+                        (
+                            (GenGrid.Impassable(intVec3)) ||
+                            (!GenSight.LineOfSight(intVec3, position, false))
                         )
-                        {
-                            returnCells.Add( intVec3 );
-                        }
-                    }
+                    ) ||
+                    (
+                        (!getBlocked) &&
+                        (!GenGrid.Impassable(intVec3)) &&
+                        (GenSight.LineOfSight(intVec3, position, false))
+                    )
+                )
+                {
+                    returnCells.Add(intVec3);
                 }
             }
             return returnCells;

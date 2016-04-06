@@ -56,8 +56,9 @@ namespace CommunityCoreLibrary
             // TODO: Add tradertags
 
             // Buildings
-            ResolveBuildings();
-            ResolveMinifiableOnly();
+            // TODO: see other todos in file
+            //ResolveBuildings();
+            //ResolveMinifiableOnly();
 
             // Terrain
             ResolveTerrain();
@@ -68,7 +69,8 @@ namespace CommunityCoreLibrary
             ResolveBiomes();
 
             // Recipes
-            ResolveRecipes();
+            // TODO: see other todos in file
+            //ResolveRecipes();
 
             // Research
             ResolveResearch();
@@ -267,7 +269,8 @@ namespace CommunityCoreLibrary
 
         #region Building Resolvers
 
-        static void ResolveBuildings()
+        // TODO: fix ResolveDefList here
+        /*static void ResolveBuildings()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -299,9 +302,10 @@ namespace CommunityCoreLibrary
                     );
                 }
             }
-        }
+        }*/
 
-        static void ResolveMinifiableOnly()
+        // TODO: Fix ResolveDefList and ThingDef issues here
+        /*static void ResolveMinifiableOnly()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -337,7 +341,7 @@ namespace CommunityCoreLibrary
                 thingDefs,
                 helpCategoryDef
             );
-        }
+        }*/
 
         #endregion
 
@@ -425,13 +429,13 @@ namespace CommunityCoreLibrary
             ResolveDefList( pawnkinds, category );
 
             // mechanoids
-            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race.race.mechanoid ).ToList();
+            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => t.race.race.IsMechanoid ).ToList();
             category = HelpCategoryForKey( HelpCategoryDefOf.Mechanoids, "AutoHelpSubCategoryMechanoids".Translate(),
                                            "AutoHelpCategoryFloraAndFauna".Translate() );
             ResolveDefList( pawnkinds, category );
 
             // humanoids
-            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => !t.race.race.Animal && !t.race.race.mechanoid ).ToList();
+            pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where( t => !t.race.race.Animal && !t.race.race.IsMechanoid).ToList();
             category = HelpCategoryForKey( HelpCategoryDefOf.Humanoids, "AutoHelpSubCategoryHumanoids".Translate(),
                                            "AutoHelpCategoryFloraAndFauna".Translate() );
             ResolveDefList( pawnkinds, category );
@@ -450,7 +454,8 @@ namespace CommunityCoreLibrary
 
         #region Recipe Resolvers
 
-        static void ResolveRecipes()
+        // TODO: fix thingdef issues here
+        /*static void ResolveRecipes()
         {
 #if DEBUG
             CCL_Log.Trace(
@@ -499,7 +504,7 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
         #endregion
 
@@ -629,14 +634,15 @@ namespace CommunityCoreLibrary
         static HelpDef HelpForDef<T>( T def, HelpCategoryDef category ) where T : Def
         {
             // both thingdefs (buildings, items) and terraindefs (floors) are derived from buildableDef
-            if( def is BuildableDef )
+            // TODO: see other todos to fix this
+            /*if( def is BuildableDef )
             {
                 return HelpForBuildable( def as BuildableDef, category );
             }
             if( def is ResearchProjectDef )
             {
                 return HelpForResearch( def as ResearchProjectDef, category );
-            }
+            }*/
             if( def is AdvancedResearchDef )
             {
                 return HelpForAdvancedResearch( def as AdvancedResearchDef, category );
@@ -659,7 +665,8 @@ namespace CommunityCoreLibrary
             return null;
         }
 
-        static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
+        // TODO: see todos in RecipeDef_Extensions
+        /*static HelpDef HelpForBuildable( BuildableDef buildableDef, HelpCategoryDef category )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -977,7 +984,7 @@ namespace CommunityCoreLibrary
                 var powerSectionList = new List<StringDescTriplet>();
 
                 // Get power required or generated
-                var compPowerTrader = thingDef.GetCompProperties( typeof( CompPowerTrader ) );
+                var compPowerTrader = thingDef.GetCompProperties<CompProperties_Power>();
                 if( compPowerTrader != null )
                 {
                     if( compPowerTrader.basePowerConsumption > 0 )
@@ -985,7 +992,7 @@ namespace CommunityCoreLibrary
                         var basePowerConsumption = (int) compPowerTrader.basePowerConsumption;
                         powerSectionList.Add( new StringDescTriplet( "AutoHelpRequired".Translate(), null, basePowerConsumption.ToString() ) );
 
-                        var compPowerIdle = (CompProperties_LowIdleDraw) thingDef.GetCompProperties( typeof( CompPowerLowIdleDraw ) );
+                        var compPowerIdle = thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
                         if( compPowerIdle != null )
                         {
                             var idlePower = (int)( compPowerTrader.basePowerConsumption * compPowerIdle.idlePowerFactor );
@@ -1005,7 +1012,7 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-                var compBattery = thingDef.GetCompProperties( typeof( CompPowerBattery ) );
+                var compBattery = thingDef.GetCompProperties<CompProperties_Battery>();
                 if( compBattery != null )
                 {
                     var stored = (int) compBattery.storedEnergyMax;
@@ -1029,8 +1036,8 @@ namespace CommunityCoreLibrary
 
                 // Get list of facilities that effect it
                 // TODO: This was never implemented?
-                var affectedBy = thingDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
-                if(
+                var affectedBy = thingDef.GetCompProperties<CompProperties_AffectedByFacilities>();
+                if (
                     ( affectedBy != null )&&
                     ( !affectedBy.linkableFacilities.NullOrEmpty() )
                 )
@@ -1046,13 +1053,13 @@ namespace CommunityCoreLibrary
                     var effectsBuildings = DefDatabase< ThingDef >.AllDefsListForReading
                         .Where( f => (
                             ( f.HasComp( typeof( CompAffectedByFacilities ) ) )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ) != null )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities != null )&&
-                            ( f.GetCompProperties( typeof( CompAffectedByFacilities ) ).linkableFacilities.Contains( thingDef ) )
+                            ( f.GetCompProperties<CompProperties_AffectedByFacilities>() != null )&&
+                            ( f.GetCompProperties<CompProperties_AffectedByFacilities>().linkableFacilities != null )&&
+                            ( f.GetCompProperties<CompProperties_AffectedByFacilities>().linkableFacilities.Contains( thingDef ) )
                         ) ).ToList();
                     if( !effectsBuildings.NullOrEmpty() )
                     {
-                        var facilityProperties = thingDef.GetCompProperties( typeof( CompFacility ) );
+                        var facilityProperties = thingDef.GetCompProperties<CompProperties_Facility>();
 
                         List<DefStringTriplet> facilityDefs = new List<DefStringTriplet>();
                         List<StringDescTriplet> facilityStrings = new List<StringDescTriplet>();
@@ -1084,7 +1091,7 @@ namespace CommunityCoreLibrary
                 // Get valid joy givers
                 var joyGiverDefs = DefDatabase< JoyGiverDef >.AllDefsListForReading
                     .Where( j => (
-                        ( j.thingDef == thingDef )&&
+                        ( j.thingDefs != null )&&
                         ( j.jobDef != null )
                     ) ).ToList();
 
@@ -1141,9 +1148,10 @@ namespace CommunityCoreLibrary
             helpDef.HelpDetailSections.AddRange( linkParts );
 
             return helpDef;
-        }
+        }*/
 
-        static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
+        // TODO:see todos in RecipeDef_Extentions
+        /*static HelpDef HelpForRecipe( ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -1335,13 +1343,15 @@ namespace CommunityCoreLibrary
             List<Def> buildableDefs = new List<Def>();
 
             // items and buildings
-            buildableDefs.AddRange( researchProjectDef.GetThingsUnlocked().ConvertAll<Def>( def => (Def)def ) );
+            // TODO: see todos in ResearchProjectDef
+            //buildableDefs.AddRange( researchProjectDef.GetThingsUnlocked().ConvertAll<Def>( def => (Def)def ) );
 
             // terrain
-            buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def) );
+            // TODO: see todos in ResearchProjectDef
+            //buildableDefs.AddRange( researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>( def => (Def)def) );
 
             // create help section
-            if( !buildableDefs.NullOrEmpty() )
+            if ( !buildableDefs.NullOrEmpty() )
             {
                 HelpDetailSection thingsUnlocked = new HelpDetailSection(
                     "AutoHelpListThingsUnlocked".Translate(),
@@ -1413,7 +1423,7 @@ namespace CommunityCoreLibrary
 #endregion
 
             return helpDef;
-        }
+        }*/
 
         static HelpDef HelpForAdvancedResearch( AdvancedResearchDef advancedResearchDef, HelpCategoryDef category )
         {
@@ -1612,7 +1622,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( object disease in diseases )
                 {
-                    defs.Add( ( (BiomeDiseaseRecord)disease ).diseaseInc.disease );
+                    defs.Add( ( (BiomeDiseaseRecord)disease ).diseaseInc.diseaseIncident);
                     chances.Add( ( ( (BiomeDiseaseRecord)disease ).mtbDays / GenDate.DaysPerYear ).ToStringPercent() );
                 }
 
@@ -1832,8 +1842,8 @@ namespace CommunityCoreLibrary
                 new []
                 {
                     ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
-                    race.lifeExpectancy.ToStringApproximateTimePeriod(),
-                    race.diet.ToString().Translate(),
+                    race.lifeExpectancy.ToStringApproxAge(),
+                    race.foodType.ToString().Translate(),
                     race.trainableIntelligence.ToString()
                 },
                 new []
@@ -1898,14 +1908,14 @@ namespace CommunityCoreLibrary
                 // final lifestage
                 if( i == race.lifeStageAges.Count - 1 )
                 {
-                    suffixes.Add( ages[i].ToStringApproximateTimePeriod() + " - ~" +
-                                  race.lifeExpectancy.ToStringApproximateTimePeriod() );
+                    suffixes.Add( ages[i].ToStringApproxAge() + " - ~" +
+                                  race.lifeExpectancy.ToStringApproxAge() );
                 }
                 else
                 // other lifestages
                 {
-                    suffixes.Add( ages[i].ToStringApproximateTimePeriod() + " - " +
-                                  ages[i + 1].ToStringApproximateTimePeriod() );
+                    suffixes.Add( ages[i].ToStringApproxAge() + " - " +
+                                  ages[i + 1].ToStringApproxAge() );
                 }
             }
 
@@ -1926,7 +1936,7 @@ namespace CommunityCoreLibrary
             if( kindDef.race.HasComp( typeof( CompEggLayer ) ) )
             {
                 // egglayers
-                var eggComp =  kindDef.race.GetCompProperties( typeof (CompEggLayer) );
+                var eggComp =  kindDef.race.GetCompProperties<CompProperties_EggLayer>();
                 string range;
                 if( eggComp.eggCountRange.min == eggComp.eggCountRange.max )
                 {
@@ -1937,7 +1947,7 @@ namespace CommunityCoreLibrary
                     range = eggComp.eggCountRange.ToString();
                 }
                 stringDescs.Add( "AutoHelpEggLayer".Translate( range,
-                    ( eggComp.eggLayIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+                    ( eggComp.eggLayIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
 
                 statParts.Add( new HelpDetailSection(
                                    "AutoHelpListReproduction".Translate(),
@@ -1952,7 +1962,7 @@ namespace CommunityCoreLibrary
                 // mammals
                 List<StringDescTriplet> SDT = new List<StringDescTriplet>();
                 SDT.Add( new StringDescTriplet( 
-                    ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod(),
+                    ( race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge(),
                     "AutoHelpGestationPeriod".Translate() ) );
 
                 if(
@@ -2019,7 +2029,7 @@ namespace CommunityCoreLibrary
             #endregion
 
             #region Butcher products
-            if( race.isFlesh )
+            if( race.IsFlesh )
             {
                 // fleshy pawns ( meat + leather )
                 defs.Add( race.meatDef );
@@ -2037,7 +2047,7 @@ namespace CommunityCoreLibrary
                     prefixes.ToArray() ) );
             }
             else if(
-                ( race.mechanoid )&&
+                ( race.IsMechanoid )&&
                 ( !kindDef.race.butcherProducts.NullOrEmpty() )
             )
             {
@@ -2056,11 +2066,11 @@ namespace CommunityCoreLibrary
 
             if( kindDef.race.HasComp( typeof( CompMilkable ) ) )
             {
-                var milkComp =  kindDef.race.GetCompProperties( typeof( CompMilkable ) );
+                var milkComp =  kindDef.race.GetCompProperties<CompProperties_Milkable>();
 
                 defs.Add( milkComp.milkDef );
                 prefixes.Add( milkComp.milkAmount.ToString() );
-                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
+                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
 
                 linkParts.Add( new HelpDetailSection(
                                    "AutoHelpListMilk".Translate(),
@@ -2081,8 +2091,8 @@ namespace CommunityCoreLibrary
                 ( c.compClass == typeof( CompShearable ) )||
                 ( c.compClass.IsSubclassOf( typeof( CompShearable ) ) )
             ) );
-
-            if( shearComp != null )
+            // TODO: Issues with shearcomp and wooldef needed here
+            /*if( shearComp != null )
             {
                 defs.Add( shearComp.woolDef );
                 prefixes.Add( shearComp.woolAmount.ToString() );
@@ -2093,7 +2103,7 @@ namespace CommunityCoreLibrary
                                    defs,
                                    prefixes.ToArray(),
                                    suffixes.ToArray() ) );
-            }
+            }*/
             defs.Clear();
             prefixes.Clear();
             suffixes.Clear();

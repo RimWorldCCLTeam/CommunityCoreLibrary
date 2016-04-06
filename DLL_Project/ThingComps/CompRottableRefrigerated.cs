@@ -131,11 +131,11 @@ namespace CommunityCoreLibrary
                 }
                 else if( (double) num < 0.999000012874603 )
                 {
-                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.TicksToDaysExtendedString() ) );
+                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.TickstoDaysString() ) );
                 }
                 else
                 {
-                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.TicksToDaysExtendedString() ) );
+                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.TickstoDaysString() ) );
                 }
             }
             return stringBuilder.ToString();
