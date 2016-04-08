@@ -25,6 +25,24 @@ namespace CommunityCoreLibrary
         #region Process State
 
 #if DEBUG
+        public bool                         IsValidPlaceWorker( Type placeWorker )
+        {
+            if(
+                ( placeWorker != typeof( PlaceWorker_NotOnTerrain ) )&&
+                ( placeWorker != typeof( PlaceWorker_OnlyOnTerrain ) )&&
+                ( placeWorker != typeof( PlaceWorker_NotUnderRoof ) )&&
+                ( placeWorker != typeof( PlaceWorker_OnlyUnderRoof ) )&&
+                ( !placeWorker.IsSubclassOf( typeof( PlaceWorker_NotOnTerrain ) ) )&&
+                ( !placeWorker.IsSubclassOf( typeof( PlaceWorker_OnlyOnTerrain ) ) )&&
+                ( !placeWorker.IsSubclassOf( typeof( PlaceWorker_NotUnderRoof ) ) )&&
+                ( !placeWorker.IsSubclassOf( typeof( PlaceWorker_OnlyUnderRoof ) ) )
+            )
+            {
+                return false;
+            }
+            return true;
+        }
+
         public override void                PostLoad()
         {
             base.PostLoad();
@@ -35,12 +53,7 @@ namespace CommunityCoreLibrary
                 // Terrain with comps only supports a small set of place workers
                 foreach( var placeWorker in placeWorkers )
                 {
-                    if(
-                        ( placeWorker != typeof( PlaceWorker_NotOnTerrain ) )&&
-                        ( placeWorker != typeof( PlaceWorker_OnlyOnTerrain ) )&&
-                        ( placeWorker != typeof( PlaceWorker_NotUnderRoof ) )&&
-                        ( placeWorker != typeof( PlaceWorker_OnlyUnderRoof ) )
-                    )
+                    if( !IsValidPlaceWorker( placeWorker ) )
                     {
                         CCL_Log.TraceMod(
                             this,
@@ -60,7 +73,8 @@ namespace CommunityCoreLibrary
                     var comp = comps[ i ];
                     var compClass = comp.compClass;
                     if(
-                        ( compClass != typeof( RestrictedPlacement_Comp ) )
+                        ( compClass != typeof( CompRestrictedPlacement ) )||
+                        ( !compClass.IsSubclassOf( typeof( CompRestrictedPlacement ) ) )
                     )
                     {
                         CCL_Log.TraceMod(

@@ -18,7 +18,6 @@
 [list]
 [li][color=orange]Automated Factory[/color] - This building class is similar to work table in that it has associated recipes and produces goods however, it will produce goods on it's own without a pawn to work it[sup][size=8pt]4.2[/size][/sup].[/li]
 [li][color=orange]Hopper[/color] - A powerful hopper system which allows a generic hopper to be programmed with the items the machine (user) accepts and wants.  This is the base building for hoppers.  CCL provides two hoppers already (refrigerated and unrefrigerated).[/li]
-[li][color=orange]Hydroponics[/color] - Building_PlantGrower doesn't call base.TickRare(), this does.  Useful if you have comps which need ticking.[/li]
 [li][color=orange]SunLamp Heat Controller[/color] - It's a sun lamp, it's a heater, it's controllable.[/li][/list]
 
 [size=10pt][color=orange]New Comp Properties[/color] (xml)[/size]

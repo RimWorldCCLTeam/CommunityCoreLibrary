@@ -8,19 +8,18 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public static class BuildableDef_Extensions
-    {
+	public static class BuildableDef_Extensions
+	{
 
-        #region Static Data
+		#region Static Data
 
-        static Dictionary<BuildableDef,bool> isLockedOut = new Dictionary<BuildableDef, bool>();
+		static Dictionary<BuildableDef, bool> isLockedOut = new Dictionary<BuildableDef, bool>();
 
-        #endregion
+		#endregion
 
-        #region Availability
+		#region Availability
 
-        // TODO: ResearchPrerequisites list changes need fixing here
-        /*public static bool                  IsLockedOut( this BuildableDef buildableDef )
+		public static bool                  IsLockedOut( this BuildableDef buildableDef )
         {
             bool rVal;
             if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
@@ -62,8 +61,8 @@ namespace CommunityCoreLibrary
 
                 // If the research locks it's out, check for an ARDef unlock
                 if(
-                    ( buildableDef.researchPrerequisite != null )&&
-                    ( buildableDef.researchPrerequisite.IsLockedOut() )&&
+                    ( buildableDef.researchPrerequisites != null )&&
+                    ( buildableDef.researchPrerequisites.Any( def => def.IsLockedOut() ) )&&
                     ( !Controller.Data.AdvancedResearchDefs.Any( a => (
                         ( a.IsBuildingToggle )&&
                         ( !a.HideDefs )&&
@@ -77,10 +76,10 @@ namespace CommunityCoreLibrary
                 isLockedOut.Add( buildableDef, rVal );
             }
             return rVal;
-        }*/
+        }
 
-        public static bool                  HasResearchRequirement( this BuildableDef buildableDef )
-        {
+		public static bool HasResearchRequirement( this BuildableDef buildableDef )
+		{
 #if DEBUG
             CCL_Log.TraceMod(
                 buildableDef,
@@ -88,29 +87,31 @@ namespace CommunityCoreLibrary
                 "HasResearchRequirement()"
             );
 #endif
-            // TODO: ResearchPrerequisites list changes needed here.
-            // Can't entirely rely on this one check as it's state may change mid-game
-            /*if( buildableDef.researchPrerequisite != null )
+			// Can't entirely rely on this one check as it's state may change mid-game
+			if(
+                ( buildableDef.researchPrerequisites != null )&&
+                ( buildableDef.researchPrerequisites.Any( def => def != null ) )
+            )
             {
                 // Easiest check, do it first
                 return true;
-            }*/
+            }
 
-            // Check for an advanced research unlock
-            return
-                Controller.Data.AdvancedResearchDefs.Any( a => (
-                    ( a.IsBuildingToggle )&&
-                    ( !a.HideDefs )&&
-                    ( a.thingDefs.Contains( buildableDef as ThingDef ) )
-                ) );
-        }
+			// Check for an advanced research unlock
+			return
+				Controller.Data.AdvancedResearchDefs.Any( a => (
+					( a.IsBuildingToggle ) &&
+					( !a.HideDefs ) &&
+					( a.thingDefs.Contains( buildableDef as ThingDef ) )
+				) );
+		}
 
-        #endregion
+		#endregion
 
-        #region Lists of affected data
+		#region Lists of affected data
 
-        public static List< Def >           GetResearchRequirements( this BuildableDef buildableDef )
-        {
+		public static List<Def> GetResearchRequirements( this BuildableDef buildableDef )
+		{
 #if DEBUG
             CCL_Log.TraceMod(
                 buildableDef,
@@ -118,14 +119,16 @@ namespace CommunityCoreLibrary
                 "GetResearchRequirements()"
             );
 #endif
-            var researchDefs = new List< Def >();
+			var researchDefs = new List<Def>();
 
-            // TODO: 
-            /*if( buildableDef.researchPrerequisite != null )
+			if( buildableDef.researchPrerequisites != null )
             {
-                if( buildableDef.researchPrerequisite != Research.Locker )
+                if(
+                    ( buildableDef.researchPrerequisites != Research.Lockers )&&
+                    ( !buildableDef.researchPrerequisites.Contains( Research.Locker ) )
+                )
                 {
-                    researchDefs.Add( buildableDef.researchPrerequisite );
+                    researchDefs.AddRange( buildableDef.researchPrerequisites.ConvertAll<Def>( def => (Def)def ) );
                 }
                 else
                 {
@@ -138,46 +141,46 @@ namespace CommunityCoreLibrary
                     {
                         foreach( var advancedResearchDef in advancedResearchDefs )
                         {
-                            researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def =>(Def)def ) );
+                            researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
                         }
                     }
                 }
-            }*/
-
-            // Return the list of research required
-            return researchDefs;
-        }
-
-        public static List< RecipeDef >     GetRecipeDefs( this BuildableDef buildableDef )
-        {
-            return
-                DefDatabase<RecipeDef>.AllDefsListForReading.Where(
-                    r => r.products.Any( tc => tc.thingDef == buildableDef as ThingDef ) ).ToList();
-        } 
-
-        #endregion
-
-        #region Comp Properties
-
-        public static CommunityCoreLibrary.RestrictedPlacement_Properties RestrictedPlacement_Properties ( this BuildableDef buildableDef )
-        {
-            if( buildableDef is TerrainWithComps )
-            {
-                // Terrain with comps
-                return ( (TerrainWithComps)buildableDef ).GetCompProperties( typeof( RestrictedPlacement_Comp ) ) as RestrictedPlacement_Properties;
-            }
-            else if ( buildableDef is ThingDef )
-            {
-                // Thing with comps
-                return ( (ThingDef)buildableDef ).GetCompProperties<RestrictedPlacement_Properties>();
             }
 
-            // Something else
-            return (RestrictedPlacement_Properties) null;
-        }
+			// Return the list of research required
+			return researchDefs;
+		}
 
-        #endregion
+		public static List<RecipeDef> GetRecipeDefs( this BuildableDef buildableDef )
+		{
+			return
+				DefDatabase<RecipeDef>.AllDefsListForReading.Where(
+					r => r.products.Any( tc => tc.thingDef == buildableDef as ThingDef ) ).ToList();
+		}
 
-    }
+		#endregion
+
+		#region Comp Properties
+
+		public static CommunityCoreLibrary.CompProperties_RestrictedPlacement RestrictedPlacement_Properties( this BuildableDef buildableDef )
+		{
+			if( buildableDef is TerrainWithComps )
+			{
+				// Terrain with comps
+                return ( (TerrainWithComps)buildableDef ).GetCompProperties( typeof( CompRestrictedPlacement ) ) as CompProperties_RestrictedPlacement;
+			}
+			else if( buildableDef is ThingDef )
+			{
+				// Thing with comps
+				return ( (ThingDef)buildableDef ).GetCompProperties<CompProperties_RestrictedPlacement>();
+			}
+
+			// Something else
+			return (CompProperties_RestrictedPlacement)null;
+		}
+
+		#endregion
+
+	}
 
 }

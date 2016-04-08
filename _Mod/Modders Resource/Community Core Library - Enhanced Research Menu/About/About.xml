@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 
-    <name>Community Core Library - Research Tree</name>
+    <name>Community Core Library - Enhanced Research Menu</name>
 
     <author>RimWorld CCL Team</author>
 
@@ -9,6 +9,6 @@
 
     <targetVersion>Community Core Library v0.13.0</targetVersion>
 
-    <description>Replaces the vanilla research menu with a research tree giving a graphic representation of the research tree.</description>
+    <description>This keeps the same style as the vanilla research menu but adds additional information.</description>
 
 </ModMetaData>

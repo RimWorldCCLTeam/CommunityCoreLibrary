@@ -98,7 +98,6 @@
     <Compile Include="ThingComps\CompLifespanPowered.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_NotOnThing.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyOnThing.cs" />
-    <Compile Include="Buildings\Building_Hydroponic.cs" />
     <Compile Include="ThingComps\CompNeighbourlyGrower.cs" />
     <Compile Include="Commands\Commands.cs" />
     <Compile Include="Alerts\Alert_PlaceWorker_Restriction.cs" />
@@ -119,8 +118,8 @@
     <Compile Include="Extensions\ThingDef_Extensions.cs" />
     <Compile Include="Extensions\ThingWithComps_Extensions.cs" />
     <Compile Include="Extensions\IntVec3_Extensions.cs" />
-    <Compile Include="CompProperties\RestrictedPlacement_Properties.cs" />
-    <Compile Include="ThingComps\RestrictedPlacement_Comp.cs" />
+    <Compile Include="CompProperties\CompProperties_RestrictedPlacement.cs" />
+    <Compile Include="ThingComps\CompRestrictedPlacement.cs" />
     <Compile Include="ThingComps\CompHeatPusherPowered.cs" />
     <Compile Include="Defs\ModHelperDef.cs" />
     <Compile Include="Structures\DesignatorData.cs" />
@@ -156,9 +155,7 @@
     <Compile Include="Resources\Buildings_Hoppers.cs" />
     <Compile Include="Version\Version.cs" />
     <Compile Include="Controller\Controller.cs" />
-    <Compile Include="Controller\Controller_Research.cs" />
     <Compile Include="Controller\Controller_MainMonoBehaviour.cs" />
-    <Compile Include="Controller\Controller_Loader.cs" />
     <Compile Include="ColorPicker\ColorWrapper.cs" />
     <Compile Include="ColorPicker\Dialog_ColorPicker.cs" />
     <Compile Include="ColorPicker\Helper_Color.cs" />
@@ -182,7 +179,6 @@
     <Compile Include="Detours\WorkGiver_Researcher.cs" />
     <Compile Include="CompProperties\CompProperties_HideItem.cs" />
     <Compile Include="Detours\ThingSelectionUtility.cs" />
-    <Compile Include="Controller\Controller_PreLoader.cs" />
     <Compile Include="Detours\DropCellFinder.cs" />
     <Compile Include="Detours\PassingShip.cs" />
     <Compile Include="Detours\FoodUtility.cs" />
@@ -246,6 +242,8 @@
     <Compile Include="MainMenus\MainMenu_Options.cs" />
     <Compile Include="StaticClasses\MainMenu.cs" />
     <Compile Include="StaticClasses\MCMInjectionSet.cs" />
+    <Compile Include="MainMenus\MainMenu_SaveQuitToMain.cs" />
+    <Compile Include="MainMenus\MainMenu_SaveQuitToOS.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

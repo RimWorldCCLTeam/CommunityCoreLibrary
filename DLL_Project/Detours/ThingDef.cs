@@ -19,13 +19,17 @@ namespace CommunityCoreLibrary.Detour
 #endif
             List<VerbProperties> verbs = typeof( ThingDef ).GetField( "verbs", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( obj ) as List<VerbProperties>;
 
-            if( obj.graphicData != null )
+            if( obj.graphicData != null)
             {
-                if( obj.graphicData.shaderType == ShaderType.None )
-                {
-                    obj.graphicData.shaderType = ShaderType.Cutout;
-                }
-                obj.graphic = obj.graphicData.Graphic;
+                LongEventHandler.ExecuteWhenFinished( delegate
+                    {
+                        if( obj.graphicData.shaderType == ShaderType.None )
+                        {
+                            obj.graphicData.shaderType = ShaderType.Cutout;
+                        }
+                        obj.graphic = obj.graphicData.Graphic;
+                    }
+                );
             }
             if(
                 ( verbs != null )&&
@@ -41,7 +45,7 @@ namespace CommunityCoreLibrary.Detour
             // base.PostLoad() // Def.PostLoad()
             #region Def PostLoad()
 
-            // base.PostLoad() // Entity.PostLoad()
+            // base.PostLoad() // Editable.PostLoad()
             #region Entity PostLoad()
             #endregion
 
@@ -49,20 +53,25 @@ namespace CommunityCoreLibrary.Detour
 
             #endregion
 
-            if( !obj.uiIconPath.NullOrEmpty() )
-            {
-                obj.uiIcon = ContentFinder<Texture2D>.Get( obj.uiIconPath, true );
-            }
-            else
-            {
-                if(
-                    ( obj.DrawMatSingle != null )&&
-                    ( obj.DrawMatSingle != BaseContent.BadMat )
-                )
+            LongEventHandler.ExecuteWhenFinished( delegate
                 {
-                    obj.uiIcon = (Texture2D) obj.DrawMatSingle.mainTexture;
+                    if( !GenText.NullOrEmpty( obj.uiIconPath ) )
+                    {
+                        obj.uiIcon = ContentFinder<Texture2D>.Get( obj.uiIconPath, true );
+                    }
+                    else
+                    {
+                        if(
+                            ( !( obj.DrawMatSingle != null ) )||
+                            ( !( obj.DrawMatSingle != BaseContent.BadMat ) )
+                        )
+                        {
+                            return;
+                        }
+                        obj.uiIcon = (Texture2D) obj.DrawMatSingle.mainTexture;
+                    }
                 }
-            }
+            );
 
             #endregion
 
@@ -73,6 +82,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 obj.building = new BuildingProperties();
             }
+
             for( int index = 0; index < obj.inspectorTabs.Count; ++index )
             {
                 if( obj.inspectorTabsResolved == null )
@@ -81,12 +91,11 @@ namespace CommunityCoreLibrary.Detour
                 }
                 obj.inspectorTabsResolved.Add( ITabManager.GetSharedInstance( obj.inspectorTabs[ index ] ) );
             }
+
             if(
                 ( obj.passability == Traversability.Impassable )||
-                (
-                    ( obj.thingClass == typeof( Building_Door ) )||
-                    ( obj.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
-                )
+                ( obj.thingClass == typeof( Building_Door ) )||
+                ( obj.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
             )
             {
                 obj.regionBarrier = true;

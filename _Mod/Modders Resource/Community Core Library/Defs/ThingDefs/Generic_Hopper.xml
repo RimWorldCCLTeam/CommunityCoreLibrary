@@ -10,7 +10,7 @@
         
         in your ModHelperDef!
         
-        ModPack makers can enable these directly by overriding <researchPrerequisite>
+        ModPack makers can enable these directly by overriding <researchPrerequisites>
         with anything (including null) except CommunityCoreLibraryResearchLocker.
     -->
 
@@ -36,7 +36,9 @@
         <placeWorkers>
             <li>CommunityCoreLibrary.PlaceWorker_HopperUserMagnifier</li>
         </placeWorkers>
-        <researchPrerequisite>CommunityCoreLibraryResearchLocker</researchPrerequisite>
+        <researchPrerequisites>
+            <li>CommunityCoreLibraryResearchLocker</li>
+        </researchPrerequisites>
     </ThingDef>
 
     <ThingDef ParentName="HopperBase">
@@ -96,7 +98,7 @@
             <li>
                 <compClass>CommunityCoreLibrary.CompRefrigerated</compClass>
             </li>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>100</basePowerConsumption>
             </li>

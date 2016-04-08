@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
 
         public string                       ModName;
 
-        public string                       version;
+        public string                       minCCLVersion;
 
         public Verbosity                    Verbosity = Verbosity.Default;
 
@@ -59,6 +59,10 @@ namespace CommunityCoreLibrary
 
         // Used to link directly to the mod which this def controls
         public LoadedMod                    mod;
+
+        #endregion
+
+        #region Global Static Data
 
         // Interfaces for different injectors
         // Use an array instead of a list to ensure order
@@ -108,26 +112,26 @@ namespace CommunityCoreLibrary
 
                 #region Version Validation
 
-                if( version.NullOrEmpty() )
+                if( minCCLVersion.NullOrEmpty() )
                 {
-                    errors += "\n\tNull or empty CCL version requirement";
+                    errors += "\n\tNull or empty 'minCCLVersion' requirement";
                     isValid = false;
                 }
                 else
                 {
-                    var vc = Version.Compare( version );
+                    var vc = Version.Compare( minCCLVersion );
                     switch( vc )
                     {
                     case Version.VersionCompare.LessThanMin:
-                        errors += "\n\tUnsupported CCL version requirement (v" + version + ") minimum supported version is v" + Version.Minimum;
+                        errors += "\n\tUnsupported 'minCCLVersion' requirement (v" + minCCLVersion + ") minimum supported version is v" + Version.Minimum;
                         isValid = false;
                         break;
                     case Version.VersionCompare.GreaterThanMax:
-                        errors += "\n\tUnsupported CCL version requirement (v" + version + ") maximum supported version is v" + Version.Current;
+                        errors += "\n\tUnsupported 'minCCLVersion' requirement (v" + minCCLVersion + ") maximum supported version is v" + Version.Current;
                         isValid = false;
                         break;
                     case Version.VersionCompare.Invalid:
-                        errors += "\n\tUnable to get version from '" + version + "'";
+                        errors += "\n\tUnable to get version from '" + minCCLVersion + "'";
                         isValid = false;
                         break;
                     }
@@ -135,8 +139,10 @@ namespace CommunityCoreLibrary
 
                 #endregion
 
-                #region Mod Configuration Menu Validation
 #if DEBUG
+
+                #region Mod Configuration Menu Validation
+
                 if( !ModConfigurationMenus.NullOrEmpty() )
                 {
                     foreach( var mcm in ModConfigurationMenus )
@@ -148,17 +154,19 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-#endif
+
                 #endregion
 
                 #region Injector Validation
-#if DEBUG
+
                 foreach( var injector in Injectors )
                 {
                     isValid &= injector.IsValid( this, ref errors );
                 }
-#endif
+
                 #endregion
+
+#endif
 
                 if( !isValid )
                 {

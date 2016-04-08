@@ -8,7 +8,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
     // TODO: reimplement IStoreSettingsParent, ISlotGroupParent when file is fixed
-    public class Building_Hopper : Building
+    public class Building_Hopper : Building, IStoreSettingsParent, ISlotGroupParent
     {
 
         #region Instance Data
@@ -47,8 +47,7 @@ namespace CommunityCoreLibrary
             return settings;
         }
 
-        // TODO: see other todos
-        /*public StorageSettings              GetParentStoreSettings()
+        public StorageSettings              GetParentStoreSettings()
         {
             var hopperUser = CompHopper.FindHopperUser();
             if( hopperUser == null )
@@ -61,7 +60,7 @@ namespace CommunityCoreLibrary
                 return null;
             }
             return compHopperUser.ResourceSettings;
-        }*/
+        }
 
         #endregion
 
@@ -111,6 +110,7 @@ namespace CommunityCoreLibrary
             {
                 settings.CopyFrom( def.building.defaultStorageSettings );
             }
+            // TODO:  A12->A13 Valididity Check
             //settings.filter.BlockDefaultAcceptanceFilters();
             settings.filter.ResolveReferences();
         }

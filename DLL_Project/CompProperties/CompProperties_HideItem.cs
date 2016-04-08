@@ -14,9 +14,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public CompProperties_HideItem()
+        public                              CompProperties_HideItem()
         {
-            compClass = typeof( CompProperties_HideItem );
+            compClass = typeof( CompHideItem );
         }
 
     }

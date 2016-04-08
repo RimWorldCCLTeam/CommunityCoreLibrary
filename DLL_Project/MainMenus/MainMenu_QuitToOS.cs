@@ -8,6 +8,14 @@ namespace CommunityCoreLibrary
 	public class MainMenu_QuitToOS : MainMenu
 	{
 
+        public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+        {
+            return(
+                ( Game.Mode == GameMode.Entry )||
+                ( !Find.Map.info.permadeathMode )
+            );
+        }
+
 		public override void ClickAction()
 		{
 			if( Game.Mode == GameMode.MapPlaying )

@@ -17,9 +17,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public CompProperties_AutomatedFactory()
+        public                              CompProperties_AutomatedFactory()
         {
-            compClass = typeof( CompProperties_AutomatedFactory );
+            compClass = typeof( CompAutomatedFactory );
         }
 
     }

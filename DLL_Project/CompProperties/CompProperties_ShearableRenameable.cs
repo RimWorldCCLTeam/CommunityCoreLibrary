@@ -5,17 +5,21 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    // TODO:  A13 Check for obsolecense
     public class CompProperties_ShearableRenameable : CompProperties
     {
 
+        #region XML Data
+
         public string                       growthLabel = "";
 
-        public CompProperties_ShearableRenameable()
+        #endregion
+
+        public                              CompProperties_ShearableRenameable()
         {
-            this.compClass = typeof( CompProperties_ShearableRenameable );
+            this.compClass = typeof( CompShearableRenameable );
         }
 
     }
 
 }
-

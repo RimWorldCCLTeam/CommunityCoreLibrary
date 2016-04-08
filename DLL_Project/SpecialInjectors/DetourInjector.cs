@@ -14,15 +14,6 @@ namespace CommunityCoreLibrary
         public override void                Inject()
         {
 
-            Assembly Assembly_CSharp = Assembly.Load( "Assembly-CSharp.dll" );
-#if DEBUG
-            if( Assembly_CSharp == null )
-            {
-                CCL_Log.Error( "Unable to load 'Assembly-CSharp'" );
-                return;
-            }
-#endif
-
             // Detour Verse.GenSpawn.CanPlaceBlueprintOver
             MethodInfo Verse_GenSpawn_CanPlaceBlueprintOver = typeof( GenSpawn ).GetMethod( "CanPlaceBlueprintOver", BindingFlags.Static | BindingFlags.Public );
             MethodInfo CCL_GenSpawn_CanPlaceBlueprintOver = typeof( Detour._GenSpawn ).GetMethod( "_CanPlaceBlueprintOver", BindingFlags.Static | BindingFlags.NonPublic );
@@ -57,7 +48,7 @@ namespace CommunityCoreLibrary
             Detours.TryDetourFromTo( RimWorld_StatWorker_ShouldShowFor, CCL_StatWorker_ShouldShowFor );
 
             // Detour Verse.SectionLayer_IndoorMask.Regenerate
-            Type Verse_Sectionlayer_IndoorMask = Assembly_CSharp.GetType( "Verse.SectionLayer_IndoorMask" );
+            Type Verse_Sectionlayer_IndoorMask = Controller.Data.Assembly_CSharp.GetType( "Verse.SectionLayer_IndoorMask" );
 #if DEBUG
             if( Verse_Sectionlayer_IndoorMask == null )
             {
