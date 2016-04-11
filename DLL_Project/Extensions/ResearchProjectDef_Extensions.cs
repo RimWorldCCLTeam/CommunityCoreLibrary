@@ -6,15 +6,17 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+    
     public static class ResearchProjectDef_Extensions
     {
+        
         #region Static Data
 
         private static Dictionary<ResearchProjectDef, bool> isLockedOut = new Dictionary<ResearchProjectDef, bool>();
 
         private static Dictionary<Def, List<Pair<Def, string>>> _unlocksCache = new Dictionary<Def, List<Pair<Def, string>>>();
 
-        #endregion Static Data
+        #endregion
 
         #region Availability
 
@@ -91,7 +93,7 @@ namespace CommunityCoreLibrary
                 ) );
         }
 
-        #endregion Availability
+        #endregion
 
         #region Lists of affected data
 
@@ -166,14 +168,12 @@ namespace CommunityCoreLibrary
             // dumps recipes/plants unlocked, because of the peculiar way CCL helpdefs are done.
             List<ThingDef> dump = new List<ThingDef>();
 
-            // TODO: see other todos in file
-            //unlocks.AddRange( research.GetThingsUnlocked()
-                                      //.Where( d => d.IconTexture() != null )
-                                      //.Select( d => new Pair<Def, string>( d, "Fluffy.ResearchTree.AllowsBuildingX".Translate( d.LabelCap ) ) ) );
-            // TODO: see other todos in file
-            //unlocks.AddRange( research.GetTerrainUnlocked()
-                                      //.Where( d => d.IconTexture() != null )
-                                      //.Select( d => new Pair<Def, string>( d, "Fluffy.ResearchTree.AllowsBuildingX".Translate( d.LabelCap ) ) ) );
+            unlocks.AddRange( research.GetThingsUnlocked()
+                                      .Where( d => d.IconTexture() != null )
+                                      .Select( d => new Pair<Def, string>( d, "Fluffy.ResearchTree.AllowsBuildingX".Translate( d.LabelCap ) ) ) );
+            unlocks.AddRange( research.GetTerrainUnlocked()
+                                      .Where( d => d.IconTexture() != null )
+                                      .Select( d => new Pair<Def, string>( d, "Fluffy.ResearchTree.AllowsBuildingX".Translate( d.LabelCap ) ) ) );
             unlocks.AddRange( research.GetRecipesUnlocked( ref dump )
                                       .Where( d => d.IconTexture() != null )
                                       .Select( d => new Pair<Def, string>( d, "Fluffy.ResearchTree.AllowsCraftingX".Translate( d.LabelCap ) ) ) );
@@ -287,8 +287,7 @@ namespace CommunityCoreLibrary
             return researchDefs;
         }
 
-        // TODO: fix thingdef and researchthings here
-        /*public static List<ThingDef> GetThingsUnlocked( this ResearchProjectDef researchProjectDef )
+        public static List<ThingDef> GetThingsUnlocked( this ResearchProjectDef researchProjectDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -328,10 +327,9 @@ namespace CommunityCoreLibrary
             }
 
             return thingsOn;
-        }*/
+        }
 
-        // TODO: fix thingdef issues here
-        /*public static List<TerrainDef> GetTerrainUnlocked( this ResearchProjectDef researchProjectDef )
+        public static List<TerrainDef> GetTerrainUnlocked( this ResearchProjectDef researchProjectDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -354,7 +352,7 @@ namespace CommunityCoreLibrary
             }
 
             return thingsOn;
-        }*/
+        }
 
         public static List<RecipeDef> GetRecipesUnlocked( this ResearchProjectDef researchProjectDef, ref List<ThingDef> thingDefs )
         {

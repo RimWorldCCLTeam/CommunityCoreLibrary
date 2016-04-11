@@ -309,7 +309,8 @@ namespace CommunityCoreLibrary
         // Replace the comp props with a new one with different values
         // must replace comp props as comps share props for things of the
         // same class.  We need to make a unique copy for the building.
-        public void                         ChangeColor( ColorInt color ) { 
+        public void                         ChangeColor( ColorInt color )
+        { 
             // Get glower
             var glower = CompGlower;
 
@@ -330,7 +331,8 @@ namespace CommunityCoreLibrary
             glower.Initialize( newProps );
 
             // Update glow grid
-            glower.UpdateLit();
+            //glower.UpdateLit(); <-- Only works if the light changes state (on<->off)
+            Find.GlowGrid.MarkGlowGridDirty( parent.Position );
         }
 
         #endregion

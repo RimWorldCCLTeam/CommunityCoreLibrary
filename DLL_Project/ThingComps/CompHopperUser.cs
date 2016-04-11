@@ -39,7 +39,7 @@ namespace CommunityCoreLibrary
             {
                 get
                 {
-                    return settings.filter.AllowedThingDefs.Any( def => def.HasComp( typeof( CompRottableRefrigerated ) ) );
+                    return settings.filter.AllowedThingDefs.Any( def => def.HasComp( typeof( CompRottable ) ) );
                 }
             }
 
@@ -278,7 +278,6 @@ namespace CommunityCoreLibrary
                     }
 
                     // Block default special filters
-                    // TODO:  A12->A13 Valididity Check
                     //resourceSettings.filter.BlockDefaultAcceptanceFilters();
 
                     // Resolve references again
@@ -544,7 +543,6 @@ namespace CommunityCoreLibrary
                 var hopperSetting = hopperSettings[ index ];
                 hopperSetting.settings.Priority = StoragePriority.Important;
                 hopperSetting.settings.filter.ResolveReferences();
-                // TODO:  A12->A13 Valididity Check
                 //hopperSetting.settings.filter.BlockDefaultAcceptanceFilters();
                 hopperSetting.settings.filter.allowedQualitiesConfigurable = false;
             }

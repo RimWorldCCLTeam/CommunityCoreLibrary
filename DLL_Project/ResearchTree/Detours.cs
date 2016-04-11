@@ -11,12 +11,33 @@ using Verse;
 // ReSharper disable PossibleNullReferenceException
 // reflection is dangerous - deal with it. Fluffy.
 
-// Fixed dangerous jump across instance classes. E.
+// Fixed dangerous jump across instance classes. 1000101.
 
 namespace CommunityCoreLibrary.ResearchTree.Detour
 {
     internal static class _ResearchManager
     {
+        internal static FieldInfo       __progress;
+        internal static FieldInfo       __GlobalProgress;
+
+        internal static Dictionary<ResearchProjectDef, float> _progress( this ResearchManager researchManager )
+        {
+            if( __progress == null )
+            {
+                __progress = typeof( ResearchManager ).GetField( "progress", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            return (Dictionary<ResearchProjectDef, float>) __progress.GetValue( researchManager );
+        }
+
+        internal static float           _GlobalProgress( this ResearchManager researchManager )
+        {
+            if( __GlobalProgress == null )
+            {
+                __GlobalProgress = typeof( ResearchManager ).GetField( "GlobalProgressFactor", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            return (float) __GlobalProgress.GetValue( researchManager );
+        }
+
         /// <summary>
         /// Override for Verse.ResearchMananager.MakeProgress
         ///
@@ -29,12 +50,10 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
             //ResearchManager researchManager = Find.ResearchManager;
 
             // get progress dictionary
-            FieldInfo progressField = typeof( ResearchManager ).GetField( "progress", BindingFlags.Instance | BindingFlags.NonPublic );
-            IDictionary<ResearchProjectDef, float> progress = progressField.GetValue( researchManager ) as IDictionary<ResearchProjectDef, float>;
+            var progress = researchManager._progress();
 
             // get global progress constant
-            FieldInfo globalProgressFactorField = typeof( ResearchManager ).GetField( "GlobalProgressFactor", BindingFlags.Instance | BindingFlags.NonPublic );
-            float globalProgressFactor = (float)globalProgressFactorField.GetValue( researchManager );
+            var globalProgressFactor = researchManager._GlobalProgress();
 
             // make progress
             if ( researchManager.currentProj == null )
@@ -96,8 +115,7 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
             }
 
             // get progress dictionary
-            FieldInfo progressField = typeof( ResearchManager ).GetField( "progress", BindingFlags.Instance | BindingFlags.NonPublic );
-            Dictionary<ResearchProjectDef, float> progress = progressField.GetValue( researchManager ) as Dictionary<ResearchProjectDef, float>;
+            var progress = researchManager._progress();
 
             // Expose base data
             Scribe_Defs.LookDef<ResearchProjectDef>( ref researchManager.currentProj, "currentProj" );

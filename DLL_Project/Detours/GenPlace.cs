@@ -23,13 +23,13 @@ namespace CommunityCoreLibrary.Detour
         internal static _GenPlace._PlaceSpotQuality _PlaceSpotQualityAt( IntVec3 c, Thing thing, IntVec3 center )
         {
             if(
-                ( !GenGrid.InBounds( c ) )||
-                ( !GenGrid.Walkable( c ) )
+                ( !c.InBounds() )||
+                ( !c.Walkable() )
             )
             {
                 return _GenPlace._PlaceSpotQuality.Unusable;
             }
-            List<Thing> list = Find.ThingGrid.ThingsListAt(c);
+            List<Thing> list = Find.ThingGrid.ThingsListAt( c );
             for( int index = 0; index < list.Count; ++index )
             {
                 Thing thing1 = list[ index ];
@@ -43,16 +43,18 @@ namespace CommunityCoreLibrary.Detour
                 if( thing1.def.category == ThingCategory.Item )
                 {
                     return
-                        ( thing1.def == thing.def )&&
-                        ( thing1.stackCount < thing.def.stackLimit )
+                        (
+                            ( thing1.def == thing.def )&&
+                            ( thing1.stackCount < thing.def.stackLimit )
+                        )
                         ? _GenPlace._PlaceSpotQuality.Perfect
                         : _GenPlace._PlaceSpotQuality.Unusable;
                 }
             }
-            if( GridsUtility.GetRoom( c ) != GridsUtility.GetRoom( center ) )
+            if( c.GetRoom() != center.GetRoom() )
             {
                 return
-                    ( !Reachability.CanReach( center, (TargetInfo) c, PathEndMode.OnCell, TraverseMode.PassDoors, Danger.Deadly ) )
+                    ( !center.CanReach( c, PathEndMode.OnCell, TraverseMode.PassDoors, Danger.Deadly ) )
                     ? _GenPlace._PlaceSpotQuality.Awful
                     : _GenPlace._PlaceSpotQuality.Bad;
             }

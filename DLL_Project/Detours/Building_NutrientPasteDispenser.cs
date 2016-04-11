@@ -15,172 +15,173 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _Building_NutrientPasteDispenser
     {
-        
-        internal static List<IntVec3> _AdjCellsCardinalInBounds( Building_NutrientPasteDispenser obj )
+
+        internal static PropertyInfo    __AdjCellsCardinalInBounds;
+
+        internal static List<IntVec3>   _AdjCellsCardinalInBounds( Building_NutrientPasteDispenser obj )
         {
-            var __AdjCellsCardinalInBounds = typeof( Building_NutrientPasteDispenser ).GetProperty( "AdjCellsCardinalInBounds", BindingFlags.Instance | BindingFlags.NonPublic );
+            if( __AdjCellsCardinalInBounds == null )
+            {
+                __AdjCellsCardinalInBounds = typeof( Building_NutrientPasteDispenser ).GetProperty( "AdjCellsCardinalInBounds", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
             return __AdjCellsCardinalInBounds.GetValue( obj, null ) as List<IntVec3>;
         }
 
-        internal static Building _AdjacentReachableHopper( this Building_NutrientPasteDispenser obj, Pawn reacher )
+        internal static Building        _AdjacentReachableHopper( this Building_NutrientPasteDispenser obj, Pawn reacher )
         {
-            if( Controller.Data.GenericHoppersEnabled )
+            // Check for generic hoppers
+            var CompHopperUser = obj.TryGetComp<CompHopperUser>();
+            if( CompHopperUser != null )
             {
-                var CompHopperUser = obj.TryGetComp<CompHopperUser>();
-                if( CompHopperUser != null )
+                var hoppers = CompHopperUser.FindHoppers();
+                if( !hoppers.NullOrEmpty() )
                 {
-                    var hoppers = CompHopperUser.FindHoppers();
-                    if( !hoppers.NullOrEmpty() )
+                    foreach( var hopper in hoppers )
                     {
-                        foreach( var hopper in hoppers )
+                        if(
+                            reacher.CanReach(
+                                ( TargetInfo )( ( Thing )hopper.parent ),
+                                PathEndMode.Touch,
+                                reacher.NormalMaxDanger(),
+                                false )
+                        )
                         {
-                            if(
-                                reacher.CanReach(
-                                    ( TargetInfo )( ( Thing )hopper.parent ),
-                                    PathEndMode.Touch,
-                                    reacher.NormalMaxDanger(),
-                                    false )
-                            )
-                            {
-                                return (Building) hopper.parent;
-                            }
+                            return (Building) hopper.parent;
                         }
                     }
                 }
             }
-            if( !Controller.Data.VanillaHoppersDisabled )
+            // Check for vanilla hoppers
+            var adjCells = _AdjCellsCardinalInBounds( obj );
+            for( int index = 0; index < adjCells.Count; ++index )
             {
-                var adjCells = _AdjCellsCardinalInBounds( obj );
-                for( int index = 0; index < adjCells.Count; ++index )
+                Building edifice = adjCells[ index ].GetEdifice();
+                if(
+                    ( edifice != null )&&
+                    ( edifice.def == ThingDefOf.Hopper )&&
+                    ( reacher.CanReach(
+                        ( TargetInfo )( ( Thing )edifice ),
+                        PathEndMode.Touch,
+                        reacher.NormalMaxDanger(),
+                        false ) )
+                )
                 {
-                    Building edifice = adjCells[ index ].GetEdifice();
-                    if(
-                        ( edifice != null )&&
-                        ( edifice.def == ThingDefOf.Hopper )&&
-                        ( reacher.CanReach(
-                            ( TargetInfo )( ( Thing )edifice ),
-                            PathEndMode.Touch,
-                            reacher.NormalMaxDanger(),
-                            false ) )
-                    )
-                    {
-                        return edifice;
-                    }
+                    return edifice;
                 }
             }
             return (Building) null;
         }
 
-        internal static Thing _FindFeedInAnyHopper( this Building_NutrientPasteDispenser obj )
+        internal static Thing           _FindFeedInAnyHopper( this Building_NutrientPasteDispenser obj )
         {
-            if( Controller.Data.GenericHoppersEnabled )
+            // Check for generic hoppers
+            var CompHopperUser = obj.TryGetComp<CompHopperUser>();
+            if( CompHopperUser != null )
             {
-                var CompHopperUser = obj.TryGetComp<CompHopperUser>();
-                if( CompHopperUser != null )
+                var hoppers = CompHopperUser.FindHoppers();
+                if( !hoppers.NullOrEmpty() )
                 {
-                    var hoppers = CompHopperUser.FindHoppers();
-                    if( !hoppers.NullOrEmpty() )
+                    foreach( var hopper in hoppers )
                     {
-                        foreach( var hopper in hoppers )
+                        var resources = hopper.GetAllResources( CompHopperUser.Resources );
+                        if( !resources.NullOrEmpty() )
                         {
-                            var resources = hopper.GetAllResources( CompHopperUser.Resources );
-                            if( !resources.NullOrEmpty() )
+                            foreach( var resource in resources )
                             {
-                                return resources.FirstOrDefault();
+                                // This check shouldn't be needed, but we'll do it as a fail-safe
+                                if( Building_NutrientPasteDispenser.IsAcceptableFeedstock( resource.def ) )
+                                {
+                                    return resource;
+                                }
                             }
                         }
                     }
                 }
             }
-            if( !Controller.Data.VanillaHoppersDisabled )
+            // Check for vanilla hoppers
+            var adjCells = _AdjCellsCardinalInBounds( obj );
+            for( int cellIndex = 0; cellIndex < adjCells.Count; ++cellIndex )
             {
-                var adjCells = _AdjCellsCardinalInBounds( obj );
-                for( int cellIndex = 0; cellIndex < adjCells.Count; ++cellIndex )
+                IntVec3 c = adjCells[ cellIndex ];
+                Thing resource = (Thing) null;
+                Thing hopper = (Thing) null;
+                List<Thing> thingList = c.GetThingList();
+                for( int thingIndex = 0; thingIndex < thingList.Count; ++thingIndex )
                 {
-                    IntVec3 c = adjCells[ cellIndex ];
-                    Thing resource = (Thing) null;
-                    Thing hopper = (Thing) null;
-                    List<Thing> thingList = GridsUtility.GetThingList( c );
-                    for( int thingIndex = 0; thingIndex < thingList.Count; ++thingIndex )
+                    Thing thisThing = thingList[ thingIndex ];
+                    if( Building_NutrientPasteDispenser.IsAcceptableFeedstock( thisThing.def ) )
                     {
-                        Thing thisThing = thingList[ thingIndex ];
-                        if( Building_NutrientPasteDispenser.IsAcceptableFeedstock( thisThing.def ) )
-                        {
-                            resource = thisThing;
-                        }
-                        if( thisThing.def == ThingDefOf.Hopper )
-                        {
-                            hopper = thisThing;
-                        }
+                        resource = thisThing;
                     }
-                    if(
-                        ( resource != null )&&
-                        ( hopper != null )
-                    )
+                    if( thisThing.def == ThingDefOf.Hopper )
                     {
-                        return resource;
+                        hopper = thisThing;
                     }
+                }
+                if(
+                    ( resource != null )&&
+                    ( hopper != null )
+                )
+                {
+                    return resource;
                 }
             }
             return (Thing) null;
         }
 
-        // TODO: see other todos
-        /*internal static bool _HasEnoughFeedstockInHoppers( this Building_NutrientPasteDispenser obj )
+        internal static bool            _HasEnoughFeedstockInHoppers( this Building_NutrientPasteDispenser obj )
         {
             int costPerDispense = obj.def.building.foodCostPerDispense;
+            /* Research Project cut from A13
             if( ResearchProjectDef.Named( "NutrientResynthesis" ).IsFinished )
             {
                 costPerDispense--;
             }
-            if( Controller.Data.GenericHoppersEnabled )
+            */
+            // Check for generic hoppers
+            var CompHopperUser = obj.TryGetComp<CompHopperUser>();
+            if( CompHopperUser != null )
             {
-                var CompHopperUser = obj.TryGetComp<CompHopperUser>();
-                if( CompHopperUser != null )
+                if( CompHopperUser.EnoughResourcesInHoppers( costPerDispense ) )
                 {
-                    if( CompHopperUser.EnoughResourcesInHoppers( costPerDispense ) )
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
-            if( !Controller.Data.VanillaHoppersDisabled )
+            // Check for vanilla hoppers
+            var adjCells = _AdjCellsCardinalInBounds( obj );
+            int resourceCount = 0;
+            for( int cellIndex = 0; cellIndex < adjCells.Count; ++cellIndex )
             {
-                var adjCells = _AdjCellsCardinalInBounds( obj );
-                int resourceCount = 0;
-                for( int cellIndex = 0; cellIndex < adjCells.Count; ++cellIndex )
+                IntVec3 c = adjCells[ cellIndex ];
+                Thing resource = (Thing) null;
+                Thing hopper = (Thing) null;
+                List<Thing> thingList = GridsUtility.GetThingList( c );
+                for( int thingIndex = 0; thingIndex < thingList.Count; ++thingIndex )
                 {
-                    IntVec3 c = adjCells[ cellIndex ];
-                    Thing resource = (Thing) null;
-                    Thing hopper = (Thing) null;
-                    List<Thing> thingList = GridsUtility.GetThingList( c );
-                    for( int thingIndex = 0; thingIndex < thingList.Count; ++thingIndex )
+                    Thing thisThing = thingList[ thingIndex ];
+                    if( Building_NutrientPasteDispenser.IsAcceptableFeedstock( thisThing.def ) )
                     {
-                        Thing thisThing = thingList[ thingIndex ];
-                        if( Building_NutrientPasteDispenser.IsAcceptableFeedstock( thisThing.def ) )
-                        {
-                            resource = thisThing;
-                        }
-                        if( thisThing.def == ThingDefOf.Hopper )
-                        {
-                            hopper = thisThing;
-                        }
+                        resource = thisThing;
                     }
-                    if(
-                        ( resource != null )&&
-                        ( hopper != null )
-                    )
+                    if( thisThing.def == ThingDefOf.Hopper )
                     {
-                        resourceCount += resource.stackCount;
+                        hopper = thisThing;
                     }
-                    if( resourceCount >= costPerDispense )
-                    {
-                        return true;
-                    }
+                }
+                if(
+                    ( resource != null )&&
+                    ( hopper != null )
+                )
+                {
+                    resourceCount += resource.stackCount;
+                }
+                if( resourceCount >= costPerDispense )
+                {
+                    return true;
                 }
             }
             return false;
-        }*/
+        }
 
     }
 

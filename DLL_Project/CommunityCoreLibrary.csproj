@@ -120,7 +120,6 @@
     <Compile Include="Extensions\IntVec3_Extensions.cs" />
     <Compile Include="CompProperties\CompProperties_RestrictedPlacement.cs" />
     <Compile Include="ThingComps\CompRestrictedPlacement.cs" />
-    <Compile Include="ThingComps\CompHeatPusherPowered.cs" />
     <Compile Include="Defs\ModHelperDef.cs" />
     <Compile Include="Structures\DesignatorData.cs" />
     <Compile Include="Extensions\TerrainWithComps.cs" />
@@ -130,10 +129,7 @@
     <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
     <Compile Include="StaticClasses\HelpCategoryDefOf.cs" />
     <Compile Include="Extensions\RecipeDef_Extensions.cs" />
-    <Compile Include="ThingComps\CompRottableRefrigerated.cs" />
     <Compile Include="Extensions\ReverseDesignatorDatabase_Extensions.cs" />
-    <Compile Include="CompProperties\CompProperties_ShearableRenameable.cs" />
-    <Compile Include="ThingComps\CompShearableRenameable.cs" />
     <Compile Include="Alerts\Alert_BuildingNeedsHopper.cs" />
     <Compile Include="Alerts\Alert_HopperNeedsBuilding.cs" />
     <Compile Include="Buildings\Building_Hopper.cs" />
@@ -152,7 +148,6 @@
     <Compile Include="Structures\HelpDetailSection.cs" />
     <Compile Include="Enumerations\ResearchEnableMode.cs" />
     <Compile Include="Extensions\ListerThings_Extensions.cs" />
-    <Compile Include="Resources\Buildings_Hoppers.cs" />
     <Compile Include="Version\Version.cs" />
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Controller\Controller_MainMonoBehaviour.cs" />
@@ -172,11 +167,8 @@
     <Compile Include="Detours\Building_Door.cs" />
     <Compile Include="Detours\GhostDrawer.cs" />
     <Compile Include="Detours\GenPlace.cs" />
-    <Compile Include="Detours\ThingDef.cs" />
     <Compile Include="Detours\JobGiver_Binge.cs" />
     <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
-    <Compile Include="Detours\RoomRoleWorker_Laboratory.cs" />
-    <Compile Include="Detours\WorkGiver_Researcher.cs" />
     <Compile Include="CompProperties\CompProperties_HideItem.cs" />
     <Compile Include="Detours\ThingSelectionUtility.cs" />
     <Compile Include="Detours\DropCellFinder.cs" />
@@ -201,18 +193,14 @@
     <Compile Include="StaticClasses\FoodSynthesis.cs" />
     <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
     <Compile Include="SpecialInjectors\DetourInjector.cs" />
-    <Compile Include="SpecialInjectors\CompRottableRefrigeratedInjector.cs" />
     <Compile Include="SpecialInjectors\ResearchTreeDetourInjector.cs" />
     <Compile Include="SubControllers\LibrarySubController.cs" />
     <Compile Include="Controller\SubController.cs" />
     <Compile Include="SubControllers\ResearchSubController.cs" />
     <Compile Include="SubControllers\InjectionSubController.cs" />
-    <Compile Include="SubControllers\ResourceSubController.cs" />
     <Compile Include="SubControllers\HelpSubController.cs" />
     <Compile Include="StaticClasses\HelpBuilder.cs" />
     <Compile Include="ResearchTree\Detours.cs" />
-    <Compile Include="PlaceWorkers\PlaceWorker_WatchBuildingParticipantCells.cs" />
-    <Compile Include="ThingComps\CompWatchBuildingParticipantCellDisplay.cs" />
     <Compile Include="Structures\FacilityInjectionSet.cs" />
     <Compile Include="Defs\ModHelperDef\SpecialInjectors.cs" />
     <Compile Include="Defs\ModHelperDef\ThingComps.cs" />
@@ -244,6 +232,13 @@
     <Compile Include="StaticClasses\MCMInjectionSet.cs" />
     <Compile Include="MainMenus\MainMenu_SaveQuitToMain.cs" />
     <Compile Include="MainMenus\MainMenu_SaveQuitToOS.cs" />
+    <Compile Include="Detours\CompRottable.cs" />
+    <Compile Include="Detours\CompInspectStringExtra.cs" />
+    <Compile Include="Detours\CompHeatPusherPowered.cs" />
+    <Compile Include="Structures\TickerSwitcher.cs" />
+    <Compile Include="Defs\ModHelperDef\TickerSwitcher.cs" />
+    <Compile Include="Structures\ThingDefAvailability.cs" />
+    <Compile Include="Defs\ModHelperDef\ThingDefAvailability.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -258,9 +253,5 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="PostBuild.bat" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MonoBehaviour\" />
-    <Folder Include="Validation\" />
   </ItemGroup>
 </Project>

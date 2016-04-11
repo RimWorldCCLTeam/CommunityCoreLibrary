@@ -42,7 +42,7 @@ namespace CommunityCoreLibrary.Detour
                     IntVec3 c1 = new IntVec3(index1, 0, index2);
                     if( !(bool)_HideRainPrimary.Invoke( obj, new System.Object[] { c1 } ) )
                     {
-                        bool flag1 = GridsUtility.Roofed( c1 );
+                        bool flag1 = c1.Roofed();
                         bool flag2 = false;
                         if( flag1 )
                         {
@@ -50,7 +50,7 @@ namespace CommunityCoreLibrary.Detour
                             {
                                 IntVec3 c2 = c1 + GenAdj.AdjacentCells[ index3 ];
                                 if(
-                                    ( GenGrid.InBounds( c2 ) )&&
+                                    ( c2.InBounds() )&&
                                     ( !(bool)_HideRainPrimary.Invoke( obj, new System.Object[] { c2 } ) )
                                 )
                                 {

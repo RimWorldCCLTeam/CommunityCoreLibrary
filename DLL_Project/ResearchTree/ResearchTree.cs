@@ -3,6 +3,8 @@
 // Copyright Karel Kroeze, 2015.
 //
 // Created 2015-12-21 13:45
+//
+// Note:  CCL is using unlicense which invalidates copyright - 1000101
 
 using CommunityCoreLibrary.ColorPicker;
 using System;
@@ -15,7 +17,8 @@ using Verse;
 
 namespace CommunityCoreLibrary.ResearchTree
 {
-    public class ResearchTree
+    // TODO:  Needs static constructor to fetch textures
+    public static class ResearchTree
     {
         #region Public Fields
 

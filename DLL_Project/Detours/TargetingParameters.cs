@@ -26,17 +26,14 @@ namespace CommunityCoreLibrary.Detour
             }
             if(
                 ( obj.neverTargetDoors )&&
-                (
-                    ( targ.Thing.def.thingClass == typeof( Building_Door ) )||
-                    ( targ.Thing.def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
-                )||
+                ( targ.Thing is Building_Door )||
                 ( obj.onlyTargetDamagedThings )&&
                 ( targ.Thing.HitPoints == targ.Thing.MaxHitPoints )||
                 (
                     ( obj.onlyTargetFlammables )&&
                     ( !targ.Thing.FlammableNow )||
                     ( obj.mustBeSelectable )&&
-                    ( !ThingSelectionUtility.SelectableNow( targ.Thing ) )
+                    ( !targ.Thing.SelectableNow() )
                 )
             )
             {
@@ -46,10 +43,7 @@ namespace CommunityCoreLibrary.Detour
                 ( obj.targetSpecificThing != null )&&
                 ( targ.Thing == obj.targetSpecificThing )||
                 ( obj.canTargetFires )&&
-                (
-                    ( targ.Thing.def.thingClass == typeof( Fire ) )||
-                    ( targ.Thing.def.thingClass.IsSubclassOf( typeof( Fire ) ) )
-                )
+                ( targ.Thing is Fire )
             )
             {
                 return true;

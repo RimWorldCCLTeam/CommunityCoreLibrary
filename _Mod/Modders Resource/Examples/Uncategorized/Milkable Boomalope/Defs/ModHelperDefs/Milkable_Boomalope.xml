@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ModHelperDef>
+        <defName>MilkableBoomalope</defName>
+
+        <ModName>Milkable Boomalope</ModName>
+
+        <minCCLVersion>0.13.0</minCCLVersion>
+
+        <ThingComps>
+
+            <li>
+
+                <compProps Class="CompProperties_Milkable">
+                    <compClass>CompMilkable</compClass>
+
+                    <milkIntervalDays>1</milkIntervalDays>
+                    <milkAmount>1</milkAmount>
+                    <milkDef>BoomalopeGas</milkDef>
+                    <milkFemaleOnly>false</milkFemaleOnly>
+
+                </compProps>
+
+                <targetDefs>
+                    <li>Boomalope</li>
+                </targetDefs>
+
+            </li>
+
+        </ThingComps>
+
+    </ModHelperDef>
+
+</Defs>

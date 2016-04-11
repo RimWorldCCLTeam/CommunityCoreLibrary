@@ -21,23 +21,26 @@ namespace CommunityCoreLibrary.Detour
             return (Job)_IngestJob.Invoke( obj, new System.Object[] { pawn, food } );
         }
 
-        // TODO: see other todos
-        /*internal static Job _TryGiveTerminalJob( this JobGiver_GetFood obj, Pawn pawn )
+        internal static Job _TryGiveTerminalJob( this JobGiver_GetFood obj, Pawn pawn )
         {
-            Thing foodInInventory = FoodUtility.FoodInInventory( pawn, (Pawn) null, FoodPreferability.Awful, FoodPreferability.Lavish, 0.0f );
-            if( foodInInventory != null )
+            Thing foodInInventory = null;
+            if( pawn.RaceProps.ToolUser )
             {
-                if( pawn.Faction != Faction.OfColony )
+                foodInInventory = FoodUtility.FoodInInventory( pawn, (Pawn) null, FoodPreferability.Awful, FoodPreferability.Lavish, 0.0f );
+                if( foodInInventory != null )
                 {
-                    return obj.IngestJob( pawn, foodInInventory );
-                }
-                CompRottable comp = ThingCompUtility.TryGetComp<CompRottable>( foodInInventory );
-                if(
-                    ( comp != null )&&
-                    ( comp.TicksUntilRotAtCurrentTemp < 30000 )
-                )
-                {
-                    return obj.IngestJob( pawn, foodInInventory );
+                    if( pawn.Faction != Faction.OfColony )
+                    {
+                        return obj.IngestJob( pawn, foodInInventory );
+                    }
+                    CompRottable comp = foodInInventory.TryGetComp<CompRottable>();
+                    if(
+                        ( comp != null )&&
+                        ( comp.TicksUntilRotAtCurrentTemp < 30000 )
+                    )
+                    {
+                        return obj.IngestJob( pawn, foodInInventory );
+                    }
                 }
             }
             ThingDef foodDef;
@@ -103,13 +106,19 @@ namespace CommunityCoreLibrary.Detour
                     }
                 }
             }
-            Job ingestJob = new Job( JobDefOf.Ingest, (TargetInfo) bestFoodSource );
+            Pawn prey = bestFoodSource as Pawn;
+            if( prey != null )
+            {
+                Job predatorHunt = new Job( JobDefOf.PredatorHunt, prey );
+                predatorHunt.killIncappedTarget = true;
+                return predatorHunt;
+            }
+            Job ingestJob = new Job( JobDefOf.Ingest, bestFoodSource );
             ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
             return ingestJob;
-        }*/
+        }
 
-        // TODO: see other todos
-        /*internal static Job HopperFillFoodJob( Pawn pawn, ISlotGroupParent hopperSgp, Thing parent )
+        internal static Job HopperFillFoodJob( Pawn pawn, ISlotGroupParent hopperSgp, Thing parent )
         {
             Building building = hopperSgp as Building;
             if(
@@ -173,7 +182,7 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             return (Job) null;
-        }*/
+        }
 
     }
 

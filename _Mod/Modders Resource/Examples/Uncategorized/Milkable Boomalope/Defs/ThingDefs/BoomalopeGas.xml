@@ -7,16 +7,11 @@
         <category>Item</category>
         <resourceReadoutPriority>Middle</resourceReadoutPriority>
         <useHitPoints>true</useHitPoints>
-        <statBases>
-            <Flammability>1.0</Flammability>
-        </statBases>
         <selectable>true</selectable>
         <altitudeLayer>Item</altitudeLayer>
         <stackLimit>75</stackLimit>
         <comps>
-            <li>
-                <compClass>CompForbiddable</compClass>
-            </li>
+            <li Class="CompProperties_Forbiddable"/>
         </comps>
         <alwaysHaulable>true</alwaysHaulable>
         <drawGUIOverlay>true</drawGUIOverlay>
@@ -35,15 +30,15 @@
             <texPath>Things/Item/Special/BoomalopeGas</texPath>
             <graphicClass>Graphic_Single</graphicClass>
         </graphicData>
+        <useHitPoints>false</useHitPoints>
         <statBases>
             <MarketValue>100</MarketValue>
-            <MaxHitPoints>25</MaxHitPoints>
             <Flammability>5.0</Flammability>
         </statBases>
         <resourceReadoutPriority>Middle</resourceReadoutPriority>
         <stackLimit>10</stackLimit>
         <thingCategories>
-            <li>RawResources</li>
+            <li>ResourcesRaw</li>
         </thingCategories>
         <tradeTags>
             <li>Exotic</li>

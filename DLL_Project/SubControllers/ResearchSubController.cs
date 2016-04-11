@@ -6,16 +6,6 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-/*
-    TODO:  Alpha 13 API change
-
-    Can't change yet otherwise existing saves will get null errors or name clashes
-
-namespace CommunityCoreLibrary.Controller
-{
-    internal class ResearchController : SubController
-*/
-
 namespace CommunityCoreLibrary.Controller
 {
 

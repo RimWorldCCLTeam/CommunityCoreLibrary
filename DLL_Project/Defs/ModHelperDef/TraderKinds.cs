@@ -13,8 +13,6 @@ namespace CommunityCoreLibrary
     public class MHD_TraderKinds : IInjector
     {
 
-        // TODO:  Alpha 13 API change
-        // Obsoleted
         private static Dictionary<ModHelperDef,bool>    dictInjected;
 
         static                              MHD_TraderKinds()

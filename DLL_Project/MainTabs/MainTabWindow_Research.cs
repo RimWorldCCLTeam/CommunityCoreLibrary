@@ -8,7 +8,8 @@ using Verse.Sound;
 namespace CommunityCoreLibrary
 {
     /// <summary>
-    /// This thing is broken.
+    /// This thing is broken. - Fluffy
+    /// This needs a complete re-do for A13. - 1000101
     /// </summary>
     public class MainTabWindow_Research : MainTabWindow, IHelpDefView
     {

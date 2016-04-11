@@ -4,14 +4,12 @@
     <!--
         Generic hoppers
         
-        These are disabled by default, to use them you must use
+        These are disabled by default, to use them you should use ThingDefAvailability in your ModHelperDef
         
-        <UsesGenericHoppers>true</UsesGenericHoppers>
+        The "Vanilla Tweaks" already enables them, but you can override the category and research requirements.
         
-        in your ModHelperDef!
+        You can also change the two lines which hide the hoppers but this is NOT the recommended as it can introduce mod incompatibilities.
         
-        ModPack makers can enable these directly by overriding <researchPrerequisites>
-        with anything (including null) except CommunityCoreLibraryResearchLocker.
     -->
 
     <ThingDef Name="BuildingBase" Abstract="True">
@@ -36,9 +34,10 @@
         <placeWorkers>
             <li>CommunityCoreLibrary.PlaceWorker_HopperUserMagnifier</li>
         </placeWorkers>
-        <researchPrerequisites>
-            <li>CommunityCoreLibraryResearchLocker</li>
-        </researchPrerequisites>
+        
+        <!-- These two lines will hide the generic hoppers -->
+        <menuHidden>true</menuHidden>
+        <designationCategory>None</designationCategory>
     </ThingDef>
 
     <ThingDef ParentName="HopperBase">
@@ -47,6 +46,11 @@
         <graphicData>
             <texPath>Things/Building/Production/GenericHopper</texPath>
             <graphicClass>Graphic_Single</graphicClass>
+            <damageData>
+                <rect>(0.05,0.1,0.9,0.9)</rect>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+            </damageData>
         </graphicData>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
@@ -74,7 +78,6 @@
         <tickerType>Never</tickerType>
         <rotatable>true</rotatable>
         <neverMultiSelect>true</neverMultiSelect>
-        <designationCategory>Production</designationCategory>
         <staticSunShadowHeight>0.3</staticSunShadowHeight>
         <surfaceType>Item</surfaceType>
         <constructEffect>ConstructMetal</constructEffect>
@@ -87,9 +90,13 @@
         <graphicData>
             <texPath>Things/Building/Production/RefrigeratedHopper</texPath>
             <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(1,1)</drawSize>
+            <damageData>
+                <rect>(0.05,0.1,0.9,0.9)</rect>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+            </damageData>
         </graphicData>
-        <TickerType>Rare</TickerType>
+        <tickerType>Rare</tickerType>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <fillPercent>0.5</fillPercent>
@@ -126,10 +133,10 @@
             <Flammability>1.0</Flammability>
         </statBases>
         <costList>
-            <Steel>35</Steel>
+            <Steel>15</Steel>
+            <Components>2</Components>
         </costList>
         <neverMultiSelect>true</neverMultiSelect>
-        <designationCategory>Production</designationCategory>
         <staticSunShadowHeight>0.3</staticSunShadowHeight>
         <surfaceType>Item</surfaceType>
         <constructEffect>ConstructMetal</constructEffect>

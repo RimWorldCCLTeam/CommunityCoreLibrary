@@ -67,14 +67,8 @@ namespace CommunityCoreLibrary.Controller
                 new Controller.LibrarySubController(),
                 new Controller.ResearchSubController(),
                 new Controller.InjectionSubController(),
-                new Controller.ResourceSubController(),
                 new Controller.HelpSubController()
             };
-
-            // Detour Verse.ThingDef.PostLoad
-            MethodInfo Verse_ThingDef_PostLoad = typeof( ThingDef ).GetMethod( "PostLoad", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_ThingDef_PostLoad = typeof( Detour._ThingDef ).GetMethod( "_PostLoad", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( Verse_ThingDef_PostLoad, CCL_ThingDef_PostLoad );
 
             // Detour RimWorld.MainMenuDrawer.MainMenuOnGUI
             MethodInfo RimWorld_MainMenuDrawer_MainMenuOnGUI = typeof( MainMenuDrawer ).GetMethod( "MainMenuOnGUI", BindingFlags.Static | BindingFlags.Public );
@@ -163,6 +157,8 @@ namespace CommunityCoreLibrary.Controller
                 CCL_Log.Error( "SubControllers array is empty!" );
                 return;
             }
+
+            LongEventHandler.SetCurrentEventText( "LibraryValidation".Translate() );
 
             // Validate all subs-systems
             subControllers.Sort( (x,y) => ( x.ValidationPriority > y.ValidationPriority ) ? -1 : 1 );

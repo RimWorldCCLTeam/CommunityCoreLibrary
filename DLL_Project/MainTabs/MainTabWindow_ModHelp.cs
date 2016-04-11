@@ -78,6 +78,7 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Positioning overrides
+
         public override void PostOpen()
         {
             base.PostOpen();

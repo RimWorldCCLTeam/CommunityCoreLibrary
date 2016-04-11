@@ -15,8 +15,7 @@ namespace CommunityCoreLibrary
 
     public static class Toils_FoodSynthesizer
     {
-        // TODO:see other todos for this whole file
-        /*private static Toil TakeFromSynthesier( TargetIndex ind, Pawn eater, Func<ThingDef,bool> validator, Func<ThingDef,ThingDef,int> sorter )
+        private static Toil TakeFromSynthesier( TargetIndex ind, Pawn eater, Func<ThingDef,bool> validator, Func<ThingDef,ThingDef,int> sorter )
         {
             var synthesizer = (Building_AutomatedFactory) eater.jobs.curJob.GetTarget( ind ).Thing;
             var bestDef = synthesizer.BestProduct( validator, sorter );
@@ -40,17 +39,17 @@ namespace CommunityCoreLibrary
             );
             takeFromSynthesizer.defaultDuration = synthesizer.ProductionTicks( bestDef );
             return takeFromSynthesizer;
-        }*/
+        }
 
-        /*public static Toil TakeAlcoholFromSynthesizer( TargetIndex ind, Pawn eater )
+        public static Toil TakeAlcoholFromSynthesizer( TargetIndex ind, Pawn eater )
         {
             return TakeFromSynthesier( ind, eater, FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol );
-        }*/
+        }
 
-        /*public static Toil TakeMealFromSynthesizer( TargetIndex ind, Pawn eater )
+        public static Toil TakeMealFromSynthesizer( TargetIndex ind, Pawn eater )
         {
             return TakeFromSynthesier( ind, eater, FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
-        }*/
+        }
 
     }
 

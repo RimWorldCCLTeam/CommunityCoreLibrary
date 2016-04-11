@@ -124,7 +124,6 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    // TODO - check this is correct, the low power factor has moved to the temp control comp props
                     PowerTrader.PowerOutput = -PowerTrader.Props.basePowerConsumption * TempControl.Props.lowPowerConsumptionFactor;
                 }
                 TempControl.operatingAtHighPower = flag;

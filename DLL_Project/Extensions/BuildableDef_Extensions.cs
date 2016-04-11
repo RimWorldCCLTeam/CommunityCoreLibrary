@@ -123,10 +123,7 @@ namespace CommunityCoreLibrary
 
 			if( buildableDef.researchPrerequisites != null )
             {
-                if(
-                    ( buildableDef.researchPrerequisites != Research.Lockers )&&
-                    ( !buildableDef.researchPrerequisites.Contains( Research.Locker ) )
-                )
+                if( !buildableDef.researchPrerequisites.Contains( Research.Locker ) )
                 {
                     researchDefs.AddRange( buildableDef.researchPrerequisites.ConvertAll<Def>( def => (Def)def ) );
                 }

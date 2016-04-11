@@ -11,21 +11,21 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _JobGiver_Binge
     {
-        // TODO: see other todos
-        /*internal static Job _DrinkAlcoholJob( Pawn pawn )
+        
+        internal static Job _DrinkAlcoholJob( Pawn pawn )
         {
             var JobGiver_Binge_DrinkAlchohol = new _JobGiver_Binge._DrinkAlchohol();
             JobGiver_Binge_DrinkAlchohol.pawn = pawn;
             JobGiver_Binge_DrinkAlchohol.ignoreForbid = JobGiver_Binge_DrinkAlchohol.pawn.MentalStateDef != null;
 
-            Predicate<Thing> validator = new Predicate<Thing>( JobGiver_Binge_DrinkAlchohol.CanBingeOn );
-            Thing thing = GenClosest.ClosestThingReachable(
-                JobGiver_Binge_DrinkAlchohol.pawn.Position,
+            var validator = new Predicate<Thing>( JobGiver_Binge_DrinkAlchohol.CanBingeOn );
+            var thing = GenClosest.ClosestThingReachable(
+                pawn.Position,
                 ThingRequest.ForUndefined(),
                 PathEndMode.OnCell,
                 TraverseParms.For(
-                    JobGiver_Binge_DrinkAlchohol.pawn,
-                    JobGiver_Binge_DrinkAlchohol.pawn.NormalMaxDanger() ),
+                    pawn,
+                    pawn.NormalMaxDanger() ),
                 9999f,
                 validator,
                 Find.ListerThings.AllThings.Where( t => (
@@ -38,16 +38,15 @@ namespace CommunityCoreLibrary.Detour
             {
                 return (Job) null;
             }
-            Job job = new Job( JobDefOf.Ingest, (TargetInfo) thing, (TargetInfo) thing );
+            Job job = new Job( JobDefOf.Ingest, thing, thing );
             job.maxNumToCarry = Mathf.Min(
                 thing.stackCount,
                 thing.def.ingestible.maxNumToIngestAtOnce );
             job.ignoreForbidden = JobGiver_Binge_DrinkAlchohol.ignoreForbid;
             return job;
-        }*/
+        }
 
-        // TODO: see other todos
-        /*internal sealed class _DrinkAlchohol
+        internal sealed class _DrinkAlchohol
         {
             internal bool                       ignoreForbid;
             internal Pawn                       pawn;
@@ -60,7 +59,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 if(
                     ( !this.ignoreForbid )&&
-                    ( ForbidUtility.IsForbidden( t, this.pawn ) )
+                    ( t.IsForbidden( this.pawn ) )
                 )
                 {
                     return false;
@@ -78,9 +77,9 @@ namespace CommunityCoreLibrary.Detour
                         return false;
                     }
                 }
-                return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
+                return this.pawn.CanReserve( t, 1 );
             }
-        }*/
+        }
 
     }
 

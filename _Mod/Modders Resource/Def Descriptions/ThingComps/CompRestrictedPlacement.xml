@@ -5,9 +5,9 @@
     
     Namespace:  CommunityCoreLibrary
     
-    ThingComp:  RestrictedPlacement_Comp
+    ThingComp:  CompRestrictedPlacement
     
-    Requires:   RestrictedPlacement_Properties
+    Requires:   CompProperties_RestrictedPlacement
     
     tickerType: Depends on PlaceWorker
     
@@ -15,7 +15,7 @@
     to use the PlaceWorker.  Depending on which PlaceWorker is used, this comp may need
     ticking.  See the individual PlaceWorkers for additional details.
     
-    Comp Properties:
+    Comp Properties Restricted Placement:
     
     type (default)  tag                 Details
     
@@ -45,8 +45,7 @@
                 ...
             </li>
             
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
                 ...
             </li>
             

@@ -16,15 +16,14 @@ namespace CommunityCoreLibrary.Detour
         {
             if(
                 ( pawn.Faction != Faction.OfColony )||
-                ( PawnUtility.GetPosture( pawn ) != PawnPosture.Standing )
+                ( pawn.GetPosture() != PawnPosture.Standing )
             )
             {
                 return false;
             }
             return
                 Find.ListerThings.AllThings.Any( t => (
-                    ( t.def.ingestible != null )&&
-                    ( t.def.ingestible.hediffGivers != null )&&
+                    ( t.def.ingestible?.hediffGivers != null )&&
                     ( t.def.ingestible.hediffGivers.Any( h => (
                         ( h.hediffDef == HediffDefOf.Alcohol )
                     ) ) )

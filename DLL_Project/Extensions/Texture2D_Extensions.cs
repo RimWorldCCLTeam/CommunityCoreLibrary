@@ -28,7 +28,7 @@ namespace CommunityCoreLibrary
             // see note above
             return tex;
 
-            /*
+            /* Commented out unreachable code - 1000101
             int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
             float proportion = (float)tex.width / (float)tex.height;
 

@@ -12,8 +12,7 @@
 [sup][size=8pt]5.3[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_OrbitalTradeBeacon will work.
 [sup][size=8pt]5.4[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_CommsConsole will work.
 [sup][size=8pt]5.5[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, CommunityCoreLibrary.Building_AutomatedFactory with an output vector of "DirectToPawn" will work.
-[sup][size=8pt]5.6[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_ResearchBench will work.
-[sup][size=8pt]5.7[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Fire will work.
+[sup][size=8pt]5.6[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Fire will work.
 
 [sup][size=8pt]8.1[/size][/sup] Please refer to the badging in the license section for linking to this thread.
 

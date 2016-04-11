@@ -30,11 +30,11 @@ namespace CommunityCoreLibrary.Detour
                 _RegionMaker._newReg.touchesMapEdge = true;
                 return false;
             }
-            if( !GenGrid.Walkable( c ) )
+            if( !c.Walkable() )
             {
                 return false;
             }
-            Thing regionBarrier = GridsUtility.GetRegionBarrier( c );
+            Thing regionBarrier = c.GetRegionBarrier();
             if( regionBarrier == null )
             {
                 return true;

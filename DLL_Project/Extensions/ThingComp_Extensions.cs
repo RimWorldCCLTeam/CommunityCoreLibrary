@@ -8,6 +8,8 @@ namespace CommunityCoreLibrary
 	public static class ThingComp_Extensions
 	{
 
+        // TODO:  Is any of this really needed?  1000101
+
 		#region Comp Properties
 
 		public static CommunityCoreLibrary.CompProperties_ColoredLight CompProperties_ColoredLight( this ThingComp thingComp )

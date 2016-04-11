@@ -325,6 +325,7 @@ namespace CommunityCoreLibrary.ResearchTree
             }
         }
 
+#if DEVELOPER
         /// <summary>
         /// Prints debug information.
         /// </summary>
@@ -345,6 +346,7 @@ namespace CommunityCoreLibrary.ResearchTree
             text.AppendLine( "" );
             return text.ToString();
         }
+#endif
 
         /// <summary>
         /// Draw the node, including interactions.

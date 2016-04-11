@@ -30,12 +30,10 @@ namespace CommunityCoreLibrary
         // InjectionSubController
         public List< Type >                 SpecialInjectors;
         public List< CompInjectionSet >     ThingComps;
+        public List< TickerSwitcher >       tickerSwitcher;
         public List< FacilityInjectionSet > Facilities;
         public List< StockGeneratorInjectionSet > TraderKinds;
-
-        // ResourceSubController
-        public bool                         UsesGenericHoppers = false;
-        public bool                         HideVanillaHoppers = false;
+        public List< ThingDefAvailability > ThingDefAvailability;
 
         #endregion
 
@@ -81,8 +79,10 @@ namespace CommunityCoreLibrary
             {
                 new MHD_SpecialInjectors(),
                 new MHD_ThingComps(),
+                new MHD_TickerSwitcher(),
                 new MHD_Facilities(),
                 new MHD_TraderKinds(),
+                new MHD_ThingDefAvailability(),
                 new MHD_PostLoadInjectors(),
                 new MHD_MapComponents(),
                 new MHD_Designators()

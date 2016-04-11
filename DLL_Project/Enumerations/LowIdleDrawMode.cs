@@ -5,7 +5,7 @@
     {
         InUse = 0,
         WhenNear,
-        GroupUser,
+        GroupUse,
         Cycle,
         Factory
     }

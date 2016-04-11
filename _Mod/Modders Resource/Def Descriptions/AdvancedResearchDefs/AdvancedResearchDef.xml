@@ -60,17 +60,17 @@
         </thingDefs>                    with a valid <designationCategory> (must not be null or "None")
         
         <effectedResearchDefs>          [optional: null] Research projects to unlock or lock, can be used to
-            <li>ResearchProjectDef</li> create exclusive branches of research
+            <li>ResearchProjectDef</li>                  create exclusive branches of research
         </effectedResearchDefs>
         
-        <researchMods>                  [optional: null] Mod callback Actions, these will happen after everything else has been processed
-            <li>Action( bool disable = true )</li>
+        <researchMods>                  [optional: null] Mod callback Actions, these will be called in def priority order,
+            <li>Action( bool disable = true )</li>       then list order after everything else is processed
         </researchMods>
         
     </AdvancedResearchDef>
 
     NOTE:  AdvancedResearchDefs will automagically lock and unlock the things they unlock and lock respectively if the conditions to lock
-    and unlock them have not been met (researchDefs are not complete).  This frees you from having to specifically handle their initial state.
+    or unlock them have not been met (researchDefs are not complete).  This frees you from having to specifically handle their initial state.
 
     NOTE:  When using AdvancedResearchDefs, you must also create a ModHelperDef.  Important information is required in the ModHelperDef
     which is used to control how your mod is handled and what functionality is available to it.  Without creating a ModHelperDef, CCL will

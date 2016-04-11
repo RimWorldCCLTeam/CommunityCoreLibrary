@@ -8,16 +8,15 @@ using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
-    // TODO: see other todos
-    /*public class ITab_AutomatedFactory : ITab
+
+    public class ITab_AutomatedFactory : ITab
     {
 
         private static readonly Vector2         WinSize;
 
-        // TODO: see other todos
-        //private List<ThingDef>                  products;
-        //private bool[]                          allowed;
-        //private TipSignal[]                     tips;
+        private List<ThingDef>                  products;
+        private bool[]                          allowed;
+        private TipSignal[]                     tips;
 
         // TODO:  Improve UI layout and how information is displayed
         // Currently Displays/Has options for:
@@ -130,6 +129,6 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-    }*/
+    }
 
 }

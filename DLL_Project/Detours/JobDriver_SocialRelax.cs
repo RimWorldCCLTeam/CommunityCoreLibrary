@@ -16,13 +16,22 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _JobDriver_SocialRelax
     {
+        
+        internal const TargetIndex GatherSpotInd = TargetIndex.A;
+        internal const TargetIndex OccupyInd = TargetIndex.B;
+        internal const TargetIndex AlcoholInd = TargetIndex.C;
+        internal const TargetIndex DispenserInd = TargetIndex.C;
+
         internal static FieldInfo _GetPawnDrawTracker;
-        internal static Pawn_DrawTracker GetPawnDrawTracker(this Pawn pawn)
+
+        #region Reflected Fields
+
+        internal static Pawn_DrawTracker GetPawnDrawTracker( this Pawn pawn )
         {
-            if (_GetPawnDrawTracker == null)
+            if( _GetPawnDrawTracker == null )
             {
-                _GetPawnDrawTracker = typeof(Pawn).GetField("drawer", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (_GetPawnDrawTracker == null)
+                _GetPawnDrawTracker = typeof( Pawn ).GetField( "drawer", BindingFlags.Instance | BindingFlags.NonPublic );
+                if( _GetPawnDrawTracker == null )
                 {
                     CCL_Log.Trace(
                         Verbosity.FatalErrors,
@@ -31,65 +40,105 @@ namespace CommunityCoreLibrary.Detour
                     return null;
                 }
             }
-            return (Pawn_DrawTracker)_GetPawnDrawTracker.GetValue(pawn);
+            return (Pawn_DrawTracker)_GetPawnDrawTracker.GetValue( pawn );
         }
 
-        // TODO: see other todos
-        /*internal static IEnumerable<Toil> _MakeNewToils(this JobDriver_SocialRelax obj)
+        #endregion
+
+        #region Helper Methods
+
+        internal static bool AlcoholOrDispenser( this JobDriver_SocialRelax obj )
         {
-            obj.EndOnDespawnedOrNull(TargetIndex.A, JobCondition.Incompletable);
-
-            var targetThingB = obj.TargetThingB();
-            var targetThingC = obj.TargetThingC();
-
-            if (targetThingB != null)
+            if( obj.Alcohol() != null )
             {
-                obj.EndOnDespawnedOrNull(TargetIndex.B, JobCondition.Incompletable);
+                return true;
             }
-            yield return Toils_Reserve.Reserve(TargetIndex.B, 1);
+            return( obj.Dispenser() != null );
+        }
 
-            if (targetThingC != null)
+        internal static Thing GatherSpot( this JobDriver_SocialRelax obj )
+        {
+            return obj.pawn.CurJob.GetTarget( GatherSpotInd ).Thing;
+        }
+
+        internal static IntVec3 OccupySpot( this JobDriver_SocialRelax obj )
+        {
+            return obj.pawn.CurJob.GetTarget( OccupyInd ).Cell;
+        }
+
+        internal static Thing OccupyThing( this JobDriver_SocialRelax obj )
+        {
+            return obj.pawn.CurJob.GetTarget( OccupyInd ).Thing;
+        }
+
+        internal static Thing Alcohol( this JobDriver_SocialRelax obj )
+        {
+            return obj.pawn.CurJob.GetTarget( AlcoholInd ).Thing;
+        }
+
+        internal static Thing Dispenser( this JobDriver_SocialRelax obj )
+        {
+            return obj.pawn.CurJob.GetTarget( DispenserInd ).Thing;
+        }
+
+        #endregion
+
+        #region Detoured Methods
+
+        internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_SocialRelax obj )
+        {
+            obj.EndOnDespawnedOrNull( GatherSpotInd, JobCondition.Incompletable );
+
+            if( obj.OccupyThing() != null )
             {
-                obj.EndOnDespawnedOrNull(TargetIndex.C, JobCondition.Incompletable);
-                if (targetThingC is Building_AutomatedFactory)
+                obj.EndOnDespawnedOrNull( OccupyInd, JobCondition.Incompletable );
+            }
+            yield return Toils_Reserve.Reserve( OccupyInd, 1 );
+
+            if( obj.AlcoholOrDispenser() )
+            {
+                if( obj.Dispenser() is Building_AutomatedFactory )
                 {
-                    yield return Toils_Goto.GotoThing(TargetIndex.C, PathEndMode.InteractionCell);
-                    yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer(TargetIndex.C, obj.pawn);
+                    obj.EndOnDespawnedOrNull( DispenserInd, JobCondition.Incompletable );
+                    yield return Toils_Goto.GotoThing( DispenserInd, PathEndMode.InteractionCell );
+                    yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer( AlcoholInd, obj.pawn );
                 }
                 else
                 {
-                    obj.FailOnDestroyedNullOrForbidden(TargetIndex.C);
-                    yield return Toils_Reserve.Reserve(TargetIndex.C, 1);
-                    yield return Toils_Goto.GotoThing(TargetIndex.C, PathEndMode.OnCell);
-                    yield return Toils_Haul.StartCarryThing(TargetIndex.C);
+                    obj.FailOnDestroyedNullOrForbidden( AlcoholInd );
+                    yield return Toils_Reserve.Reserve( AlcoholInd, 1 );
+                    yield return Toils_Goto.GotoThing( AlcoholInd, PathEndMode.OnCell );
+                    yield return Toils_Haul.StartCarryThing( AlcoholInd );
                 }
             }
 
-            yield return Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.OnCell);
+            yield return Toils_Goto.GotoCell( OccupyInd, PathEndMode.OnCell );
 
             var pawnDrawer = obj.pawn.GetPawnDrawTracker();
-            var pawnFaceTarget = obj.TargetThingA().OccupiedRect().ClosestCellTo(obj.pawn.Position);
+            var pawnFaceTarget = obj.GatherSpot().OccupiedRect().ClosestCellTo( obj.pawn.Position );
             var relax = new Toil();
             relax.defaultCompleteMode = ToilCompleteMode.Delay;
             relax.defaultDuration = obj.pawn.CurJob.def.joyDuration;
-            relax.tickAction = new Action(() =>
+            relax.tickAction = new Action( () =>
             {
-                pawnDrawer.rotator.FaceCell(pawnFaceTarget);
+                pawnDrawer.rotator.FaceCell( pawnFaceTarget );
                 obj.pawn.GainComfortFromCellIfPossible();
-                JoyUtility.JoyTickCheckEnd(obj.pawn, false, 1f);
+                JoyUtility.JoyTickCheckEnd( obj.pawn, JoyTickFullJoyAction.GoToNextToil, 1f );
             }
             );
             relax.AddFinishAction(() =>
-               JoyUtility.TryGainRecRoomThought(obj.pawn)
+               JoyUtility.TryGainRecRoomThought( obj.pawn )
             );
             relax.socialMode = RandomSocialMode.SuperActive;
             yield return relax;
 
-            if (targetThingC != null)
+            if( obj.Alcohol() != null )
             {
-                yield return Toils_Ingest.FinalizeIngest(obj.pawn, TargetIndex.C);
+                yield return Toils_Ingest.FinalizeIngest( obj.pawn, AlcoholInd );
             }
-        }*/
+        }
+
+        #endregion
 
     }
 

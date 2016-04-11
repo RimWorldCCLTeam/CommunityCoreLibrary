@@ -13,6 +13,8 @@ namespace CommunityCoreLibrary
     public static class ThingDef_Extensions
     {
 
+        internal static FieldInfo           _allRecipesCached;
+
         // Dummy for functions needing a ref list
         public static List<Def>             nullDefs = null;
 
@@ -20,7 +22,11 @@ namespace CommunityCoreLibrary
 
         public static void                  RecacheRecipes( this ThingDef thingDef, bool validateBills )
         {
-            typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic ).SetValue( thingDef, null );
+            if( _allRecipesCached == null )
+            {
+                _allRecipesCached = typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            _allRecipesCached.SetValue( thingDef, null );
 
             if(
                 ( !validateBills )||
@@ -115,37 +121,38 @@ namespace CommunityCoreLibrary
                     : null;
         }
 
-        // TODO: see other todos
-        /*public static bool                  EverHasRecipes( this ThingDef thingDef )
+        public static bool                  EverHasRecipes( this ThingDef thingDef )
         {
             return (
                 ( !thingDef.GetRecipesCurrent().NullOrEmpty() )||
                 ( !thingDef.GetRecipesUnlocked( ref nullDefs ).NullOrEmpty() )||
                 ( !thingDef.GetRecipesLocked( ref nullDefs ).NullOrEmpty() )
             );
-        }*/
+        }
 
-        // TODO: see other todos
-        /*public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
+        public static bool                  EverHasRecipe( this ThingDef thingDef, RecipeDef recipeDef )
         {
             return (
                 ( thingDef.GetRecipesCurrent().Contains( recipeDef ) )||
                 ( thingDef.GetRecipesUnlocked( ref nullDefs ).Contains( recipeDef ) )||
                 ( thingDef.GetRecipesLocked( ref nullDefs ).Contains( recipeDef ) )
             );
-        }*/
+        }
 
-        public static List<JoyGiverDef> GetJoyDefUsing(this ThingDef thingDef)
+        public static List<JoyGiverDef>     GetJoyGiverDefsUsing( this ThingDef thingDef )
         {
-            return DefDatabase<JoyGiverDef>.AllDefs.Where(def => def.thingDefs.Contains(thingDef)).ToList();
+            var joyGiverDefs = DefDatabase<JoyGiverDef>.AllDefsListForReading.Where( def => (
+                ( !def.thingDefs.NullOrEmpty() )&&
+                ( def.thingDefs.Contains( thingDef ) )
+            ) ).ToList();
+            return joyGiverDefs;
         }
 
         #endregion
 
         #region Lists of affected data
 
-        // TODO: see other todos in recipe files
-        /*public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
+        public static List< RecipeDef >     GetRecipesUnlocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -154,7 +161,7 @@ namespace CommunityCoreLibrary
                 "GetRecipesUnlocked()"
             );
 #endif
-            // Things it is unlocked on with research
+            // Recipes that are unlocked on thing with research
             var recipeDefs = new List<RecipeDef>();
             if( researchDefs != null )
             {
@@ -164,8 +171,16 @@ namespace CommunityCoreLibrary
             // Look at recipes
             var recipes = DefDatabase< RecipeDef >.AllDefsListForReading.Where( r => (
                 ( r.researchPrerequisite != null )&&
-                ( r.recipeUsers != null )&&
-                ( r.recipeUsers.Contains( thingDef ) )&&
+                (
+                    (
+                        ( r.recipeUsers != null )&&
+                        ( r.recipeUsers.Contains( thingDef ) )
+                    )||
+                    (
+                        ( thingDef.recipes != null )&&
+                        ( thingDef.recipes.Contains( r ) )
+                    )
+                )&&
                 ( !r.IsLockedOut() )
             ) ).ToList();
 
@@ -195,7 +210,7 @@ namespace CommunityCoreLibrary
                 }
             }
             return recipeDefs;
-        }*/
+        }
 
         public static List< RecipeDef >     GetRecipesLocked( this ThingDef thingDef, ref List< Def > researchDefs )
         {
@@ -255,8 +270,7 @@ namespace CommunityCoreLibrary
             return thingDef.AllRecipes;
         }
 
-        // TODO:see other todos
-        /*public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
+        public static List< RecipeDef >     GetRecipesAll( this ThingDef thingDef )
         {
 #if DEBUG
             CCL_Log.TraceMod(
@@ -273,7 +287,7 @@ namespace CommunityCoreLibrary
             recipeDefs.AddRange( thingDef.GetRecipesLocked( ref nullDefs ) );
 
             return recipeDefs;
-        }*/
+        }
 
         #endregion
 
@@ -281,11 +295,23 @@ namespace CommunityCoreLibrary
 
         // Get CompProperties by CompProperties class
         // Similar to GetCompProperties which gets CompProperties by compClass
-        public static CompProperties        GetCompProperty( this ThingDef thingDef, Type find )
+        public static T                     GetCompProperty<T>( this ThingDef thingDef ) where T : CompProperties
         {
             foreach( var comp in thingDef.comps )
             {
-                if( comp.GetType() == find )
+                if( comp.GetType() == typeof( T ) )
+                {
+                    return comp as T;
+                }
+            }
+            return null;
+        }
+
+        public static CompProperties        GetCompProperty( this ThingDef thingDef, Type propertyClass )
+        {
+            foreach( var comp in thingDef.comps )
+            {
+                if( comp.GetType() == propertyClass )
                 {
                     return comp;
                 }
@@ -306,38 +332,6 @@ namespace CommunityCoreLibrary
         public static CompProperties_Rottable CompProperties_Rottable ( this ThingDef thingDef )
         {
             return thingDef.GetCompProperties<CompProperties_Rottable>();
-        }
-
-        #endregion
-
-        #region Joy Participant Cells (Watch Buildings)
-
-        public static List<IntVec3> GetParticipantCells(this ThingDef thingDef, IntVec3 position, Rot4 rotation, bool getBlocked = false)
-        {
-            // TODO: May need to manually calculate cells
-            var returnCells = new List<IntVec3>();
-            var watchCells = WatchBuildingUtility.CalculateWatchCells(thingDef, position, rotation);
-            foreach (var intVec3 in watchCells)
-            {
-                if (
-                    (
-                        (getBlocked) &&
-                        (
-                            (GenGrid.Impassable(intVec3)) ||
-                            (!GenSight.LineOfSight(intVec3, position, false))
-                        )
-                    ) ||
-                    (
-                        (!getBlocked) &&
-                        (!GenGrid.Impassable(intVec3)) &&
-                        (GenSight.LineOfSight(intVec3, position, false))
-                    )
-                )
-                {
-                    returnCells.Add(intVec3);
-                }
-            }
-            return returnCells;
         }
 
         #endregion

@@ -13,7 +13,18 @@ namespace CommunityCoreLibrary.Detour
     internal static class _FoodUtility
     {
 
-        internal static float FoodOptimalityUnusable = -9999999f;
+        internal const float FoodOptimalityUnusable = -9999999f;
+
+        internal static MethodInfo  _BestPawnToHuntForPredator;
+
+        internal static Pawn        BestPawnToHuntForPredator( Pawn predator )
+        {
+            if( _BestPawnToHuntForPredator == null )
+            {
+                _BestPawnToHuntForPredator = typeof( FoodUtility ).GetMethod( "BestPawnToHuntForPredator", BindingFlags.Static | BindingFlags.NonPublic );
+            }
+            return (Pawn) _BestPawnToHuntForPredator.Invoke( null, new System.Object[] { predator } );
+        }
 
         internal static float FoodOptimality( Thing thing, float dist )
         {
@@ -56,31 +67,32 @@ namespace CommunityCoreLibrary.Detour
             return -num;
         }
 
-        // TODO: see other todos
-        /*internal static Thing _BestFoodSourceFor( Pawn getter, Pawn eater, bool fullDispensersOnly, out ThingDef foodDef )
+        internal static Thing _BestFoodSourceFor( Pawn getter, Pawn eater, bool fullDispensersOnly, out ThingDef foodDef )
         {
             var dispenserValidator = new DispenserValidator();
             dispenserValidator.getter = getter;
             dispenserValidator.fullDispensersOnly = fullDispensersOnly;
-            Thing spawnedMeal = FoodUtility.BestFoodSpawnedFor( dispenserValidator.getter, eater, dispenserValidator.getter == eater );
+
+            Thing bestFoodSpawnedFor = FoodUtility.BestFoodSpawnedFor( getter, eater, getter == eater );
+
+            if(
+                ( getter == eater )&&
+                ( getter.RaceProps.predator )&&
+                ( bestFoodSpawnedFor == null )
+            )
+            {
+                Pawn prey = BestPawnToHuntForPredator( getter );
+                if( prey != null )
+                {
+                    foodDef = prey.RaceProps.corpseDef;
+                    return (Thing) prey;
+                }
+            }
+
             if( dispenserValidator.getter.RaceProps.ToolUser )
             {
-                if( spawnedMeal != null )
-                {
-                    // Compare dispensers and synthesizers with best spawned meal
-                    float dist = ( getter.Position - spawnedMeal.Position ).LengthManhattan;
-                    dispenserValidator.meal.thing = spawnedMeal;
-                    dispenserValidator.meal.def = spawnedMeal.def;
-                    dispenserValidator.meal.score = FoodOptimality( spawnedMeal, dist );
-                }
-                else
-                {
-                    dispenserValidator.meal.thing = null;
-                    dispenserValidator.meal.def = null;
-                    dispenserValidator.meal.score = FoodOptimalityUnusable;
-                }
-                Predicate<Thing> validatorPredicate = new Predicate<Thing>( dispenserValidator.Validate );
                 // Try to find a working nutrient paste dispenser or food sythesizer
+                var validatorPredicate = new Predicate<Thing>( dispenserValidator.Validate );
                 var dispensers = Find.ListerThings.AllThings.Where( t => (
                     ( t is Building_NutrientPasteDispenser )||
                     (
@@ -88,30 +100,51 @@ namespace CommunityCoreLibrary.Detour
                         ( ((Building_AutomatedFactory)t).CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )
                     )
                 ) );
-                var dispenser = GenClosest.ClosestThingReachable(
-                    dispenserValidator.getter.Position,
-                    ThingRequest.ForUndefined(),
-                    PathEndMode.InteractionCell,
-                    TraverseParms.For(
-                        dispenserValidator.getter,
-                        dispenserValidator.getter.NormalMaxDanger() ),
-                    9999f,
-                    validatorPredicate,
-                    dispensers,
-                    -1,
-                    true );
-                if( dispenser != null )
+                if( dispensers.Any() )
                 {
-                    foodDef = dispenserValidator.meal.def;
-                    return dispenser;
+                    // Check dispenses and synthesizers (automated factories)
+                    if( bestFoodSpawnedFor != null )
+                    {
+                        // Compare with best spawned meal
+                        float dist = ( getter.Position - bestFoodSpawnedFor.Position ).LengthManhattan;
+                        dispenserValidator.meal.thing = bestFoodSpawnedFor;
+                        dispenserValidator.meal.def = bestFoodSpawnedFor.def;
+                        dispenserValidator.meal.score = FoodOptimality( bestFoodSpawnedFor, dist );
+                    }
+                    else
+                    {
+                        // Nothing to compare to
+                        dispenserValidator.meal.thing = null;
+                        dispenserValidator.meal.def = null;
+                        dispenserValidator.meal.score = FoodOptimalityUnusable;
+                    }
+                    // Now find the best/closest dispenser
+                    var dispenser = GenClosest.ClosestThingReachable(
+                        dispenserValidator.getter.Position,
+                        ThingRequest.ForUndefined(),
+                        PathEndMode.InteractionCell,
+                        TraverseParms.For(
+                            dispenserValidator.getter,
+                            dispenserValidator.getter.NormalMaxDanger() ),
+                        9999f,
+                        validatorPredicate,
+                        dispensers,
+                        -1,
+                        true );
+                    
+                    if( dispenser != null )
+                    {
+                        // Found a dispenser/synthesizer and it's better than the spawned meal
+                        foodDef = dispenserValidator.meal.def;
+                        return dispenser;
+                    }
                 }
             }
-            foodDef = spawnedMeal == null ? (ThingDef) null : spawnedMeal.def;
-            return spawnedMeal;
-        }*/
+            foodDef = bestFoodSpawnedFor == null ? null : bestFoodSpawnedFor.def;
+            return bestFoodSpawnedFor;
+        }
 
-        // TODO: see other todos
-        /*internal static float _NutritionAvailableFromFor( Thing t, Pawn p )
+        internal static float _NutritionAvailableFromFor( Thing t, Pawn p )
         {
             if(
                 ( t.def.IsNutritionSource )&&
@@ -144,18 +177,16 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             return 0.0f;
-        }*/
+        }
 
-        // TODO: see other todos
-        /*internal struct MealValidator
+        internal struct MealValidator
         {
             internal Thing              thing;
             internal ThingDef           def;
             internal float              score;
-        }*/
+        }
 
-        // TODO: see other todos
-        /*internal sealed class DispenserValidator
+        internal sealed class DispenserValidator
         {
             internal Pawn               getter;
             internal bool               fullDispensersOnly;
@@ -166,7 +197,7 @@ namespace CommunityCoreLibrary.Detour
                 if(
                     ( t.Faction != this.getter.Faction )&&
                     ( t.Faction != this.getter.HostFaction )||
-                    ( !SocialProperness.IsSociallyProper( t, this.getter ) )
+                    ( !t.IsSociallyProper( this.getter ) )
                 )
                 {
                     return false;
@@ -176,8 +207,8 @@ namespace CommunityCoreLibrary.Detour
                 var building = (Building) t;
                 var powerComp = building.TryGetComp<CompPowerTrader>();
                 if(
-                    ( !GenGrid.Standable( building.InteractionCell ) )||
-                    ( ForbidUtility.IsForbidden( t, this.getter ) )||
+                    ( !building.InteractionCell.Standable() )||
+                    ( t.IsForbidden( this.getter ) )||
                     ( !powerComp.PowerOn )
                 )
                 {
@@ -224,7 +255,7 @@ namespace CommunityCoreLibrary.Detour
                 return false;
             }
 
-        }*/
+        }
 
     }
 

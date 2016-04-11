@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
         /// <summary>
         /// hold a cached list of def -> helpdef links
         /// </summary>
-        private static Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef>(); 
+        private static Dictionary<Def, HelpDef>     _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef>(); 
 
         /// <summary>
         /// hold a cached list of icons per def

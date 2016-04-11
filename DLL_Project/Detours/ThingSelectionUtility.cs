@@ -24,16 +24,14 @@ namespace CommunityCoreLibrary.Detour
                 ( t.def.size.z == 1 )
             )
             {
-                return !GridsUtility.Fogged( t.Position );
+                return !t.Position.Fogged();
             }
-            CellRect.CellRectIterator iterator = GenAdj.OccupiedRect( t ).GetIterator();
-            while( !iterator.Done() )
+            foreach( var cell in t.OccupiedRect() )
             {
-                if( !GridsUtility.Fogged( iterator.Current ) )
+                if( !cell.Fogged() )
                 {
                     return true;
                 }
-                iterator.MoveNext();
             }
             return false;
         }

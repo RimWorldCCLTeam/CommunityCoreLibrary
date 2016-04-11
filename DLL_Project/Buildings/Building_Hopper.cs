@@ -7,7 +7,7 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-    // TODO: reimplement IStoreSettingsParent, ISlotGroupParent when file is fixed
+    
     public class Building_Hopper : Building, IStoreSettingsParent, ISlotGroupParent
     {
 
@@ -110,7 +110,6 @@ namespace CommunityCoreLibrary
             {
                 settings.CopyFrom( def.building.defaultStorageSettings );
             }
-            // TODO:  A12->A13 Valididity Check
             //settings.filter.BlockDefaultAcceptanceFilters();
             settings.filter.ResolveReferences();
         }
