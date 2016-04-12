@@ -15,6 +15,7 @@ namespace CommunityCoreLibrary
 
 		private class MenuWorkers : IExposable
 		{
+            public ModHelperDef def;
 			public string Label;
 			public ModConfigurationMenu worker;
 
@@ -126,6 +127,7 @@ namespace CommunityCoreLibrary
 					foreach( var mcm in mhd.ModConfigurationMenus )
 					{
 						var menu = new MenuWorkers();
+                        menu.def = mhd;
 						menu.Label = mcm.label;
 						menu.worker = (ModConfigurationMenu)Activator.CreateInstance( mcm.mcmClass );
 						if( menu.worker == null )
@@ -475,7 +477,19 @@ namespace CommunityCoreLibrary
 			GUI.BeginGroup( outRect );
 			Widgets.BeginScrollView( outRect.AtZero(), ref DisplayScrollPos, viewRect.AtZero() );
 
-			ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect );
+            try
+            {
+			    ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect );
+            }
+            catch( Exception e )
+            {
+                CCL_Log.TraceMod(
+                    SelectedMenu.def,
+                    Verbosity.NonFatalErrors,
+                    e.ToString(),
+                    "Mod Configuration Menu"
+                );
+            }
 
 			Widgets.EndScrollView();
 			GUI.EndGroup();
