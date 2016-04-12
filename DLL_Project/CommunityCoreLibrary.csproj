@@ -233,12 +233,15 @@
     <Compile Include="MainMenus\MainMenu_SaveQuitToMain.cs" />
     <Compile Include="MainMenus\MainMenu_SaveQuitToOS.cs" />
     <Compile Include="Detours\CompRottable.cs" />
-    <Compile Include="Detours\CompInspectStringExtra.cs" />
     <Compile Include="Detours\CompHeatPusherPowered.cs" />
     <Compile Include="Structures\TickerSwitcher.cs" />
     <Compile Include="Defs\ModHelperDef\TickerSwitcher.cs" />
     <Compile Include="Structures\ThingDefAvailability.cs" />
     <Compile Include="Defs\ModHelperDef\ThingDefAvailability.cs" />
+    <Compile Include="ThingComps\CompShearableRenameable.cs" />
+    <Compile Include="CompProperties\CompProperties_ShearableRenameable.cs" />
+    <Compile Include="CompProperties\CompProperties_MilkableRenameable.cs" />
+    <Compile Include="ThingComps\CompMilkableRenameable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

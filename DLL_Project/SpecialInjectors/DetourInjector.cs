@@ -209,18 +209,6 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_CompRottable_CompInspectStringExtra, CCL_CompRottable_CompInspectStringExtra ) )
                 return false;
 
-            // Detour RimWorld.CompShearable.CompInspectStringExtra
-            MethodInfo RimWorld_CompShearable_CompInspectStringExtra = typeof( CompShearable ).GetMethod( "CompInspectStringExtra", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_CompInspectStringExtra_CompShearable = typeof( Detour._CompInspectStringExtra ).GetMethod( "_CompShearable", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_CompShearable_CompInspectStringExtra, CCL_CompInspectStringExtra_CompShearable ) )
-                return false;
-
-            // Detour RimWorld.CompMilkable.CompInspectStringExtra
-            MethodInfo RimWorld_CompMilkable_CompInspectStringExtra = typeof( CompMilkable ).GetMethod( "CompInspectStringExtra", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_CompInspectStringExtra_CompMilkable = typeof( Detour._CompInspectStringExtra ).GetMethod( "_CompMilkable", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_CompMilkable_CompInspectStringExtra, CCL_CompInspectStringExtra_CompMilkable ) )
-                return false;
-
             // Detour Verse.CompHeatPusherPowered.ShouldPushHeatNow
             PropertyInfo Verse_CompHeatPusherPowered_ShouldPushHeatNow = typeof( CompHeatPusherPowered ).GetProperty( "ShouldPushHeatNow", BindingFlags.Instance | BindingFlags.NonPublic );
 #if DEBUG
