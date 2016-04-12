@@ -28,6 +28,8 @@ namespace CommunityCoreLibrary.Controller
     internal abstract class SubController
     {
 
+        public const int                    DontProcessThisPhase = -99999;
+
         // Controller name
         public abstract string              Name { get; }
 
@@ -59,24 +61,24 @@ namespace CommunityCoreLibrary.Controller
         {
             get
             {
-                // Default class property for sub-classes which don't need to [de]elevate this
-                return 0;
+                // Default class property for sub-classes which don't need to do this
+                return DontProcessThisPhase;
             }
         }
         public virtual int                  InitializationPriority
         {
             get
             {
-                // Default class property for sub-classes which don't need to [de]elevate this
-                return 0;
+                // Default class property for sub-classes which don't need to do this
+                return DontProcessThisPhase;
             }
         }
         public virtual int                  UpdatePriority
         {
             get
             {
-                // Default class property for sub-classes which don't need to [de]elevate this
-                return 0;
+                // Default class property for sub-classes which don't need to do this
+                return DontProcessThisPhase;
             }
         }
 
@@ -101,7 +103,7 @@ namespace CommunityCoreLibrary.Controller
         // Entry with controller state Uninitialized
         // Exit with ValidationError (false) on error
         // Validated (true) if ready for initialization
-        public virtual bool                 Validate ()
+        public virtual bool                 Validate()
         {
             // Default class method for sub-classes which don't require validation
             strReturn = string.Empty;

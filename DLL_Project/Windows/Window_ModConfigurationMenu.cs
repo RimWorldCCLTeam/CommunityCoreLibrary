@@ -108,13 +108,13 @@ namespace CommunityCoreLibrary
 		{
 			get
 			{
-				return new Vector2( 600f, 400f );
+				return new Vector2( 600f, 600f );
 			}
 		}
 
 		#region Constructor
 
-		static Window_ModConfigurationMenu()
+		public static bool InitializeMCMs()
 		{
 			allMenus = new List<MenuWorkers>();
 
@@ -131,6 +131,7 @@ namespace CommunityCoreLibrary
 						if( menu.worker == null )
 						{
 							CCL_Log.Error( "Unable to create instance of {0}", mcm.mcmClass.ToString() );
+                            return false;
 						}
 						else
 						{
@@ -142,7 +143,7 @@ namespace CommunityCoreLibrary
 					}
 				}
 			}
-
+            return true;
 		}
 
 		public Window_ModConfigurationMenu()

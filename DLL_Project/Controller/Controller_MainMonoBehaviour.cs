@@ -164,14 +164,21 @@ namespace CommunityCoreLibrary.Controller
             subControllers.Sort( (x,y) => ( x.ValidationPriority > y.ValidationPriority ) ? -1 : 1 );
             foreach( var subsys in subControllers )
             {
-                if( !subsys.Validate() )
+                if( subsys.ValidationPriority != SubController.DontProcessThisPhase )
                 {
-                    CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Validation"  );
-                    return;
+                    if( !subsys.Validate() )
+                    {
+                        CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Validation"  );
+                        return;
+                    }
+                    if( subsys.strReturn != string.Empty )
+                    {
+                        CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Validations" );
+                    }
                 }
-                if( subsys.strReturn != string.Empty )
+                else
                 {
-                    CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Validations" );
+                    subsys.State = SubControllerState.Validated;
                 }
             }
 
@@ -181,14 +188,21 @@ namespace CommunityCoreLibrary.Controller
             subControllers.Sort( (x,y) => ( x.InitializationPriority > y.InitializationPriority ) ? -1 : 1 );
             foreach( var subsys in subControllers )
             {
-                if( !subsys.Initialize() )
+                if( subsys.InitializationPriority != SubController.DontProcessThisPhase )
                 {
-                    CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Initialization" );
-                    return;
+                    if( !subsys.Initialize() )
+                    {
+                        CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Initialization" );
+                        return;
+                    }
+                    if( subsys.strReturn != string.Empty )
+                    {
+                        CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Initialization" );
+                    }
                 }
-                if( subsys.strReturn != string.Empty )
+                else
                 {
-                    CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Initialization" );
+                    subsys.State = SubControllerState.Ok;
                 }
             }
 
@@ -208,21 +222,24 @@ namespace CommunityCoreLibrary.Controller
 
             foreach( var subsys in subControllers )
             {
-                if(
-                    ( subsys.State >= SubControllerState._BaseOk )&&
-                    ( subsys.ReinitializeOnGameLoad )
-                )
+                if( subsys.InitializationPriority != SubController.DontProcessThisPhase )
                 {
-                    if( !subsys.Initialize() )
+                    if(
+                        ( subsys.State >= SubControllerState._BaseOk )&&
+                        ( subsys.ReinitializeOnGameLoad )
+                    )
                     {
-                        CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Reinitialization" );
-                        gameValid = false;
-                        enabled = false;
-                        return;
-                    }
-                    if( subsys.strReturn != string.Empty )
-                    {
-                        CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Reinitialization" );
+                        if( !subsys.Initialize() )
+                        {
+                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Reinitialization" );
+                            gameValid = false;
+                            enabled = false;
+                            return;
+                        }
+                        if( subsys.strReturn != string.Empty )
+                        {
+                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Reinitialization" );
+                        }
                     }
                 }
             }
@@ -240,19 +257,22 @@ namespace CommunityCoreLibrary.Controller
 
             foreach( var subsys in UpdateControllers )
             {
-                if(
-                    ( subsys.State == SubControllerState.Ok )&&
-                    ( subsys.IsHashIntervalTick( ticks ) )
-                )
+                if( subsys.UpdatePriority != SubController.DontProcessThisPhase )
                 {
-                    if( !subsys.Update() )
+                    if(
+                        ( subsys.State == SubControllerState.Ok )&&
+                        ( subsys.IsHashIntervalTick( ticks ) )
+                    )
                     {
-                        CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Update" );
-                        return;
-                    }
-                    if( subsys.strReturn != string.Empty )
-                    {
-                        CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Update" );
+                        if( !subsys.Update() )
+                        {
+                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Update" );
+                            return;
+                        }
+                        if( subsys.strReturn != string.Empty )
+                        {
+                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Update" );
+                        }
                     }
                 }
             }

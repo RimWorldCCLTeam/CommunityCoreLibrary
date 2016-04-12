@@ -27,7 +27,7 @@ namespace CommunityCoreLibrary.Controller
         {
             get
             {
-                return -100;
+                return -75;
             }
         }
         public override bool                Initialize()

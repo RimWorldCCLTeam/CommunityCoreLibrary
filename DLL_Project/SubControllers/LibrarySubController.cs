@@ -32,6 +32,15 @@ namespace CommunityCoreLibrary.Controller
 			}
 		}
 
+        // Override sequence priorities
+        public override int InitializationPriority
+        {
+            get
+            {
+                return -100;
+            }
+        }
+
 		// Validate ModHelperDefs, CCL load order, CCL versioning
 		public override bool Validate()
 		{
@@ -175,7 +184,13 @@ namespace CommunityCoreLibrary.Controller
 		public override bool Initialize()
 		{
 			// Don't need to keep checking on this controller
-			strReturn = string.Empty;
+            if( !Window_ModConfigurationMenu.InitializeMCMs() )
+            {
+                strReturn = "Errors initializing Mod Configuration Menus";
+                State = SubControllerState.InitializationError;
+                return false;
+            }
+			strReturn = "Mod Configuration Menus initialized";
 			State = SubControllerState.Hybernating;
 			return true;
 		}
