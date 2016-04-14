@@ -12,9 +12,10 @@
 
             <li>
 
-                <compProps Class="CompProperties_Milkable">
-                    <compClass>CompMilkable</compClass>
+                <compProps Class="CommunityCoreLibrary.CompProperties_MilkableRenameable">
+                    <compClass>CommunityCoreLibrary.CompMilkableRenameable</compClass>
 
+                    <growthLabel>Gas fullness</growthLabel>
                     <milkIntervalDays>1</milkIntervalDays>
                     <milkAmount>1</milkAmount>
                     <milkDef>BoomalopeGas</milkDef>

@@ -7,7 +7,7 @@
         -->
 
         <defName>HideCryptoSleep</defName>
-        <Priority>0</Priority>
+        <Priority>-1</Priority>
 
         <researchDefs>
             <li>Cryptosleep</li>
@@ -32,7 +32,7 @@
         -->
 
         <defName>BuildAncientCryptoSleep</defName>
-        <Priority>1</Priority>
+        <Priority>0</Priority>
 
         <researchDefs>
             <li>Cryptosleep</li>

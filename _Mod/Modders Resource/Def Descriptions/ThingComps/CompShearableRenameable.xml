@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompShearableRenameable
+    
+    Requires:   CompProperties_ShearableRenameable
+    
+    Using CompShearableRenameable allows you to specify a custom growth string for your resource,
+    e.g. "Alpaca wool growth" on an alpaca, "Feather growth" on a chicken, etc. This is in contrast to
+    vanilla's CompShearable which will always display "wool growth" regardless of the resource harvested.
+    Beyond that usage is identical to CompShearable and not specifying any string will default to the
+    vanilla value for maximum compatibility and ease of use, simply do not specify a string if you don't
+    need any custom text and it will act identical to CompShearable.
+    
+    The only difference between this comp and CompMilkableRenameable is the specific xml tags and the
+    job report string.  This comp will report "Shearing TargetA".
+    
+    XML Data:
+    
+    type (default)  tag                 Details
+    
+    string          growthLabel         [optional] Label that will show up in the inspect tab
+       ("Wool growth")
+    ThingDef (null) woolDef             [optional] Item that will appear when harvested
+    int (0)         shearIntervalDays   [optional] Amount of days to go from 0% growth to 100%
+    int (1)         woolAmount          [optional] Amount of items dropped on harvest
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.CompProperties_ShearableRenameable">
+                <compClass>CommunityCoreLibrary.CompShearableRenameable</compClass>
+                
+                <growthLabel>Feather growth</growthLabel>
+                
+                <woolDef>ChickenFeather</woolDef>
+                
+                <shearIntervalDays>1</shearIntervalDays>
+                
+                <woolAmount>20</woolAmount>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

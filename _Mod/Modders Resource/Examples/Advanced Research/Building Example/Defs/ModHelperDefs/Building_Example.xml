@@ -3,11 +3,23 @@
 
     <ModHelperDef>
         <defName>BuildingExample</defName>
-        
+
         <ModName>Building Example</ModName>
-        
-        <version>0.12.1</version>
-        
+
+        <minCCLVersion>0.13.0</minCCLVersion>
+
+        <ThingDefAvailability>
+
+            <li>
+                <menuHidden>false</menuHidden>
+                <designationCategory>Misc</designationCategory>
+                <targetDefs>
+                    <li>AncientCryptosleepCasket</li>
+                </targetDefs>
+            </li>
+
+        </ThingDefAvailability>
+
     </ModHelperDef>
 
 </Defs>

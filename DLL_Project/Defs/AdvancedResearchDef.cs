@@ -208,13 +208,39 @@ namespace CommunityCoreLibrary
                         if( ( thingDef.designationCategory.NullOrEmpty() )||
                             ( thingDef.designationCategory.ToLower() == "none" ) )
                         {
-                            // Invalid project
-                            isValid = false;
-                            CCL_Log.TraceMod(
-                                this,
-                                Verbosity.FatalErrors,
-                                "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty"
-                            );
+                            bool mhdUnlock = false;
+                            foreach( var mhd in DefDatabase<ModHelperDef>.AllDefs )
+                            {
+                                if( mhd.ThingDefAvailability != null )
+                                {
+                                    foreach( var tda in mhd.ThingDefAvailability )
+                                    {
+                                        if(
+                                            ( tda.targetDefs.Contains( thingDef.defName ) )&&
+                                            ( !tda.designationCategory.NullOrEmpty() )&&
+                                            ( tda.designationCategory.ToLower() != "none" )
+                                        )
+                                        {
+                                            mhdUnlock = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if( mhdUnlock == true )
+                                {
+                                    break;
+                                }
+                            }
+                            if( !mhdUnlock )
+                            {
+                                // Invalid project
+                                isValid = false;
+                                CCL_Log.TraceMod(
+                                    this,
+                                    Verbosity.FatalErrors,
+                                    "ThingDef '" + thingDef.defName + "' :: designationCategory is null or empty"
+                                );
+                            }
                         }
                     }
                 }

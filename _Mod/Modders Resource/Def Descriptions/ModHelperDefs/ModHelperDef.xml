@@ -119,6 +119,9 @@
 
     </ModHelperDef>
 
+    The order which the tags are listed in this file are the order in which they are processed.  Even if you move your tag
+    blocks around in the file (ie, Designators appears first, it will still be processed last).
+
     * Verbosity is an enumeration and works with named levels, each level adds more and more information to the output log.
     Each level of verbosity includes the information of all the levels above it.
     The user release build only supports FatalErrors, NonFatalErrors and Validation.

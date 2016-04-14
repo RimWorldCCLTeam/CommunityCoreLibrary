@@ -3,11 +3,11 @@
     <name>ThingDef Injection</name>
     <author>RimWorld CCL Team</author>
     <url>n/a</url>
-    <targetVersion>Community Core Library v0.12.1</targetVersion>
+    <targetVersion>Community Core Library v0.13.0</targetVersion>
     <description>
-	This is an example of how to inject ThingComps to ThingDef at runtime.
+This is an example of how to inject ThingComps to ThingDef at runtime.
 
-	Demonstrates:
+Demonstrates:
 	Injecting CompForbiddable to Human and Wall
 	Injecting CompPowerTrader with CompProperties to Wall
     </description>

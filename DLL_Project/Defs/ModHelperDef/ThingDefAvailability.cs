@@ -167,39 +167,43 @@ namespace CommunityCoreLibrary
                     {
                         DesignationCategoryDef oldCategory = null;
                         Designator_Build oldDesignator = null;
-                        if(
-                            ( !target.designationCategory.NullOrEmpty() )&&
-                            ( target.designationCategory != "None" )
-                        )
+                        if( target.designationCategory != availability.designationCategory )
                         {
-                            oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( target.designationCategory );
-                            oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
-                                ( d is Designator_Build )&&
-                                ( ( d as Designator_Build ).PlacingDef == (BuildableDef) target )
-                            ) );
-                        }
-                        if( newCategory == null )
-                        {
-                            if( oldCategory != null )
+                            // Only change if it's actually changed
+                            if(
+                                ( !target.designationCategory.NullOrEmpty() )&&
+                                ( target.designationCategory != "None" )
+                            )
                             {
-                                oldCategory.resolvedDesignators.Remove( oldDesignator );
+                                oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( target.designationCategory );
+                                oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
+                                    ( d is Designator_Build )&&
+                                    ( ( d as Designator_Build ).PlacingDef == (BuildableDef) target )
+                                ) );
                             }
-                        }
-                        else
-                        {
-                            Designator_Build newDesignator = null;
-                            if( oldDesignator != null )
+                            if( newCategory == null )
                             {
-                                oldCategory.resolvedDesignators.Remove( oldDesignator );
-                                newDesignator = oldDesignator;
+                                if( oldCategory != null )
+                                {
+                                    oldCategory.resolvedDesignators.Remove( oldDesignator );
+                                }
                             }
                             else
                             {
-                                newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) target } );
+                                Designator_Build newDesignator = null;
+                                if( oldDesignator != null )
+                                {
+                                    oldCategory.resolvedDesignators.Remove( oldDesignator );
+                                    newDesignator = oldDesignator;
+                                }
+                                else
+                                {
+                                    newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) target } );
+                                }
+                                newCategory.resolvedDesignators.Add( newDesignator );
                             }
-                            newCategory.resolvedDesignators.Add( newDesignator );
+                            target.designationCategory = availability.designationCategory;
                         }
-                        target.designationCategory = availability.designationCategory;
                     }
                     if( setResearch )
                     {

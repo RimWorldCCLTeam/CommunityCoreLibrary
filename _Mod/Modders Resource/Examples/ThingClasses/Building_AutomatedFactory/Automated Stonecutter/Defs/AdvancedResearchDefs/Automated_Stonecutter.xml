@@ -1,10 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿s<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
     <AdvancedResearchDef>
 
         <defName>AdvancedAutomatedStonecutter</defName>
-        <Priority>0</Priority>
+        <Priority>-1</Priority>
+
+        <ConsolidateHelp>true</ConsolidateHelp>
+
+        <label>Automatic stonecutting</label>
+        <description>Combining the research from two technologies, automated stonecutters can be built which will free colonists from the grunt work of cutting large stone chunks into small stone blocks</description>
 
         <researchDefs>
             <li>Stonecutting</li>

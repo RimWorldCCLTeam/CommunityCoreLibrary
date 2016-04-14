@@ -34,7 +34,7 @@
         
         Using a <Priority> of -1 and a single researchDef prerequisite indicates that this def is
         used to generate a help menu entry for a single research project, typicially with the
-        ConsolidateHelp flag set to true.  (See the Vanilla Tweaks Help Menu Builders)
+        ConsolidateHelp flag set to true.
         
         If <ConsolidateHelp> is set to true, when creating the description from the def data, it matches
         other advanced research defs by having the exact same researchDefs list (order-irrelavent).
@@ -43,9 +43,9 @@
         If there is only one researchDef for the def, the <label> and <description> tags can be
         left null to use the label and description from the researchDef.
         
-        * If there is more than one researchDef, there must be at least one entry with a <Priority> of
-        -1, this def must have the <ConsolidateHelp> set to true, the <label> and <description> must be
-        supplied must not be null.
+        * If there is more than one researchDef, there must be at least one entry for a group with a
+        <Priority> of -1, this def must have the <ConsolidateHelp> set to true, the <label> and <description>
+        tags must be supplied must not be null.
         
         <recipeDefs>                    [optional: null] Recipes to toggle on things (thingDefs must be
             <li>RecipeDef</li>          thingClasses which will make use of recipes)

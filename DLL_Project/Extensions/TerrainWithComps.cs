@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary
                     var comp = comps[ i ];
                     var compClass = comp.compClass;
                     if(
-                        ( compClass != typeof( CompRestrictedPlacement ) )||
+                        ( compClass != typeof( CompRestrictedPlacement ) )&&
                         ( !compClass.IsSubclassOf( typeof( CompRestrictedPlacement ) ) )
                     )
                     {

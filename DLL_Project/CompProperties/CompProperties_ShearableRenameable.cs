@@ -5,7 +5,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public class CompProperties_ShearableRenameable : CompProperties
+    public class CompProperties_ShearableRenameable : CompProperties_Shearable
     {
 
         public string                       growthLabel = "";

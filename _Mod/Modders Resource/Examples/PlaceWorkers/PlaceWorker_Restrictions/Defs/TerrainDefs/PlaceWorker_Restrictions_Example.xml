@@ -36,8 +36,8 @@
             <li>CommunityCoreLibrary.PlaceWorker_NotOnTerrain</li>
         </placeWorkers>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <IncludeRoughStone>true</IncludeRoughStone>
                 <IncludeSmoothStone>true</IncludeSmoothStone>
                 <terrainDefs>
@@ -66,8 +66,8 @@
             <li>CommunityCoreLibrary.PlaceWorker_OnlyOnTerrain</li>
         </placeWorkers>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <IncludeSmoothStone>true</IncludeSmoothStone>
             </li>
         </comps>
