@@ -14,6 +14,61 @@ namespace CommunityCoreLibrary
 
         public override bool                Inject()
         {
+#if DEVELOPER
+            CCL_Log.Write( "All Types:" );
+            foreach( var type in Controller.Data.Assembly_CSharp.GetTypes() )
+            {
+                var str = "\n\t" + type.FullName;
+                str += "\n\t\tFields:";
+                foreach( var entity in type.GetFields( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                {
+                    str += "\n\t\t\t" + entity.Name;
+                    if( entity.IsStatic )
+                        str += " (Static)";
+                    else
+                        str += " (Instance)";
+                    if( entity.IsPrivate ) str += " (NonPublic)";
+                    if( entity.IsPublic ) str += " (Public)";
+                }
+                str += "\n\t\tProperties:";
+                foreach( var entity in type.GetProperties( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                {
+                    str += "\n\t\t\t" + entity.Name;
+                    var method = entity.GetGetMethod();
+                    if( method != null )
+                    {
+                        str += " (Public Get)";
+                    }
+                    else
+                    {
+                        method = entity.GetGetMethod( true );
+                        if( method != null ) str += " (NonPublic Get)";
+                    }
+                    method = entity.GetSetMethod();
+                    if( method != null )
+                    {
+                        str += " (Public Set)";
+                    }
+                    else
+                    {
+                        method = entity.GetSetMethod( true );
+                        if( method != null ) str += " (NonPublic Set)";
+                    }
+                }
+                str += "\n\t\tMethods:";
+                foreach( var entity in type.GetMethods( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                {
+                    str += "\n\t\t\t" + entity.Name;
+                    if( entity.IsStatic )
+                        str += " (Static)";
+                    else
+                        str += " (Instance)";
+                    if( entity.IsPrivate ) str += " (NonPublic)";
+                    if( entity.IsPublic ) str += " (Public)";
+                }
+                CCL_Log.Write( str );
+            }
+#endif
             // Make sure custom doors are region barriers
             foreach( var doorDef in DefDatabase<ThingDef>.AllDefs.Where( def => (
                 ( def.thingClass == typeof( Building_Door ) )||
@@ -223,6 +278,29 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( Verse_CompHeatPusherPowered_ShouldPushHeatNow_Getter, CCL_CompHeatPusherPowered_ShouldPushHeatNow ) )
                 return false;
 
+            // Detour RimWorld.MainTabWindow_Research.DrawLeftRect "NotFinished" predicate function
+            // Use build number to get the correct predicate function
+            var RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = string.Empty;
+            var RimWorld_Build = RimWorld.VersionControl.CurrentBuild;
+            switch( RimWorld_Build )
+            {
+            case 1135:
+                RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__3E9";
+                break;
+            default:
+                CCL_Log.Trace(
+                    Verbosity.Warnings,
+                    "CCL needs updating for RimWorld build " + RimWorld_Build.ToString() );
+                break;
+            }
+            if( RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name != string.Empty )
+            {
+                MethodInfo RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished = typeof( RimWorld.MainTabWindow_Research ).GetMethod( RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name, BindingFlags.Static | BindingFlags.NonPublic );
+                MethodInfo CCL_MainTabWindow_Research_DrawLeftRect_NotFinishedNotLockedOut = typeof( Detour._MainTabWindow_Research ).GetMethod( "_NotFinishedNotLockedOut", BindingFlags.Static | BindingFlags.NonPublic );
+                if( !Detours.TryDetourFromTo( RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished, CCL_MainTabWindow_Research_DrawLeftRect_NotFinishedNotLockedOut ) )
+                    return false;
+            }
+            
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );

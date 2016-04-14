@@ -7,36 +7,45 @@ using Verse;
 namespace CommunityCoreLibrary
 {
     
+    [StaticConstructorOnStartup]
     public static class ResearchProjectDef_Extensions
     {
         
         #region Static Data
 
-        private static Dictionary<ResearchProjectDef, bool> isLockedOut = new Dictionary<ResearchProjectDef, bool>();
+        private static Dictionary<ushort, bool> isLockedOut;
 
-        private static Dictionary<Def, List<Pair<Def, string>>> _unlocksCache = new Dictionary<Def, List<Pair<Def, string>>>();
+        private static Dictionary<ushort, List<Pair<Def, string>>> _unlocksCache;
+
+        static ResearchProjectDef_Extensions()
+        {
+            isLockedOut = new Dictionary<ushort, bool>();
+            _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>>();
+
+        }
 
         #endregion
 
         #region Availability
 
-        public static bool IsLockedOut( this ResearchProjectDef researchProjectDef, ResearchProjectDef initialDef = null )
+        public static bool IsLockedOut( this ResearchProjectDef researchProjectDef )
+        {
+            // Cloak internal recursive function
+            return _IsLockedOut( researchProjectDef, researchProjectDef );
+        }
+
+        internal static bool _IsLockedOut( this ResearchProjectDef researchProjectDef, ResearchProjectDef initialDef )
         {
             bool rVal = false;
-#if DEBUG
-            CCL_Log.TraceMod(
-                researchProjectDef,
-                Verbosity.Stack,
-                "IsLockedOut()"
-            );
-#endif
-            if ( !isLockedOut.TryGetValue( researchProjectDef, out rVal ) )
+            if( !isLockedOut.TryGetValue( researchProjectDef.shortHash, out rVal ) )
             {
-                if ( initialDef == null )
-                {
-                    // Stop cyclical recursion before it starts
-                    initialDef = researchProjectDef;
-                }
+#if DEBUG
+                CCL_Log.TraceMod(
+                    researchProjectDef,
+                    Verbosity.Stack,
+                    "IsLockedOut()"
+                );
+#endif
                 // Check for possible unlock
                 if ( !researchProjectDef.prerequisites.NullOrEmpty() )
                 {
@@ -45,7 +54,7 @@ namespace CommunityCoreLibrary
                     {
                         if (
                             ( p.defName == initialDef.defName )||
-                            ( p.IsLockedOut( initialDef ) )
+                            ( p._IsLockedOut( initialDef ) )
                         )
                         {
                             // Cyclical-prerequisite or parent locked means potential lock-out
@@ -63,7 +72,7 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-                isLockedOut.Add( researchProjectDef, rVal );
+                isLockedOut.Add( researchProjectDef.shortHash, rVal );
             }
             return rVal;
         }
@@ -158,9 +167,9 @@ namespace CommunityCoreLibrary
 
         public static List<Pair<Def, string>> GetUnlockDefsAndDescs( this ResearchProjectDef research )
         {
-            if ( _unlocksCache.ContainsKey( research ) )
+            if ( _unlocksCache.ContainsKey( research.shortHash ) )
             {
-                return _unlocksCache[research];
+                return _unlocksCache[research.shortHash];
             }
 
             List<Pair<Def, string>> unlocks = new List<Pair<Def, string>>();
@@ -181,7 +190,7 @@ namespace CommunityCoreLibrary
             unlocks.AddRange( dump.Where( d => d.IconTexture() != null )
                                   .Select( d => new Pair<Def, string>( d, "Fluffy.ResearchTree.AllowsSowingXinY".Translate( d.LabelCap, sowTags ) ) ) );
 
-            _unlocksCache.Add( research, unlocks );
+            _unlocksCache.Add( research.shortHash, unlocks );
             return unlocks;
         }
 

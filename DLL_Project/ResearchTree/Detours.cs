@@ -15,10 +15,14 @@ using Verse;
 
 namespace CommunityCoreLibrary.ResearchTree.Detour
 {
+    
     internal static class _ResearchManager
     {
+        
         internal static FieldInfo       __progress;
         internal static FieldInfo       __GlobalProgress;
+
+        private static List<ResearchProjectDef> storeQueue = null;
 
         internal static Dictionary<ResearchProjectDef, float> _progress( this ResearchManager researchManager )
         {
@@ -103,11 +107,9 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
             }
         }
 
-        private static List<ResearchProjectDef> storeQueue = null;
-
         internal static void _ExposeData( this ResearchManager researchManager )
         {
-            if ( !ResearchTree.Initialized )
+            if( !ResearchTree.Initialized )
             {
                 // initialize tree
                 ResearchTree.Initialize();
@@ -122,7 +124,7 @@ namespace CommunityCoreLibrary.ResearchTree.Detour
             Scribe_Collections.LookDictionary<ResearchProjectDef, float>( ref progress, "progress", LookMode.DefReference, LookMode.Value );
 
             // Store research defs as these are the defining elements
-            if ( Scribe.mode == LoadSaveMode.Saving )
+            if( Scribe.mode == LoadSaveMode.Saving )
             {
                 storeQueue = Queue.ToList();
             }

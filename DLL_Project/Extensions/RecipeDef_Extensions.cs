@@ -10,13 +10,19 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
     public static class RecipeDef_Extensions
     {
 
         #region Static Data
 
-        static Dictionary<RecipeDef,bool>   isLockedOut = new Dictionary<RecipeDef, bool>();
-        
+        static Dictionary<ushort,bool>   isLockedOut;
+
+        static RecipeDef_Extensions()
+        {
+            isLockedOut = new Dictionary<ushort, bool>();
+        }
+
         #endregion
 
         #region Availability
@@ -24,7 +30,7 @@ namespace CommunityCoreLibrary
         public static bool                  IsLockedOut( this RecipeDef recipeDef )
         {
             bool rVal = false;
-            if( !isLockedOut.TryGetValue( recipeDef, out rVal ) )
+            if( !isLockedOut.TryGetValue( recipeDef.shortHash, out rVal ) )
             {
 #if DEBUG
                 CCL_Log.TraceMod(
@@ -40,7 +46,7 @@ namespace CommunityCoreLibrary
                     ( a.recipeDefs.Contains( recipeDef ) )
                 ) ) )
                 {
-                    isLockedOut.Add( recipeDef, false );
+                    isLockedOut.Add( recipeDef.shortHash, false );
                     return false;
                 }
 
@@ -50,7 +56,7 @@ namespace CommunityCoreLibrary
                     ( recipeDef.researchPrerequisite.IsLockedOut() )
                 )
                 {
-                    isLockedOut.Add( recipeDef, true );
+                    isLockedOut.Add( recipeDef.shortHash, true );
                     return true;
                 }
 
@@ -63,7 +69,7 @@ namespace CommunityCoreLibrary
                 {
                     rVal = true;
                 }
-                isLockedOut.Add( recipeDef, rVal );
+                isLockedOut.Add( recipeDef.shortHash, rVal );
             }
             return rVal;
         }

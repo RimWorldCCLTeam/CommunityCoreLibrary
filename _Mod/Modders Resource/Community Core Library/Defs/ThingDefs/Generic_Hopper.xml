@@ -134,7 +134,7 @@
         </statBases>
         <costList>
             <Steel>15</Steel>
-            <Components>2</Components>
+            <Components>1</Components>
         </costList>
         <neverMultiSelect>true</neverMultiSelect>
         <staticSunShadowHeight>0.3</staticSunShadowHeight>

@@ -9,18 +9,24 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
     public static class Find_Extensions
     {
 
         // Suffixes which (may) need to be removed to find the mod for a def
-        private static List<string> def_suffixes = new List<string>(){
-            "_Frame",
-            "_Blueprint",
-            "_Blueprint_Install",
-            "_Corpse",
-            "_Leather",
-            "_Meat"
-        };
+        private static List<string> def_suffixes;
+
+        static Find_Extensions()
+        {
+            def_suffixes = new List<string>(){
+                "_Frame",
+                "_Blueprint",
+                "_Blueprint_Install",
+                "_Corpse",
+                "_Leather",
+                "_Meat"
+            };
+        }
 
         // This is a safe method of fetching a map component of a specified type
         // If an instance of the component doesn't exist or map isn't loaded it will return null
@@ -66,6 +72,19 @@ namespace CommunityCoreLibrary
         }
         */
 
+        // Get the def of a specific type for a specific mod
+        public static Def                   DefOfTypeForMod( LoadedMod mod, Def searchDef )
+        {
+            if( mod == null )
+            {
+                return null;
+            }
+            return mod.AllDefs.FirstOrDefault( def => (
+                ( def.GetType() == searchDef.GetType() )&&
+                ( def.defName == searchDef.defName )
+            ) );
+        }
+
         // Get the def list of a specific type for a specific mod
         public static List<T>               DefListOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
         {
@@ -110,8 +129,9 @@ namespace CommunityCoreLibrary
             // Search for def in mod list
             for( int i = Start; i >= 0; i-- )
             {
-                var defs = DefListOfTypeForMod<T>( allMods[ i ] );
-                if( defs.Exists( d => d.defName == defName ) )
+                //var defs = DefListOfTypeForMod<T>( allMods[ i ] );
+                //if( defs.Exists( d => d.defName == defName ) )
+                if( DefOfTypeForMod( allMods[ i ], def ) != null )
                 {
                     return allMods[ i ];
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using UnityEngine;
 using Verse;
@@ -41,6 +42,9 @@ namespace CommunityCoreLibrary.Controller
                 
                 LongEventHandler.SetCurrentEventText( "LibraryHelpGen".Translate() );
 
+                var stringBuilder = new StringBuilder();
+                CCL_Log.CaptureBegin( stringBuilder );
+
                 var startTime = DateTime.Now;
 
                 if( !HelpBuilder.ResolveImpliedDefs() )
@@ -52,7 +56,9 @@ namespace CommunityCoreLibrary.Controller
 
                 var finishTime = DateTime.Now;
                 var finalTime = finishTime - startTime;
-                CCL_Log.Message( string.Format( "Time to generate help: {0}", finalTime.ToString() ), "Help System" );
+
+                CCL_Log.CaptureEnd( stringBuilder, string.Format( "Completed in {0}", finalTime.ToString() ) );
+                CCL_Log.Message( stringBuilder.ToString(), "Help System" );
 
                 LongEventHandler.SetCurrentEventText( "Initializing".Translate() );
             }

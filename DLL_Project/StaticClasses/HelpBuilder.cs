@@ -23,13 +23,6 @@ namespace CommunityCoreLibrary
 
         public static bool ResolveImpliedDefs()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "Initialize()",
-                "Help System"
-            );
-#endif
 
             // Items
             ResolveApparel();
@@ -80,14 +73,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveReferences()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveReferences()",
-                "Help System"
-            );
-#endif
-
             foreach( var helpCategory in DefDatabase<HelpCategoryDef>.AllDefsListForReading )
             {
                 helpCategory.Recache();
@@ -101,14 +86,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveApparel()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveApparel()",
-                "Help System"
-            );
-#endif
-
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -132,14 +109,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveBodyParts()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveBodyParts()",
-                "Help System"
-            );
-#endif
-
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -167,14 +136,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveDrugs()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveDrugs()",
-                "Help System"
-            );
-#endif
-
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -199,14 +160,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveMeals()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveMeals()",
-                "Help System"
-            );
-#endif
-
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -231,14 +184,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveWeapons()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveWeapons()",
-                "Help System"
-            );
-#endif
-
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -267,14 +212,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveBuildings()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveBuildings()",
-                "Help System"
-            );
-#endif
-
             // Go through buildings by designation categories
             foreach( var designationCategoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
             {
@@ -301,14 +238,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveMinifiableOnly()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveMinifiableOnly()",
-                "Help System"
-            );
-#endif
-
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
@@ -343,12 +272,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveTerrain()
         {
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveTerrain()",
-                "Help System"
-            );
-
             // Get list of terrainDefs without designation category that occurs as a byproduct of mining (rocky),
             // or is listed in biomes (natural terrain). This excludes terrains that are not normally visible (e.g. Underwall).
             string[] rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
@@ -400,12 +323,6 @@ namespace CommunityCoreLibrary
 
         static void ResolvePlants()
         {
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolvePlants()",
-                "Help System"
-            );
-
             // plants
             List<ThingDef> plants = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => t.plant != null ).ToList();
             HelpCategoryDef category = HelpCategoryForKey( HelpCategoryDefOf.Plants, "AutoHelpSubCategoryPlants".Translate(),
@@ -451,20 +368,13 @@ namespace CommunityCoreLibrary
 
         static void ResolveRecipes()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveRecipes()",
-                "Help System"
-            );
-#endif
-
             // Get the thing database of things which ever have recipes
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
                     ( !t.IsLockedOut() )&&
                     ( t.EverHasRecipes() )&&
-                    ( t.thingClass != typeof( Corpse ) )
+                    ( t.thingClass != typeof( Corpse ) )&&
+                    ( t.thingClass != typeof( Pawn ) )
                 ) ).ToList();
 
             // Get help database
@@ -473,27 +383,31 @@ namespace CommunityCoreLibrary
             // Scan through defs and auto-generate help
             foreach( var thingDef in thingDefs )
             {
-                // Get help category
-                var helpCategoryDef = HelpCategoryForKey( thingDef.defName + "_Recipe" + HelpCategoryDefOf.HelpPostFix, thingDef.label, "AutoHelpCategoryRecipes".Translate() );
-
                 var recipeDefs = thingDef.GetRecipesAll();
-                foreach( var recipeDef in recipeDefs )
+                if( !recipeDefs.NullOrEmpty() )
                 {
-                    // Find an existing entry
-                    var helpDef = helpDefs.Find( h => (
-                        ( h.keyDef == recipeDef )
-                    ) );
+                    // Get help category
+                    var helpCategoryDef = HelpCategoryForKey( thingDef.defName + "_Recipe" + HelpCategoryDefOf.HelpPostFix, thingDef.label, "AutoHelpCategoryRecipes".Translate() );
 
-                    if( helpDef == null )
+                    foreach( var recipeDef in recipeDefs )
                     {
-                        // Make a new one
-                        //Log.Message( "Help System :: " + recipeDef.defName );
-                        helpDef = HelpForRecipe( thingDef, recipeDef, helpCategoryDef );
+                        // Find an existing entry
+                        var helpDef = helpDefs.Find( h => (
+                            ( h.keyDef == recipeDef )&&
+                            ( h.secondaryKeyDef == thingDef )
+                        ) );
 
-                        // Inject the def
-                        if( helpDef != null )
+                        if( helpDef == null )
                         {
-                            helpDefs.Add( helpDef );
+                            // Make a new one
+                            //Log.Message( "Help System :: " + recipeDef.defName );
+                            helpDef = HelpForRecipe( thingDef, recipeDef, helpCategoryDef );
+
+                            // Inject the def
+                            if( helpDef != null )
+                            {
+                                helpDefs.Add( helpDef );
+                            }
                         }
                     }
                 }
@@ -506,14 +420,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveResearch()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveResearch()",
-                "Help System"
-            );
-#endif
-
             // Get research database
             var researchProjectDefs =
                 DefDatabase< ResearchProjectDef >.AllDefsListForReading.Where( r => (
@@ -534,14 +440,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveAdvancedResearch()
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveAdvancedResearch()",
-                "Help System"
-            );
-#endif
-
             // Get advanced research database
             var advancedResearchDefs =
                 Controller.Data.AdvancedResearchDefs.Where( a => (
@@ -567,14 +465,6 @@ namespace CommunityCoreLibrary
 
         static void ResolveDefList<T>( List<T> defs, HelpCategoryDef category ) where T : Def
         {
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Stack,
-                "ResolveDefList()",
-                "Help System"
-                );
-#endif
-
             // Get help database
             HashSet<Def> processedDefs =
                 new HashSet<Def>( DefDatabase<HelpDef>.AllDefsListForReading.Select( h => h.keyDef ) );
@@ -610,14 +500,6 @@ namespace CommunityCoreLibrary
                 helpCategoryDef.keyDef = key;
                 helpCategoryDef.label = label;
                 helpCategoryDef.ModName = modname;
-
-#if DEBUG
-                CCL_Log.Trace(
-                    Verbosity.Stack,
-                    "HelpCategoryForKey() :: " + key,
-                    "Help System"
-                );
-#endif
 
                 DefDatabase<HelpCategoryDef>.Add( helpCategoryDef );
             }
@@ -1152,6 +1034,7 @@ namespace CommunityCoreLibrary
 #endif
             var helpDef = new HelpDef();
             helpDef.keyDef = recipeDef;
+            helpDef.secondaryKeyDef = thingDef;
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
             helpDef.label = recipeDef.label;
             helpDef.category = category;
@@ -1837,7 +1720,7 @@ namespace CommunityCoreLibrary
                 {
                     ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
                     race.lifeExpectancy.ToStringApproxAge(),
-                    race.foodType.ToString().Translate(),
+                    race.foodType.ToHumanString(),
                     race.trainableIntelligence.ToString()
                 },
                 new []

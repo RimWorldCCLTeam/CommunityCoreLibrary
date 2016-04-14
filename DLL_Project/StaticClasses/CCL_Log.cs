@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Reflection;
 using System.Text;
 using Verse;
 
@@ -43,6 +43,8 @@ namespace CommunityCoreLibrary
             }
 
             s += "\n";
+            // Have to copy to a byte array as dotNet doesn't allow getting the
+            // pointer to a string nor can it cast a string to a char array
             byte[] b = new byte[ s.Length ];
 
             for( int i = 0; i < s.Length; ++i )
@@ -164,11 +166,8 @@ namespace CommunityCoreLibrary
                 CCL_Log.Error( "Cannot end a capture on a different object", "Log Capture" );
                 return false;
             }
-            if( status != "" )
-            {
-                var captureStatus = status + "\n";
-                captureTarget.Insert( 0, captureStatus );
-            }
+            var captureStatus = status + "\n";
+            captureTarget.Insert( 0, captureStatus );
             captureVerbosity = Verbosity.Default;
             captureTarget = null;
             return true;

@@ -9,6 +9,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
     public class MHD_Facilities : IInjector
     {
 

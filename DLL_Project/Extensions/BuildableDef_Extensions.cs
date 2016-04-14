@@ -8,12 +8,18 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
 	public static class BuildableDef_Extensions
 	{
 
 		#region Static Data
 
-		static Dictionary<BuildableDef, bool> isLockedOut = new Dictionary<BuildableDef, bool>();
+		static Dictionary<ushort, bool> isLockedOut;
+
+        static BuildableDef_Extensions()
+        {
+            isLockedOut = new Dictionary<ushort, bool>();
+        }
 
 		#endregion
 
@@ -22,7 +28,8 @@ namespace CommunityCoreLibrary
 		public static bool                  IsLockedOut( this BuildableDef buildableDef )
         {
             bool rVal;
-            if( !isLockedOut.TryGetValue( buildableDef, out rVal ) )
+            var foo = buildableDef.GetHashCode();
+            if( !isLockedOut.TryGetValue( buildableDef.shortHash, out rVal ) )
             {
 #if DEBUG
                 CCL_Log.TraceMod(
@@ -39,7 +46,7 @@ namespace CommunityCoreLibrary
                     ( buildableDef.defName.EndsWith( "_Blueprint_Install" ) )
                 )
                 {
-                    isLockedOut.Add( buildableDef, true );
+                    isLockedOut.Add( buildableDef.shortHash, true );
                     return true;
                 }
                 
@@ -73,7 +80,7 @@ namespace CommunityCoreLibrary
                 }
 
                 // Cache the result
-                isLockedOut.Add( buildableDef, rVal );
+                isLockedOut.Add( buildableDef.shortHash, rVal );
             }
             return rVal;
         }
