@@ -633,7 +633,7 @@ namespace CommunityCoreLibrary
                 }
 
                 // Add this building to the list to recache
-                ResearchSubController.buildingCache.Add( buildingDef );
+                ResearchSubController.RecacheBuildingRecipes( buildingDef );
             }
         }
 
@@ -757,7 +757,7 @@ namespace CommunityCoreLibrary
                 {
                     var researchMod = researchMods[ i ];
                     // Add the advanced research mod to the cache
-                    ResearchSubController.researchModCache.Add( researchMod );
+                    ResearchSubController.ProcessResearchMod( researchMod );
                 }
             }
             else
@@ -767,7 +767,7 @@ namespace CommunityCoreLibrary
                 {
 
                     // Add the advanced research mod to the cache
-                    ResearchSubController.researchModCache.Add( researchMod );
+                    ResearchSubController.ProcessResearchMod( researchMod );
                 }
             }
         }
@@ -793,7 +793,7 @@ namespace CommunityCoreLibrary
             }
 
             // Queue for recache
-            ResearchSubController.helpCategoryCache.Add( helpCategoryDef );
+            ResearchSubController.RecacheHelpCategory( helpCategoryDef );
         }
 
         #endregion

@@ -749,6 +749,32 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public void                         FindAndDeprogramHoppers()
+        {
+            var hoppers = FindHoppers();
+            if( hoppers.NullOrEmpty() )
+            {
+                // No hoppers to deprogram
+                return;
+            }
+            foreach( var hopper in hoppers )
+            {
+                hopper.DeprogramHopper();
+            }
+        }
+
+        public void                         NotifyHopperAttached()
+        {
+            FindAndDeprogramHoppers();
+            FindAndProgramHoppers();
+        }
+
+        public void                         NotifyHopperDetached()
+        {
+            FindAndDeprogramHoppers();
+            FindAndProgramHoppers();
+        }
+
         #endregion
 
         #region Hopper Enumeration

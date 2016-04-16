@@ -19,14 +19,15 @@ namespace CommunityCoreLibrary
         public override void                DrawGhost( ThingDef def, IntVec3 center, Rot4 rot )
         {
             var connectionCell = center + rot.FacingCell;
-            Thing hopperUser = CompHopper.FindHopperUser( connectionCell );
+            var hopperUser = CompHopper.FindHopperUser( connectionCell );
+            var thingUser = hopperUser == null ? (Thing) null : hopperUser.parent;
             if(
-                ( hopperUser != null )&&
-                ( !hopperUser.OccupiedRect().Cells.Contains( center ) )
+                ( thingUser != null )&&
+                ( !thingUser.OccupiedRect().Cells.Contains( center ) )
             )
             {                
-                GenDraw.DrawFieldEdges( hopperUser.OccupiedRect().Cells.ToList() );
-                GenDraw.DrawTargetHighlight( hopperUser );
+                GenDraw.DrawFieldEdges( thingUser.OccupiedRect().Cells.ToList() );
+                GenDraw.DrawTargetHighlight( thingUser );
             }
             else
             {

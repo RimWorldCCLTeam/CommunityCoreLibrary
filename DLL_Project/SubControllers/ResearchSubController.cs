@@ -17,9 +17,9 @@ namespace CommunityCoreLibrary.Controller
 
         // These are used to optimize the process so the same data
         // isn't constantly reprocessed with every itteration.
-        public static List< ThingDef >      buildingCache;
-        public static List< HelpCategoryDef > helpCategoryCache;
-        public static List< AdvancedResearchMod > researchModCache;
+        private static List< ThingDef >     buildingCache;
+        private static List< HelpCategoryDef > helpCategoryCache;
+        private static List< AdvancedResearchMod > researchModCache;
 
         // Was god-mode on the last update?
         private bool                        wasGodMode;
@@ -273,10 +273,39 @@ namespace CommunityCoreLibrary.Controller
             }
 
             // Now do the work!
-            ProcessCaches( true );
+            ProcessCaches( firstTimeRun );
         }
 
         #endregion Research Processing
+
+        #region Recache/Process Interface
+
+        public static void                  RecacheBuildingRecipes( ThingDef def )
+        {
+            if( !buildingCache.Contains( def ) )
+            {
+                buildingCache.Add( def );
+            }
+        }
+
+        public static void                  RecacheHelpCategory( HelpCategoryDef def )
+        {
+            if( !helpCategoryCache.Contains( def ) )
+            {
+                helpCategoryCache.Add( def );
+            }
+        }
+
+        public static void                  ProcessResearchMod( AdvancedResearchMod mod )
+        {
+            if( !researchModCache.Contains( mod ) )
+            {
+                researchModCache.Add( mod );
+            }
+        }
+
+        #endregion
+
 	}
 
 }

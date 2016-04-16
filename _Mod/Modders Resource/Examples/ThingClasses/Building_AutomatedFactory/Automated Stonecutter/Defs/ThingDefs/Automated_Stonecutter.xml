@@ -84,6 +84,9 @@
             <li>AutomatedStonecutterGraniteBlocks</li>
             <li>AutomatedStonecutterMarbleBlocks</li>
         </recipes>
+        <inspectorTabs>
+            <li>CommunityCoreLibrary.ITab_AutomatedFactory</li>
+        </inspectorTabs>
     </ThingDef>
 
 </Defs>

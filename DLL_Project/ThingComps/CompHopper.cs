@@ -14,6 +14,8 @@ namespace CommunityCoreLibrary
 
         private bool                        wasProgrammed;
 
+        private CompHopperUser              hopperUser;
+
         #endregion
 
         #region Properties
@@ -61,13 +63,13 @@ namespace CommunityCoreLibrary
         public override void                PostSpawnSetup()
         {
             base.PostSpawnSetup();
+            hopperUser = FindHopperUser();
             if(
                 ( !WasProgrammed )&&
-                ( FindHopperUser() != null )
+                ( hopperUser != null )
             )
             {
-                var hopperUser = FindHopperUser().TryGetComp<CompHopperUser>();
-                hopperUser.FindAndProgramHoppers();
+                hopperUser.NotifyHopperAttached();
             }
         }
 
@@ -81,6 +83,11 @@ namespace CommunityCoreLibrary
         {
             base.PostDeSpawn();
             DeprogramHopper();
+            if( hopperUser != null )
+            {
+                hopperUser.NotifyHopperDetached();
+                hopperUser = null;
+            }
         }
 
         #endregion
@@ -198,12 +205,12 @@ namespace CommunityCoreLibrary
 
         #region Hopper User Enumeration
 
-        public Thing                        FindHopperUser()
+        public CompHopperUser               FindHopperUser()
         {
             return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
         }
 
-        public static Thing                 FindHopperUser( IntVec3 cell )
+        public static CompHopperUser        FindHopperUser( IntVec3 cell )
         {
             if( !cell.InBounds() )
             {
@@ -220,7 +227,7 @@ namespace CommunityCoreLibrary
                 )
                 {
                     // This thing wants a hopper
-                    return thing;
+                    return thing.TryGetComp<CompHopperUser>();
                 }
             }
 

@@ -43,18 +43,23 @@ namespace CommunityCoreLibrary
             var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( thingDef );
             foreach( var building in buildings )
             {
-                var BillGiver = building as IBillGiver;
-                if( BillGiver != null )
+                var iBillGiver = building as IBillGiver;
+                if( iBillGiver != null )
                 {
-                    for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
+                    for( int i = 0; i < iBillGiver.BillStack.Count; ++ i )
                     {
-                        var bill = BillGiver.BillStack[ i ];
+                        var bill = iBillGiver.BillStack[ i ];
                         if( !recipes.Exists( r => bill.recipe == r ) )
                         {
-                            BillGiver.BillStack.Delete( bill );
+                            iBillGiver.BillStack.Delete( bill );
                             continue;
                         }
                     }
+                }
+                var factory = building as Building_AutomatedFactory;
+                if( factory != null )
+                {
+                    factory.ResetAndReprogramHoppers();
                 }
             }
 

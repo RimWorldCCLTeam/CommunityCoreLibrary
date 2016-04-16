@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary
 
         }
 
-        private Dictionary<ushort,Allowances> productionAllowances;
+        private Dictionary<ThingDef,Allowances> productionAllowances;
 
         private RecipeDef                   currentRecipe;
 
@@ -116,7 +116,7 @@ namespace CommunityCoreLibrary
             nextProductIndex = 0;
             currentRecipe = null;
             currentProductionTick = 0;
-            productionAllowances = new Dictionary<ushort, Allowances>();
+            productionAllowances = new Dictionary<ThingDef, Allowances>();
         }
 
         #endregion
@@ -318,7 +318,7 @@ namespace CommunityCoreLibrary
 
         private ThingFilter                 resourceFilter = null;
 
-        private void                        ResetAndReprogramHoppers()
+        public void                         ResetAndReprogramHoppers()
         {
             resourceFilter = null;
             CompHopperUser.ResetResourceSettings();
@@ -344,7 +344,7 @@ namespace CommunityCoreLibrary
                     //resourceFilter.allowedHitPointsConfigurable = true;
                     //resourceFilter.allowedQualitiesConfigurable = false;
 
-                    //productionAllowances = new Dictionary<ushort, Allowances>();
+                    productionAllowances.Clear();
 
                     // Scan recipes to build lists and resource filter
                     foreach( var recipe in def.AllRecipes )
@@ -360,7 +360,7 @@ namespace CommunityCoreLibrary
                         {
                             var product = recipe.products[ 0 ].thingDef;
                             Allowances allowance;
-                            if( productionAllowances.TryGetValue( product.shortHash, out allowance ) )
+                            if( productionAllowances.TryGetValue( product, out allowance ) )
                             {
                                 if( allowance.recipe != recipe )
                                 {
@@ -379,7 +379,7 @@ namespace CommunityCoreLibrary
                             }
                             else
                             {
-                                productionAllowances.Add( product.shortHash, new Allowances( recipe, true ) );
+                                productionAllowances.Add( product, new Allowances( recipe, true ) );
                                 CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
                             }
                         }
@@ -397,33 +397,41 @@ namespace CommunityCoreLibrary
         public void                         SetAllowed( ThingDef thingDef, bool allowed )
         {
             Allowances allowance;
-            if( productionAllowances.TryGetValue( thingDef.shortHash, out allowance ) )
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
+                allowed &= (
+                    ( allowance.recipe.researchPrerequisite == null )||
+                    ( allowance.recipe.researchPrerequisite.IsFinished )
+                );
                 allowance.allowed = allowed;
-                productionAllowances[ thingDef.shortHash ] = allowance;
+                productionAllowances[ thingDef ] = allowance;
             }
         }
 
         public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
         {
             var product = recipeDef.products[ 0 ].thingDef;
+            allowed &= (
+                ( recipeDef.researchPrerequisite == null )||
+                ( recipeDef.researchPrerequisite.IsFinished )
+            );
             Allowances allowance;
-            if( productionAllowances.TryGetValue( product.shortHash, out allowance ) )
+            if( productionAllowances.TryGetValue( product, out allowance ) )
             {
                 allowance.allowed = allowed;
-                productionAllowances[ product.shortHash ].allowed = allowed;
+                productionAllowances[ product ].allowed = allowed;
             }
             else
             {
                 allowance = new Allowances( recipeDef, allowed );
-                productionAllowances.Add( product.shortHash, allowance );
+                productionAllowances.Add( product, allowance );
             }
         }
 
         public bool                         GetAllowed( ThingDef thingDef )
         {
             Allowances allowance;
-            if( productionAllowances.TryGetValue( thingDef.shortHash, out allowance ) )
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
                 return allowance.allowed;
             }
@@ -445,7 +453,7 @@ namespace CommunityCoreLibrary
         public Allowances                   GetAllowance( ThingDef thingDef )
         {
             Allowances allowance;
-            if( productionAllowances.TryGetValue( thingDef.shortHash, out allowance ) )
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
                 return allowance;
             }
@@ -659,10 +667,11 @@ namespace CommunityCoreLibrary
         private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
         {
             Allowances allowance;
-            if( productionAllowances.TryGetValue( thingDef.shortHash, out allowance ) )
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
                 if(
                     ( allowance.allowed )&&
+                    ( allowance.recipe.researchPrerequisite.IsFinished )&&
                     ( HasEnoughResourcesInHoppersFor( thingDef ) )
                 )
                 {
@@ -679,9 +688,15 @@ namespace CommunityCoreLibrary
         public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
         {
             Allowances allowance;
-            if( productionAllowances.TryGetValue( thingDef.shortHash, out allowance ) )
+            if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
-                return allowance.recipe;
+                if(
+                    ( allowance.recipe.researchPrerequisite == null )||
+                    ( allowance.recipe.researchPrerequisite.IsFinished )
+                )
+                {
+                    return allowance.recipe;
+                }
             }
             return (RecipeDef) null;
         }
@@ -747,7 +762,13 @@ namespace CommunityCoreLibrary
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
             {
-                products.Add( pair.Value.recipe.products[ 0 ].thingDef );
+                if(
+                    ( pair.Value.recipe.researchPrerequisite == null )||
+                    ( pair.Value.recipe.researchPrerequisite.IsFinished )
+                )
+                {
+                    products.Add( pair.Value.recipe.products[ 0 ].thingDef );
+                }
             }
             return products;
         }
@@ -757,7 +778,13 @@ namespace CommunityCoreLibrary
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
             {
-                if( pair.Value.allowed )
+                if(
+                    (
+                        ( pair.Value.recipe.researchPrerequisite == null )||
+                        ( pair.Value.recipe.researchPrerequisite.IsFinished )
+                    )&&
+                    ( pair.Value.allowed )
+                )
                 {
                     products.Add( pair.Value.recipe.products[ 0 ].thingDef );
                 }

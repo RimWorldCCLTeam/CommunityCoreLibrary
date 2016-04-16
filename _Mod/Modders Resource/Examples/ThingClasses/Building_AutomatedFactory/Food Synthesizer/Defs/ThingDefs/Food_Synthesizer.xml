@@ -81,7 +81,10 @@
         </recipes>
         <researchPrerequisites>
             <li>MealSynthesis</li>
-        </researchPrerequisite>
+        </researchPrerequisites>
+        <inspectorTabs>
+            <li>CommunityCoreLibrary.ITab_AutomatedFactory</li>
+        </inspectorTabs>
     </ThingDef>
 
 </Defs>
