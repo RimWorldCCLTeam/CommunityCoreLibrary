@@ -239,6 +239,10 @@ namespace CommunityCoreLibrary
 
 		public override void PreClose()
 		{
+            if( SelectedMenu != null )
+            {
+                SelectedMenu.worker.PostClose();
+            }
 			base.PreClose();
 
 			for( int index = 0; index < allMenus.Count; ++index )
@@ -357,15 +361,6 @@ namespace CommunityCoreLibrary
 			GUI.EndGroup();
 		}
 
-        public override void PostClose()
-        {
-            if( SelectedMenu != null )
-            {
-                SelectedMenu.worker.PostClose();
-            }
-            base.PostClose();
-        }
-
 		#endregion
 
 		#region Selection Area Rendering
@@ -468,6 +463,9 @@ namespace CommunityCoreLibrary
             if( PreviouslySelectedMenu != null )
             {
                 PreviouslySelectedMenu.worker.PostClose();
+            }
+            if( PreviouslySelectedMenu != SelectedMenu )
+            {
                 SelectedMenu.worker.PreOpen();
             }
             PreviouslySelectedMenu = SelectedMenu;
