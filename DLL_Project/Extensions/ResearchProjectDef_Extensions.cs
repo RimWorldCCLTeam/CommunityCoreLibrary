@@ -28,6 +28,11 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
+        public static void ClearIsLockedOut()
+        {
+            isLockedOut.Clear();
+        }
+
         public static bool IsLockedOut( this ResearchProjectDef researchProjectDef )
         {
             // Cloak internal recursive function

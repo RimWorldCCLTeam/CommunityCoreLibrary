@@ -82,6 +82,7 @@ namespace CommunityCoreLibrary.Controller
 
             Controller.Data.UnityObject = new GameObject( Controller.Data.UnityObjectName );
             Controller.Data.UnityObject.AddComponent< Controller.MainMonoBehaviour >();
+            UnityEngine.Object.DontDestroyOnLoad( Controller.Data.UnityObject );
 
             CCL_Log.Message(
                 "Queueing Library Initialization",
@@ -106,6 +107,7 @@ namespace CommunityCoreLibrary.Controller
 
         public void                         Start()
         {
+            enabled = true;
         }
 
         public void                         FixedUpdate()
@@ -139,7 +141,7 @@ namespace CommunityCoreLibrary.Controller
         {
             // Enable the frame update when the game and map are valid
             // Level 1 means we're in gameplay.
-            enabled = ( ( gameValid )&&( level == 1 ) ) ? true : false;
+            // enabled = ( ( gameValid )&&( level == 1 ) ) ? true : false;
         }
 
         #endregion

@@ -687,16 +687,63 @@ namespace CommunityCoreLibrary
             // Go through each research project to be effected
             foreach( var researchProject in effectedResearchDefs )
             {
-
-                // Assign a new blank list
+                // Assign a blank list
                 researchProject.prerequisites = new List<ResearchProjectDef>();
 
                 if( Hide )
                 {
-                    // Lock research
-                    researchProject.prerequisites.Add( Research.Locker );
+                    var unlockARDs = Controller.Data.AdvancedResearchDefs.Where( def => (
+                        ( def.IsResearchToggle )&&
+                        ( !def.HideDefs )&&
+                        ( def.effectedResearchDefs.Contains( researchProject ) )
+                    ) ).ToList();
+
+                    if( unlockARDs.NullOrEmpty() )
+                    {
+                        // No unlockers, use locker
+                        researchProject.prerequisites.Add( Research.Locker );
+                    }
+                    else
+                    {
+                        foreach( var unlockARD in unlockARDs )
+                        {
+                            foreach( var project in unlockARD.researchDefs )
+                            {
+                                if( !researchProject.prerequisites.Contains( project ) )
+                                {
+                                    researchProject.prerequisites.Add( project );
+                                }
+                            }
+                        }
+                    }
                 }
+                else if( !HideDefs )
+                {
+                    // Unlocked, use this ARDs prerequisites
+                    foreach( var project in researchDefs )
+                    {
+                        if( !researchProject.prerequisites.Contains( project ) )
+                        {
+                            researchProject.prerequisites.Add( project );
+                        }
+                    }
+                }
+
+#if DEVELOPER
+                var str = string.Format( "Prerequisites for {0}:", researchProject.defName );
+                if( !researchProject.prerequisites.NullOrEmpty() )
+                {
+                    foreach( var project in researchProject.prerequisites )
+                    {
+                        str += string.Format( "\n\t{0}", project.defName );
+                    }
+                }
+                Log.Message( str );
+#endif
             }
+
+            // Invalidate dictionary
+            ResearchProjectDef_Extensions.ClearIsLockedOut();
         }
 
         void ToggleCallbacks( bool setInitialState = false )
