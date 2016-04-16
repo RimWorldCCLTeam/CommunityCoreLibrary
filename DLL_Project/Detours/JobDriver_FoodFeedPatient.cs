@@ -49,7 +49,7 @@ namespace CommunityCoreLibrary.Detour
             }
 
             yield return Toils_Goto.GotoThing( TargetIndex.B, PathEndMode.Touch );
-            yield return Toils_Ingest.ChewIngestible( deliveree, 1.5f, TargetIndex.None );
+            yield return Toils_Ingest.ChewIngestible( deliveree, 1.5f, TargetIndex.A );
             yield return Toils_Ingest.FinalizeIngest( deliveree, TargetIndex.A );
         }
 
