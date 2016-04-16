@@ -85,6 +85,7 @@ namespace CommunityCoreLibrary
 		public float ContentHeight = 9999f;
 
 		private MenuWorkers SelectedMenu;
+        private MenuWorkers PreviouslySelectedMenu;
 
 		private static string _filterString = "";
 		private string _lastFilterString = "";
@@ -356,6 +357,15 @@ namespace CommunityCoreLibrary
 			GUI.EndGroup();
 		}
 
+        public override void PostClose()
+        {
+            if( SelectedMenu != null )
+            {
+                SelectedMenu.worker.PostClose();
+            }
+            base.PostClose();
+        }
+
 		#endregion
 
 		#region Selection Area Rendering
@@ -455,6 +465,12 @@ namespace CommunityCoreLibrary
 			{
 				return;
 			}
+            if( PreviouslySelectedMenu != null )
+            {
+                PreviouslySelectedMenu.worker.PostClose();
+                SelectedMenu.worker.PreOpen();
+            }
+            PreviouslySelectedMenu = SelectedMenu;
 
 			Text.Font = GameFont.Medium;
 			Text.WordWrap = false;

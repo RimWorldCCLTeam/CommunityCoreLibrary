@@ -14,11 +14,11 @@ namespace CommunityCoreLibrary
     {
 
         // Dictionary of facilities to re-resolve
-        private static Dictionary<ThingDef,CompProperties> facilityComps;
+        private static Dictionary<ThingDef,CompProperties_Facility> facilityComps;
 
         static                              MHD_Facilities()
         {
-            facilityComps = new Dictionary<ThingDef,CompProperties>();
+            facilityComps = new Dictionary<ThingDef,CompProperties_Facility>();
         }
 
         // Link a building with a facility
