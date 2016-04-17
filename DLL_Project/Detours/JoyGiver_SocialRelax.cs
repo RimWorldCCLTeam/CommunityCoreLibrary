@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary.Detour
             _RadialPatternMiddleOutward = typeof( JoyGiver_SocialRelax ).GetField( "RadialPatternMiddleOutward", BindingFlags.Static | BindingFlags.NonPublic ).GetValue( null ) as List<IntVec3>;
         }
 
-        internal static Job _TryGiveJob( this JoyGiver_SocialRelax obj, Pawn pawn)
+        internal static Job _TryGiveJobInt( this JoyGiver_SocialRelax obj, Pawn pawn, Predicate<CompGatherSpot> gatherSpotValidator )
         {
             var JoyGiver_SocialRelax_TryUseThing = new _JoyGiver_SocialRelax._TryUseThing();
             JoyGiver_SocialRelax_TryUseThing.pawn = pawn;
@@ -41,44 +41,40 @@ namespace CommunityCoreLibrary.Detour
             {
                 _workingSpots.Add( GatherSpotLister.activeSpots[ index ] );
             }
-            CompGatherSpot result;
-            while( GenCollection.TryRandomElement<CompGatherSpot>( _workingSpots, out result ) )
+            CompGatherSpot compGatherSpot;
+            while( GenCollection.TryRandomElement<CompGatherSpot>( _workingSpots, out compGatherSpot ) )
             {
-                _workingSpots.Remove( result );
+                _workingSpots.Remove( compGatherSpot );
                 if(
-                    ( !ForbidUtility.IsForbidden(
-                        (Thing) result.parent,
-                        JoyGiver_SocialRelax_TryUseThing.pawn ) )&&
-                    ( Reachability.CanReach(
-                        JoyGiver_SocialRelax_TryUseThing.pawn,
-                        (TargetInfo) ((Thing) result.parent ),
+                    ( !( (Thing)compGatherSpot.parent ).IsForbidden( pawn ) )&&
+                    ( pawn.CanReach(
+                        compGatherSpot.parent,
                         PathEndMode.Touch,
                         Danger.None,
                         false ) )&&
-                    ( SocialProperness.IsSociallyProper(
-                        (Thing) result.parent,
-                        JoyGiver_SocialRelax_TryUseThing.pawn ) )
+                    ( compGatherSpot.parent.IsSociallyProper( pawn ) )&&
+                    ( gatherSpotValidator == null )||
+                    ( gatherSpotValidator( compGatherSpot ) )
                 )
                 {
                     Job job = (Job) null;
-                    if( result.parent.def.surfaceType == SurfaceType.Eat )
+                    if( compGatherSpot.parent.def.surfaceType == SurfaceType.Eat )
                     {
                         for( int index = 0; index < 30; ++index )
                         {
-                            Building edifice = GridsUtility.GetEdifice( GenAdj.RandomAdjacentCellCardinal( (Thing) result.parent ) );
+                            Building sittableThing = compGatherSpot.parent.RandomAdjacentCellCardinal().GetEdifice();
                             if(
-                                ( edifice != null )&&
-                                ( edifice.def.building.isSittable )&&
-                                ( ReservationUtility.CanReserve(
-                                    JoyGiver_SocialRelax_TryUseThing.pawn,
-                                    (TargetInfo) ((Thing) edifice ),
-                                    1) )
+                                ( sittableThing != null )&&
+                                ( sittableThing.def.building.isSittable )&&
+                                ( pawn.CanReserve(
+                                    (TargetInfo) ((Thing) sittableThing ),
+                                    1 ) )
                             )
                             {
                                 job = new Job(
                                     JobDefOf.SocialRelax,
-                                    (TargetInfo) ((Thing) result.parent),
-                                    (TargetInfo) ((Thing) edifice) );
+                                    (TargetInfo) ((Thing) compGatherSpot.parent),
+                                    (TargetInfo) ((Thing) sittableThing) );
                             }
                         }
                     }
@@ -86,29 +82,26 @@ namespace CommunityCoreLibrary.Detour
                     {
                         for( int index = 0; index < _RadialPatternMiddleOutward.Count; ++index)
                         {
-                            Building edifice = GridsUtility.GetEdifice( result.parent.Position + _RadialPatternMiddleOutward[ index ] );
+                            Building sittableThing = ( compGatherSpot.parent.Position + _RadialPatternMiddleOutward[ index ] ).GetEdifice();
                             if(
-                                ( edifice != null )&&
-                                ( edifice.def.building.isSittable )&&
+                                ( sittableThing != null )&&
+                                ( sittableThing.def.building.isSittable )&&
                                 (
-                                    ( ReservationUtility.CanReserve(
-                                        JoyGiver_SocialRelax_TryUseThing.pawn,
-                                        (TargetInfo) ((Thing) edifice ),
+                                    ( pawn.CanReserve(
+                                        (TargetInfo) ((Thing) sittableThing ),
                                         1 ) )&&
-                                    ( !ForbidUtility.IsForbidden(
-                                        (Thing) edifice,
-                                        JoyGiver_SocialRelax_TryUseThing.pawn ) )&&
+                                    ( !sittableThing.IsForbidden( pawn ) )&&
                                     ( GenSight.LineOfSight(
-                                        result.parent.Position,
-                                        edifice.Position,
+                                        compGatherSpot.parent.Position,
+                                        sittableThing.Position,
                                         true ) )
                                 )
                             )
                             {
                                 job = new Job(
                                     JobDefOf.SocialRelax,
-                                    (TargetInfo) ((Thing) result.parent),
-                                    (TargetInfo) ((Thing) edifice ) );
+                                    (TargetInfo) ((Thing) compGatherSpot.parent),
+                                    (TargetInfo) ((Thing) sittableThing ) );
                                 break;
                             }
                         }
@@ -116,25 +109,24 @@ namespace CommunityCoreLibrary.Detour
                         {
                             for( int index = 0; index < 30; ++index )
                             {
-                                IntVec3 intVec3 = result.parent.Position + GenRadial.RadialPattern[ Rand.Range( 1, _NumRadiusCells ) ];
+                                IntVec3 occupySpot = compGatherSpot.parent.Position + GenRadial.RadialPattern[ Rand.Range( 1, _NumRadiusCells ) ];
                                 if(
-                                    ( ReservationUtility.CanReserveAndReach(
-                                        JoyGiver_SocialRelax_TryUseThing.pawn,
-                                        (TargetInfo) intVec3,
+                                    ( pawn.CanReserveAndReach(
+                                        occupySpot,
                                         PathEndMode.OnCell,
                                         Danger.None,
                                         1 ) )&&
-                                    ( GridsUtility.GetEdifice( intVec3 ) == null )&&
+                                    ( occupySpot.GetEdifice() == null )&&
                                     ( GenSight.LineOfSight(
-                                        result.parent.Position,
-                                        intVec3,
+                                        compGatherSpot.parent.Position,
+                                        occupySpot,
                                         true ) )
                                 )
                                 {
                                     job = new Job(
                                         JobDefOf.SocialRelax,
-                                        (TargetInfo) ((Thing) result.parent ),
-                                        (TargetInfo) intVec3 );
+                                        (TargetInfo) ((Thing) compGatherSpot.parent ),
+                                        (TargetInfo) occupySpot );
                                 }
                             }
                         }
@@ -143,26 +135,36 @@ namespace CommunityCoreLibrary.Detour
                     {
                         return (Job) null;
                     }
-                    List<Thing> list = Find.ListerThings.AllThings.Where( t => (
-                        ( t.def.IsAlcohol() )||
-                        ( t is Building_AutomatedFactory )
-                    ) ).ToList();
-                    if( list.Count > 0 )
+                    if(
+                        ( pawn.RaceProps.ToolUser )&&
+                        ( pawn.health.capacities.CapableOf( PawnCapacityDefOf.Manipulation ) )&&
+                        (
+                            ( pawn.story == null )||
+                            ( pawn.story.traits.DegreeOfTrait( TraitDefOf.DrugDesire ) >= 0 )
+                        )
+                    )
                     {
-                        Predicate<Thing> validator = new Predicate<Thing>( JoyGiver_SocialRelax_TryUseThing.CanUseThing );
-                        Thing thing = GenClosest.ClosestThing_Global_Reachable(
-                            result.parent.Position,
-                            list,
-                            PathEndMode.OnCell,
-                            TraverseParms.For(
-                                JoyGiver_SocialRelax_TryUseThing.pawn,
-                                JoyGiver_SocialRelax_TryUseThing.pawn.NormalMaxDanger() ),
-                            40f,
-                            validator );
-                        if( thing != null )
+                        List<Thing> list = Find.ListerThings.AllThings.Where( t => (
+                            ( t.def.IsAlcohol() )||
+                            ( t is Building_AutomatedFactory )
+                        ) ).ToList();
+                        if( list.Count > 0 )
                         {
-                            job.targetC = (TargetInfo) thing;
-                            job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
+                            Predicate<Thing> validator = new Predicate<Thing>( JoyGiver_SocialRelax_TryUseThing.CanUseThing );
+                            Thing thing = GenClosest.ClosestThing_Global_Reachable(
+                                compGatherSpot.parent.Position,
+                                list,
+                                PathEndMode.OnCell,
+                                TraverseParms.For(
+                                    JoyGiver_SocialRelax_TryUseThing.pawn,
+                                    JoyGiver_SocialRelax_TryUseThing.pawn.NormalMaxDanger() ),
+                                40f,
+                                validator );
+                            if( thing != null )
+                            {
+                                job.targetC = (TargetInfo) thing;
+                                job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
+                            }
                         }
                     }
                     return job;
@@ -190,7 +192,7 @@ namespace CommunityCoreLibrary.Detour
                 {
                     var FS = t as Building_AutomatedFactory;
                     if(
-                        ( !GenGrid.Standable( FS.InteractionCell ) )||
+                        ( !FS.InteractionCell.Standable() )||
                         ( !FS.CompPowerTrader.PowerOn )||
                         ( FS.BestProduct( FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol ) == null )
                     )
@@ -198,7 +200,7 @@ namespace CommunityCoreLibrary.Detour
                         return false;
                     }
                 }
-                return ReservationUtility.CanReserve( this.pawn, (TargetInfo) t, 1 );
+                return this.pawn.CanReserve( t, 1 );
             }
         }
 

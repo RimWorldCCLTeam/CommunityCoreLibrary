@@ -114,17 +114,17 @@ namespace CommunityCoreLibrary
                 {
                     num = Mathf.InverseLerp( 120f, 20f, temperature );
                 }
-                float energyLimit = TempControl.props.energyPerSecond * num * 4.16666651f;
+                float energyLimit = TempControl.Props.energyPerSecond * num * 4.16666651f;
                 float num2 = GenTemperature.ControlTemperatureTempChange( Position, energyLimit, TempControl.targetTemperature );
                 bool flag = !Mathf.Approximately( num2, 0f );
                 if( flag )
                 {
                     Position.GetRoom().Temperature += num2;
-                    PowerTrader.PowerOutput = -PowerTrader.props.basePowerConsumption;
+                    PowerTrader.PowerOutput = -PowerTrader.Props.basePowerConsumption;
                 }
                 else
                 {
-                    PowerTrader.PowerOutput = -PowerTrader.props.basePowerConsumption * PowerTrader.props.lowPowerConsumptionFactor;
+                    PowerTrader.PowerOutput = -PowerTrader.Props.basePowerConsumption * TempControl.Props.lowPowerConsumptionFactor;
                 }
                 TempControl.operatingAtHighPower = flag;
             }

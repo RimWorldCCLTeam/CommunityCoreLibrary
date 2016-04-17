@@ -15,7 +15,6 @@ namespace CommunityCoreLibrary
 
     public static class Toils_FoodSynthesizer
     {
-
         private static Toil TakeFromSynthesier( TargetIndex ind, Pawn eater, Func<ThingDef,bool> validator, Func<ThingDef,ThingDef,int> sorter )
         {
             var synthesizer = (Building_AutomatedFactory) eater.jobs.curJob.GetTarget( ind ).Thing;

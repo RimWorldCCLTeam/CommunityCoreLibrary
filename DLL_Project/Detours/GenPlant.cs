@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary.Detour
                 Verse.Log.Error( "Checking CanGrowAt with " + (object)plantDef + " which is not a plant." );
             }
             if(
-                ( !GenGrid.InBounds( c ) )||
+                ( !c.InBounds() )||
                 ( (double) Find.FertilityGrid.FertilityAt( c ) < (double) plantDef.plant.fertilityMin )
             )
             {
@@ -47,9 +47,9 @@ namespace CommunityCoreLibrary.Detour
                 for( int index = 0; index < 4; ++index )
                 {
                     IntVec3 c1 = c + GenAdj.CardinalDirections[ index ];
-                    if( GenGrid.InBounds( c1 ) )
+                    if( c1.InBounds() )
                     {
-                        Building edifice = GridsUtility.GetEdifice( c1 );
+                        Building edifice = c1.GetEdifice();
                         if(
                             ( edifice != null )&&
                             (

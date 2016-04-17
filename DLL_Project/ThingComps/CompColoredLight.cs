@@ -147,7 +147,7 @@ namespace CommunityCoreLibrary
             }
 
             // Get the glow radius
-            lightRadius = CompGlower.props.glowRadius;
+            lightRadius = CompGlower.Props.glowRadius;
 
             // Set the light color
             if ( ColorProps.useColorPicker )
@@ -276,7 +276,7 @@ namespace CommunityCoreLibrary
                         // Change it's color
                         if ( ColorProps.useColorPicker && otherLight.ColorProps.useColorPicker )
                         {
-                            otherLight.ChangeColor( CompGlower.props.glowColor );
+                            otherLight.ChangeColor( CompGlower.Props.glowColor );
                         }
                         else
                         {
@@ -309,18 +309,13 @@ namespace CommunityCoreLibrary
         // Replace the comp props with a new one with different values
         // must replace comp props as comps share props for things of the
         // same class.  We need to make a unique copy for the building.
-        public void                         ChangeColor( ColorInt color ) { 
+        public void                         ChangeColor( ColorInt color )
+        { 
             // Get glower
             var glower = CompGlower;
 
-            // Current lit state of glower
-            bool wasLit = glower.Lit;
-
-            // Turn off glower
-            glower.Lit = false;
-
             // New glower properties
-            var newProps = new CompProperties();
+            var newProps = new CompProperties_Glower();
             if( newProps == null )
             {
                 CCL_Log.Error( "CompColoredLight unable to create new CompProperties!", parent.def.defName );
@@ -336,12 +331,8 @@ namespace CommunityCoreLibrary
             glower.Initialize( newProps );
 
             // Update glow grid
+            //glower.UpdateLit(); <-- Only works if the light changes state (on<->off)
             Find.GlowGrid.MarkGlowGridDirty( parent.Position );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.GroundGlow );
-            Find.MapDrawer.MapMeshDirty( parent.Position, MapMeshFlag.Things );
-
-            // Turn light on if appropriate
-            glower.Lit = wasLit;
         }
 
         #endregion

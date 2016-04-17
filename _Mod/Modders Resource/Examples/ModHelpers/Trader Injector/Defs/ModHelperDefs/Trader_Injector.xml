@@ -6,11 +6,11 @@
 
         <ModName>Trader Injector</ModName>
 
-        <version>0.12.7</version>
+        <minCCLVersion>0.13.0</minCCLVersion>
 
         <TraderKinds>
             <li>
-                <targetDef>PirateMerchant</targetDef>
+                <targetDef>Orbital_Misc_PirateMerchant</targetDef>
 
                 <stockGenerators>
                     <li Class="StockGenerator_SingleDef">

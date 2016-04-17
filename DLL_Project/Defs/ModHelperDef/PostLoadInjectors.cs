@@ -11,13 +11,11 @@ namespace CommunityCoreLibrary
     public class MHD_PostLoadInjectors : IInjector
     {
 
-        // TODO:  Alpha 13 API change
-        // Obsoleted
-        private static Dictionary<ModHelperDef,bool>    dictInjected;
+        private static Dictionary<string,bool>    dictInjected;
 
         static                              MHD_PostLoadInjectors()
         {
-            dictInjected = new Dictionary<ModHelperDef,bool>();
+            dictInjected = new Dictionary<string,bool>();
         }
 
 #if DEBUG
@@ -62,7 +60,7 @@ namespace CommunityCoreLibrary
             }
 
             bool injected;
-            if( !dictInjected.TryGetValue( def, out injected ) )
+            if( !dictInjected.TryGetValue( def.defName, out injected ) )
             {
                 return false;
             }
@@ -79,32 +77,28 @@ namespace CommunityCoreLibrary
 
             foreach( var injectorType in def.PostLoadInjectors )
             {
-                var injectorObject = (SpecialInjector) Activator.CreateInstance( injectorType );
-                if( injectorObject == null )
-                {
-                    CCL_Log.Message( string.Format( "Unable to create instance of '{0}'", injectorType.ToString() ) );
-                    return false;
-                }
-                // TODO: Alpha 13 API change
-                /*
-                if( !injectorObject.Inject() )
-                {
-                    CCL_Log.Message( string.Format( "Error injecting '{0}'", injectorType.ToString() ) );
-                    return false;
-                }
-                */
                 try
                 {
-                    injectorObject.Inject();
+                    var injectorObject = (SpecialInjector) Activator.CreateInstance( injectorType );
+                    if( injectorObject == null )
+                    {
+                        CCL_Log.Message( string.Format( "Unable to create instance of '{0}'", injectorType.ToString() ) );
+                        return false;
+                    }
+                    if( !injectorObject.Inject() )
+                    {
+                        CCL_Log.Message( string.Format( "Error injecting '{0}'", injectorType.ToString() ) );
+                        return false;
+                    }
                 }
-                catch
+                catch( Exception e )
                 {
-                    CCL_Log.Message( string.Format( "Error injecting '{0}'", injectorType.ToString() ) );
+                    CCL_Log.Message( e.ToString(), string.Format( "Error injecting '{0}'", injectorType.ToString() ) );
                     return false;
                 }
             }
 
-            dictInjected.Add( def, true );
+            dictInjected.Add( def.defName, true );
             return true;
         }
 

@@ -20,6 +20,7 @@ namespace CommunityCoreLibrary
         #region Instance Data
 
         public Def                   keyDef;
+        public Def                   secondaryKeyDef;
 
         #endregion
 

@@ -57,7 +57,7 @@
                 <filter>
                     <categories>
                         <li>MeatRaw</li>
-                        <li>OtherFoodRaw</li>
+                        <li>EggsUnfertilized</li>
                     </categories>
                 </filter>
                 <count>0.25</count>
@@ -87,7 +87,7 @@
                 <filter>
                     <categories>
                         <li>MeatRaw</li>
-                        <li>OtherFoodRaw</li>
+                        <li>EggsUnfertilized</li>
                     </categories>
                 </filter>
                 <count>0.375</count>

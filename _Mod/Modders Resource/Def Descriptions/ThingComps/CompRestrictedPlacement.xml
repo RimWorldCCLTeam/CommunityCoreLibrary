@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompRestrictedPlacement
+    
+    Requires:   CompProperties_RestrictedPlacement
+    
+    tickerType: Depends on PlaceWorker
+    
+    If using certain PlaceWorkers, this comp is required to store additional information
+    to use the PlaceWorker.  Depending on which PlaceWorker is used, this comp may need
+    ticking.  See the individual PlaceWorkers for additional details.
+    
+    Comp Properties Restricted Placement:
+    
+    type (default)  tag                 Details
+    
+    int (-1)        MaxCount            [optional] Maximum count of a building in the world
+    
+    bool (false)    IncludeRoughStone   [optional] Auto-add all rough stone terrain defs to list
+    bool (false)    IncludeSmoothStone  [optional] Auto-add all smooth stone terrain defs to list
+    
+    TerrainDefs     terrainDefs         [optional] List of terrain to use when filtering
+        (null)                          cells to [dis]allow placement on
+    
+    ThingDefs       thingDefs           [optional] List of things to use when filtering
+        (null)                          cells to [dis]allow placement on
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <tickerType>Depends on PlaceWorker</tickerType>
+        
+        <comps>
+            ...
+            
+            <li>
+                <compClass>CompPowerTrader</compClass>
+                ...
+            </li>
+            
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                ...
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

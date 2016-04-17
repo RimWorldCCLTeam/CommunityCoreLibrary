@@ -85,6 +85,7 @@ namespace CommunityCoreLibrary
 		public float ContentHeight = 9999f;
 
 		private MenuWorkers SelectedMenu;
+        private MenuWorkers PreviouslySelectedMenu;
 
 		private static string _filterString = "";
 		private string _lastFilterString = "";
@@ -108,13 +109,13 @@ namespace CommunityCoreLibrary
 		{
 			get
 			{
-				return new Vector2( 600f, 400f );
+				return new Vector2( 600f, 600f );
 			}
 		}
 
 		#region Constructor
 
-		static Window_ModConfigurationMenu()
+		public static bool InitializeMCMs()
 		{
 			allMenus = new List<MenuWorkers>();
 
@@ -131,6 +132,7 @@ namespace CommunityCoreLibrary
 						if( menu.worker == null )
 						{
 							CCL_Log.Error( "Unable to create instance of {0}", mcm.mcmClass.ToString() );
+                            return false;
 						}
 						else
 						{
@@ -142,7 +144,7 @@ namespace CommunityCoreLibrary
 					}
 				}
 			}
-
+            return true;
 		}
 
 		public Window_ModConfigurationMenu()
@@ -237,6 +239,10 @@ namespace CommunityCoreLibrary
 
 		public override void PreClose()
 		{
+            if( SelectedMenu != null )
+            {
+                SelectedMenu.worker.PostClose();
+            }
 			base.PreClose();
 
 			for( int index = 0; index < allMenus.Count; ++index )
@@ -454,6 +460,15 @@ namespace CommunityCoreLibrary
 			{
 				return;
 			}
+            if( PreviouslySelectedMenu != null )
+            {
+                PreviouslySelectedMenu.worker.PostClose();
+            }
+            if( PreviouslySelectedMenu != SelectedMenu )
+            {
+                SelectedMenu.worker.PreOpen();
+            }
+            PreviouslySelectedMenu = SelectedMenu;
 
 			Text.Font = GameFont.Medium;
 			Text.WordWrap = false;
@@ -474,10 +489,29 @@ namespace CommunityCoreLibrary
 			GUI.BeginGroup( outRect );
 			Widgets.BeginScrollView( outRect.AtZero(), ref DisplayScrollPos, viewRect.AtZero() );
 
-			ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect );
+            bool userError = false;
+            string userErrorStr = string.Empty;
+            try
+            {
+			    ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect );
+            }
+            catch( Exception e )
+            {
+                userError = true;
+                userErrorStr = e.ToString();
+            }
 
 			Widgets.EndScrollView();
 			GUI.EndGroup();
+
+            if( userError )
+            {
+                CCL_Log.Trace(
+                    Verbosity.NonFatalErrors,
+                    userErrorStr,
+                    "Mod Configuration Menu"
+                );
+            }
 		}
 
 		#endregion

@@ -6,16 +6,6 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-/*
-    TODO:  Alpha 13 API change
-
-    Can't change yet otherwise existing saves will get null errors or name clashes
-
-namespace CommunityCoreLibrary.Controller
-{
-    internal class InjectionController : SubController
-*/
-
 namespace CommunityCoreLibrary.Controller
 {
 
@@ -35,8 +25,10 @@ namespace CommunityCoreLibrary.Controller
             {
                 ModHelperDef.GetInjector( typeof( MHD_SpecialInjectors ) ),
                 ModHelperDef.GetInjector( typeof( MHD_ThingComps ) ),
+                ModHelperDef.GetInjector( typeof( MHD_TickerSwitcher ) ),
                 ModHelperDef.GetInjector( typeof( MHD_Facilities ) ),
-                ModHelperDef.GetInjector( typeof( MHD_TraderKinds ) )
+                ModHelperDef.GetInjector( typeof( MHD_TraderKinds ) ),
+                ModHelperDef.GetInjector( typeof( MHD_ThingDefAvailability ) )
             };
             updateInjectors = new IInjector[]
             {
@@ -72,6 +64,8 @@ namespace CommunityCoreLibrary.Controller
 
         public override bool                Initialize()
         {
+            LongEventHandler.SetCurrentEventText( "LibraryInjection".Translate() );
+
             var stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
 
@@ -102,6 +96,9 @@ namespace CommunityCoreLibrary.Controller
             );
             strReturn = stringBuilder.ToString();
             State = SubControllerState.Ok;
+
+            LongEventHandler.SetCurrentEventText( "Initializing".Translate() );
+
             return true;
         }
 

@@ -61,7 +61,7 @@ namespace CommunityCoreLibrary.Commands
 
             if ( usePicker )
             {
-                Color col = parentLight.CompGlower.props.glowColor.ToColor;
+                Color col = parentLight.CompGlower.Props.glowColor.ToColor;
                 // set alpha to 1 (lights use alpha zero, but that won't show in the picker)
                 ColorWrapper _color = new ColorWrapper( new Color( col.r, col.g, col.b ) );
                 

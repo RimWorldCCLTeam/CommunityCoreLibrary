@@ -9,7 +9,8 @@
 
         <ModName>string</ModName>       [required] Name of your mod
 
-        <version>version</version>      [required] Minimum version of CCL required
+        <minCCLVersion>version</minCCLVersion>
+                                        [required] Minimum version of CCL required
 
         <Verbosity>enum*</Verbosity>    [optional] Sets the level of logging output CCL will perform when performing tasks specific to your mod
 
@@ -42,6 +43,16 @@
             </li>
         </ThingComps>
 
+        <tickerSwitcher>                [optional] List of ticker types to override on ThingDefs
+            <li>
+                <tickerType>TickerType</tickerType>
+                                        [required] New ticker type to override on ThingDefs
+                <targetDefs>            [required] List of ThingDefs to override tickerType
+                    <li>ThingDef</li>
+                </targetDefs>
+            </li>
+        </tickerSwitcher>
+
         <Facilities>                    [optional] List of facilities (buildings with CompFacility) to inject into buildings with CompAffectedByFacilities
             <li>
                 <facility>ThingDef</facility>
@@ -63,14 +74,25 @@
             </li>
         </TraderKinds>
 
-        <UsesGenericHoppers>bool</UsesGenericHoppers>
-                                        [optional] Enables the generic hoppers for use with buildings, hoppers
-                                        are hidden by default from player use unless a mod enables them
+        <ThingDefAvailability>          [optional] List of override values to set on ThingDefs (primarily used to enable or disable ThingDefs)
 
-        <HideVanillaHoppers>bool</HideVanillaHoppers>
-                                        [optional] Disables the vanilla hoppers, preventing them from being built.
-                                        The use of this is not recommended outside of modpacks to prevent
-                                        incompatibilities with mods which may use the vanilla hopper.
+            <li>
+                <menuHidden>bool</menuHidden>
+                                        [optional] If set, will update ThingDef.menuHidden with the new value
+                                        
+                <designationCategory>DesignationCategoryDef</designationCategory>
+                                        [optional] If set, will update ThingDef.designationCategory and move the designator to the new category
+
+                <researchPrerequisites> [optional] If set, will update ThingDef.researchPrerequisites.  If an empty list is
+                    <li>ResearchProjectDef</li>    provided (as opposed to no list at all), the researchPrerequisites of the
+                </researchPrerequisites>           ThingDef will be cleared.
+
+                <targetDefs>
+                    <li>ThingDef</li>   [required] ThingDefs to set the new values on
+                </targetDefs>
+            </li>
+
+        </ThingDefAvailability>
 
         < -- Game Level Injectors -- >
 
@@ -96,6 +118,9 @@
         </Designators>
 
     </ModHelperDef>
+
+    The order which the tags are listed in this file are the order in which they are processed.  Even if you move your tag
+    blocks around in the file (ie, Designators appears first, it will still be processed last).
 
     * Verbosity is an enumeration and works with named levels, each level adds more and more information to the output log.
     Each level of verbosity includes the information of all the levels above it.

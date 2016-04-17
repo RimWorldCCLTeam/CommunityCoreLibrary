@@ -15,19 +15,15 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _JobDriver_FoodFeedPatient
     {
-        
+
         internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodFeedPatient obj )
         {
             Pawn deliveree = (Pawn) obj.pawn.CurJob.targetB.Thing;
-            obj.FailOnDespawnedOrForbidden( TargetIndex.B );
-            obj.FailOn( ( Func<bool> )( () =>
-                {
-                    return
-                        ( deliveree.GetPosture() == PawnPosture.Standing )||
-                        ( deliveree.HostFaction != null )&&
-                        ( !deliveree.guest.ShouldBeBroughtFood );
-                }
-            ) );
+            obj.FailOnDespawnedNullOrForbidden( TargetIndex.B );
+            obj.FailOn( () =>
+            {
+                return !FoodUtility.ShouldBeFedBySomeone( deliveree );
+            } );
 
             yield return Toils_Reserve.Reserve( TargetIndex.B, 1 );
 
@@ -53,7 +49,7 @@ namespace CommunityCoreLibrary.Detour
             }
 
             yield return Toils_Goto.GotoThing( TargetIndex.B, PathEndMode.Touch );
-            yield return Toils_Ingest.ChewIngestible( deliveree, 1.5f );
+            yield return Toils_Ingest.ChewIngestible( deliveree, 1.5f, TargetIndex.A );
             yield return Toils_Ingest.FinalizeIngest( deliveree, TargetIndex.A );
         }
 

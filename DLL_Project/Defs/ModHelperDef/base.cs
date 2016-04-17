@@ -12,6 +12,14 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
+        public string                       InjectString
+        {
+            get
+            {
+                return "#Injector# injected";
+            }
+        }
+
         public bool                         IsValid( ModHelperDef def, ref string errors )
         {
             if( def.someList.NullOrEmpty() )

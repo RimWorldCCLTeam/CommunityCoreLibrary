@@ -48,8 +48,8 @@
         <label>restricted under roof test</label>
         <description>Restricted to being under a roof</description>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
             </li>
         </comps>
         <tickerType>Rare</tickerType>
@@ -65,8 +65,8 @@
         <label>restricted count test</label>
         <description>Limit: 2</description>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <MaxCount>2</MaxCount>
             </li>
         </comps>
@@ -82,8 +82,8 @@
         <description>Restrictions:\nSoil\nSoilRich</description>
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <terrainDefs>
                     <li>Soil</li>
                     <li>SoilRich</li>
@@ -102,8 +102,8 @@
         <description>Allowance:\nSand\nWaterShallow</description>
         <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <terrainDefs>
                     <li>Sand</li>
                     <li>WaterShallow</li>
@@ -122,8 +122,8 @@
         <description>Restrictions:\nSteam Geyser\nrock chunks\nslag</description>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <thingDefs>
                     <li>SteamGeyser</li>
                     <li>ChunkGranite</li>
@@ -147,8 +147,8 @@
         <description>Allowance:\nSteam Geyser\nrock chunks\nslag</description>
         <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <comps>
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <thingDefs>
                     <li>SteamGeyser</li>
                     <li>ChunkGranite</li>

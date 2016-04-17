@@ -15,7 +15,8 @@
         </recipeDefs>
 
         <thingDefs>
-            <li>TableSmithing</li>
+            <li>ElectricSmithy</li>
+            <li>FueledSmithy</li>
         </thingDefs>
 
     </AdvancedResearchDef>

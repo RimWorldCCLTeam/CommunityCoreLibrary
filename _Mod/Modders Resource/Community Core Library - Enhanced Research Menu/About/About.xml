@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+
+    <name>Community Core Library - Enhanced Research Menu</name>
+
+    <author>RimWorld CCL Team</author>
+
+    <url>https://ludeon.com/forums/index.php?topic=14172.0</url>
+
+    <targetVersion>Community Core Library v0.13.0</targetVersion>
+
+    <description>This keeps the same style as the vanilla research menu but adds additional information.</description>
+
+</ModMetaData>

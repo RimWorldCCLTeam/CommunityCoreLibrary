@@ -5,14 +5,13 @@ With the help system implemented in v0.12.0, CCL will generate help for most of 
 
 The list of auto-generated help includes virtually every in-game object and more information is added with each new release of CCL.  This help will tell you virtually everything you can need about the topic including but not limited to item stats, research requirements, recipes, etc.
 
-[color=orange]Research Menu[/color]
-The research menu provides a lot more information than the core game research menu including the same information as the help menu on the topic as well as quick access to research requirements and children.
+If you decide you don't want the auto-generated help, you can use the command-line switch "-nohelp" to disable it.  This will only disable the auto-generated help, you will still get explicitly defined help.  If you use the "-quicktest" command-line switch, auto-generated help will similarily be disabled.
 
 [color=orange]Mod Configuration Menu[/color] (Mod Options)
 If any mods are installed with an MCM, the main menu will display a "Mod Options" button which will allow you to set configuration settings for the mod(s).
 
 [color=orange]Proper Refrigeration[/color]
-Buildings implementing refrigeration will refrigerate rottable items without the usual "rot-unrot" cycle.  CCL automatically replaces the vanilla rotting component on items with a new component which handles refrigerated buildings properly by simply not rotting the item.
+Buildings implementing refrigeration will refrigerate rottable items without the usual "rot-unrot" cycle.  CCL automatically handles refrigerated buildings properly by simply not rotting the item.
 
 
 
@@ -38,4 +37,4 @@ Hydroponic basins and plant pots can share growing information with other hydrop
 The nutrient paste dispensers use the generic hoppers provided with the core library and the vanilla hopper is hidden from use.  This allows easier management of the dispensers by automatically programming the hoppers connected to them.
 
 [color=orange]Remember![/color]
-All changes are defined in xml in the Vanilla Tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml, so break out your text editor and tweak the tweaks until you're tweaked!
+All changes are defined in xml in the Vanilla Tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml, so break out your text editor (such as notepad)!  It's so easy [url=https://www.youtube.com/watch?v=e8aj1AlYvxI]a cave man could do it[/url]!

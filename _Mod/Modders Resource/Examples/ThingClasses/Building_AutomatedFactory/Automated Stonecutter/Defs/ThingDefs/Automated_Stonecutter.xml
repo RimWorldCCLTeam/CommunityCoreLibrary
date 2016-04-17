@@ -20,6 +20,12 @@
             <texPath>Things/Building/Production/TableStonecutter</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(3.5,1.5)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
         </graphicData>
         <building>
             <wantsHopperAdjacent>true</wantsHopperAdjacent>
@@ -48,11 +54,13 @@
         <surfaceType>Item</surfaceType>
         <tickerType>Normal</tickerType>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <startElectricalFires>true</startElectricalFires>
                 <basePowerConsumption>300</basePowerConsumption>
             </li>
+            <li Class="CompProperties_Flickable"/>
+            <li Class="CompProperties_Breakdownable"/>
             <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                 <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                 <operationalMode>Factory</operationalMode>
@@ -76,6 +84,9 @@
             <li>AutomatedStonecutterGraniteBlocks</li>
             <li>AutomatedStonecutterMarbleBlocks</li>
         </recipes>
+        <inspectorTabs>
+            <li>CommunityCoreLibrary.ITab_AutomatedFactory</li>
+        </inspectorTabs>
     </ThingDef>
 
 </Defs>

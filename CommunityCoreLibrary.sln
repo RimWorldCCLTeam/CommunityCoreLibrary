@@ -162,8 +162,8 @@ Global
 		$27.DirectoryNamespaceAssociation = None
 		$27.ResourceNamePolicy = FileFormatDefault
 		$0.TextStylePolicy = $28
-		$28.inheritsSet = VisualStudio
-		$28.scope = text/plain
+		$28.inheritsSet = null
+		$28.scope = text/x-csharp
 		$28.FileWidth = 120
 		$28.NoTabsAfterNonTabs = True
 		$28.inheritsScope = text/plain

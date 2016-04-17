@@ -27,11 +27,11 @@ namespace CommunityCoreLibrary.Detour
 
         internal static Graphic _GhostGraphicFor( Graphic baseGraphic, ThingDef thingDef, Color ghostCol )
         {
-            int key = baseGraphic.GetHashCode() * 399 ^ thingDef.GetHashCode() * 391 ^ ghostCol.GetHashCode() * 415;
+            int key = Gen.HashCombineStruct<Color>( Gen.HashCombine<ThingDef>( Gen.HashCombine<Graphic>( 0, baseGraphic ), thingDef ), ghostCol );
             Graphic graphic;
             if( !_GhostDrawer._ghostGraphics.TryGetValue( key, out graphic ) )
             {
-                graphic =
+                graphic = 
                     ( thingDef.graphicData.Linked )||
                     (
                         ( thingDef.thingClass == typeof( Building_Door ) )||
@@ -40,8 +40,8 @@ namespace CommunityCoreLibrary.Detour
                     ? GraphicDatabase.Get<Graphic_Single>( thingDef.uiIconPath, ShaderDatabase.Transparent, thingDef.graphicData.drawSize, ghostCol )
                     : (
                         ( baseGraphic == null )
-                        ? thingDef.graphic.GetColoredVersion( ShaderDatabase.Transparent, ghostCol, Color.white )
-                        : baseGraphic.GetColoredVersion( ShaderDatabase.Transparent, ghostCol, Color.white )
+                        ? GraphicDatabase.Get( thingDef.graphic.GetType(), thingDef.graphic.path, ShaderDatabase.Transparent, thingDef.graphic.drawSize, ghostCol, Color.white )
+                        : GraphicDatabase.Get( baseGraphic.GetType(), baseGraphic.path, ShaderDatabase.Transparent, baseGraphic.drawSize, ghostCol, Color.white )
                     );
                 _GhostDrawer._ghostGraphics.Add( key, graphic );
             }

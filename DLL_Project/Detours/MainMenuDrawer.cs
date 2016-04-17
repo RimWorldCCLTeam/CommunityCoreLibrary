@@ -32,6 +32,7 @@ namespace CommunityCoreLibrary.Detour
         internal const float        OptionSpacingDefault = 7f;
         internal const float        OptionButtonHeightDefault = 45f;
 
+        internal static Type        _Verse_TexButton;
 
         private static MethodInfo   _CloseMainTab;
 
@@ -45,6 +46,7 @@ namespace CommunityCoreLibrary.Detour
         private static FieldInfo    _IconForums;
         private static FieldInfo    _IconTwitter;
         private static FieldInfo    _IconBook;
+        private static FieldInfo    _IconSoundtrack;
 
         private static FieldInfo    _TexTitle;
 
@@ -61,6 +63,9 @@ namespace CommunityCoreLibrary.Detour
 
         static _MainMenuDrawer()
         {
+            // Fetch internal Verse.TexButton class
+            _Verse_TexButton = Controller.Data.Assembly_CSharp.GetType( "Verse.TexButton" );
+
             _CloseMainTab   = typeof( MainMenuDrawer ).GetMethod( "CloseMainTab", BindingFlags.Static | BindingFlags.NonPublic );
 
             _anyWorldFiles  = typeof( MainMenuDrawer ).GetField( "anyWorldFiles", BindingFlags.Static | BindingFlags.NonPublic );
@@ -69,10 +74,11 @@ namespace CommunityCoreLibrary.Detour
             _PaneSize       = typeof( MainMenuDrawer ).GetField( "PaneSize", BindingFlags.Static | BindingFlags.NonPublic );
             _TitleSize      = typeof( MainMenuDrawer ).GetField( "TitleSize", BindingFlags.Static | BindingFlags.NonPublic );
 
-            _IconBlog       = typeof( MainMenuDrawer ).GetField( "IconBlog", BindingFlags.Static | BindingFlags.NonPublic );
-            _IconForums     = typeof( MainMenuDrawer ).GetField( "IconForums", BindingFlags.Static | BindingFlags.NonPublic );
-            _IconTwitter    = typeof( MainMenuDrawer ).GetField( "IconTwitter", BindingFlags.Static | BindingFlags.NonPublic );
-            _IconBook       = typeof( MainMenuDrawer ).GetField( "IconBook", BindingFlags.Static | BindingFlags.NonPublic );
+            _IconBlog       = _Verse_TexButton.GetField( "IconBlog", BindingFlags.Static | BindingFlags.Public );
+            _IconForums     = _Verse_TexButton.GetField( "IconForums", BindingFlags.Static | BindingFlags.Public );
+            _IconTwitter    = _Verse_TexButton.GetField( "IconTwitter", BindingFlags.Static | BindingFlags.Public );
+            _IconBook       = _Verse_TexButton.GetField( "IconBook", BindingFlags.Static | BindingFlags.Public );
+            _IconSoundtrack = _Verse_TexButton.GetField( "IconSoundtrack", BindingFlags.Static | BindingFlags.Public );
 
             _TexTitle       = typeof( MainMenuDrawer ).GetField( "TexTitle", BindingFlags.Static | BindingFlags.NonPublic );
 
@@ -184,7 +190,15 @@ namespace CommunityCoreLibrary.Detour
                 return (Texture2D) _IconBook.GetValue( null );
             }
         }
-                             
+
+        internal static Texture2D IconSoundtrack
+        {
+            get
+            {
+                return (Texture2D) _IconSoundtrack.GetValue( null );
+            }
+        }
+
         #endregion
 
         #region Sorted, Translated Main Menu Defs
@@ -256,7 +270,8 @@ namespace CommunityCoreLibrary.Detour
                         _WikiOption(),
                         _TwitterOption(),
                         _DesignBookOption(),
-                        _TranslateOption()
+                        _TranslateOption(),
+                        _BuySoundTrack()
                     };
                 }
                 return _linkOptions;
@@ -605,6 +620,15 @@ namespace CommunityCoreLibrary.Detour
                 "HelpTranslate".Translate(),
                 "http://ludeon.com/forums/index.php?topic=2933.0",
                 IconForums
+            );
+        }
+
+        internal static ListableOption  _BuySoundTrack()
+        {
+            return new ListableOption_WebLink(
+                "BuySoundtrack".Translate(),
+                "http://www.lasgameaudio.co.uk/#!store/t04fw",
+                IconSoundtrack
             );
         }
 

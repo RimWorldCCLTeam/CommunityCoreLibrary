@@ -8,18 +8,25 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
     public class HideItemManager : MapComponent
     {
 
         private const int                   REHIDE_TICKS = 20;
 
-        private static readonly List<Thing> itemHide = new List<Thing>();
-        private static readonly List<Thing> itemShow = new List<Thing>();
-
         private static int                  tickCount = REHIDE_TICKS;
 
-        private static readonly Dictionary<IntVec3,Thing>
-                                            hiderBuildings = new Dictionary<IntVec3, Thing>();
+        private static List<Thing>          itemHide;
+        private static List<Thing>          itemShow;
+
+        private static Dictionary<IntVec3,Thing> hiderBuildings;
+
+        static HideItemManager()
+        {
+            itemHide = new List<Thing>();
+            itemShow = new List<Thing>();
+            hiderBuildings = new Dictionary<IntVec3, Thing>();
+        }
 
         private static List<Thing>          listHasGUIOverlay
         {

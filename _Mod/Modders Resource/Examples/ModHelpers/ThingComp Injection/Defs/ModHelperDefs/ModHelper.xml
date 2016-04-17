@@ -6,7 +6,8 @@
 
         <ModName>ThingComp Injection Example</ModName>
 
-        <version>0.12.1</version>
+        <minCCLVersion>0.13.0</minCCLVersion>
+
 
         <ThingComps>
             <li>
@@ -20,11 +21,9 @@
             </li>
 
             <li>
-                <compProps>
+                <compProps Class="CompProperties_Power">
                     <compClass>CompPowerTrader</compClass>
-                    <basePowerConsumption>-50</basePowerConsumption>
                     <transmitsPower>true</transmitsPower>
-                    <powerToggleable>false</powerToggleable>
                 </compProps>
                 <targetDefs>
                     <li>Wall</li>

@@ -13,6 +13,8 @@ namespace CommunityCoreLibrary
     public static class ThingDef_Extensions
     {
 
+        internal static FieldInfo           _allRecipesCached;
+
         // Dummy for functions needing a ref list
         public static List<Def>             nullDefs = null;
 
@@ -20,7 +22,11 @@ namespace CommunityCoreLibrary
 
         public static void                  RecacheRecipes( this ThingDef thingDef, bool validateBills )
         {
-            typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic ).SetValue( thingDef, null );
+            if( _allRecipesCached == null )
+            {
+                _allRecipesCached = typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            _allRecipesCached.SetValue( thingDef, null );
 
             if(
                 ( !validateBills )||
@@ -37,18 +43,23 @@ namespace CommunityCoreLibrary
             var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( thingDef );
             foreach( var building in buildings )
             {
-                var BillGiver = building as IBillGiver;
-                if( BillGiver != null )
+                var iBillGiver = building as IBillGiver;
+                if( iBillGiver != null )
                 {
-                    for( int i = 0; i < BillGiver.BillStack.Count; ++ i )
+                    for( int i = 0; i < iBillGiver.BillStack.Count; ++ i )
                     {
-                        var bill = BillGiver.BillStack[ i ];
+                        var bill = iBillGiver.BillStack[ i ];
                         if( !recipes.Exists( r => bill.recipe == r ) )
                         {
-                            BillGiver.BillStack.Delete( bill );
+                            iBillGiver.BillStack.Delete( bill );
                             continue;
                         }
                     }
+                }
+                var factory = building as Building_AutomatedFactory;
+                if( factory != null )
+                {
+                    factory.ResetAndReprogramHoppers();
                 }
             }
 
@@ -133,9 +144,13 @@ namespace CommunityCoreLibrary
             );
         }
 
-        public static JoyGiverDef           GetJoyDefUsing( this ThingDef thingDef )
+        public static List<JoyGiverDef>     GetJoyGiverDefsUsing( this ThingDef thingDef )
         {
-            return DefDatabase<JoyGiverDef>.AllDefs.FirstOrDefault( def => def.thingDef == thingDef );
+            var joyGiverDefs = DefDatabase<JoyGiverDef>.AllDefsListForReading.Where( def => (
+                ( !def.thingDefs.NullOrEmpty() )&&
+                ( def.thingDefs.Contains( thingDef ) )
+            ) ).ToList();
+            return joyGiverDefs;
         }
 
         #endregion
@@ -151,7 +166,7 @@ namespace CommunityCoreLibrary
                 "GetRecipesUnlocked()"
             );
 #endif
-            // Things it is unlocked on with research
+            // Recipes that are unlocked on thing with research
             var recipeDefs = new List<RecipeDef>();
             if( researchDefs != null )
             {
@@ -161,8 +176,16 @@ namespace CommunityCoreLibrary
             // Look at recipes
             var recipes = DefDatabase< RecipeDef >.AllDefsListForReading.Where( r => (
                 ( r.researchPrerequisite != null )&&
-                ( r.recipeUsers != null )&&
-                ( r.recipeUsers.Contains( thingDef ) )&&
+                (
+                    (
+                        ( r.recipeUsers != null )&&
+                        ( r.recipeUsers.Contains( thingDef ) )
+                    )||
+                    (
+                        ( thingDef.recipes != null )&&
+                        ( thingDef.recipes.Contains( r ) )
+                    )
+                )&&
                 ( !r.IsLockedOut() )
             ) ).ToList();
 
@@ -277,11 +300,23 @@ namespace CommunityCoreLibrary
 
         // Get CompProperties by CompProperties class
         // Similar to GetCompProperties which gets CompProperties by compClass
-        public static CompProperties        GetCompProperty( this ThingDef thingDef, Type find )
+        public static T                     GetCompProperty<T>( this ThingDef thingDef ) where T : CompProperties
         {
             foreach( var comp in thingDef.comps )
             {
-                if( comp.GetType() == find )
+                if( comp.GetType() == typeof( T ) )
+                {
+                    return comp as T;
+                }
+            }
+            return null;
+        }
+
+        public static CompProperties        GetCompProperty( this ThingDef thingDef, Type propertyClass )
+        {
+            foreach( var comp in thingDef.comps )
+            {
+                if( comp.GetType() == propertyClass )
                 {
                     return comp;
                 }
@@ -291,107 +326,17 @@ namespace CommunityCoreLibrary
 
         public static CommunityCoreLibrary.CompProperties_ColoredLight CompProperties_ColoredLight ( this ThingDef thingDef )
         {
-            return thingDef.GetCompProperties( typeof( CommunityCoreLibrary.CompColoredLight ) ) as CommunityCoreLibrary.CompProperties_ColoredLight;
+            return thingDef.GetCompProperties<CompProperties_ColoredLight>();
         }
 
         public static CommunityCoreLibrary.CompProperties_LowIdleDraw CompProperties_LowIdleDraw ( this ThingDef thingDef )
         {
-            return thingDef.GetCompProperties( typeof( CommunityCoreLibrary.CompPowerLowIdleDraw ) ) as CommunityCoreLibrary.CompProperties_LowIdleDraw;
+            return thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
         }
 
-        public static Verse.CompProperties_Rottable CompProperties_Rottable ( this ThingDef thingDef )
+        public static CompProperties_Rottable CompProperties_Rottable ( this ThingDef thingDef )
         {
-            return thingDef.GetCompProperties( typeof( RimWorld.CompRottable ) ) as Verse.CompProperties_Rottable;
-        }
-
-        #endregion
-
-        #region Joy Participant Cells (Watch Buildings)
-
-        public static List< IntVec3 >       GetParticipantCells( this ThingDef thingDef, IntVec3 position, Rot4 rotation, bool getBlocked = false )
-        {
-            var joyGiverDef = thingDef.GetJoyDefUsing();
-            if( joyGiverDef == null )
-            {
-                // No joy giver which uses this def
-                return null;
-            }
-            if(
-                ( joyGiverDef.standDistanceRange.min < 1 )||
-                ( joyGiverDef.standDistanceRange.max < 1 )
-            )
-            {
-                // no range?
-                return null;
-            }
-            var returnCells = new List<IntVec3>();
-            var allowedDirections = new List<int>();
-            if( thingDef.rotatable )
-            {
-                allowedDirections.Add( rotation.AsInt );
-            }
-            else
-            {
-                for( int i = 0; i < 4; ++i )
-                {
-                    allowedDirections.Add( i );
-                }
-            }
-            for( int index1 = 0; index1 < allowedDirections.Count; ++index1 )
-            {
-                CellRect cellRect;
-                if( new Rot4( allowedDirections[ index1 ] ).IsHorizontal )
-                {
-                    int a = position.x + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].x * joyGiverDef.standDistanceRange.min;
-                    int b = position.x + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].x * joyGiverDef.standDistanceRange.max;
-                    int num = position.z + 1;
-                    int minZ = position.z - 1;
-                    cellRect = new CellRect(
-                        Mathf.Min( a, b ),
-                        minZ,
-                        Mathf.Abs( a - b ) + 1,
-                        num - minZ + 1 );
-                }
-                else
-                {
-                    int a = position.z + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].z * joyGiverDef.standDistanceRange.min;
-                    int b = position.z + GenAdj.CardinalDirections[ allowedDirections[ index1 ] ].z * joyGiverDef.standDistanceRange.max;
-                    int num = position.x + 1;
-                    int minX = position.x - 1;
-                    cellRect = new CellRect(
-                        minX,
-                        Mathf.Min( a, b ),
-                        num - minX + 1,
-                        Mathf.Abs( a - b ) + 1 );
-                }
-                IntVec3 center = cellRect.Center;
-                int num1 = cellRect.Area * 4;
-                for( int index2 = 0; index2 < num1; ++index2 )
-                {
-                    IntVec3 intVec3 = center + GenRadial.RadialPattern[ index2 ];
-                    if( cellRect.Contains( intVec3 ) )
-                    {
-                        if(
-                            (
-                                ( getBlocked )&&
-                                (
-                                    ( !GenGrid.Standable( intVec3 ) )||
-                                    ( !GenSight.LineOfSight( intVec3, position, false ) )
-                                )
-                            )||
-                            (
-                                ( !getBlocked )&&
-                                ( GenGrid.Standable( intVec3 ) )&&
-                                ( GenSight.LineOfSight( intVec3, position, false ) )
-                            )
-                        )
-                        {
-                            returnCells.Add( intVec3 );
-                        }
-                    }
-                }
-            }
-            return returnCells;
+            return thingDef.GetCompProperties<CompProperties_Rottable>();
         }
 
         #endregion

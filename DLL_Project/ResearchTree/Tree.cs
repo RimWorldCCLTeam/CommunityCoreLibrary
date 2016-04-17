@@ -136,6 +136,7 @@ namespace CommunityCoreLibrary.ResearchTree
             return parents;
         }
 
+#if DEVELOPER
         public override string ToString()
         {
             StringBuilder text = new StringBuilder();
@@ -174,6 +175,7 @@ namespace CommunityCoreLibrary.ResearchTree
 
             return text.ToString();
         }
+#endif
 
         #endregion Methods
     }

@@ -54,12 +54,7 @@ namespace CommunityCoreLibrary
             {
                 return null;
             }
-            var compHopperUser = hopperUser.TryGetComp<CompHopperUser>();
-            if( compHopperUser == null )
-            {
-                return null;
-            }
-            return compHopperUser.ResourceSettings;
+            return hopperUser.ResourceSettings;
         }
 
         #endregion
@@ -133,7 +128,7 @@ namespace CommunityCoreLibrary
             //settings.filter.BlockDefaultAcceptanceFilters( GetParentStoreSettings() );
         }
 
-        public override void                Destroy(DestroyMode mode = DestroyMode.Vanish)
+        public override void                Destroy( DestroyMode mode = DestroyMode.Vanish )
         {
             if( slotGroup != null )
             {

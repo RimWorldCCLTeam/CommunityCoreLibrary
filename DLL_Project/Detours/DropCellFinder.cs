@@ -14,45 +14,47 @@ namespace CommunityCoreLibrary.Detour
     {
 
         internal static MethodInfo          _DropCellFinder_IsGoodDropSpot;
-        internal static MethodInfo          DropCellFinder_IsGoodDropSpot
-        {
-            get
-            {
-                if( _DropCellFinder_IsGoodDropSpot == null )
-                {
-                    _DropCellFinder_IsGoodDropSpot = typeof( DropCellFinder ).GetMethod( "IsGoodDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
-                }
-                return _DropCellFinder_IsGoodDropSpot;
-            }
-        }
+        internal static MethodInfo          _DropCellFinder_AnyAdjacentGoodDropSpot;
 
         internal static Predicate<IntVec3>  _IsGoodDropSpot;
+        internal static Func<Building, bool> _ValidAdjacentCell;
+
+        #region Reflected Internal Methods
+
+        internal static bool                DropCellFinder_IsGoodDropSpot( IntVec3 c )
+        {
+            if( _DropCellFinder_IsGoodDropSpot == null )
+            {
+                _DropCellFinder_IsGoodDropSpot = typeof( DropCellFinder ).GetMethod( "IsGoodDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
+            }
+            return (bool)_DropCellFinder_IsGoodDropSpot.Invoke( null, new System.Object[] { c } );
+        }
+
+        internal static bool                DropCellFinder_AnyAdjacentGoodDropSpot( IntVec3 c, bool allowFogged, bool canRoofPunch )
+        {
+            if( _DropCellFinder_AnyAdjacentGoodDropSpot == null )
+            {
+                _DropCellFinder_AnyAdjacentGoodDropSpot = typeof( DropCellFinder ).GetMethod( "AnyAdjacentGoodDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
+            }
+            return (bool)_DropCellFinder_AnyAdjacentGoodDropSpot.Invoke( null, new System.Object[] { c, allowFogged, canRoofPunch } );
+        }
+
+        #endregion
+
+        #region Cached Predicates
+
         internal static Predicate<IntVec3>  IsGoodDropSpot
         {
             get
             {
                 if( _IsGoodDropSpot == null )
                 {
-                    _IsGoodDropSpot = new Predicate<IntVec3>( c => (bool)DropCellFinder_IsGoodDropSpot.Invoke( null, new System.Object[] { c } ) );
+                    _IsGoodDropSpot = new Predicate<IntVec3>( c => DropCellFinder_IsGoodDropSpot( c ) );
                 }
                 return _IsGoodDropSpot;
             }
         }
 
-        internal static MethodInfo          _DropCellFinder_AnyAdjacentGoodDropSpot;
-        internal static MethodInfo          DropCellFinder_AnyAdjacentGoodDropSpot
-        {
-            get
-            {
-                if( _DropCellFinder_AnyAdjacentGoodDropSpot == null )
-                {
-                    _DropCellFinder_AnyAdjacentGoodDropSpot = typeof( DropCellFinder ).GetMethod( "AnyAdjacentGoodDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
-                }
-                return _DropCellFinder_AnyAdjacentGoodDropSpot;
-            }
-        }
-
-        internal static Func<Building, bool> _ValidAdjacentCell;
         internal static Func<Building, bool> ValidAdjacentCell
         {
             get
@@ -62,7 +64,7 @@ namespace CommunityCoreLibrary.Detour
                     _ValidAdjacentCell = new Func<Building, bool>( delegate( Building b ) {
                         if( !Find.RoofGrid.Roofed( b.Position ) )
                         {
-                            return (bool)DropCellFinder_AnyAdjacentGoodDropSpot.Invoke( null, new System.Object[] { b.Position, false, false } );
+                            return DropCellFinder_AnyAdjacentGoodDropSpot( b.Position, false, false );
                         }
                         return false;
                     } );
@@ -71,7 +73,11 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal static bool                PoweredAndOn( Thing t )
+        #endregion
+
+        #region Helper Methods
+
+        internal static bool                PoweredAndOn( this Thing t )
         {
             CompPowerTrader comp = t.TryGetComp<CompPowerTrader>();
             if( comp != null )
@@ -81,6 +87,10 @@ namespace CommunityCoreLibrary.Detour
             return true;
         }
 
+        #endregion
+
+        #region Detoured Methods
+
         internal static IntVec3             _TradeDropSpot()
         {
             IEnumerable<Building> beacons = Find.ListerBuildings.allBuildingsColonist.Where( b => (
@@ -88,7 +98,7 @@ namespace CommunityCoreLibrary.Detour
                     ( b.def.thingClass == typeof( Building_OrbitalTradeBeacon ) )||
                     ( b.def.thingClass.IsSubclassOf( typeof( Building_OrbitalTradeBeacon ) ) )
                 )&&
-                ( PoweredAndOn( b ) )
+                ( b.PoweredAndOn() )
             ) );
             Building building = Enumerable.FirstOrDefault<Building>( beacons, ValidAdjacentCell );
             if( building != null )
@@ -98,7 +108,7 @@ namespace CommunityCoreLibrary.Detour
                 if( !DropCellFinder.TryFindDropSpotNear( position, out result, false, false ) )
                 {
                     Log.Error( "Could find no good TradeDropSpot near dropCenter " + (object) position + ". Using a random standable unfogged cell." );
-                    result = CellFinderLoose.RandomCellWith( c => ( GenGrid.Standable( c ) && !GridsUtility.Fogged( c ) ) );
+                    result = CellFinderLoose.RandomCellWith( c => ( c.Standable() && !c.Fogged() ) );
                 }
                 return result;
             }
@@ -132,6 +142,8 @@ namespace CommunityCoreLibrary.Detour
             Log.Error( "Failed to generate trade drop center. Giving random." );
             return CellFinderLoose.RandomCellWith( IsGoodDropSpot );
         }
+
+        #endregion
 
     }
 

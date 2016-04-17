@@ -9,15 +9,16 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
     public class MHD_Facilities : IInjector
     {
 
         // Dictionary of facilities to re-resolve
-        private static Dictionary<ThingDef,CompProperties> facilityComps;
+        private static Dictionary<ThingDef,CompProperties_Facility> facilityComps;
 
         static                              MHD_Facilities()
         {
-            facilityComps = new Dictionary<ThingDef,CompProperties>();
+            facilityComps = new Dictionary<ThingDef,CompProperties_Facility>();
         }
 
         // Link a building with a facility
@@ -26,8 +27,8 @@ namespace CommunityCoreLibrary
         public static bool                  LinkFacility( ThingDef affectedDef, ThingDef facilityDef )
         {
             // Get comps
-            var affectedComp = affectedDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
-            var facilityComp = facilityDef.GetCompProperties( typeof( CompFacility ) );
+            var affectedComp = affectedDef.GetCompProperties<CompProperties_AffectedByFacilities>();
+            var facilityComp = facilityDef.GetCompProperties<CompProperties_Facility>();
             if(
                 ( affectedComp == null )||
                 ( facilityComp == null )
@@ -104,7 +105,7 @@ namespace CommunityCoreLibrary
                         errors += string.Format( "Unable to resolve facility '{0}' in Facilities", facilitySet.facility );
                         isValid = false;
                     }
-                    else if( facilityDef.GetCompProperties( typeof( CompFacility ) ) == null )
+                    else if( facilityDef.GetCompProperties<CompProperties_Facility>() == null )
                     {
                         // Check comps
                         errors += string.Format( "'{0}' is missing CompFacility for facility injection", facilitySet.facility );
@@ -120,7 +121,7 @@ namespace CommunityCoreLibrary
                         errors += string.Format( "Unable to resolve targetDef '{0}' in Facilities", target );
                         isValid = false;
                     }
-                    else if( targetDef.GetCompProperties( typeof( CompAffectedByFacilities ) ) == null )
+                    else if( targetDef.GetCompProperties<CompProperties_AffectedByFacilities>() == null )
                     {
                         errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", target );
                         isValid = false;
@@ -146,7 +147,7 @@ namespace CommunityCoreLibrary
                 foreach( var target in facility.targetDefs )
                 {
                     var targetDef = DefDatabase<ThingDef>.GetNamed( target );
-                    var targetComp = targetDef.GetCompProperties( typeof( CompAffectedByFacilities ) );
+                    var targetComp = targetDef.GetCompProperties<CompProperties_AffectedByFacilities>();
                     if( !targetComp.linkableFacilities.Contains( facilityDef ) )
                     {
                         return false;

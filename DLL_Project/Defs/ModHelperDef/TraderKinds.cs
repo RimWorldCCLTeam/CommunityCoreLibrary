@@ -13,8 +13,6 @@ namespace CommunityCoreLibrary
     public class MHD_TraderKinds : IInjector
     {
 
-        // TODO:  Alpha 13 API change
-        // Obsoleted
         private static Dictionary<ModHelperDef,bool>    dictInjected;
 
         static                              MHD_TraderKinds()
@@ -103,7 +101,7 @@ namespace CommunityCoreLibrary
                     var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( targetDef, false );
                     traderKindDef.stockGenerators.Add( stockGenerator );
                     stockGenerator.PostLoad();
-                    stockGenerator.ResolveReferences();
+                    stockGenerator.ResolveReferences(traderKindDef);
                     CCL_Log.TraceMod(
                         def,
                         Verbosity.Injections,

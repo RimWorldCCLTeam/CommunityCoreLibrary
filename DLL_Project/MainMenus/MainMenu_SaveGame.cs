@@ -10,7 +10,10 @@ namespace CommunityCoreLibrary
 
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-			return ( Game.Mode == GameMode.MapPlaying );
+			return (
+                ( Game.Mode == GameMode.MapPlaying )&&
+                ( !Find.Map.info.permadeathMode )
+            );
 		}
 
 		public override void ClickAction()
