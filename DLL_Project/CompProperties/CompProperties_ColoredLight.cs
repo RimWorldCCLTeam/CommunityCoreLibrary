@@ -18,9 +18,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public                              CompProperties_ColoredLight ()
+        public                              CompProperties_ColoredLight()
         {
-            compClass = typeof( CompProperties_ColoredLight );
+            compClass = typeof( CompColoredLight );
         }
 
     }

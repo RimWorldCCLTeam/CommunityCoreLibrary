@@ -10,7 +10,7 @@ using Verse;
 // reflection is dangerous - deal with it. Fluffy.
 
 // Moved dangerous cross-instance class jump to it's own detour class.
-// Created required static methods to perform the same access.  E.
+// Created required static methods to perform the same access.  1000101.
 
 namespace CommunityCoreLibrary.ResearchTree
 {

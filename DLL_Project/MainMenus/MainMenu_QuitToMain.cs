@@ -10,7 +10,10 @@ namespace CommunityCoreLibrary
 
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-			return ( Game.Mode == GameMode.MapPlaying );
+            return(
+                ( Game.Mode == GameMode.MapPlaying )&&
+                ( !Find.Map.info.permadeathMode )
+            );
 		}
 
 		public override void ClickAction()
@@ -18,9 +21,9 @@ namespace CommunityCoreLibrary
 			Find.WindowStack.Add( (Window)new Dialog_Confirm(
 				"ConfirmQuit".Translate(),
 				() =>
-			{
-				Application.LoadLevel( "Entry" );
-			},
+        			{
+        				Application.LoadLevel( "Entry" );
+        			},
 				false
 			) );
 		}

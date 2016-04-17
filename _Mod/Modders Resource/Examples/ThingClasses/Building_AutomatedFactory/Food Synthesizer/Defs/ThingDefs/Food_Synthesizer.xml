@@ -20,6 +20,11 @@
             <texPath>Things/Building/Production/NutrientDispenser</texPath>
             <graphicClass>Graphic_Single</graphicClass>
             <drawSize>(3,4)</drawSize>
+            <damageData>
+                <rect>(0.02,0.25,2.96,2.85)</rect>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+            </damageData>
         </graphicData>
         <altitudeLayer>BuildingTall</altitudeLayer>
         <passability>Impassable</passability>
@@ -36,11 +41,13 @@
         </building>
         <tickerType>Normal</tickerType>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <startElectricalFires>true</startElectricalFires>
                 <basePowerConsumption>500</basePowerConsumption>
             </li>
+            <li Class="CompProperties_Flickable"/>
+            <li Class="CompProperties_Breakdownable"/>
             <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                 <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                 <idlePowerFactor>0.1</idlePowerFactor>
@@ -72,7 +79,12 @@
         <recipes>
             <li>SynthesizeMealSimple</li>
         </recipes>
-        <researchPrerequisite>MealSynthesis</researchPrerequisite>
+        <researchPrerequisites>
+            <li>MealSynthesis</li>
+        </researchPrerequisites>
+        <inspectorTabs>
+            <li>CommunityCoreLibrary.ITab_AutomatedFactory</li>
+        </inspectorTabs>
     </ThingDef>
 
 </Defs>

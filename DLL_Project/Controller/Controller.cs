@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 
 using UnityEngine;
@@ -8,6 +9,7 @@ using Verse;
 namespace CommunityCoreLibrary.Controller
 {
 
+    [StaticConstructorOnStartup]
     public static class Data
     {
 
@@ -15,6 +17,8 @@ namespace CommunityCoreLibrary.Controller
 
         public static readonly string       UnityObjectName = "Community Core Library";
         public static GameObject            UnityObject;
+
+        public static Assembly              Assembly_CSharp;
 
         public static MainMonoBehaviour     cclMonoBehaviour;
 
@@ -26,13 +30,25 @@ namespace CommunityCoreLibrary.Controller
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
-        public static bool                  GenericHoppersEnabled = false;
-        public static bool                  VanillaHoppersDisabled = false;
-
         internal static SubController[]     SubControllers;
 
         // For tracing in global functions
         private static ModHelperDef         _Trace_Current_Mod = null;
+
+        #endregion
+
+        #region Consructors
+        static                              Data()
+        {
+            Assembly_CSharp = Assembly.Load( "Assembly-CSharp.dll" );
+#if DEBUG
+            if( Assembly_CSharp == null )
+            {
+                CCL_Log.Error( "Unable to load 'Assembly-CSharp'" );
+                return;
+            }
+#endif
+        }
 
         #endregion
 

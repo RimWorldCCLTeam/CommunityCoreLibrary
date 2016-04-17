@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef Name="ResourceBase" Abstract="True">
+        <thingClass>ThingWithComps</thingClass>
+        <label>unspecified resource</label>
+        <category>Item</category>
+        <resourceReadoutPriority>Middle</resourceReadoutPriority>
+        <useHitPoints>true</useHitPoints>
+        <selectable>true</selectable>
+        <altitudeLayer>Item</altitudeLayer>
+        <stackLimit>75</stackLimit>
+        <comps>
+            <li Class="CompProperties_Forbiddable"/>
+        </comps>
+        <alwaysHaulable>true</alwaysHaulable>
+        <drawGUIOverlay>true</drawGUIOverlay>
+        <rotatable>false</rotatable>
+        <pathCost>15</pathCost>
+    </ThingDef>
+
+
+    <!--=============== Boomalope Gas ====================-->
+
+    <ThingDef ParentName="ResourceBase">
+        <defName>BoomalopeGas</defName>
+        <label>boomalope gas</label>
+        <description>The highly valued gas from a boomalopes chemical sacks.  Dangerous to harvest and store but very valuable.</description>
+        <graphicData>
+            <texPath>Things/Item/Special/BoomalopeGas</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <useHitPoints>false</useHitPoints>
+        <statBases>
+            <MarketValue>100</MarketValue>
+            <Flammability>5.0</Flammability>
+        </statBases>
+        <resourceReadoutPriority>Middle</resourceReadoutPriority>
+        <stackLimit>10</stackLimit>
+        <thingCategories>
+            <li>ResourcesRaw</li>
+        </thingCategories>
+        <tradeTags>
+            <li>Exotic</li>
+        </tradeTags>
+    </ThingDef>
+
+</Defs>

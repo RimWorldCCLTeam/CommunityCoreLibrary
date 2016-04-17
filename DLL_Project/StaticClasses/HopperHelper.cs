@@ -36,7 +36,9 @@ namespace CommunityCoreLibrary
                 ( thingDef.HasComp( typeof( CompHopperUser ) ) );
         }
 
-        public static void                  BlockDefaultAcceptanceFilters( this ThingFilter filter, StorageSettings parentSettings = null )
+        // TODO: thingfilter stuff is now private boooo
+        // Do we really want to do this anyway?
+        /*public static void                  BlockDefaultAcceptanceFilters( this ThingFilter filter, StorageSettings parentSettings = null )
         {
             // Explicitly remove auto-added special filters unless they are explicitly added
             foreach( var sf in DefDatabase<SpecialThingFilterDef>.AllDefsListForReading )
@@ -72,7 +74,7 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-        }
+        }*/
 
     }
 

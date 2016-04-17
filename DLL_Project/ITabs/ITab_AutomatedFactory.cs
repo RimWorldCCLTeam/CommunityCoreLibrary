@@ -101,9 +101,9 @@ namespace CommunityCoreLibrary
 
         protected override void                 FillTab()
         {
-            Rect rect1 = GenUI.ContractedBy( new Rect( 0.0f, 0.0f, ITab_AutomatedFactory.WinSize.x, ITab_AutomatedFactory.WinSize.y ), 10f );
+            Rect rect1 = new Rect( 0.0f, 0.0f, ITab_AutomatedFactory.WinSize.x, ITab_AutomatedFactory.WinSize.y ).ContractedBy( 10f );
             Text.Font = GameFont.Medium;
-            Widgets.Label( rect1, this.SelectedFactory.def.LabelCap );
+            Widgets.Label( rect1, SelectedFactory.def.LabelCap );
             Rect rect2 = rect1;
             rect2.yMin += 35f;
             Vector2 vector = rect2.position;
@@ -111,11 +111,15 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Small;
             for( int index = 0; index < products.Count; ++index )
             {
-                Widgets.Label( rect2, products[ index ].LabelCap );
-                Widgets.Checkbox( vector, ref allowed[ index ], 16f );
-                TooltipHandler.TipRegion( rect2, tips[ index ] );
-                rect2.yMin += 20f;
-                vector.y += 20f;
+                var product = products[ index ];
+                if( SelectedFactory.FindRecipeForProduct( product ) != null )
+                {
+                    Widgets.Label( rect2, product.LabelCap );
+                    Widgets.Checkbox( vector, ref allowed[ index ], 16f );
+                    TooltipHandler.TipRegion( rect2, tips[ index ] );
+                    rect2.yMin += 20f;
+                    vector.y += 20f;
+                }
             }
         }
 

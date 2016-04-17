@@ -57,6 +57,9 @@
                         <li>Weapons</li>
                         <li>Apparel</li>
                     </categories>
+                    <thingDefs>
+                        <li>ArtilleryShell</li>
+                    </thingDefs>
                 </filter>
             </fixedStorageSettings>
             <defaultStorageSettings>

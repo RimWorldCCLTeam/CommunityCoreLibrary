@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+    
+    Namespace:  CommunityCoreLibrary
+    
+    ThingComp:  CompMilkableRenameable
+    
+    Requires:   CompProperties_MilkableRenameable
+    
+    Using CompMilkableRenameable allows you to specify a custom growth string for your resource,
+    e.g. "chemical growth" on a boomalope which can be harvested for explosives, "venom fullness" on a
+    snake, etc. This is in contrast to vanilla's CompMilkable which will always display "milk fullness"
+    regardless of the resource harvested. Beyond that usage is identical to CompMilkable and not
+    specifying any string will default to the vanilla value for maximum compatibility and ease of use,
+    simply do not specify a string if you don't need any custom text and it will act identical to
+    CompMilkable.
+    
+    The only difference between this comp and CompShearableRenameable is the specific xml tags and the
+    job report string.  This comp will report "Milking TargetA".
+    
+    XML Data:
+    
+    type (default)  tag                 Details
+    
+    string          growthLabel         [optional] Label that will show up in the inspect tab
+       ("Milk fullness")
+    ThingDef (null) milkDef             [optional] Item that will appear when harvested
+    int (0)         milkIntervalDays    [optional] Amount of days to go from 0% growth to 100%
+    int (1)         milkAmount          [optional] Amount of items dropped on harvest
+    bool (true)     milkFemaleOnly      [optional] Restrict milk growth to females
+    
+    Usage:
+    
+    <ThingDef>
+        ...
+        
+        <comps>
+            ...
+            
+            <li Class="CommunityCoreLibrary.CompProperties_MilkableRenameable">
+                <compClass>CommunityCoreLibrary.CompMilkableRenameable</compClass>
+                
+                <growthLabel>Boomalope gas fullness</growthLabel>
+                
+                <milkDef>BoomalopeGas</milkDef>
+                
+                <milkIntervalDays>1</milkIntervalDays>
+                
+                <milkAmount>1</milkAmount>
+                
+                <milkFemaleOnly>false</milkFemaleOnly>
+                
+            </li>
+            
+            ...
+        </comps>
+        
+        ...
+    </ThingDef>
+    
+    -->
+
+</Defs>

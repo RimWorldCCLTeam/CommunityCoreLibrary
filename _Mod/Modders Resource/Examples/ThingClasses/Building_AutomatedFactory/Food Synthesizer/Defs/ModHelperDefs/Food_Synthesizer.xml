@@ -6,9 +6,21 @@
 
         <ModName>Modders Resource: Food Synthesizer</ModName>
 
-        <version>0.12.7</version>
+        <minCCLVersion>0.13.0</minCCLVersion>
 
-        <UsesGenericHoppers>true</UsesGenericHoppers>
+        <ThingDefAvailability>
+
+            <!-- Enable generic hoppers -->
+            <li>
+                <menuHidden>false</menuHidden>
+                <designationCategory>Production</designationCategory>
+                <targetDefs>
+                    <li>GenericHopper</li>
+                    <li>RefrigeratedHopper</li>
+                </targetDefs>
+            </li>
+
+        </ThingDefAvailability>
 
     </ModHelperDef>
 

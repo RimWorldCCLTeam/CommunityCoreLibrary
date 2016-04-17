@@ -119,11 +119,15 @@ namespace CommunityCoreLibrary.Detour
             }
 
             return
-                ( newDef is TerrainDef )&&
-                ( buildableDef is ThingDef )&&
-                ( ( (ThingDef) buildableDef ).CoexistsWithFloors )||
-                ( buildableDef is TerrainDef )&&
-                ( !( newDef is TerrainDef ) );
+                (
+                    ( newDef is TerrainDef )&&
+                    ( buildableDef is ThingDef )&&
+                    ( ( (ThingDef) buildableDef ).CoexistsWithFloors )
+                )||
+                (
+                    ( buildableDef is TerrainDef )&&
+                    ( !( newDef is TerrainDef ) )
+                );
         }
 
     }

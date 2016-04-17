@@ -15,9 +15,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public                              CompProperties_LowIdleDraw ()
+        public                              CompProperties_LowIdleDraw()
         {
-            compClass = typeof( CompProperties_LowIdleDraw );
+            compClass = typeof( CompPowerLowIdleDraw );
         }
 
     }

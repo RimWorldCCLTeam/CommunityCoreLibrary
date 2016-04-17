@@ -39,7 +39,7 @@ namespace CommunityCoreLibrary
             {
                 get
                 {
-                    return settings.filter.AllowedThingDefs.Any( def => def.HasComp( typeof( CompRottableRefrigerated ) ) );
+                    return settings.filter.AllowedThingDefs.Any( def => def.HasComp( typeof( CompRottable ) ) );
                 }
             }
 
@@ -137,7 +137,7 @@ namespace CommunityCoreLibrary
                         largest = thisThingCount;
                     }
                 }
-                /*
+
                 foreach( var childCategoryDef in categoryDef.childCategories )
                 {
                     int thisCategoryCount = CountForCategoryDef( childCategoryDef, baseCount, recipe );
@@ -146,7 +146,7 @@ namespace CommunityCoreLibrary
                         largest = thisCategoryCount;
                     }
                 }
-                */
+
                 return largest;
             }
 
@@ -278,7 +278,7 @@ namespace CommunityCoreLibrary
                     }
 
                     // Block default special filters
-                    resourceSettings.filter.BlockDefaultAcceptanceFilters();
+                    //resourceSettings.filter.BlockDefaultAcceptanceFilters();
 
                     // Resolve references again
                     resourceSettings.filter.ResolveReferences();
@@ -318,17 +318,17 @@ namespace CommunityCoreLibrary
         {
             if( ingredient.filter != null )
             {
-                if( !ingredient.filter.categories.NullOrEmpty() )
+                if( !ingredient.filter.Categories().NullOrEmpty() )
                 {
-                    foreach( var category in ingredient.filter.categories )
+                    foreach( var category in ingredient.filter.Categories() )
                     {
                         var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
                         filter.SetAllow( categoryDef, true );
                     }
                 }
-                if( !ingredient.filter.thingDefs.NullOrEmpty() )
+                if( !ingredient.filter.ThingDefs().NullOrEmpty() )
                 {
-                    foreach( var thingDef in ingredient.filter.thingDefs )
+                    foreach( var thingDef in ingredient.filter.ThingDefs() )
                     {
                         filter.SetAllow( thingDef, true );
                     }
@@ -338,17 +338,17 @@ namespace CommunityCoreLibrary
 
         private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
         {
-            if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
+            if( !exceptionFilter.ExceptedCategories().NullOrEmpty() )
             {
-                foreach( var category in exceptionFilter.exceptedCategories )
+                foreach( var category in exceptionFilter.ExceptedCategories() )
                 {
                     var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
                     filter.SetAllow( categoryDef, false );
                 }
             }
-            if( !exceptionFilter.exceptedThingDefs.NullOrEmpty() )
+            if( !exceptionFilter.ExceptedThingDefs().NullOrEmpty() )
             {
-                foreach( var thingDef in exceptionFilter.exceptedThingDefs )
+                foreach( var thingDef in exceptionFilter.ExceptedThingDefs() )
                 {
                     filter.SetAllow( thingDef, false );
                 }
@@ -388,17 +388,17 @@ namespace CommunityCoreLibrary
         {
             if( ingredient.filter != null )
             {
-                if( !ingredient.filter.categories.NullOrEmpty() )
+                if( !ingredient.filter.Categories().NullOrEmpty() )
                 {
-                    foreach( var category in ingredient.filter.categories )
+                    foreach( var category in ingredient.filter.Categories() )
                     {
                         var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
                         HopperSettingsAmount.AddToList( hopperSettings, categoryDef, ingredient.GetBaseCount(), recipe );
                     }
                 }
-                if( !ingredient.filter.thingDefs.NullOrEmpty() )
+                if( !ingredient.filter.ThingDefs().NullOrEmpty() )
                 {
-                    foreach( var thingDef in ingredient.filter.thingDefs )
+                    foreach( var thingDef in ingredient.filter.ThingDefs() )
                     {
                         HopperSettingsAmount.AddToList( hopperSettings, thingDef, ingredient.GetBaseCount(), recipe );
                     }
@@ -408,9 +408,9 @@ namespace CommunityCoreLibrary
 
         private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
         {
-            if( !exceptionFilter.exceptedCategories.NullOrEmpty() )
+            if( !exceptionFilter.ExceptedCategories().NullOrEmpty() )
             {
-                foreach( var category in exceptionFilter.exceptedCategories )
+                foreach( var category in exceptionFilter.ExceptedCategories() )
                 {
                     var categoryDef = DefDatabase<ThingCategoryDef>.GetNamed( category, true );
                     foreach( var hopperSetting in hopperSettings )
@@ -419,9 +419,9 @@ namespace CommunityCoreLibrary
                     }
                 }
             }
-            if( !exceptionFilter.exceptedThingDefs.NullOrEmpty() )
+            if( !exceptionFilter.ExceptedThingDefs().NullOrEmpty() )
             {
-                foreach( var thingDef in exceptionFilter.exceptedThingDefs )
+                foreach( var thingDef in exceptionFilter.ExceptedThingDefs() )
                 {
                     foreach( var hopperSetting in hopperSettings )
                     {
@@ -543,7 +543,7 @@ namespace CommunityCoreLibrary
                 var hopperSetting = hopperSettings[ index ];
                 hopperSetting.settings.Priority = StoragePriority.Important;
                 hopperSetting.settings.filter.ResolveReferences();
-                hopperSetting.settings.filter.BlockDefaultAcceptanceFilters();
+                //hopperSetting.settings.filter.BlockDefaultAcceptanceFilters();
                 hopperSetting.settings.filter.allowedQualitiesConfigurable = false;
             }
 
@@ -747,6 +747,32 @@ namespace CommunityCoreLibrary
                 // Program individual hoppers with individual settings
                 ProgramHoppersIndividual( hoppers );
             }
+        }
+
+        public void                         FindAndDeprogramHoppers()
+        {
+            var hoppers = FindHoppers();
+            if( hoppers.NullOrEmpty() )
+            {
+                // No hoppers to deprogram
+                return;
+            }
+            foreach( var hopper in hoppers )
+            {
+                hopper.DeprogramHopper();
+            }
+        }
+
+        public void                         NotifyHopperAttached()
+        {
+            FindAndDeprogramHoppers();
+            FindAndProgramHoppers();
+        }
+
+        public void                         NotifyHopperDetached()
+        {
+            FindAndDeprogramHoppers();
+            FindAndProgramHoppers();
         }
 
         #endregion

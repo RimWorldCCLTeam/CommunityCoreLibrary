@@ -10,12 +10,14 @@
     Requires:   CompProperties_ShearableRenameable
     
     Using CompShearableRenameable allows you to specify a custom growth string for your resource,
-    e.g. "chemical growth" on a boomalope which can be harvested for explosives, "venom fullness" on a
-    snake, etc. This is in contrast to vanilla's CompShearable which will always display "wool growth"
-    regardless of the resource harvested. Beyond that usage is identical to CompShearable and not
-    specifying any string will default to the vanilla value for maximum compatibility and ease of use,
-    simply do not specify a string if you don't need any custom text and it will act identical to
-    CompShearable.
+    e.g. "Alpaca wool growth" on an alpaca, "Feather growth" on a chicken, etc. This is in contrast to
+    vanilla's CompShearable which will always display "wool growth" regardless of the resource harvested.
+    Beyond that usage is identical to CompShearable and not specifying any string will default to the
+    vanilla value for maximum compatibility and ease of use, simply do not specify a string if you don't
+    need any custom text and it will act identical to CompShearable.
+    
+    The only difference between this comp and CompMilkableRenameable is the specific xml tags and the
+    job report string.  This comp will report "Shearing TargetA".
     
     XML Data:
     
@@ -38,13 +40,13 @@
             <li Class="CommunityCoreLibrary.CompProperties_ShearableRenameable">
                 <compClass>CommunityCoreLibrary.CompShearableRenameable</compClass>
                 
-                <growthLabel>Alpaca wool growth</growthLabel>
+                <growthLabel>Feather growth</growthLabel>
                 
-                <woolDef>AlpacaWool</woolDef>
+                <woolDef>ChickenFeather</woolDef>
                 
-                <shearIntervalDays>30</shearIntervalDays>
+                <shearIntervalDays>1</shearIntervalDays>
                 
-                <woolAmount>120</woolAmount>
+                <woolAmount>20</woolAmount>
                 
             </li>
             

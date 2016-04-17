@@ -9,24 +9,42 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    [StaticConstructorOnStartup]
     public static class Find_Extensions
     {
 
         // Suffixes which (may) need to be removed to find the mod for a def
-        private static List<string>     def_suffixes = new List<string>(){
-            "_Frame",
-            "_Blueprint",
-            "_Blueprint_Install",
-            "_Corpse",
-            "_Leather",
-            "_Meat"
-        };
+        private static List<string> def_suffixes;
+
+        static Find_Extensions()
+        {
+            def_suffixes = new List<string>(){
+                "_Frame",
+                "_Blueprint",
+                "_Blueprint_Install",
+                "_Corpse",
+                "_Leather",
+                "_Meat"
+            };
+        }
 
         // This is a safe method of fetching a map component of a specified type
         // If an instance of the component doesn't exist or map isn't loaded it will return null
+        public static T                     MapComponent<T>() where T : MapComponent
+        {
+            if (
+                ( Find.Map == null )||
+                ( Find.Map.components.NullOrEmpty() )
+            )
+            {
+                return null;
+            }
+            return Find.Map.components.FirstOrDefault( c => c.GetType() == typeof( T ) ) as T;
+        }
+
         public static MapComponent          MapComponent( Type t )
         {
-            if(
+            if (
                 ( Find.Map == null )||
                 ( Find.Map.components.NullOrEmpty() )
             )
@@ -37,6 +55,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get the def set of a specific type for a specific mod
+        /*
         public static ModDefSet<T>          DefSetOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
         {
             if( mod == null )
@@ -51,6 +70,20 @@ namespace CommunityCoreLibrary
             }
             return (ModDefSet<T>) modDefSet;
         }
+        */
+
+        // Get the def of a specific type for a specific mod
+        public static Def                   DefOfTypeForMod( LoadedMod mod, Def searchDef )
+        {
+            if( mod == null )
+            {
+                return null;
+            }
+            return mod.AllDefs.FirstOrDefault( def => (
+                ( def.GetType() == searchDef.GetType() )&&
+                ( def.defName == searchDef.defName )
+            ) );
+        }
 
         // Get the def list of a specific type for a specific mod
         public static List<T>               DefListOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
@@ -59,12 +92,10 @@ namespace CommunityCoreLibrary
             {
                 return null;
             }
-            var modDefSet = DefSetOfTypeForMod<T>( mod );
-            if( modDefSet == null )
-            {
-                return null;
-            }
-            return modDefSet.AllDefs.ToList();
+            var list = mod.AllDefs.Where(def => (
+               ( def.GetType() == typeof( T ) )
+            ) ).ToList();
+            return list.ConvertAll( def => ( (T) def ) );
         }
 
         // Search for mod by def
@@ -98,15 +129,11 @@ namespace CommunityCoreLibrary
             // Search for def in mod list
             for( int i = Start; i >= 0; i-- )
             {
-                var defSets = typeof( LoadedMod ).GetField( "defSets", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( allMods[ i ] ) as Dictionary<System.Type, ModDefSet>;
-                ModDefSet modDefSet = (ModDefSet) null;
-                if( defSets.TryGetValue( typeof (T), out modDefSet ) )
+                //var defs = DefListOfTypeForMod<T>( allMods[ i ] );
+                //if( defs.Exists( d => d.defName == defName ) )
+                if( DefOfTypeForMod( allMods[ i ], def ) != null )
                 {
-                    List<T> modDefList = ( (ModDefSet<T>) modDefSet ).AllDefs.ToList();
-                    if( modDefList.Exists( d => d.defName == defName ) )
-                    {
-                        return allMods[ i ];
-                    }
+                    return allMods[ i ];
                 }
             }
             // None found
@@ -135,10 +162,10 @@ namespace CommunityCoreLibrary
             }
             for( int i = Start; i >= 0; i-- )
             {
-                var defSet = DefSetOfTypeForMod<T>( allMods[ i ] );
-                if( defSet.DefNamed( defName, false ) != null )
+                var defs = DefListOfTypeForMod<T>( allMods[ i ] );
+                if( defs.Exists( d => d.defName == defName ) )
                 {
-                    return allMods[i];
+                    return allMods[ i ];
                 }
             }
             return null;
@@ -183,7 +210,7 @@ namespace CommunityCoreLibrary
             {
                 return null;
             }
-            var rVal = (ModHelperDef) null;
+            var rVal = (ModHelperDef)null;
             if( Controller.Data.DictModHelperDefs.TryGetValue( mod, out rVal ) )
             {
                 return rVal;

@@ -12,11 +12,11 @@ namespace CommunityCoreLibrary.Detour
         
         internal static int _AlignQualityAgainst( IntVec3 c )
         {
-            if( !GenGrid.InBounds( c ) )
+            if( !c.InBounds() )
             {
                 return 0;
             }
-            if( !GenGrid.Walkable( c ) )
+            if( !c.Walkable() )
             {
                 return 9;
             }
