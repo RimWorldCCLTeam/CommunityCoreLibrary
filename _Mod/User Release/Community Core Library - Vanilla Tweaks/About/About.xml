@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+
+    <name>Community Core Library - Vanilla Tweaks</name>
+
+    <author>RimWorld CCL Team</author>
+
+    <url>https://ludeon.com/forums/index.php?topic=14172.0</url>
+
+    <targetVersion>Community Core Library v0.13.0</targetVersion>
+
+    <description>Makes optional changes to the core game objects.\n\nThis mod is optional but recommended (by the CCL modding team, but we're biased).</description>
+
+</ModMetaData>

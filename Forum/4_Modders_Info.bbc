@@ -27,7 +27,9 @@
 [li][color=orange]Hide Item[/color] - Control flags for CompHideItem.[/li]
 [li][color=orange]Hopper User[/color] - XML definition of resource thing filter for hopper storage.[/li]
 [li][color=orange]Low Idle Draw[/color] - Defines the settings for how CompPowerLowIdleDraw modifies the power usage of the building.[/li]
+[li][color=orange]Milkable Renameable[/color] - Allows you to specify the string which will show up for milkable animals instead of the default "milk fullness."[/li]
 [li][color=orange]Restricted Placement[/color] - Defines the restrictions for place workers.[/li]
+[li][color=orange]Shearable Renameable[/color] - Allows you to specify the string which will show up for shearable animals instead of the default "wool growth."[/li]
 [/list]
 
 [size=10pt][color=orange]New Interfaces[/color] (C#)[/size]
@@ -54,9 +56,11 @@
 [li][color=orange]Hopper[/color] - Used as part of the generic hopper system.  Provides hopper-side functions.[/li]
 [li][color=orange]Hopper User[/color] - Used as part of the generic hopper system.  Provides user-side functions.[/li][li][color=orange]Lifespan Powered[/color] - The same function as CompLifespan but, this will only count-down it's life while it is actively powered.[/li]
 [li][color=orange]Neighbourly Grower[/color] - Adds gizmo's to Building_PlantGrower derived buildings (such as Hydroponics) providing the user the ability to share growing information.[/li]
+[li][color=orange]Milkable Renameable[/color] - Specify the inspection string name for the resource gathered by milking.[/li]
 [li][color=orange]Power Low Idle Draw[/color] - Allows anything[sup][size=8pt]4.3[/size][/sup] with a CompPowerTrader to draw less depending on it's operational mode.  Current operational modes include "InUse", "WhenNear", "GroupUse", "Cycle" and "Factory".[/li]
 [li][color=orange]Refrigeration[/color] - Flags any Building_Storage as preventing foods from rotting.  If CompPowerTrader is present, the food will rot if the power is disconnected or the building is turned off.[/li]
 [li][color=orange]Restricted Placement[/color] - Used to store settings for restricted place workers.[/li]
+[li][color=orange]Shearable Renameable[/color] - Specify the inspection string name for the resource gathered by shearing.[/li]
 [/list]
 
 [size=10pt][color=orange]New PlaceWorkers[/color] (xml)[/size]
