@@ -460,7 +460,10 @@ namespace CommunityCoreLibrary
 			{
 				return;
 			}
-            if( PreviouslySelectedMenu != null )
+            if(
+                ( PreviouslySelectedMenu != null )&&
+                ( PreviouslySelectedMenu != SelectedMenu )
+            )
             {
                 PreviouslySelectedMenu.worker.PostClose();
             }
