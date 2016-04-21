@@ -869,7 +869,15 @@ namespace CommunityCoreLibrary
                         var compPowerIdle = thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
                         if( compPowerIdle != null )
                         {
-                            var idlePower = (int)( compPowerTrader.basePowerConsumption * compPowerIdle.idlePowerFactor );
+                            int idlePower;
+                            if( compPowerIdle.idlePowerFactor < 1.0f )
+                            {
+                                idlePower = (int)( compPowerTrader.basePowerConsumption * compPowerIdle.idlePowerFactor );
+                            }
+                            else
+                            {
+                                idlePower = (int) compPowerIdle.idlePowerFactor;
+                            }
                             powerSectionList.Add( new StringDescTriplet( "AutoHelpIdlePower".Translate(), null, idlePower.ToString() ) );
                         }
                     }

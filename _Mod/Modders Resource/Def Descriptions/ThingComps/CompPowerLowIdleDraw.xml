@@ -21,23 +21,27 @@
     
     type (default)  tag                 Details
     
-    float (0)       idlePowerFactor     [optional] Idle-power basePowerConsumption multiplier
+    float (0*)      idlePowerFactor     [optional] Idle-power basePowerConsumption multiplier
     enum (InUse)    operationalMode     [optional] Power switching mode
-    int (*)         cycleLowTicks       [optional] Number of normal ticks to operate in low-power mode
-    int (*)         cycleHighTicks      [optional] Number of normal ticks to operate in high-power mode
+    int (**)        cycleLowTicks       [optional] Number of normal ticks to operate in low-power mode
+    int (**)        cycleHighTicks      [optional] Number of normal ticks to operate in high-power mode
     
-    * These values are variable depending on the operationalMode.  Note that at the end of
+    * If idlePowerFactor is less than 1.0f, then the value is multiplied with the basePowerConsumption
+    to determine the low power usage.  Otherwise, the value is taken as the fixed low power usage (eg,
+    10 is taken as directly as 10 watts).
+    
+    ** These values are variable depending on the operationalMode.  Note that at the end of
     a cycle power may not be switched if the conditions would allow it to stay in that mode.
     The default values are as follows:
         
-        mode        low     high    Example usage
-        InUse       30      500     Work benches
-        WhenNear    30      500     Auto doors
-        Cycle       1000    500     Hydroponics
-        GroupUser** 30      100     Television
-        Factory     30      100     Only works with Building_AutomatedFactory and child classes
+        mode            low     high    Example usage
+        InUse           30      500     Work benches
+        WhenNear        30      500     Auto doors
+        Cycle           1000    500     Hydroponics
+        GroupUser***    30      100     Television
+        Factory         30      100     Only works with Building_AutomatedFactory and child classes
     
-    ** GroupUser requires a JoyGiverDef with matching thingDef and a minRange and maxRange > 0
+    *** GroupUser requires a JoyGiverDef with matching thingDef and a minRange and maxRange > 0
     
     Usage:
     

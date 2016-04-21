@@ -161,7 +161,14 @@ namespace CommunityCoreLibrary
 			BuildScanList();
 
 			// Calculate low-power mode consumption
-			IdlePower = IdleProps.idlePowerFactor * -CompPower.Props.basePowerConsumption;
+            if( IdleProps.idlePowerFactor < 1.0f )
+            {
+			    IdlePower = IdleProps.idlePowerFactor * -CompPower.Props.basePowerConsumption;
+            }
+            else
+            {
+                IdlePower = -IdleProps.idlePowerFactor;
+            }
 			if( IdlePower > MinIdleDraw )
 			{
 				IdlePower = MinIdleDraw;
