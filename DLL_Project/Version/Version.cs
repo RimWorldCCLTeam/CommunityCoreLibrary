@@ -32,7 +32,7 @@ namespace CommunityCoreLibrary
                     // TODO:  Fix issue #30 so we can use proper assembly versioning
                     //System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                     //CCLVersion = assembly.GetName().Version;
-                    versionCurrent = new System.Version( "0.13.0" );
+                    versionCurrent = new System.Version( "0.13.1" );
                 }
                 return versionCurrent;
             }

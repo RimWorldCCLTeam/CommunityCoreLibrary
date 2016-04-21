@@ -199,18 +199,18 @@ namespace CommunityCoreLibrary
             // Aggregate advanced research
             foreach( var a in advancedResearch )
             {
-                recipeDefs.AddRange( a.recipeDefs );
+                recipeDefs.AddRangeUnique( a.recipeDefs );
                 if( researchDefs != null )
                 {
                     if( a.researchDefs.Count == 1 )
                     {
                         // If it's a single research project, add that
-                        researchDefs.Add( a.researchDefs[ 0 ] );
+                        researchDefs.AddUnique( a.researchDefs[ 0 ] );
                     }
                     else
                     {
                         // Add the advanced project instead
-                        researchDefs.Add( a );
+                        researchDefs.AddUnique( a );
                     }
                 }
             }
@@ -243,19 +243,19 @@ namespace CommunityCoreLibrary
             // Aggregate advanced research
             foreach( var a in advancedResearch )
             {
-                recipeDefs.AddRange( a.recipeDefs );
+                recipeDefs.AddRangeUnique( a.recipeDefs );
 
                 if( researchDefs != null )
                 {
                     if( a.researchDefs.Count == 1 )
                     {
                         // If it's a single research project, add that
-                        researchDefs.Add( a.researchDefs[ 0 ] );
+                        researchDefs.AddUnique( a.researchDefs[ 0 ] );
                     }
                     else if( a.ResearchConsolidator != null )
                     {
                         // Add the advanced project instead
-                        researchDefs.Add( a.ResearchConsolidator );
+                        researchDefs.AddUnique( a.ResearchConsolidator );
                     }
                 }
             }
@@ -287,9 +287,9 @@ namespace CommunityCoreLibrary
             // Things it is locked on with research
             var recipeDefs = new List<RecipeDef>();
 
-            recipeDefs.AddRange( thingDef.GetRecipesCurrent() );
-            recipeDefs.AddRange( thingDef.GetRecipesUnlocked( ref nullDefs ) );
-            recipeDefs.AddRange( thingDef.GetRecipesLocked( ref nullDefs ) );
+            recipeDefs.AddRangeUnique( thingDef.GetRecipesCurrent() );
+            recipeDefs.AddRangeUnique( thingDef.GetRecipesUnlocked( ref nullDefs ) );
+            recipeDefs.AddRangeUnique( thingDef.GetRecipesLocked( ref nullDefs ) );
 
             return recipeDefs;
         }

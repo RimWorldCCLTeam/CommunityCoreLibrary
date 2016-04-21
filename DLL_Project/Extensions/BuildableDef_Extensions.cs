@@ -132,7 +132,7 @@ namespace CommunityCoreLibrary
             {
                 if( !buildableDef.researchPrerequisites.Contains( Research.Locker ) )
                 {
-                    researchDefs.AddRange( buildableDef.researchPrerequisites.ConvertAll<Def>( def => (Def)def ) );
+                    researchDefs.AddRangeUnique( buildableDef.researchPrerequisites.ConvertAll<Def>( def => (Def)def ) );
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace CommunityCoreLibrary
                     {
                         foreach( var advancedResearchDef in advancedResearchDefs )
                         {
-                            researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                            researchDefs.AddRangeUnique( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
                         }
                     }
                 }

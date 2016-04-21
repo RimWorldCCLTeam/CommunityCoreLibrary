@@ -282,26 +282,17 @@ namespace CommunityCoreLibrary.Controller
 
         public static void                  RecacheBuildingRecipes( ThingDef def )
         {
-            if( !buildingCache.Contains( def ) )
-            {
-                buildingCache.Add( def );
-            }
+            buildingCache.AddUnique( def );
         }
 
         public static void                  RecacheHelpCategory( HelpCategoryDef def )
         {
-            if( !helpCategoryCache.Contains( def ) )
-            {
-                helpCategoryCache.Add( def );
-            }
+            helpCategoryCache.AddUnique( def );
         }
 
         public static void                  ProcessResearchMod( AdvancedResearchMod mod )
         {
-            if( !researchModCache.Contains( mod ) )
-            {
-                researchModCache.Add( mod );
-            }
+            researchModCache.AddUnique( mod );
         }
 
         #endregion

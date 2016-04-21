@@ -72,7 +72,7 @@ namespace CommunityCoreLibrary
                     Find.DynamicDrawManager.RegisterDrawable( item );
                     if( ThingRequestGroup.HasGUIOverlay.Includes( item.def ) )
                     {
-                        groupList.Add( item );
+                        groupList.AddUnique( item );
                     }
                 }
                 itemShow.Clear();
@@ -100,23 +100,17 @@ namespace CommunityCoreLibrary
 
         public static void                  RegisterForHide( Thing item )
         {
-            if(
-                ( item.def.drawerType != DrawerType.MapMeshOnly )&&
-                ( !itemHide.Contains( item ) )
-            )
+            if( item.def.drawerType != DrawerType.MapMeshOnly )
             {
-                itemHide.Add( item );
+                itemHide.AddUnique( item );
             }
         }
 
         public static void                  RegisterForShow( Thing item )
         {
-            if(
-                ( item.def.drawerType != DrawerType.MapMeshOnly )&&
-                ( !itemShow.Contains( item ) )
-            )
+            if( item.def.drawerType != DrawerType.MapMeshOnly )
             {
-                itemShow.Add( item );
+                itemShow.AddUnique( item );
                 if( itemHide.Contains( item ) )
                 {
                     itemHide.Remove( item );

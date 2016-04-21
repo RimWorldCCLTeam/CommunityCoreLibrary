@@ -32,6 +32,7 @@ These detours are done automatically by CCL and require nothing other than havin
 [li][color=orange]RimWorld.TargetingParameters.CanTarget[/color] - Allows custom doors[sup][size=8pt]5.1[/size][/sup] and custom fire[sup][size=8pt]5.6[/size][/sup] to be properly targeted.[/li]
 [li][color=orange]RimWorld.ThingSelectionUtility.SelectableNow[/color] - Support for CompHideItem to prevent item selection by the player for buildings which should represent containers.[/li]
 [li][color=orange]Verse.BrokenStateWorker_Binging.StateCanOccur[/color] - Allows pawns to binge on any ingestible with the HediffDef Alcohol.[/li]
+[li][color=orange]Verse.CompGlower.ShouldBeLitNow[/color] - Makes the comp CompPowerLowIdleDraw aware and respect CompGlowerToggleable.Lit.[/li]
 [li][color=orange]Verse.CompHeatPusherPowered.ShouldPushHeatNow[/color] - Makes the comp CompPowerLowIdleDraw aware.[/li]
 [li][color=orange]Verse.GenPlace.PlaceSpotQualityAt[/color] - Custom doors[sup][size=8pt]5.1[/size][/sup] have the same restrictions as core doors for items spawning in the same cell (PlaceSpotQuality.Bad).[/li]
 [li][color=orange]Verse.GenSpawn.CanPlaceBlueprintOver[/color] - Removes the hard-coded restriction of steam geysers[sup][size=8pt]4.4[/size][/sup] only allowing geothermal generators.[/li]

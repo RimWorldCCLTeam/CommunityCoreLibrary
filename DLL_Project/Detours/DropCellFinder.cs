@@ -21,13 +21,13 @@ namespace CommunityCoreLibrary.Detour
 
         #region Reflected Internal Methods
 
-        internal static bool                DropCellFinder_IsGoodDropSpot( IntVec3 c )
+        internal static bool                DropCellFinder_IsGoodDropSpot( IntVec3 c, bool allowFogged, bool canRoofPunch )
         {
             if( _DropCellFinder_IsGoodDropSpot == null )
             {
                 _DropCellFinder_IsGoodDropSpot = typeof( DropCellFinder ).GetMethod( "IsGoodDropSpot", BindingFlags.Static | BindingFlags.NonPublic );
             }
-            return (bool)_DropCellFinder_IsGoodDropSpot.Invoke( null, new System.Object[] { c } );
+            return (bool)_DropCellFinder_IsGoodDropSpot.Invoke( null, new System.Object[] { c, allowFogged, canRoofPunch } );
         }
 
         internal static bool                DropCellFinder_AnyAdjacentGoodDropSpot( IntVec3 c, bool allowFogged, bool canRoofPunch )
@@ -49,7 +49,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 if( _IsGoodDropSpot == null )
                 {
-                    _IsGoodDropSpot = new Predicate<IntVec3>( c => DropCellFinder_IsGoodDropSpot( c ) );
+                    _IsGoodDropSpot = new Predicate<IntVec3>( c => DropCellFinder_IsGoodDropSpot( c, false, false ) );
                 }
                 return _IsGoodDropSpot;
             }

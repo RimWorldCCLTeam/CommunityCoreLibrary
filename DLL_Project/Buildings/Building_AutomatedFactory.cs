@@ -671,7 +671,10 @@ namespace CommunityCoreLibrary
             {
                 if(
                     ( allowance.allowed )&&
-                    ( allowance.recipe.researchPrerequisite.IsFinished )&&
+                    (
+                        ( allowance.recipe.researchPrerequisite == null )||
+                        ( allowance.recipe.researchPrerequisite.IsFinished )
+                    )&&
                     ( HasEnoughResourcesInHoppersFor( thingDef ) )
                 )
                 {

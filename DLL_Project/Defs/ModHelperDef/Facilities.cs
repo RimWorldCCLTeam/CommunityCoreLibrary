@@ -38,18 +38,14 @@ namespace CommunityCoreLibrary
                 return false;
             }
 
-            // Is this building already linked?
-            if( !affectedComp.linkableFacilities.Contains( facilityDef ) )
-            {
-                // Add the facility to the building
-                affectedComp.linkableFacilities.Add( facilityDef );
+            // Add the facility to the building
+            affectedComp.linkableFacilities.AddUnique( facilityDef );
 
-                // Is the facility in the dictionary?
-                if( !facilityComps.ContainsKey( facilityDef ) )
-                {
-                    // Add the facility to the dictionary
-                    facilityComps.Add( facilityDef, facilityComp );
-                }
+            // Is the facility in the dictionary?
+            if( !facilityComps.ContainsKey( facilityDef ) )
+            {
+                // Add the facility to the dictionary
+                facilityComps.Add( facilityDef, facilityComp );
             }
 
             // Building is [now] linked to the facility

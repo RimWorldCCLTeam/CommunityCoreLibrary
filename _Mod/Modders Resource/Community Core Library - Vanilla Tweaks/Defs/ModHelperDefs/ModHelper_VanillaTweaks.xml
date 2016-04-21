@@ -6,7 +6,7 @@
 
         <ModName>Community Core Library - Vanilla Tweaks</ModName>
 
-        <minCCLVersion>0.13.0</minCCLVersion>
+        <minCCLVersion>0.13.1</minCCLVersion>
 
         <ThingComps>
 
@@ -58,7 +58,7 @@
             <li>
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <!-- 50 watts idle = 200 * 0.25 -->
+                    <!-- 1/4 power draw when idle -->
                     <idlePowerFactor>0.25</idlePowerFactor>
                     <operationalMode>WhenNear</operationalMode>
                 </compProps>
@@ -70,8 +70,8 @@
             <li>
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <!-- 10 watts idle = 50 * 0.2 -->
-                    <idlePowerFactor>0.2</idlePowerFactor>
+                    <!-- 10 watts idle -->
+                    <idlePowerFactor>10</idlePowerFactor>
                     <operationalMode>WhenNear</operationalMode>
                 </compProps>
                 <targetDefs>
@@ -97,34 +97,12 @@
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <operationalMode>GroupUse</operationalMode>
-                    <!-- 10 watts idle = 200 * 0.05 -->
-                    <idlePowerFactor>0.05</idlePowerFactor>
+                    <!-- 10 watts idle -->
+                    <idlePowerFactor>10</idlePowerFactor>
                 </compProps>
                 <targetDefs>
                     <li>TubeTelevision</li>
-                </targetDefs>
-            </li>
-
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <operationalMode>GroupUse</operationalMode>
-                    <!-- 10 watts idle = 150 * 0.06667 -->
-                    <idlePowerFactor>0.06667</idlePowerFactor>
-                </compProps>
-                <targetDefs>
                     <li>FlatscreenTelevision</li>
-                </targetDefs>
-            </li>
-
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <operationalMode>GroupUse</operationalMode>
-                    <!-- 10 watts idle = 220 * 0.045455 -->
-                    <idlePowerFactor>0.045455</idlePowerFactor>
-                </compProps>
-                <targetDefs>
                     <li>MegascreenTelevision</li>
                 </targetDefs>
             </li>
@@ -143,6 +121,8 @@
                     <li>ElectricTailoringBench</li>
                     <li>HiTechResearchBench</li>
                     <li>TableMachining</li>
+                    <li>MultiAnalyzer</li>
+                    <li>VitalsMonitor</li>
                 </targetDefs>
             </li>
 
@@ -166,6 +146,8 @@
                     <li>TubeTelevision</li>
                     <li>FlatscreenTelevision</li>
                     <li>MegascreenTelevision</li>
+                    <li>MultiAnalyzer</li>
+                    <li>VitalsMonitor</li>
                 </targetDefs>
             </li>
 

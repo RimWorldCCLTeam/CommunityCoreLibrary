@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
             // map terrain
             if ( !biome.terrainsByFertility.NullOrEmpty() )
             {
-                ret.AddRange( biome.terrainsByFertility.Select( t => t.terrain ) );
+                ret.AddRangeUnique( biome.terrainsByFertility.Select( t => t.terrain ) );
             }
 
             // patch maker terrain
@@ -24,7 +24,7 @@ namespace CommunityCoreLibrary
             {
                 foreach ( TerrainPatchMaker patchMaker in biome.terrainPatchMakers )
                 {
-                    ret.AddRange( patchMaker.thresholds.Select( t => t.terrain ) );
+                    ret.AddRangeUnique( patchMaker.thresholds.Select( t => t.terrain ) );
                 }
             }
 

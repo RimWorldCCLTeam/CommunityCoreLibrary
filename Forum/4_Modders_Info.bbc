@@ -52,6 +52,7 @@
 [list]
 [li][color=orange]Automated Factory[/color] - This is used to house the production mode and output vector for Building_AutomatedFactory.[/li]
 [li][color=orange]Colored Lights[/color] - One building can have multiple glower colors defined (or it can use the default internal list of seven colors) and a button will be made available to the user to cycle through the options. The cycle button is hidden until the appropriate research is complete (by default "ColoredLights").  Additionally can program [i]other[/i] lights colors, respecting their own research.  Uses color matching by name so your "red" and my "red" don't have to be the same red but are accepted as "red."[/li]
+[li][color=orange]Glower Toggleable[/color] [size=8pt](internal)[/size] - Allows the glower to be toggled by program code (C#).  This comp will replace CompGlower automatically and does not need to be implemented directly.[/li]
 [li][color=orange]Hide Item[/color] - Hide stored items for storage buildings that represent containers rather than racks.  Functionally, this disables rendering of the item and it's label.  Can optionally prevent players from selecting the items in the building.[/li]
 [li][color=orange]Hopper[/color] - Used as part of the generic hopper system.  Provides hopper-side functions.[/li]
 [li][color=orange]Hopper User[/color] - Used as part of the generic hopper system.  Provides user-side functions.[/li][li][color=orange]Lifespan Powered[/color] - The same function as CompLifespan but, this will only count-down it's life while it is actively powered.[/li]

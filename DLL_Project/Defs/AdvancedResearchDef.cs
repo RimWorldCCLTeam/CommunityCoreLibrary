@@ -625,10 +625,10 @@ namespace CommunityCoreLibrary
                         buildingDef.recipes.Remove( recipeDef );
 
                     }
-                    else if( !buildingDef.recipes.Contains( recipeDef ) )
+                    else
                     {
                         // Add recipe to the building
-                        buildingDef.recipes.Add( recipeDef );
+                        buildingDef.recipes.AddUnique( recipeDef );
                     }
                 }
 
@@ -660,10 +660,10 @@ namespace CommunityCoreLibrary
                         // Hide plant
                         plantDef.plant.sowTags.Remove( sowTag );
                     }
-                    else if( !plantDef.plant.sowTags.Contains( sowTag ) )
+                    else
                     {
                         // Show the plant
-                        plantDef.plant.sowTags.Add( sowTag );
+                        plantDef.plant.sowTags.AddUnique( sowTag );
                     }
                 }
             }
@@ -701,32 +701,20 @@ namespace CommunityCoreLibrary
                     if( unlockARDs.NullOrEmpty() )
                     {
                         // No unlockers, use locker
-                        researchProject.prerequisites.Add( Research.Locker );
+                        researchProject.prerequisites.AddUnique( Research.Locker );
                     }
                     else
                     {
                         foreach( var unlockARD in unlockARDs )
                         {
-                            foreach( var project in unlockARD.researchDefs )
-                            {
-                                if( !researchProject.prerequisites.Contains( project ) )
-                                {
-                                    researchProject.prerequisites.Add( project );
-                                }
-                            }
+                            researchProject.prerequisites.AddRange( unlockARD.researchDefs );
                         }
                     }
                 }
                 else if( !HideDefs )
                 {
                     // Unlocked, use this ARDs prerequisites
-                    foreach( var project in researchDefs )
-                    {
-                        if( !researchProject.prerequisites.Contains( project ) )
-                        {
-                            researchProject.prerequisites.Add( project );
-                        }
-                    }
+                    researchProject.prerequisites.AddRange( researchDefs );
                 }
 
 #if DEVELOPER
@@ -862,7 +850,7 @@ namespace CommunityCoreLibrary
                 ( IsBuildingToggle )
             )
             {
-                thingdefs.AddRange( thingDefs );
+                thingdefs.AddRangeUnique( thingDefs );
             }
 
             // Look in matching research
@@ -875,7 +863,7 @@ namespace CommunityCoreLibrary
                         ( a.IsBuildingToggle )
                     )
                     {
-                        thingdefs.AddRange( a.thingDefs );
+                        thingdefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }
@@ -899,7 +887,7 @@ namespace CommunityCoreLibrary
                 ( IsBuildingToggle )
             )
             {
-                thingdefs.AddRange( thingDefs );
+                thingdefs.AddRangeUnique( thingDefs );
             }
 
             // Look in matching research
@@ -912,7 +900,7 @@ namespace CommunityCoreLibrary
                         ( a.IsBuildingToggle )
                     )
                     {
-                        thingdefs.AddRange( a.thingDefs );
+                        thingdefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }
@@ -940,10 +928,10 @@ namespace CommunityCoreLibrary
                 ( IsRecipeToggle )
             )
             {
-                recipedefs.AddRange( recipeDefs );
+                recipedefs.AddRangeUnique( recipeDefs );
                 if( thingdefs != null )
                 {
-                    thingdefs.AddRange( thingDefs );
+                    thingdefs.AddRangeUnique( thingDefs );
                 }
             }
 
@@ -957,10 +945,10 @@ namespace CommunityCoreLibrary
                         ( a.IsRecipeToggle )
                     )
                     {
-                        recipedefs.AddRange( a.recipeDefs );
+                        recipedefs.AddRangeUnique( a.recipeDefs );
                         if( thingdefs != null )
                         {
-                            thingdefs.AddRange( a.thingDefs );
+                            thingdefs.AddRangeUnique( a.thingDefs );
                         }
                     }
                 }
@@ -989,10 +977,10 @@ namespace CommunityCoreLibrary
                 ( IsRecipeToggle )
             )
             {
-                recipedefs.AddRange( recipeDefs );
+                recipedefs.AddRangeUnique( recipeDefs );
                 if( thingdefs != null )
                 {
-                    thingdefs.AddRange( thingDefs );
+                    thingdefs.AddRangeUnique( thingDefs );
                 }
             }
 
@@ -1004,10 +992,10 @@ namespace CommunityCoreLibrary
                     ( a.IsRecipeToggle )
                 )
                 {
-                    recipedefs.AddRange( a.recipeDefs );
+                    recipedefs.AddRangeUnique( a.recipeDefs );
                     if( thingdefs != null )
                     {
-                        thingdefs.AddRange( a.thingDefs );
+                        thingdefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }
@@ -1035,10 +1023,10 @@ namespace CommunityCoreLibrary
                 ( IsPlantToggle )
             )
             {
-                sowtags.AddRange( sowTags );
+                sowtags.AddRangeUnique( sowTags );
                 if( thingdefs != null )
                 {
-                    thingdefs.AddRange( thingDefs );
+                    thingdefs.AddRangeUnique( thingDefs );
                 }
             }
 
@@ -1052,10 +1040,10 @@ namespace CommunityCoreLibrary
                         ( a.IsPlantToggle )
                     )
                     {
-                        sowtags.AddRange( a.sowTags );
+                        sowtags.AddRangeUnique( a.sowTags );
                         if( thingdefs != null )
                         {
-                            thingdefs.AddRange( a.thingDefs );
+                            thingdefs.AddRangeUnique( a.thingDefs );
                         }
                     }
                 }
@@ -1084,10 +1072,10 @@ namespace CommunityCoreLibrary
                 ( IsPlantToggle )
             )
             {
-                sowtags.AddRange( sowTags );
+                sowtags.AddRangeUnique( sowTags );
                 if( thingdefs != null )
                 {
-                    thingdefs.AddRange( thingDefs );
+                    thingdefs.AddRangeUnique( thingDefs );
                 }
             }
 
@@ -1101,10 +1089,10 @@ namespace CommunityCoreLibrary
                         ( a.IsPlantToggle )
                     )
                     {
-                        sowtags.AddRange( a.sowTags );
+                        sowtags.AddRangeUnique( a.sowTags );
                         if( thingdefs != null )
                         {
-                            thingdefs.AddRange( a.thingDefs );
+                            thingdefs.AddRangeUnique( a.thingDefs );
                         }
                     }
                 }
@@ -1129,7 +1117,7 @@ namespace CommunityCoreLibrary
                 ( IsResearchToggle )
             )
             {
-                researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                researchdefs.AddRangeUnique( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
             }
 
             // Look in matching research
@@ -1142,7 +1130,7 @@ namespace CommunityCoreLibrary
                         ( a.IsResearchToggle )
                     )
                     {
-                        researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                        researchdefs.AddRangeUnique( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
                     }
                 }
             }
@@ -1166,7 +1154,7 @@ namespace CommunityCoreLibrary
                 ( IsResearchToggle )
             )
             {
-                researchdefs.AddRange( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                researchdefs.AddRangeUnique( effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
             }
 
             // Look in matching research
@@ -1179,7 +1167,7 @@ namespace CommunityCoreLibrary
                         ( a.IsResearchToggle )
                     )
                     {
-                        researchdefs.AddRange( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
+                        researchdefs.AddRangeUnique( a.effectedResearchDefs.ConvertAll<Def>( def => (Def)def ) );
                     }
                 }
             }

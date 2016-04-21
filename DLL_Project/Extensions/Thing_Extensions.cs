@@ -174,7 +174,7 @@ namespace CommunityCoreLibrary
                 var things = thing.ListSameThingDefInCell( cell );
                 if( !things.NullOrEmpty() )
                 {
-                    list.AddRange( things );
+                    list.AddRangeUnique( things );
                 }
             }
 
@@ -198,7 +198,7 @@ namespace CommunityCoreLibrary
                 var things = thing.ListSameGraphicLinkerInCell( cell );
                 if( !things.NullOrEmpty() )
                 {
-                    list.AddRange( things );
+                    list.AddRangeUnique( things );
                 }
             }
 
@@ -223,7 +223,7 @@ namespace CommunityCoreLibrary
                 if( ( things != null )&&
                     ( things.Count > 0 ) )
                 {
-                    list.AddRange( things );
+                    list.AddRangeUnique( things );
                 }
             }
 

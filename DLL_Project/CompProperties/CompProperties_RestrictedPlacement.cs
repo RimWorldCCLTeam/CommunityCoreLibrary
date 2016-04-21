@@ -59,7 +59,7 @@ namespace CommunityCoreLibrary
                     // Add xml defined terrain
                     if( !terrainDefs.NullOrEmpty() )
                     {
-                        restrictedTerrain.AddRange( terrainDefs );
+                        restrictedTerrain.AddRangeUnique( terrainDefs );
                     }
 
                     // Now check for auto-adds
@@ -71,7 +71,7 @@ namespace CommunityCoreLibrary
                             );
                         if( !roughStone.NullOrEmpty() )
                         {
-                            restrictedTerrain.AddRange( roughStone );
+                            restrictedTerrain.AddRangeUnique( roughStone );
                         }
                     }
 
@@ -83,7 +83,7 @@ namespace CommunityCoreLibrary
                             );
                         if( !smoothStone.NullOrEmpty() )
                         {
-                            restrictedTerrain.AddRange( smoothStone );
+                            restrictedTerrain.AddRangeUnique( smoothStone );
                         }
                     }
 
@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary
                     // Add xml defined things
                     if( !thingDefs.NullOrEmpty() )
                     {
-                        restrictedThing.AddRange( thingDefs );
+                        restrictedThing.AddRangeUnique( thingDefs );
                     }
                 }
                 return restrictedThing;
