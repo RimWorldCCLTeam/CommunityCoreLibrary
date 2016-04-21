@@ -18,6 +18,8 @@ namespace CommunityCoreLibrary
 			public string Label;
 			public ModConfigurationMenu worker;
 
+            public bool OpenedThisSession;
+
             private string _key;
             public string key
             {
@@ -36,6 +38,7 @@ namespace CommunityCoreLibrary
 				this.Label = "?";
 				this.worker = null;
                 this._key = "";
+                this.OpenedThisSession = false;
 			}
 
 			public MenuWorkers( string Label, ModConfigurationMenu worker )
@@ -43,6 +46,7 @@ namespace CommunityCoreLibrary
 				this.Label = Label;
 				this.worker = worker;
                 this._key = "";
+                this.OpenedThisSession = false;
 			}
 
 			public void ExposeData()
@@ -249,35 +253,41 @@ namespace CommunityCoreLibrary
 			{
 				// Get menu to work with
 				var menu = allMenus[ index ];
-				var filePath = MCMFilePath( menu );
 
-				// Open it for writing
-				try
-				{
-					Scribe.InitWriting( filePath, "ModConfigurationData" );
-					if( Scribe.mode == LoadSaveMode.Saving )
-					{
-						// Write this library version as the one saved with
-						string version = Version.Current.ToString();
-						Scribe_Values.LookValue<string>( ref version, "ccl_version" );
+                if( menu.OpenedThisSession )
+                {
+    				var filePath = MCMFilePath( menu );
 
-						// Call the worker scribe
-						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.key );
-					}
-				}
-				catch( Exception e )
-				{
-					CCL_Log.Trace(
-						Verbosity.NonFatalErrors,
-						string.Format( "Unexpected error scribing data for mod {0}\n{1}", menu.Label, e.ToString() ),
-						"Mod Configuration Menu" );
-				}
-				finally
-				{
-					// Finish
-					Scribe.FinalizeWriting();
-					Scribe.mode = LoadSaveMode.Inactive;
-				}
+    				// Open it for writing
+    				try
+    				{
+    					Scribe.InitWriting( filePath, "ModConfigurationData" );
+    					if( Scribe.mode == LoadSaveMode.Saving )
+    					{
+    						// Write this library version as the one saved with
+    						string version = Version.Current.ToString();
+    						Scribe_Values.LookValue<string>( ref version, "ccl_version" );
+
+    						// Call the worker scribe
+    						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.key );
+    					}
+    				}
+    				catch( Exception e )
+    				{
+    					CCL_Log.Trace(
+    						Verbosity.NonFatalErrors,
+    						string.Format( "Unexpected error scribing data for mod {0}\n{1}", menu.Label, e.ToString() ),
+    						"Mod Configuration Menu" );
+    				}
+    				finally
+    				{
+    					// Finish
+    					Scribe.FinalizeWriting();
+    					Scribe.mode = LoadSaveMode.Inactive;
+                        Messages.Message( "ModConfigurationSaved".Translate( menu.Label ), MessageSound.Standard );
+    				}
+                }
+                menu.OpenedThisSession = false;
 			}
 
 		}
@@ -469,6 +479,7 @@ namespace CommunityCoreLibrary
             }
             if( PreviouslySelectedMenu != SelectedMenu )
             {
+                SelectedMenu.OpenedThisSession = true;
                 SelectedMenu.worker.PreOpen();
             }
             PreviouslySelectedMenu = SelectedMenu;
