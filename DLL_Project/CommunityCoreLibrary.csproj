@@ -243,6 +243,7 @@
     <Compile Include="CompProperties\CompProperties_MilkableRenameable.cs" />
     <Compile Include="ThingComps\CompMilkableRenameable.cs" />
     <Compile Include="Detours\MainTabWindow_Research.cs" />
+    <Compile Include="Extensions\List_Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

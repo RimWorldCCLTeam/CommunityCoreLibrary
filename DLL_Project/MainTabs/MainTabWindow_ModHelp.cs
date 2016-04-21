@@ -166,10 +166,7 @@ namespace CommunityCoreLibrary
 
             public void AddCategory( HelpCategoryDef def )
             {
-                if( !_helpCategories.Contains( def ) )
-                {
-                    _helpCategories.Add( def );
-                }
+                _helpCategories.AddUnique( def );
             }
         }
 

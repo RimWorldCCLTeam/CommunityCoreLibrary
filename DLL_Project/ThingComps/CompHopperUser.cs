@@ -571,10 +571,7 @@ namespace CommunityCoreLibrary
             {
                 if( !hopper.WasProgrammed )
                 {
-                    if( !freeHoppers.Contains( hopper ) )
-                    {
-                        freeHoppers.Add( hopper );
-                    }
+                    freeHoppers.AddUnique( hopper );
                 }
                 else
                 {
@@ -980,7 +977,7 @@ namespace CommunityCoreLibrary
                 var hopperResources = hopper.GetAllResources( ResourceSettings.filter );
                 if( hopperResources != null )
                 {
-                    allResources.AddRange( hopperResources );
+                    allResources.AddRangeUnique( hopperResources );
                 }
             }
 
@@ -1042,7 +1039,7 @@ namespace CommunityCoreLibrary
                 var hopperResources = hopper.GetAllResources( ResourceSettings.filter );
                 if( hopperResources != null )
                 {
-                    allResources.AddRange( hopperResources );
+                    allResources.AddRangeUnique( hopperResources );
                 }
             }
 

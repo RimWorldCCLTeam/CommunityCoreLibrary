@@ -1946,10 +1946,13 @@ namespace CommunityCoreLibrary
 
             #region Milking products
 
-            if( kindDef.race.HasComp( typeof( CompMilkable ) ) )
+            // Need to handle subclasses (such as CompMilkableRenameable)
+            var milkComp = kindDef.race.comps.Find( c => (
+                ( c.compClass == typeof( CompMilkable ) )||
+                ( c.compClass.IsSubclassOf( typeof( CompMilkable ) ) )
+            ) ) as CompProperties_Milkable;
+            if( milkComp != null )
             {
-                var milkComp = kindDef.race.GetCompProperties<CompProperties_Milkable>();
-
                 defs.Add( milkComp.milkDef );
                 prefixes.Add( milkComp.milkAmount.ToString() );
                 suffixes.Add( "AutoHelpEveryX".Translate( ( (float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
@@ -1968,24 +1971,16 @@ namespace CommunityCoreLibrary
 
             #region Shearing products
 
-            // Need to handle subclasses (such as CompShearableRenameable <-- May be obsoleted in A13)
-            /*
+            // Need to handle subclasses (such as CompShearableRenameable)
             var shearComp = kindDef.race.comps.Find( c => (
                 ( c.compClass == typeof( CompShearable ) )||
                 ( c.compClass.IsSubclassOf( typeof( CompShearable ) ) )
-            ) );
+            ) ) as CompProperties_Shearable;
             if( shearComp != null )
-            */
-            if( kindDef.race.HasComp( typeof( CompShearable ) ) )
             {
-                //defs.Add( shearComp.woolDef );
-                //prefixes.Add( shearComp.woolAmount.ToString() );
-                //suffixes.Add( "AutoHelpEveryX".Translate( ( (float)shearComp.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproximateTimePeriod() ) );
-
-                var props = kindDef.race.GetCompProperties<CompProperties_Shearable>();
-                defs.Add( props.woolDef );
-                prefixes.Add( props.woolAmount.ToString() );
-                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)props.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
+                defs.Add( shearComp.woolDef );
+                prefixes.Add( shearComp.woolAmount.ToString() );
+                suffixes.Add( "AutoHelpEveryX".Translate( ( (float)shearComp.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear ).ToStringApproxAge() ) );
 
                 linkParts.Add( new HelpDetailSection(
                                    "AutoHelpListShear".Translate(),

@@ -219,7 +219,7 @@ namespace CommunityCoreLibrary
             {
                 if ( !researchProjectDef.prerequisites.Contains( Research.Locker ) )
                 {
-                    researchDefs.AddRange( researchProjectDef.prerequisites.ConvertAll<Def>( def => (Def)def ) );
+                    researchDefs.AddRangeUnique( researchProjectDef.prerequisites.ConvertAll<Def>( def => (Def)def ) );
                 }
                 else
                 {
@@ -233,7 +233,7 @@ namespace CommunityCoreLibrary
                     {
                         foreach ( var advancedResearchDef in advancedResearchDefs )
                         {
-                            researchDefs.AddRange( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                            researchDefs.AddRangeUnique( advancedResearchDef.researchDefs.ConvertAll<Def>( def => (Def)def ) );
                         }
                     }
                 }
@@ -255,7 +255,7 @@ namespace CommunityCoreLibrary
             var researchDefs = new List<Def>();
 
             //CCL_Log.Message("Normal");
-            researchDefs.AddRange( DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where( rd => rd.prerequisites.Contains( researchProjectDef ) ).ToList().ConvertAll<Def>( def => (Def)def ) );
+            researchDefs.AddRangeUnique( DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where( rd => rd.prerequisites.Contains( researchProjectDef ) ).ToList().ConvertAll<Def>( def => (Def)def ) );
 
             //CCL_Log.Message("Advanced");
             // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
@@ -265,7 +265,7 @@ namespace CommunityCoreLibrary
                  ( a.researchDefs.Contains( researchProjectDef ) )
              ) ).ToList();
 
-            researchDefs.AddRange( advancedResearchDefs.SelectMany( ar => ar.effectedResearchDefs ).ToList().ConvertAll<Def>( Def => (Def)Def ) );
+            researchDefs.AddRangeUnique( advancedResearchDefs.SelectMany( ar => ar.effectedResearchDefs ).ToList().ConvertAll<Def>( Def => (Def)Def ) );
 
             return researchDefs;
         }
@@ -294,7 +294,7 @@ namespace CommunityCoreLibrary
             {
                 foreach ( var a in advancedResearch )
                 {
-                    researchDefs.AddRange( a.researchDefs.ConvertAll<Def>( def => (Def)def ) );
+                    researchDefs.AddRangeUnique( a.researchDefs.ConvertAll<Def>( def => (Def)def ) );
                 }
             }
 
@@ -320,7 +320,7 @@ namespace CommunityCoreLibrary
 
             if ( !researchThings.NullOrEmpty() )
             {
-                thingsOn.AddRange( researchThings );
+                thingsOn.AddRangeUnique( researchThings );
             }
 
             // Look in advanced research too
@@ -336,7 +336,7 @@ namespace CommunityCoreLibrary
             {
                 foreach ( var a in advancedResearch )
                 {
-                    thingsOn.AddRange( a.thingDefs );
+                    thingsOn.AddRangeUnique( a.thingDefs );
                 }
             }
 
@@ -362,7 +362,7 @@ namespace CommunityCoreLibrary
 
             if ( !researchThings.NullOrEmpty() )
             {
-                thingsOn.AddRange( researchThings );
+                thingsOn.AddRangeUnique( researchThings );
             }
 
             return thingsOn;
@@ -389,17 +389,28 @@ namespace CommunityCoreLibrary
                 ( d.researchPrerequisite == researchProjectDef )
             ) ).ToList();
 
-            if ( !researchRecipes.NullOrEmpty() )
+            if( !researchRecipes.NullOrEmpty() )
             {
-                recipes.AddRange( researchRecipes );
+                recipes.AddRangeUnique( researchRecipes );
             }
 
             if ( thingDefs != null )
             {
                 // Add buildings for those recipes
-                foreach ( var r in recipes )
+                foreach( var r in recipes )
                 {
-                    thingDefs.AddRange( r.recipeUsers );
+                    if( !r.recipeUsers.NullOrEmpty() )
+                    {
+                        thingDefs.AddRangeUnique( r.recipeUsers );
+                    }
+                    var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( d => (
+                        ( !d.recipes.NullOrEmpty() )&&
+                        ( d.recipes.Contains( r ) )
+                    ) ).ToList();
+                    if( !recipeThings.NullOrEmpty() )
+                    {
+                        thingDefs.AddRangeUnique( recipeThings );
+                    }
                 }
             }
 
@@ -412,14 +423,14 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate research
-            if ( !advancedResearch.NullOrEmpty() )
+            if( !advancedResearch.NullOrEmpty() )
             {
-                foreach ( var a in advancedResearch )
+                foreach( var a in advancedResearch )
                 {
-                    recipes.AddRange( a.recipeDefs );
-                    if ( thingDefs != null )
+                    recipes.AddRangeUnique( a.recipeDefs );
+                    if( thingDefs != null )
                     {
-                        thingDefs.AddRange( a.thingDefs );
+                        thingDefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }
@@ -456,10 +467,10 @@ namespace CommunityCoreLibrary
             {
                 foreach ( var a in advancedResearch )
                 {
-                    recipes.AddRange( a.recipeDefs );
+                    recipes.AddRangeUnique( a.recipeDefs );
                     if ( thingDefs != null )
                     {
-                        thingDefs.AddRange( a.thingDefs );
+                        thingDefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }
@@ -482,6 +493,25 @@ namespace CommunityCoreLibrary
                 thingDefs.Clear();
             }
 
+            // Add all plants using this research project
+            var researchPlants = DefDatabase<ThingDef>.AllDefsListForReading.Where( d => (
+                ( d.plant != null )&&
+                ( !d.plant.sowResearchPrerequisites.NullOrEmpty() )&&
+                ( d.plant.sowResearchPrerequisites.Contains( researchProjectDef ) )
+            ) ).ToList();
+
+            if( !researchPlants.NullOrEmpty() )
+            {
+                foreach( var plant in researchPlants )
+                {
+                    sowTags.AddRangeUnique( plant.plant.sowTags );
+                }
+                if( thingDefs != null )
+                {
+                    thingDefs.AddRangeUnique( researchPlants );
+                }
+            }
+
             // Look in advanced research to add plants and sow tags it unlocks
             var advancedResearch = Controller.Data.AdvancedResearchDefs.Where( a => (
                 ( a.IsPlantToggle )&&
@@ -495,10 +525,10 @@ namespace CommunityCoreLibrary
             {
                 foreach ( var a in advancedResearch )
                 {
-                    sowTags.AddRange( a.sowTags );
+                    sowTags.AddRangeUnique( a.sowTags );
                     if ( thingDefs != null )
                     {
-                        thingDefs.AddRange( a.thingDefs );
+                        thingDefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }
@@ -534,10 +564,10 @@ namespace CommunityCoreLibrary
             {
                 foreach ( var a in advancedResearch )
                 {
-                    sowTags.AddRange( a.sowTags );
+                    sowTags.AddRangeUnique( a.sowTags );
                     if ( thingDefs != null )
                     {
-                        thingDefs.AddRange( a.thingDefs );
+                        thingDefs.AddRangeUnique( a.thingDefs );
                     }
                 }
             }

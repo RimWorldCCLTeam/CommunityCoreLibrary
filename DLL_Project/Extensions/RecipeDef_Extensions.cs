@@ -113,7 +113,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                thingsOn.AddRange( recipeDef.recipeUsers );
+                thingsOn.AddRangeUnique( recipeDef.recipeUsers );
             }
 
             var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
@@ -125,7 +125,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( var a in advancedResearchDefs )
                 {
-                    thingsOn.AddRange( a.thingDefs );
+                    thingsOn.AddRangeUnique( a.thingDefs );
                 }
             }
             // Now check for an absolute requirement
@@ -150,7 +150,7 @@ namespace CommunityCoreLibrary
             if( recipeDef.researchPrerequisite != null )
             {
                 // Basic requirement
-                researchDefs.Add( recipeDef.researchPrerequisite );
+                researchDefs.AddUnique( recipeDef.researchPrerequisite );
 
                 // Advanced requirement
                 var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
@@ -163,7 +163,7 @@ namespace CommunityCoreLibrary
                 {
                     foreach( var a in advancedResearchDefs )
                     {
-                        researchDefs.Add( a );
+                        researchDefs.AddUnique( a );
                     }
                 }
 
@@ -179,13 +179,13 @@ namespace CommunityCoreLibrary
 
             if( !recipeThings.NullOrEmpty() )
             {
-                thingsOn.AddRange( recipeThings );
+                thingsOn.AddRangeUnique( recipeThings );
             }
 
             // Add those linked via the recipe
             if( !recipeDef.recipeUsers.NullOrEmpty() )
             {
-                thingsOn.AddRange( recipeDef.recipeUsers );
+                thingsOn.AddRangeUnique( recipeDef.recipeUsers );
             }
 
             // Make sure they all have hard requirements
@@ -196,7 +196,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( var t in thingsOn )
                 {
-                    researchDefs.AddRange( t.GetResearchRequirements() );
+                    researchDefs.AddRangeUnique( t.GetResearchRequirements() );
                 }
             }
 
@@ -245,10 +245,10 @@ namespace CommunityCoreLibrary
 
             if( recipeDef.researchPrerequisite != null )
             {
-                thingDefs.AddRange( recipeDef.recipeUsers );
+                thingDefs.AddRangeUnique( recipeDef.recipeUsers );
                 if( researchDefs != null )
                 {
-                    researchDefs.Add( recipeDef.researchPrerequisite );
+                    researchDefs.AddUnique( recipeDef.researchPrerequisite );
                 }
             }
 
@@ -264,19 +264,19 @@ namespace CommunityCoreLibrary
             {
                 foreach( var a in advancedResearch )
                 {
-                    thingDefs.AddRange( a.thingDefs );
+                    thingDefs.AddRangeUnique( a.thingDefs );
 
                     if( researchDefs != null )
                     {
                         if( a.researchDefs.Count == 1 )
                         {
                             // If it's a single research project, add that
-                            researchDefs.Add( a.researchDefs[ 0 ] );
+                            researchDefs.AddUnique( a.researchDefs[ 0 ] );
                         }
                         else
                         {
                             // Add the advanced project instead
-                            researchDefs.Add( a );
+                            researchDefs.AddUnique( a );
                         }
                     }
                 }
@@ -311,19 +311,19 @@ namespace CommunityCoreLibrary
             // Aggregate advanced research
             foreach( var a in advancedResearch )
             {
-                thingDefs.AddRange( a.thingDefs );
+                thingDefs.AddRangeUnique( a.thingDefs );
 
                 if( researchDefs != null )
                 {
                     if( a.researchDefs.Count == 1 )
                     {
                         // If it's a single research project, add that
-                        researchDefs.Add( a.researchDefs[ 0 ] );
+                        researchDefs.AddUnique( a.researchDefs[ 0 ] );
                     }
                     else if( a.ResearchConsolidator != null )
                     {
                         // Add the advanced project instead
-                        researchDefs.Add( a.ResearchConsolidator );
+                        researchDefs.AddUnique( a.ResearchConsolidator );
                     }
                 }
             }
