@@ -20,13 +20,7 @@ namespace CommunityCoreLibrary
         
         CompProperties_ColoredLight         ColorProps;
 
-        public CompGlower                   CompGlower
-        {
-            get
-            {
-                return parent.TryGetComp< CompGlower >();
-            }
-        }
+        public CompGlower                   CompGlower;
 
         #endregion
 
@@ -107,6 +101,7 @@ namespace CommunityCoreLibrary
             base.PostSpawnSetup();
             
             // Get the default glower
+            CompGlower = parent.TryGetComp< CompGlower >();
 #if DEBUG
             if( CompGlower == null )
             {

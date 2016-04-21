@@ -245,6 +245,7 @@
     <Compile Include="Detours\MainTabWindow_Research.cs" />
     <Compile Include="Extensions\List_Extensions.cs" />
     <Compile Include="Detours\CompGlower.cs" />
+    <Compile Include="ThingComps\CompGlowerToggleable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

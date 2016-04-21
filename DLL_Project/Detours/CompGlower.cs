@@ -44,6 +44,14 @@ namespace CommunityCoreLibrary.Detour
             {
                 return false;
             }
+            var toggleableComp      = obj as CompGlowerToggleable;
+            if(
+                ( toggleableComp != null )&&
+                ( toggleableComp.Lit == false )
+            )
+            {
+                return false;
+            }
             var powerComp           = obj.powerComp();
             var lowPowerComp        = obj.lowPowerComp();
             var flickableComp       = obj.flickableComp();

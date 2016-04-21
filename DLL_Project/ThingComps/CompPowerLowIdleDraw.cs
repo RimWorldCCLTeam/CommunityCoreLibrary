@@ -14,7 +14,6 @@ namespace CommunityCoreLibrary
 
 		#region Instance Data
 
-		CompPowerTrader PowerTrader;
 		List<IntVec3> scanPosition;
 		Pawn curUser;
 		Job curJob;
@@ -30,25 +29,12 @@ namespace CommunityCoreLibrary
 
 		public CompProperties_LowIdleDraw IdleProps;
 
+        private CompGlower              CompGlower;
+        private CompPowerTrader         CompPower;
+
 		#endregion
 
 		#region Comp Getters
-
-		CompGlower CompGlower
-		{
-			get
-			{
-				return parent.TryGetComp<CompGlower>();
-			}
-		}
-
-		CompPowerTrader CompPowerTrader
-		{
-			get
-			{
-				return parent.TryGetComp<CompPowerTrader>();
-			}
-		}
 
 		Building_AutomatedFactory AutomatedFactory
 		{
@@ -66,7 +52,7 @@ namespace CommunityCoreLibrary
 		{
 			get
 			{
-				return !( PowerTrader.PowerOutput < IdlePower );
+				return !( CompPower.PowerOutput < IdlePower );
 			}
 		}
 
@@ -93,15 +79,18 @@ namespace CommunityCoreLibrary
 		{
 			base.PostSpawnSetup();
 
+            // Get the glower comp
+            CompGlower = parent.TryGetComp<CompGlower>();
+
 			// Get the power comp
-			PowerTrader = CompPowerTrader;
+            CompPower = parent.TryGetComp<CompPowerTrader>();
 #if DEBUG
-            if( PowerTrader == null )
+            if( CompPower == null )
             {
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Missing CompPowerTrader",
+                    "Missing CompPower",
                     "CompPowerLowIdleDraw"
                 );
                 return;
@@ -172,7 +161,7 @@ namespace CommunityCoreLibrary
 			BuildScanList();
 
 			// Calculate low-power mode consumption
-			IdlePower = IdleProps.idlePowerFactor * -PowerTrader.Props.basePowerConsumption;
+			IdlePower = IdleProps.idlePowerFactor * -CompPower.Props.basePowerConsumption;
 			if( IdlePower > MinIdleDraw )
 			{
 				IdlePower = MinIdleDraw;
@@ -187,14 +176,14 @@ namespace CommunityCoreLibrary
 			}
 
 			// Set power usage
-			PowerTrader.PowerOutput = curPower;
+			CompPower.PowerOutput = curPower;
 		}
 
 		public override void CompTick()
 		{
 			base.CompTick();
 
-			if( !CompPowerTrader.PowerOn )
+			if( !CompPower.PowerOn )
 			{
 				return;
 			}
@@ -212,7 +201,7 @@ namespace CommunityCoreLibrary
 		{
 			base.CompTickRare();
 
-			if( !CompPowerTrader.PowerOn )
+			if( !CompPower.PowerOn )
 			{
 				return;
 			}
@@ -411,7 +400,7 @@ namespace CommunityCoreLibrary
 			)
 			{
 				// Glower on while idle???
-				CompGlower.UpdateLit();
+                ToggleGlower( false );
 			}
 		}
 
@@ -420,15 +409,15 @@ namespace CommunityCoreLibrary
 			if( LowPowerMode )
 			{
 				// Is idle, power up
-				curPower = -PowerTrader.Props.basePowerConsumption;
-				PowerTrader.PowerOutput = curPower;
+				curPower = -CompPower.Props.basePowerConsumption;
+				CompPower.PowerOutput = curPower;
 				keepOnTicks = IdleProps.cycleHighTicks;
 			}
 			else
 			{
 				// Is not idle, power down
 				curPower = IdlePower;
-				PowerTrader.PowerOutput = curPower;
+				CompPower.PowerOutput = curPower;
 				keepOnTicks = IdleProps.cycleLowTicks;
 				curUser = null;
 				curJob = null;
@@ -445,7 +434,7 @@ namespace CommunityCoreLibrary
 		void ToggleGlower( bool turnItOn )
 		{
 			if(
-				( IdleProps.operationalMode == LowIdleDrawMode.Cycle ) &&
+				( IdleProps.operationalMode == LowIdleDrawMode.Cycle )&&
 				( !turnItOn )
 			)
 			{
@@ -454,6 +443,11 @@ namespace CommunityCoreLibrary
 			}
 
 			// Toggle and update glow grid
+            var toggleableGlower = CompGlower as CompGlowerToggleable;
+            if( toggleableGlower != null )
+            {
+                toggleableGlower.Lit = turnItOn;
+            }
 			CompGlower.UpdateLit();
 		}
 

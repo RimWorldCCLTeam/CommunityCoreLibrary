@@ -15,68 +15,14 @@ namespace CommunityCoreLibrary
         public override bool                Inject()
         {
 #if DEVELOPER
-            CCL_Log.Write( "All Types:" );
-            foreach( var type in Controller.Data.Assembly_CSharp.GetTypes() )
-            {
-                var str = "\n\t" + type.FullName;
-                str += "\n\t\tFields:";
-                foreach( var entity in type.GetFields( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
-                {
-                    str += "\n\t\t\t" + entity.Name;
-                    if( entity.IsStatic )
-                        str += " (Static)";
-                    else
-                        str += " (Instance)";
-                    if( entity.IsPrivate ) str += " (NonPublic)";
-                    if( entity.IsPublic ) str += " (Public)";
-                }
-                str += "\n\t\tProperties:";
-                foreach( var entity in type.GetProperties( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
-                {
-                    str += "\n\t\t\t" + entity.Name;
-                    var method = entity.GetGetMethod();
-                    if( method != null )
-                    {
-                        str += " (Public Get)";
-                    }
-                    else
-                    {
-                        method = entity.GetGetMethod( true );
-                        if( method != null ) str += " (NonPublic Get)";
-                    }
-                    method = entity.GetSetMethod();
-                    if( method != null )
-                    {
-                        str += " (Public Set)";
-                    }
-                    else
-                    {
-                        method = entity.GetSetMethod( true );
-                        if( method != null ) str += " (NonPublic Set)";
-                    }
-                }
-                str += "\n\t\tMethods:";
-                foreach( var entity in type.GetMethods( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
-                {
-                    str += "\n\t\t\t" + entity.Name;
-                    if( entity.IsStatic )
-                        str += " (Static)";
-                    else
-                        str += " (Instance)";
-                    if( entity.IsPrivate ) str += " (NonPublic)";
-                    if( entity.IsPublic ) str += " (Public)";
-                }
-                CCL_Log.Write( str );
-            }
+            DumpAllTypesFieldsPropertiesAndMethods();
 #endif
+
             // Make sure custom doors are region barriers
-            foreach( var doorDef in DefDatabase<ThingDef>.AllDefs.Where( def => (
-                ( def.thingClass == typeof( Building_Door ) )||
-                ( def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
-            ) ) )
-            {
-                doorDef.regionBarrier = true;
-            }
+            FixDoors();
+
+            // Change CompGlower into CompGlowerToggleable
+            FixGlowers();
 
             // Detour Verse.GenSpawn.CanPlaceBlueprintOver
             MethodInfo Verse_GenSpawn_CanPlaceBlueprintOver = typeof( GenSpawn ).GetMethod( "CanPlaceBlueprintOver", BindingFlags.Static | BindingFlags.Public );
@@ -326,6 +272,87 @@ namespace CommunityCoreLibrary
 
             return true;
         }
+
+        private void                        FixDoors()
+        {
+            foreach( var doorDef in DefDatabase<ThingDef>.AllDefs.Where( def => (
+                ( def.thingClass == typeof( Building_Door ) )||
+                ( def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
+            ) ) )
+            {
+                doorDef.regionBarrier = true;
+            }
+        }
+
+        private void                        FixGlowers()
+        {
+            foreach( var def in DefDatabase<ThingDef>.AllDefs.Where( def => (
+                ( def.HasComp( typeof( CompGlower ) ) )
+            ) ) )
+            {
+                var compGlower = def.GetCompProperties<CompProperties_Glower>();
+                compGlower.compClass = typeof( CompGlowerToggleable );
+            }
+        }
+
+#if DEVELOPER
+        private void                        DumpAllTypesFieldsPropertiesAndMethods()
+        {
+            CCL_Log.Write( "All Types:" );
+            foreach( var type in Controller.Data.Assembly_CSharp.GetTypes() )
+            {
+                var str = "\n\t" + type.FullName;
+                str += "\n\t\tFields:";
+                foreach( var entity in type.GetFields( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                {
+                    str += "\n\t\t\t" + entity.Name;
+                    if( entity.IsStatic )
+                        str += " (Static)";
+                    else
+                        str += " (Instance)";
+                    if( entity.IsPrivate ) str += " (NonPublic)";
+                    if( entity.IsPublic ) str += " (Public)";
+                }
+                str += "\n\t\tProperties:";
+                foreach( var entity in type.GetProperties( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                {
+                    str += "\n\t\t\t" + entity.Name;
+                    var method = entity.GetGetMethod();
+                    if( method != null )
+                    {
+                        str += " (Public Get)";
+                    }
+                    else
+                    {
+                        method = entity.GetGetMethod( true );
+                        if( method != null ) str += " (NonPublic Get)";
+                    }
+                    method = entity.GetSetMethod();
+                    if( method != null )
+                    {
+                        str += " (Public Set)";
+                    }
+                    else
+                    {
+                        method = entity.GetSetMethod( true );
+                        if( method != null ) str += " (NonPublic Set)";
+                    }
+                }
+                str += "\n\t\tMethods:";
+                foreach( var entity in type.GetMethods( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                {
+                    str += "\n\t\t\t" + entity.Name;
+                    if( entity.IsStatic )
+                        str += " (Static)";
+                    else
+                        str += " (Instance)";
+                    if( entity.IsPrivate ) str += " (NonPublic)";
+                    if( entity.IsPublic ) str += " (Public)";
+                }
+                CCL_Log.Write( str );
+            }
+        }
+#endif
 
     }
 
