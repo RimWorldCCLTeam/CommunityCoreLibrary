@@ -278,6 +278,20 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( Verse_CompHeatPusherPowered_ShouldPushHeatNow_Getter, CCL_CompHeatPusherPowered_ShouldPushHeatNow ) )
                 return false;
 
+            // Detour Verse.CompGlower.ShouldBeLitNow
+            PropertyInfo Verse_CompGlower_ShouldBeLitNow = typeof( CompGlower ).GetProperty( "ShouldBeLitNow", BindingFlags.Instance | BindingFlags.NonPublic );
+#if DEBUG
+            if( Verse_CompGlower_ShouldBeLitNow == null )
+            {
+                CCL_Log.Error( "Unable to find 'Verse.CompGlower.ShouldBeLitNow'" );
+                return false;
+            }
+#endif
+            MethodInfo Verse_CompGlower_ShouldBeLitNow_Getter = Verse_CompGlower_ShouldBeLitNow.GetGetMethod( true );
+            MethodInfo CCL_CompGlower_ShouldBeLitNow = typeof( Detour._CompGlower ).GetMethod( "_ShouldBeLitNow", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_CompGlower_ShouldBeLitNow_Getter, CCL_CompGlower_ShouldBeLitNow ) )
+                return false;
+
             // Detour RimWorld.MainTabWindow_Research.DrawLeftRect "NotFinished" predicate function
             // Use build number to get the correct predicate function
             var RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = string.Empty;
