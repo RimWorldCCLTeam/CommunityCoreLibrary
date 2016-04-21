@@ -121,6 +121,8 @@
                     <li>ElectricTailoringBench</li>
                     <li>HiTechResearchBench</li>
                     <li>TableMachining</li>
+                    <li>MultiAnalyzer</li>
+                    <li>VitalsMonitor</li>
                 </targetDefs>
             </li>
 
@@ -144,6 +146,8 @@
                     <li>TubeTelevision</li>
                     <li>FlatscreenTelevision</li>
                     <li>MegascreenTelevision</li>
+                    <li>MultiAnalyzer</li>
+                    <li>VitalsMonitor</li>
                 </targetDefs>
             </li>
 

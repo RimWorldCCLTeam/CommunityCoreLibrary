@@ -29,8 +29,9 @@ namespace CommunityCoreLibrary
 
 		public CompProperties_LowIdleDraw IdleProps;
 
-        private CompGlower              CompGlower;
-        private CompPowerTrader         CompPower;
+        private CompGlower                  CompGlower;
+        private CompPowerTrader             CompPower;
+        private CompFacility                CompFacility;
 
 		#endregion
 
@@ -82,6 +83,9 @@ namespace CommunityCoreLibrary
             // Get the glower comp
             CompGlower = parent.TryGetComp<CompGlower>();
 
+            // Get the affected facility comp
+            CompFacility = parent.TryGetComp<CompFacility>();
+
 			// Get the power comp
             CompPower = parent.TryGetComp<CompPowerTrader>();
 #if DEBUG
@@ -116,13 +120,14 @@ namespace CommunityCoreLibrary
             // Validate "InUse"
             if(
                 ( IdleProps.operationalMode == LowIdleDrawMode.InUse )&&
-                ( !parent.def.hasInteractionCell )
+                ( !parent.def.hasInteractionCell )&&
+                ( CompFacility == null )
             )
             {
                 CCL_Log.TraceMod(
                     parent.def,
                     Verbosity.FatalErrors,
-                    "Parent building must be have an interaction cell to use 'InUse'",
+                    "Parent building must be have an interaction cell or CompFacility to use 'InUse'",
                     "CompPowerLowIdleDraw"
                 );
                 return;
@@ -221,8 +226,8 @@ namespace CommunityCoreLibrary
 		{
 			// Asked to power down?
 			if(
-				( signal == "PowerTurnedOff" ) ||
-				( signal == "PowerTurnedOn " )
+                ( signal == CompPowerTrader.PowerTurnedOnSignal )||
+                ( signal == CompPowerTrader.PowerTurnedOffSignal )
 			)
 			{
 				// Force toggle now
@@ -284,56 +289,106 @@ namespace CommunityCoreLibrary
 
 				switch( IdleProps.operationalMode )
 				{
-					case LowIdleDrawMode.InUse:
-					// This building has an interaction cell, this means it has
-					// jobs associated with it.  Only go to full-power if the
-					// pawn standing there has a job using the building.
+				case LowIdleDrawMode.InUse:
+                    // This building has an interaction cell or CompAffectedByFacilities,
+                    // this means it has jobs associated with it.  Only go to full-power
+                    // if the pawn standing there has a job using the building.
 
-					// Break out of a loop for optimization because for some
-					// reason using gotos is considered evil, even though
-					// having an machine language background I think people
-					// who think this way are just insisting a "potatoe"
-					// is a "potato"
-					while( true )
-					{
+                    if( CompFacility != null )
+                    {
+                        Log.Message( "Checking facility " + parent.ThingID );
+                        foreach( var linked in CompFacility.LinkedBuildings() )
+                        {
+                            Log.Message( "\tChecking linked building: " + linked.ThingID );
+                            if( linked.def.hasInteractionCell )
+                            {
+                                Log.Message( "\t\thasInteractionCell" );
+                                // Look for a user at interaction cell...
+                                Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( linked.InteractionCell );
+                                if( pUser != null )
+                                {
+                                    Log.Message( "\t\tFound Pawn: " + pUser.Name );
+                                    // ...A pawn is here!...
+                                    if( HasJobOnTarget( pUser, linked ) )
+                                    {
+                                        Log.Message( "\t\tPawn has job" );
+                                        // ..Using linked building!
+                                        turnItOn = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Log.Message( "\t\tChecking occupied rect" );
+                                // look for a user at any occupied cell
+                                var occupiedRect = linked.OccupiedRect();
+                                foreach( var cell in occupiedRect )
+                                {
+                                    Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( cell );
+                                    if( pUser != null )
+                                    {
+                                        Log.Message( "\t\tFound Pawn: " + pUser.Name );
+                                        // ...A pawn is here!...
+                                        if( HasJobOnTarget( pUser, linked ) )
+                                        {
+                                            Log.Message( "\t\tPawn has job" );
+                                            // ..Using linked building!
+                                            turnItOn = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if( turnItOn )
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+    					while( true )
+    					{
 
-						// Quickly check the last user is still using...
-						if(
-							( curUser != null ) &&
-							( curUser.Position == scanPosition[ 0 ] )
-						)
-						{
-							// They're here...
-							if(
-								( curUser.CurJob != null ) &&
-								( curUser.CurJob == curJob )
-							)
-							{
-								// ...they're using!
-								turnItOn = true;
-								break;
-							}
-						}
+    						// Quickly check the last user is still using...
+    						if(
+    							( curUser != null ) &&
+    							( curUser.Position == scanPosition[ 0 ] )
+    						)
+    						{
+    							// They're here...
+    							if(
+    								( curUser.CurJob != null ) &&
+    								( curUser.CurJob == curJob )
+    							)
+    							{
+    								// ...they're using!
+    								turnItOn = true;
+    								break;
+    							}
+    						}
 
-						// Look for a new user...
-						Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[ 0 ] );
-						if( pUser != null )
-						{
-							// ...A pawn is here!...
-							if( HasJobOnTarget( pUser, parent ) )
-							{
-								// ..Using this building!...
-								curUser = pUser;
-								curJob = pUser.CurJob;
-							}
-						}
+    						// Look for a new user...
+    						Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[ 0 ] );
+    						if( pUser != null )
+    						{
+    							// ...A pawn is here!...
+    							if( HasJobOnTarget( pUser, parent ) )
+    							{
+    								// ..Using this building!...
+    								curUser = pUser;
+    								curJob = pUser.CurJob;
+                                    turnItOn = true;
+    							}
+    						}
 
-						// Exit loop
-						break;
-					}
+    						// Exit loop
+    						break;
+    					}
+                    }
 
 					break;
-					case LowIdleDrawMode.Cycle:
+				case LowIdleDrawMode.Cycle:
 					// Power cycler
 
 					if( LowPowerMode )
@@ -342,7 +397,7 @@ namespace CommunityCoreLibrary
 						turnItOn = true;
 					}
 					break;
-					case LowIdleDrawMode.Factory:
+				case LowIdleDrawMode.Factory:
 					// Automated Factory production
 					if( AutomatedFactory.CurrentRecipe != null )
 					{
@@ -495,62 +550,66 @@ namespace CommunityCoreLibrary
 				return;
 			}
 
-			// List of cells to check
-			scanPosition = new List<IntVec3>();
+            // If it's not a facility...
+            if( CompFacility == null )
+            {
+                // List of cells to check
+                scanPosition = new List<IntVec3>();
 
-			// Get the map positions to monitor
-			if( parent.def.hasInteractionCell )
-			{
-				// Force-add interaction cell
-				scanPosition.Add( parent.InteractionCell );
+                // Get the map positions to monitor
+    			if( parent.def.hasInteractionCell )
+    			{
+    				// Force-add interaction cell
+    				scanPosition.Add( parent.InteractionCell );
 
-				if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
-				{
-					// And the adjacent cells too
-					foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
-					{
-						AddScanPositionIfAllowed( curPos );
-					}
-					onIfOn = true;
-				}
+    				if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
+    				{
+    					// And the adjacent cells too
+    					foreach( IntVec3 curPos in GenAdj.CellsAdjacent8Way( parent.InteractionCell ) )
+    					{
+    						AddScanPositionIfAllowed( curPos );
+    					}
+    					onIfOn = true;
+    				}
 
-			}
-			else
-			{
-				// Pawn standing on building means we need the buildings occupancy
-				onIfOn = true;
+    			}
+    			else
+    			{
+    				// Pawn standing on building means we need the buildings occupancy
+    				onIfOn = true;
 
-				if( parent.def.passability == Traversability.Standable )
-				{
-					// Add building cells if it's standable
-					foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( parent ) )
-					{
-						AddScanPositionIfAllowed( curPos );
-					}
-				}
+    				if( parent.def.passability == Traversability.Standable )
+    				{
+    					// Add building cells if it's standable
+    					foreach( IntVec3 curPos in GenAdj.CellsOccupiedBy( parent ) )
+    					{
+    						AddScanPositionIfAllowed( curPos );
+    					}
+    				}
 
-				if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
-				{
-					// And the adjacent cells too???
-					foreach( var curPos in GenAdj.CellsAdjacent8Way( parent ) )
-					{
-						AddScanPositionIfAllowed( curPos );
-					}
-				}
-				if( IdleProps.operationalMode == LowIdleDrawMode.GroupUse )
-				{
-					// Group use adds cells "in front" of it
-					// Only really used by TVs
-                    // WatchBuildingUtility already filters invalid cells for us
-                    var cells = WatchBuildingUtility.CalculateWatchCells( parent.def, parent.Position, parent.Rotation );
-					foreach( var curPos in cells )
-					{
-						scanPosition.Add( curPos );
-					}
-				}
-			}
-
-			// Set default scan tick intervals
+    				if( IdleProps.operationalMode == LowIdleDrawMode.WhenNear )
+    				{
+    					// And the adjacent cells too???
+    					foreach( var curPos in GenAdj.CellsAdjacent8Way( parent ) )
+    					{
+    						AddScanPositionIfAllowed( curPos );
+    					}
+    				}
+    				if( IdleProps.operationalMode == LowIdleDrawMode.GroupUse )
+    				{
+    					// Group use adds cells "in front" of it
+    					// Only really used by TVs
+                        // WatchBuildingUtility already filters invalid cells for us
+                        var cells = WatchBuildingUtility.CalculateWatchCells( parent.def, parent.Position, parent.Rotation );
+    					foreach( var curPos in cells )
+    					{
+    						scanPosition.Add( curPos );
+    					}
+    				}
+    			}
+            }
+			
+            // Set default scan tick intervals
 			if( IdleProps.cycleLowTicks < 0 )
 			{
 				IdleProps.cycleLowTicks = 30;
