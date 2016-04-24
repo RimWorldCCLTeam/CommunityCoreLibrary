@@ -14,39 +14,91 @@ namespace CommunityCoreLibrary.Detour
     internal static class _JoyGiver_SocialRelax
     {
 
-        private const float _GatherRadius = 3.9f;
-        private static List<CompGatherSpot> _workingSpots;
-        private static readonly int _NumRadiusCells;
-        private static readonly List<IntVec3> _RadialPatternMiddleOutward;
+        internal const float _GatherRadius = 3.9f;
+        internal static FieldInfo _workingSpots;
+        internal static FieldInfo _NumRadiusCells;
+        internal static FieldInfo _RadialPatternMiddleOutward;
 
-        static _JoyGiver_SocialRelax()
+        #region Reflected Methods
+
+        internal static List<CompGatherSpot> workingSpots()
         {
-            _workingSpots = typeof( JoyGiver_SocialRelax ).GetField( "workingSpots", BindingFlags.Static | BindingFlags.NonPublic ).GetValue( null ) as List<CompGatherSpot>;
-            _NumRadiusCells = GenRadial.NumCellsInRadius( _GatherRadius );
-            _RadialPatternMiddleOutward = typeof( JoyGiver_SocialRelax ).GetField( "RadialPatternMiddleOutward", BindingFlags.Static | BindingFlags.NonPublic ).GetValue( null ) as List<IntVec3>;
+            if( _workingSpots == null )
+            {
+                _workingSpots = typeof( JoyGiver_SocialRelax ).GetField( "workingSpots", BindingFlags.Static | BindingFlags.NonPublic );
+                if( _workingSpots == null )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.FatalErrors,
+                        "Unable to get field 'workingSpots' in 'JoyGiver_SocialRelax'",
+                        "Internal Detours" );
+                }
+            }
+            return (List<CompGatherSpot>) _workingSpots.GetValue( null );
         }
+
+        internal static int NumRadiusCells()
+        {
+            if( _NumRadiusCells == null )
+            {
+                _NumRadiusCells = typeof( JoyGiver_SocialRelax ).GetField( "NumRadiusCells", BindingFlags.Static | BindingFlags.NonPublic );
+                if( _NumRadiusCells == null )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.FatalErrors,
+                        "Unable to get field 'NumRadiusCells' in 'JoyGiver_SocialRelax'",
+                        "Internal Detours" );
+                }
+            }
+            return (int) _NumRadiusCells.GetValue( null );
+        }
+
+        internal static List<IntVec3> RadialPatternMiddleOutward()
+        {
+            if( _RadialPatternMiddleOutward == null )
+            {
+                _RadialPatternMiddleOutward = typeof( JoyGiver_SocialRelax ).GetField( "RadialPatternMiddleOutward", BindingFlags.Static | BindingFlags.NonPublic );
+                if( _RadialPatternMiddleOutward == null )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.FatalErrors,
+                        "Unable to get field 'RadialPatternMiddleOutwards' in 'JoyGiver_SocialRelax'",
+                        "Internal Detours" );
+                }
+            }
+            return (List<IntVec3>) _RadialPatternMiddleOutward.GetValue( null );
+        }
+
+        #endregion
+
+        #region Detoured Methods
 
         internal static Job _TryGiveJobInt( this JoyGiver_SocialRelax obj, Pawn pawn, Predicate<CompGatherSpot> gatherSpotValidator )
         {
             var JoyGiver_SocialRelax_TryUseThing = new _JoyGiver_SocialRelax._TryUseThing();
             JoyGiver_SocialRelax_TryUseThing.pawn = pawn;
 
-            if( GatherSpotLister.activeSpots.Count == 0 )
+            if( GatherSpotLister.activeSpots.NullOrEmpty() )
             {
                 return (Job) null;
             }
 
-            _workingSpots.Clear();
+            var workingSpots = _JoyGiver_SocialRelax.workingSpots();
+            var NumRadiusCells = _JoyGiver_SocialRelax.NumRadiusCells();
+            var RadialPatternMiddleOutward = _JoyGiver_SocialRelax.RadialPatternMiddleOutward();
+
+            workingSpots.Clear();
             for( int index = 0; index < GatherSpotLister.activeSpots.Count; ++index )
             {
-                _workingSpots.Add( GatherSpotLister.activeSpots[ index ] );
+                workingSpots.Add( GatherSpotLister.activeSpots[ index ] );
             }
+
             CompGatherSpot compGatherSpot;
-            while( GenCollection.TryRandomElement<CompGatherSpot>( _workingSpots, out compGatherSpot ) )
+            while( GenCollection.TryRandomElement<CompGatherSpot>( workingSpots, out compGatherSpot ) )
             {
-                _workingSpots.Remove( compGatherSpot );
+                workingSpots.Remove( compGatherSpot );
                 if(
-                    ( !( (Thing)compGatherSpot.parent ).IsForbidden( pawn ) )&&
+                    ( !compGatherSpot.parent.IsForbidden( pawn ) )&&
                     ( pawn.CanReach(
                         compGatherSpot.parent,
                         PathEndMode.Touch,
@@ -80,9 +132,9 @@ namespace CommunityCoreLibrary.Detour
                     }
                     else
                     {
-                        for( int index = 0; index < _RadialPatternMiddleOutward.Count; ++index)
+                        for( int index = 0; index < RadialPatternMiddleOutward.Count; ++index)
                         {
-                            Building sittableThing = ( compGatherSpot.parent.Position + _RadialPatternMiddleOutward[ index ] ).GetEdifice();
+                            Building sittableThing = ( compGatherSpot.parent.Position + RadialPatternMiddleOutward[ index ] ).GetEdifice();
                             if(
                                 ( sittableThing != null )&&
                                 ( sittableThing.def.building.isSittable )&&
@@ -109,7 +161,7 @@ namespace CommunityCoreLibrary.Detour
                         {
                             for( int index = 0; index < 30; ++index )
                             {
-                                IntVec3 occupySpot = compGatherSpot.parent.Position + GenRadial.RadialPattern[ Rand.Range( 1, _NumRadiusCells ) ];
+                                IntVec3 occupySpot = compGatherSpot.parent.Position + GenRadial.RadialPattern[ Rand.Range( 1, NumRadiusCells ) ];
                                 if(
                                     ( pawn.CanReserveAndReach(
                                         occupySpot,
@@ -203,6 +255,8 @@ namespace CommunityCoreLibrary.Detour
                 return this.pawn.CanReserve( t, 1 );
             }
         }
+
+        #endregion
 
     }
 

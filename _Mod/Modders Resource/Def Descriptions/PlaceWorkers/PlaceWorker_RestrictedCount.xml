@@ -7,7 +7,7 @@
     
     PlaceWorker:PlaceWorker_RestrictedCount
     
-    Requires:   RestrictedPlacement_Comp
+    Requires:   CompRestrictedPlacement
                 ThingWithComps
     
     This place worker limits how many of this building can exist at any given time.
@@ -27,8 +27,8 @@
         <comps>
             ...
             
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 
                 <MaxCount>2</MaxCount>
                 
