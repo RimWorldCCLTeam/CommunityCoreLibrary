@@ -1,16 +1,13 @@
-﻿using CommunityCoreLibrary.ResearchTree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
-    
     [StaticConstructorOnStartup]
     public static class ResearchProjectDef_Extensions
     {
-        
         #region Static Data
 
         private static Dictionary<ushort, bool> isLockedOut;
@@ -21,10 +18,9 @@ namespace CommunityCoreLibrary
         {
             isLockedOut = new Dictionary<ushort, bool>();
             _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>>();
-
         }
 
-        #endregion
+        #endregion Static Data
 
         #region Availability
 
@@ -42,7 +38,7 @@ namespace CommunityCoreLibrary
         internal static bool _IsLockedOut( this ResearchProjectDef researchProjectDef, ResearchProjectDef initialDef )
         {
             bool rVal = false;
-            if( !isLockedOut.TryGetValue( researchProjectDef.shortHash, out rVal ) )
+            if ( !isLockedOut.TryGetValue( researchProjectDef.shortHash, out rVal ) )
             {
 #if DEBUG
                 CCL_Log.TraceMod(
@@ -107,7 +103,7 @@ namespace CommunityCoreLibrary
                 ) );
         }
 
-        #endregion
+        #endregion Availability
 
         #region Lists of affected data
 
@@ -197,11 +193,6 @@ namespace CommunityCoreLibrary
 
             _unlocksCache.Add( research.shortHash, unlocks );
             return unlocks;
-        }
-
-        public static Node Node( this ResearchProjectDef research )
-        {
-            return ResearchTree.ResearchTree.Forest.FirstOrDefault( node => node.Research == research );
         }
 
         public static List<Def> GetResearchRequirements( this ResearchProjectDef researchProjectDef )
@@ -314,8 +305,8 @@ namespace CommunityCoreLibrary
             var thingsOn = new List<ThingDef>();
             var researchThings = DefDatabase<ThingDef>.AllDefsListForReading.Where( t => (
                 ( !t.IsLockedOut() )&&
-                (t.GetResearchRequirements() != null) &&
-                (t.GetResearchRequirements().Contains(researchProjectDef))
+                ( t.GetResearchRequirements() != null ) &&
+                ( t.GetResearchRequirements().Contains( researchProjectDef ) )
             ) ).ToList();
 
             if ( !researchThings.NullOrEmpty() )
@@ -357,7 +348,7 @@ namespace CommunityCoreLibrary
             var researchThings = DefDatabase<TerrainDef>.AllDefsListForReading.Where( t => (
                 ( !t.IsLockedOut() )&&
                 ( t.GetResearchRequirements() != null )&&
-                ( t.GetResearchRequirements().Contains(researchProjectDef))
+                ( t.GetResearchRequirements().Contains( researchProjectDef ) )
             ) ).ToList();
 
             if ( !researchThings.NullOrEmpty() )
@@ -389,7 +380,7 @@ namespace CommunityCoreLibrary
                 ( d.researchPrerequisite == researchProjectDef )
             ) ).ToList();
 
-            if( !researchRecipes.NullOrEmpty() )
+            if ( !researchRecipes.NullOrEmpty() )
             {
                 recipes.AddRangeUnique( researchRecipes );
             }
@@ -397,9 +388,9 @@ namespace CommunityCoreLibrary
             if ( thingDefs != null )
             {
                 // Add buildings for those recipes
-                foreach( var r in recipes )
+                foreach ( var r in recipes )
                 {
-                    if( !r.recipeUsers.NullOrEmpty() )
+                    if ( !r.recipeUsers.NullOrEmpty() )
                     {
                         thingDefs.AddRangeUnique( r.recipeUsers );
                     }
@@ -407,7 +398,7 @@ namespace CommunityCoreLibrary
                         ( !d.recipes.NullOrEmpty() )&&
                         ( d.recipes.Contains( r ) )
                     ) ).ToList();
-                    if( !recipeThings.NullOrEmpty() )
+                    if ( !recipeThings.NullOrEmpty() )
                     {
                         thingDefs.AddRangeUnique( recipeThings );
                     }
@@ -423,12 +414,12 @@ namespace CommunityCoreLibrary
             ) ).ToList();
 
             // Aggregate research
-            if( !advancedResearch.NullOrEmpty() )
+            if ( !advancedResearch.NullOrEmpty() )
             {
-                foreach( var a in advancedResearch )
+                foreach ( var a in advancedResearch )
                 {
                     recipes.AddRangeUnique( a.recipeDefs );
-                    if( thingDefs != null )
+                    if ( thingDefs != null )
                     {
                         thingDefs.AddRangeUnique( a.thingDefs );
                     }
@@ -500,13 +491,13 @@ namespace CommunityCoreLibrary
                 ( d.plant.sowResearchPrerequisites.Contains( researchProjectDef ) )
             ) ).ToList();
 
-            if( !researchPlants.NullOrEmpty() )
+            if ( !researchPlants.NullOrEmpty() )
             {
-                foreach( var plant in researchPlants )
+                foreach ( var plant in researchPlants )
                 {
                     sowTags.AddRangeUnique( plant.plant.sowTags );
                 }
-                if( thingDefs != null )
+                if ( thingDefs != null )
                 {
                     thingDefs.AddRangeUnique( researchPlants );
                 }

@@ -40,7 +40,6 @@ If you are a modder, download the modders resource or the source package.
 [li]Extract both the folders in the zip into your Mods folder.[/li]
 [li]Enable "Community Core Library" immediately after "Core" - This is [b][i]REQUIRED[/i][/b] and an error will be thrown if the library does not detect the correct load order position.[/li]
 [li]The "Community Core Library - Vanilla Tweaks" is entirely optional but highly recommended.  It does not matter where in your load order it is but other mods may make changes to the same game objects.  Enable the tweaks before or after those mods depending on the functional changes you want to use.[/li]
-[li]The "Community Core Library - Research Tree" - Forthcoming - is also optional and also highly recommended.  This will replace the research menu with a graphical tree depicting all research in the game.  Research projects can also be queued using this menu replacer.  Note, this will save additional queuing information in your save file and will need to be removed by manually editing your save game.[/li]
 [/list]
 
 [size=12pt]Modders download the "Modders Resource" package.[/size]
