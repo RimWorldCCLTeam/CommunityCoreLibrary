@@ -63,12 +63,6 @@
     <Compile Include="Extensions\Vector3_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
     <Compile Include="Interfaces\IHelpDefView.cs" />
-    <Compile Include="MainTabs\MainTabWindow_ResearchTree.cs" />
-    <Compile Include="ResearchTree\Node.cs" />
-    <Compile Include="ResearchTree\Queue.cs" />
-    <Compile Include="ResearchTree\ResearchTree.cs" />
-    <Compile Include="ResearchTree\Settings.cs" />
-    <Compile Include="ResearchTree\Tree.cs" />
     <Compile Include="StaticClasses\Detours.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
@@ -142,7 +136,6 @@
     <Compile Include="ThingComps\CompHopperUser.cs" />
     <Compile Include="WorkGivers\WorkGiver_FillHopper.cs" />
     <Compile Include="Extensions\HelpDetailSection_Extensions.cs" />
-    <Compile Include="MainTabs\MainTabWindow_Research.cs" />
     <Compile Include="StaticClasses\HelpDetailSectionHelper.cs" />
     <Compile Include="Structures\DefStringTriplet.cs" />
     <Compile Include="Structures\HelpDetailSection.cs" />
@@ -193,14 +186,12 @@
     <Compile Include="StaticClasses\FoodSynthesis.cs" />
     <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
     <Compile Include="SpecialInjectors\DetourInjector.cs" />
-    <Compile Include="SpecialInjectors\ResearchTreeDetourInjector.cs" />
     <Compile Include="SubControllers\LibrarySubController.cs" />
     <Compile Include="Controller\SubController.cs" />
     <Compile Include="SubControllers\ResearchSubController.cs" />
     <Compile Include="SubControllers\InjectionSubController.cs" />
     <Compile Include="SubControllers\HelpSubController.cs" />
     <Compile Include="StaticClasses\HelpBuilder.cs" />
-    <Compile Include="ResearchTree\Detours.cs" />
     <Compile Include="Structures\FacilityInjectionSet.cs" />
     <Compile Include="Defs\ModHelperDef\SpecialInjectors.cs" />
     <Compile Include="Defs\ModHelperDef\ThingComps.cs" />
