@@ -4,7 +4,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
     
-    public class CompMilkableRenameable : CompShearable
+    public class CompMilkableRenameable : CompMilkable
     {
 
         private string                      growthLabel = "MilkFullness".Translate();

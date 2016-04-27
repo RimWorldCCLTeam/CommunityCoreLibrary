@@ -105,8 +105,10 @@ namespace CommunityCoreLibrary.Detour
                         Danger.None,
                         false ) )&&
                     ( compGatherSpot.parent.IsSociallyProper( pawn ) )&&
-                    ( gatherSpotValidator == null )||
-                    ( gatherSpotValidator( compGatherSpot ) )
+                    (
+                        ( gatherSpotValidator == null )||
+                        ( gatherSpotValidator( compGatherSpot ) )
+                    )
                 )
                 {
                     Job job = (Job) null;
