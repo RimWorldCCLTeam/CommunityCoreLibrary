@@ -1,5 +1,5 @@
 [center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
-v0.13.0
+v0.13.1.1
 
 [glow=red,2,300]This forum thread and the first 10 posts serve as the documentation/manual.
 
@@ -40,7 +40,6 @@ If you are a modder, download the modders resource or the source package.
 [li]Extract both the folders in the zip into your Mods folder.[/li]
 [li]Enable "Community Core Library" immediately after "Core" - This is [b][i]REQUIRED[/i][/b] and an error will be thrown if the library does not detect the correct load order position.[/li]
 [li]The "Community Core Library - Vanilla Tweaks" is entirely optional but highly recommended.  It does not matter where in your load order it is but other mods may make changes to the same game objects.  Enable the tweaks before or after those mods depending on the functional changes you want to use.[/li]
-[li]The "Community Core Library - Research Tree" - Forthcoming - is also optional and also highly recommended.  This will replace the research menu with a graphical tree depicting all research in the game.  Research projects can also be queued using this menu replacer.  Note, this will save additional queuing information in your save file and will need to be removed by manually editing your save game.[/li]
 [/list]
 
 [size=12pt]Modders download the "Modders Resource" package.[/size]
@@ -65,7 +64,7 @@ If you are a modder, download the modders resource or the source package.
 
 [size=12pt][color=orange]Background[/color][/size]
 
-This project started in Alpha 9, continued to be developed in Alpha 10 (some ideas had to be dropped due to complexity) and is finally available for Alpha 11.  Ideas and suggestions plus a lot of help came from the RimWorld community on the Ludeon Forums.  If you have an idea which fits into the context of CCL, please leave feedback or better, develop your idea and submit code!  CCL and it's team could always be fleshed out with additional talent!
+This project started in Alpha 9, continued to be developed in Alpha 10 (some ideas had to be dropped due to complexity) and was first publicly released for Alpha 11.  Ideas and suggestions plus a lot of help came from the RimWorld community on the Ludeon Forums.  If you have an idea which fits into the context of CCL, please leave feedback or better, develop your idea and submit code!  CCL and it's team could always be fleshed out with additional talent!
 
 
 

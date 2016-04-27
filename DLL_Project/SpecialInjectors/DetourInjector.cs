@@ -348,6 +348,16 @@ namespace CommunityCoreLibrary
                         str += " (Instance)";
                     if( entity.IsPrivate ) str += " (NonPublic)";
                     if( entity.IsPublic ) str += " (Public)";
+                    if( entity.GetParameters() != null )
+                    {
+                        str += " Parameters:";
+                        foreach( var pi in entity.GetParameters() )
+                        {
+                            str += " " + pi.ParameterType.ToString();
+                            if( pi.IsOut ) str += " (out)";
+                            if( pi.IsRetval ) str += " (ret)";
+                        }
+                    }
                 }
                 CCL_Log.Write( str );
             }

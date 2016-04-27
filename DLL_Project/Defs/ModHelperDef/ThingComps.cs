@@ -132,7 +132,18 @@ namespace CommunityCoreLibrary
                     // TODO:  Make a full copy using the comp in this def as a template
                     // Currently adds the comp in this def so all target use the same def
                     var targetDef = DefDatabase< ThingDef >.GetNamed( targetName );
-                    targetDef.comps.Add( compSet.compProps );
+                    if( targetDef.HasComp( compSet.compProps.compClass ) )
+                    {
+                        CCL_Log.TraceMod(
+                            def,
+                            Verbosity.Warnings,
+                            string.Format( "Trying to inject ThingComp '{0}' into '{1}' when it already exists (another mod may have already injected).", compSet.compProps.compClass.ToString(), targetName ),
+                            "ThingComp Injector" );
+                    }
+                    else
+                    {
+                        targetDef.comps.Add( compSet.compProps );
+                    }
                 }
             }
 

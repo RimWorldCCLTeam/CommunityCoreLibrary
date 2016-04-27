@@ -41,6 +41,7 @@
 [size=10pt][color=orange]Helper classes[/color] (C#)[/size]
 [list][li][color=orange]ColorPicker[/color] - A color picker dialogue and supporting helper functions. Allow users to select colors with a full HSV/alpha color picker.[/li]
 [li][color=orange]Detours[/color] - Helper method to facilitate detouring [i]all[/i] calls to any (including core) function to another function.[/li]
+[li][color=orange]Inter Mod Communication[/color] - Allows mods to register a callback to handle messages when sent as well as send messages.  This enables mods to communicate without explicitly depending on each other.[/li]
 [/list]
 
 [size=10pt][color=orange]New ITabs[/color] (xml)[/size]

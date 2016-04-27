@@ -7,7 +7,7 @@
     
     PlaceWorker:PlaceWorker_OnlyUnderRoof
     
-    Requires:   RestrictedPlacement_Comp
+    Requires:   CompRestrictedPlacement
                 ThingWithComps or TerrainWithComps
     
     tickerType: Normal or Rare
@@ -26,8 +26,8 @@
         <comps>
             ...
             
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
             </li>
             
             ...

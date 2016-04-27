@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Verse;
 
@@ -7,8 +8,6 @@ namespace CommunityCoreLibrary
 
     public class CompRestrictedPlacement : ThingComp
     {
-
-        static int                          tickCount;
 
         List< PlaceWorker >                 PlaceWorkers
         {
@@ -51,15 +50,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        // Make sure things stagger their checks to prevent lag spikes
-        public override void                PostExposeData()
-        {
-            tickCount = parent.GetHashCode() % 250;
-        }
-
+#if DEBUG
         public override void                PostSpawnSetup()
         {
-#if DEBUG
             if( this.RequiresProperties )
             {
                 var properties = this.RestrictedPlacement_Properties();
@@ -95,19 +88,24 @@ namespace CommunityCoreLibrary
                     );
                 }
             }
-#endif
-            tickCount = parent.GetHashCode() % 250;
         }
+#endif
 
         // Tick for checks
         public override void                CompTick()
         {
-            DoChecks( 1 );
+            base.CompTick();
+            if( !parent.IsHashIntervalTick( 250 ) )
+            {
+                return;
+            }
+            DoChecks();
         }
 
         public override void                CompTickRare()
         {
-            DoChecks( 250 );
+            base.CompTickRare();
+            DoChecks();
         }
 
         // Oops!  We shouldn't be allowed!
@@ -117,19 +115,21 @@ namespace CommunityCoreLibrary
             parent.Destroy( DestroyMode.Kill );
         }
 
-        public void                         DoChecks( int ticks )
+        public bool                         HasPlaceWorker( Type placeWorker )
+        {
+            return PlaceWorkers.Exists( p => (
+                ( p.GetType() == placeWorker )||
+                ( p.GetType().IsSubclassOf( placeWorker ) )
+            ) );
+        }
+
+        public void                         DoChecks()
         {   // This function maintains validation of the placement restrictions and
             // destroys the parent thing if the requirements have changed for certain things
-            tickCount -= ticks;
-            if( tickCount >= 0 )
-            {
-                return;
-            }
-            tickCount = 250;
 
             // Check for a roof
             if(
-                ( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyUnderRoof ) ) ) )&&
+                ( HasPlaceWorker( typeof( PlaceWorker_OnlyUnderRoof ) ) )&&
                 ( !Find.RoofGrid.Roofed( parent.Position ) )
             )
             {
@@ -138,7 +138,7 @@ namespace CommunityCoreLibrary
             }
 
             // Check wall support
-            if( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_WallAttachment ) ) ) )
+            if( HasPlaceWorker( typeof( PlaceWorker_WallAttachment ) ) )
             {
                 IntVec3 c = parent.Position - parent.Rotation.FacingCell;
                 Building support = c.GetEdifice();
@@ -153,7 +153,7 @@ namespace CommunityCoreLibrary
             }
 
             // Check surface
-            if( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyOnSurface ) ) ) )
+            if( HasPlaceWorker( typeof( PlaceWorker_OnlyOnSurface ) ) )
             {
                 bool foundThing = false;
                 foreach( Thing t in parent.Position.GetThingList() )
@@ -172,7 +172,7 @@ namespace CommunityCoreLibrary
             }
 
             // Check on thing
-            if( PlaceWorkers.Exists( p => p.GetType().IsSubclassOf( typeof( PlaceWorker_OnlyOnThing ) ) ) )
+            if( HasPlaceWorker( typeof( PlaceWorker_OnlyOnThing ) ) )
             {
                 var Restrictions = this.RestrictedPlacement_Properties();
                 bool foundThing = false;

@@ -7,7 +7,7 @@
     
     PlaceWorker:PlaceWorker_NotOnTerrain
     
-    Requires:   RestrictedPlacement_Comp
+    Requires:   CompRestrictedPlacement
                 ThingWithComps or TerrainWithComps
     
     This place worker restricts the building or terrain from being placed on any of the
@@ -31,8 +31,8 @@
         <comps>
             ...
             
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 
                 <terrainDefs>
                     <li>Soil</li>

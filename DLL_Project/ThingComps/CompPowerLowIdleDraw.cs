@@ -29,9 +29,9 @@ namespace CommunityCoreLibrary
 
 		public CompProperties_LowIdleDraw IdleProps;
 
-        private CompGlower                  CompGlower;
-        private CompPowerTrader             CompPower;
-        private CompFacility                CompFacility;
+        private CompGlower                  _CompGlower;
+        private CompPowerTrader             _CompPower;
+        private CompFacility                _CompFacility;
 
 		#endregion
 
@@ -44,6 +44,42 @@ namespace CommunityCoreLibrary
 				return parent as Building_AutomatedFactory;
 			}
 		}
+
+        private CompGlower                  CompGlower
+        {
+            get
+            {
+                if( _CompGlower == null )
+                {
+                    _CompGlower = this.parent.TryGetComp<CompGlower>();
+                }
+                return _CompGlower;
+            }
+        }
+
+        private CompPowerTrader             CompPower
+        {
+            get
+            {
+                if( _CompPower == null )
+                {
+                    _CompPower = this.parent.TryGetComp<CompPowerTrader>();
+                }
+                return _CompPower;
+            }
+        }
+
+        private CompFacility                CompFacility
+        {
+            get
+            {
+                if( _CompFacility == null )
+                {
+                    _CompFacility = this.parent.TryGetComp<CompFacility>();
+                }
+                return _CompFacility;
+            }
+        }
 
 		#endregion
 
@@ -80,14 +116,7 @@ namespace CommunityCoreLibrary
 		{
 			base.PostSpawnSetup();
 
-            // Get the glower comp
-            CompGlower = parent.TryGetComp<CompGlower>();
-
-            // Get the affected facility comp
-            CompFacility = parent.TryGetComp<CompFacility>();
-
-			// Get the power comp
-            CompPower = parent.TryGetComp<CompPowerTrader>();
+			// Validate power comp
 #if DEBUG
             if( CompPower == null )
             {
@@ -296,22 +325,17 @@ namespace CommunityCoreLibrary
 
                     if( CompFacility != null )
                     {
-                        Log.Message( "Checking facility " + parent.ThingID );
                         foreach( var linked in CompFacility.LinkedBuildings() )
                         {
-                            Log.Message( "\tChecking linked building: " + linked.ThingID );
                             if( linked.def.hasInteractionCell )
                             {
-                                Log.Message( "\t\thasInteractionCell" );
                                 // Look for a user at interaction cell...
                                 Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( linked.InteractionCell );
                                 if( pUser != null )
                                 {
-                                    Log.Message( "\t\tFound Pawn: " + pUser.Name );
                                     // ...A pawn is here!...
                                     if( HasJobOnTarget( pUser, linked ) )
                                     {
-                                        Log.Message( "\t\tPawn has job" );
                                         // ..Using linked building!
                                         turnItOn = true;
                                     }
@@ -319,7 +343,6 @@ namespace CommunityCoreLibrary
                             }
                             else
                             {
-                                Log.Message( "\t\tChecking occupied rect" );
                                 // look for a user at any occupied cell
                                 var occupiedRect = linked.OccupiedRect();
                                 foreach( var cell in occupiedRect )
@@ -327,11 +350,9 @@ namespace CommunityCoreLibrary
                                     Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( cell );
                                     if( pUser != null )
                                     {
-                                        Log.Message( "\t\tFound Pawn: " + pUser.Name );
                                         // ...A pawn is here!...
                                         if( HasJobOnTarget( pUser, linked ) )
                                         {
-                                            Log.Message( "\t\tPawn has job" );
                                             // ..Using linked building!
                                             turnItOn = true;
                                             break;

@@ -7,7 +7,7 @@
     
     PlaceWorker:PlaceWorker_NotOnThing
     
-    Requires:   RestrictedPlacement_Comp
+    Requires:   CompRestrictedPlacement
                 ThingWithComps
     
     This place worker restricts the building from being placed on any of the filtered ThingDefs.
@@ -27,8 +27,8 @@
         <comps>
             ...
             
-            <li Class="CommunityCoreLibrary.RestrictedPlacement_Properties">
-                <compClass>CommunityCoreLibrary.RestrictedPlacement_Comp</compClass>
+            <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
+                <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 
                 <thingDefs>
                     <li>ChunkGranite</li>
