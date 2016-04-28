@@ -32,6 +32,12 @@ namespace CommunityCoreLibrary.Controller
 
         internal static SubController[]     SubControllers;
 
+        // Some settings or windows require a game restart
+        public static bool                  RequireRestart = false;
+        public static bool                  WarnedAboutRestart = false;
+        public static bool                  ContinueWithoutRestart = false;
+        public static bool                  RestartWarningIsOpen = false;
+
         // For tracing in global functions
         private static ModHelperDef         _Trace_Current_Mod = null;
 

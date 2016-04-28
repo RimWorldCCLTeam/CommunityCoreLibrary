@@ -10,7 +10,14 @@ namespace CommunityCoreLibrary
 
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-			return ( Game.Mode == GameMode.Entry );
+            if(
+                ( Controller.Data.RequireRestart )&&
+                ( !Controller.Data.ContinueWithoutRestart )
+            )
+            {
+                return false;
+            }
+            return ( Game.Mode == GameMode.Entry );
 		}
 
 		public override void ClickAction()

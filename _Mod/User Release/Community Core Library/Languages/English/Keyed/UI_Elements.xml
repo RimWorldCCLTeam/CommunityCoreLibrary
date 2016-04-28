@@ -35,4 +35,10 @@
     <ModConfigurationOptions>Mod Options</ModConfigurationOptions>
     <ModConfigurationSaved>Saved {0} mod configuration</ModConfigurationSaved>
 
+    <WarnAboutRestart>A major change has been made to the game engine, such as the loaded mods or the language.\n\nAny major change requires RimWorld to be restarted.\n\nPlaying the game without restarting can cause any number of problems from small errors to aliens invading Earth.</WarnAboutRestart>
+    <ContinueWithoutRestart>Play without restart</ContinueWithoutRestart>
+    <Continue>Continue</Continue>
+    <RestartNow>Restart Now</RestartNow>
+    <AcceptTheConsequences>I accept the consequences</AcceptTheConsequences>
+
 </LanguageData>

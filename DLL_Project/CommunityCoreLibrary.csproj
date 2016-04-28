@@ -239,6 +239,8 @@
     <Compile Include="ThingComps\CompGlowerToggleable.cs" />
     <Compile Include="Extensions\CompFacility_Extensions.cs" />
     <Compile Include="StaticClasses\InterModCommunication.cs" />
+    <Compile Include="Windows\Window_WarnRestart.cs" />
+    <Compile Include="Detours\PlayDataLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

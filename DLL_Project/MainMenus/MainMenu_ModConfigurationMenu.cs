@@ -10,6 +10,13 @@ namespace CommunityCoreLibrary
 
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
+            if(
+                ( Controller.Data.RequireRestart )&&
+                ( !Controller.Data.ContinueWithoutRestart )
+            )
+            {
+                return false;
+            }
 			return ( Window_ModConfigurationMenu.AnyMenus );
 		}
 

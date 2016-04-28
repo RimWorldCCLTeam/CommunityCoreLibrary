@@ -288,7 +288,7 @@ namespace CommunityCoreLibrary.Detour
                     var link = option as ListableOption_WebLink;
                     float width1 = (float) ( GameRectWidth - (float) link.image.width - 3.0f );
                     float num = Text.CalcHeight( link.label, width1 );
-                    float height = Mathf.Max( LinkOptionMinHeight, num );
+                    float height = Mathf.Max( LinkOptionMinHeight, num ) + OptionSpacingDefault;
                     y += height;
                 }
                 return y;
@@ -326,95 +326,107 @@ namespace CommunityCoreLibrary.Detour
 
         internal static void _MainMenuOnGUI()
         {
-            VersionControl.DrawInfoInCorner();
-
-            var titleBaseVec = TitleSize;
-            if( titleBaseVec.x > (float) Screen.width )
+            if(
+                ( Controller.Data.RestartWarningIsOpen )||
+                (
+                    ( Controller.Data.RequireRestart )&&
+                    ( !Controller.Data.WarnedAboutRestart )
+                )
+            )
             {
-                titleBaseVec *= (float) Screen.width / titleBaseVec.x;
+                return;
             }
-            var titleFinalVec = titleBaseVec * 0.7f;
-
-            var currentMainMenuDefs = CurrentMainMenuDefs( AnyWorldFiles, AnyMapFiles );
-            var currentMainMenuButtonCount = currentMainMenuDefs.Count;
-            var currentMainMenuButtonHeight = CurrentMainMenuDefHeight( currentMainMenuButtonCount );
-
-            var PaneWidth = GameRectWidth * 2 + OptionListSpacing * 3;
-
-            var minPaneHeight = LinkOptionsHeight + LanguageOptionSpacing + LanguageOptionHeight;
-            var maxPaneHeight = Screen.height - titleFinalVec.y - TitlePaneSpacing - CreditHeight - CreditTitleSpacing - LudeonEdgeSpacing - LudeonLogoSize.y;
-
-            var PaneHeight = Mathf.Max( Mathf.Min( currentMainMenuButtonHeight, maxPaneHeight ), minPaneHeight ) + OptionListSpacing * 2;
-            PaneSize = new Vector2( PaneWidth, PaneHeight );
-
-            var menuOptionsRect = new Rect(
-                ( (float) Screen.width  - PaneSize.x ) / 2f,
-                ( (float) Screen.height - PaneSize.y ) / 2f,
-                PaneSize.x,
-                PaneSize.y );
-
-            menuOptionsRect.y += TitleShift;
-
-            menuOptionsRect.x = ( (float) Screen.width - menuOptionsRect.width - OptionsEdgeSpacing );
-
-            var titleRect = new Rect(
-                ( (float) Screen.width - titleFinalVec.x ) / 2f,
-                ( menuOptionsRect.y - titleFinalVec.y - TitlePaneSpacing ),
-                titleFinalVec.x,
-                titleFinalVec.y );
-            titleRect.x = ( (float) Screen.width - titleFinalVec.x - TitleShift );
-            GUI.DrawTexture(
-                titleRect,
-                (Texture) TexTitle,
-                ScaleMode.StretchToFill,
-                true );
-
-            var mainCreditRect = titleRect;
-            mainCreditRect.y += titleRect.height;
-            mainCreditRect.xMax -= 55f;
-            mainCreditRect.height = CreditHeight;
-            mainCreditRect.y += CreditTitleSpacing;
-            var mainCreditText = "MainPageCredit".Translate();
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperRight;
-            if( Screen.width < 990 )
+            else
             {
-                var mainCreditBackRect = mainCreditRect;
-                mainCreditBackRect.xMin = mainCreditBackRect.xMax - Text.CalcSize( mainCreditText ).x;
-                mainCreditBackRect.xMin -= 4f;
-                mainCreditBackRect.xMax += 4f;
-                GUI.color = new Color( 0.2f, 0.2f, 0.2f, 0.5f );
+                VersionControl.DrawInfoInCorner();
+
+                var titleBaseVec = TitleSize;
+                if( titleBaseVec.x > (float) Screen.width )
+                {
+                    titleBaseVec *= (float) Screen.width / titleBaseVec.x;
+                }
+                var titleFinalVec = titleBaseVec * 0.7f;
+
+                var currentMainMenuDefs = CurrentMainMenuDefs( AnyWorldFiles, AnyMapFiles );
+                var currentMainMenuButtonCount = currentMainMenuDefs.Count;
+                var currentMainMenuButtonHeight = CurrentMainMenuDefHeight( currentMainMenuButtonCount );
+
+                var PaneWidth = GameRectWidth * 2 + OptionListSpacing * 3;
+
+                var minPaneHeight = LinkOptionsHeight + LanguageOptionSpacing + LanguageOptionHeight;
+                var maxPaneHeight = Screen.height - titleFinalVec.y - TitlePaneSpacing - CreditHeight - CreditTitleSpacing - LudeonEdgeSpacing - LudeonLogoSize.y;
+
+                var PaneHeight = Mathf.Max( Mathf.Min( currentMainMenuButtonHeight, maxPaneHeight ), minPaneHeight ) + OptionListSpacing * 2;
+                PaneSize = new Vector2( PaneWidth, PaneHeight );
+
+                var menuOptionsRect = new Rect(
+                    ( (float) Screen.width  - PaneSize.x ) / 2f,
+                    ( (float) Screen.height - PaneSize.y ) / 2f,
+                    PaneSize.x,
+                    PaneSize.y );
+
+                menuOptionsRect.y += TitleShift;
+
+                menuOptionsRect.x = ( (float) Screen.width - menuOptionsRect.width - OptionsEdgeSpacing );
+
+                var titleRect = new Rect(
+                    ( (float) Screen.width - titleFinalVec.x ) / 2f,
+                    ( menuOptionsRect.y - titleFinalVec.y - TitlePaneSpacing ),
+                    titleFinalVec.x,
+                    titleFinalVec.y );
+                titleRect.x = ( (float) Screen.width - titleFinalVec.x - TitleShift );
                 GUI.DrawTexture(
-                    mainCreditBackRect,
-                    (Texture) BaseContent.WhiteTex );
+                    titleRect,
+                    (Texture) TexTitle,
+                    ScaleMode.StretchToFill,
+                    true );
+
+                var mainCreditRect = titleRect;
+                mainCreditRect.y += titleRect.height;
+                mainCreditRect.xMax -= 55f;
+                mainCreditRect.height = CreditHeight;
+                mainCreditRect.y += CreditTitleSpacing;
+                var mainCreditText = "MainPageCredit".Translate();
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.UpperRight;
+                if( Screen.width < 990 )
+                {
+                    var mainCreditBackRect = mainCreditRect;
+                    mainCreditBackRect.xMin = mainCreditBackRect.xMax - Text.CalcSize( mainCreditText ).x;
+                    mainCreditBackRect.xMin -= 4f;
+                    mainCreditBackRect.xMax += 4f;
+                    GUI.color = new Color( 0.2f, 0.2f, 0.2f, 0.5f );
+                    GUI.DrawTexture(
+                        mainCreditBackRect,
+                        (Texture) BaseContent.WhiteTex );
+                    GUI.color = Color.white;
+                }
+                Widgets.Label( mainCreditRect, mainCreditText );
+                Text.Anchor = TextAnchor.UpperLeft;
+                Text.Font = GameFont.Small;
+
+                GUI.color = new Color( 1f, 1f, 1f, 0.5f );
+                GUI.DrawTexture(
+                    new Rect(
+                        (float) Screen.width - LudeonLogoSize.x - LudeonEdgeSpacing,
+                        LudeonEdgeSpacing,
+                        LudeonLogoSize.x,
+                        LudeonLogoSize.y ),
+                    (Texture) TexLudeonLogo,
+                    ScaleMode.StretchToFill,
+                    true );
                 GUI.color = Color.white;
+
+                menuOptionsRect.y += OptionListSpacing;
+                GUI.BeginGroup( menuOptionsRect );
+
+                MainMenuDrawer.DoMainMenuButtons(
+                    menuOptionsRect,
+                    AnyWorldFiles,
+                    AnyMapFiles );
+                
+                GUI.EndGroup();
             }
-            Widgets.Label( mainCreditRect, mainCreditText );
-            Text.Anchor = TextAnchor.UpperLeft;
-            Text.Font = GameFont.Small;
-
-            GUI.color = new Color( 1f, 1f, 1f, 0.5f );
-            GUI.DrawTexture(
-                new Rect(
-                    (float) Screen.width - LudeonLogoSize.x - LudeonEdgeSpacing,
-                    LudeonEdgeSpacing,
-                    LudeonLogoSize.x,
-                    LudeonLogoSize.y ),
-                (Texture) TexLudeonLogo,
-                ScaleMode.StretchToFill,
-                true );
-            GUI.color = Color.white;
-
-            menuOptionsRect.y += OptionListSpacing;
-            GUI.BeginGroup( menuOptionsRect );
-
-            MainMenuDrawer.DoMainMenuButtons(
-                menuOptionsRect,
-                AnyWorldFiles,
-                AnyMapFiles );
-            
-            GUI.EndGroup();
-
         }
 
         internal static void _DoMainMenuButtons( Rect rect, bool anyWorldFiles, bool anyMapFiles, Action backToGameButtonAction = null )
@@ -516,8 +528,12 @@ namespace CommunityCoreLibrary.Detour
 
             public void SwitchTo()
             {
-                LanguageDatabase.SelectLanguage( localLang );
-                Prefs.Save();
+                if( localLang != Verse.LanguageDatabase.activeLanguage )
+                {
+                    // Only reload if it changed
+                    LanguageDatabase.SelectLanguage( localLang );
+                    Prefs.Save();
+                }
             }
 
         }
