@@ -8,15 +8,16 @@ namespace CommunityCoreLibrary
 	public class MainMenu_ModConfigurationMenu : MainMenu
 	{
 
+        public override Color               Color
+        {
+            get
+            {
+                return Controller.Data.RequireRestart ? Color.yellow : Color.white;
+            }
+        }
+
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-            if(
-                ( Controller.Data.RequireRestart )&&
-                ( !Controller.Data.ContinueWithoutRestart )
-            )
-            {
-                return false;
-            }
 			return ( Window_ModConfigurationMenu.AnyMenus );
 		}
 

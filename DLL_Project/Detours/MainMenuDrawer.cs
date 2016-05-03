@@ -242,7 +242,16 @@ namespace CommunityCoreLibrary.Detour
 
         internal static List<MainMenuDef> CurrentMainMenuDefs( bool anyWorldFiles, bool anyMapFiles )
         {
-            return AllMainMenuDefs.Where( def => def.menuWorker.RenderNow( anyWorldFiles, anyMapFiles ) ).ToList();
+            return AllMainMenuDefs.Where( def => (
+                (
+                    ( !Controller.Data.RequireRestart )||
+                    (
+                        ( Controller.Data.PlayWithoutRestart )||
+                        ( def.showIfRestartRequired )
+                    )
+                )&&
+                ( def.menuWorker.RenderNow( anyWorldFiles, anyMapFiles ) )
+            ) ).ToList();
         }
 
         internal static float CurrentMainMenuDefHeight( int count )
@@ -328,10 +337,7 @@ namespace CommunityCoreLibrary.Detour
         {
             if(
                 ( Controller.Data.RestartWarningIsOpen )||
-                (
-                    ( Controller.Data.RequireRestart )&&
-                    ( !Controller.Data.WarnedAboutRestart )
-                )
+                ( Controller.Data.ReloadingPlayData )
             )
             {
                 return;
@@ -559,14 +565,17 @@ namespace CommunityCoreLibrary.Detour
             public override float DrawOption( Vector2 pos, float width )
             {
                 float height = Mathf.Max( minHeight, Text.CalcHeight( label, width ) );
+                GUI.color = menuDef.menuWorker.Color;
                 if( Widgets.TextButton( new Rect( pos.x, pos.y, width, height ), label, true, true ) )
                 {
+                    GUI.color = Color.white;
                     if( menuDef.closeMainTab )
                     {
                         CloseMainTab();
                     }
                     this.action();
                 }
+                GUI.color = Color.white;
                 return height;
             }
 

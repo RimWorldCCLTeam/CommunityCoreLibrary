@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 using RimWorld;
 using Verse;
@@ -14,9 +12,9 @@ namespace CommunityCoreLibrary
 
 		#region Instance Data
 
-        private DateTime OpenedAt;
-        private bool okAnyway;
-        private DateTime okAnywayStart;
+#if RELEASE
+        private DateTime PlayWithoutRestartStart;
+#endif
 
 		#endregion
 
@@ -33,28 +31,32 @@ namespace CommunityCoreLibrary
 		public Window_WarnRestart()
 		{
 			layer = WindowLayer.GameUI;
-			soundAppear = null;
-			soundClose = null;
+            soundClose = SoundDefOf.MessageAlertNegative;
 			doCloseButton = false;
 			doCloseX = false;
 			closeOnEscapeKey = false;
 			forcePause = true;
             absorbInputAroundWindow = true;
+            Controller.Data.RestartWarningIsOpen = true;
+            Controller.Data.PlayWithoutRestart = false;
 		}
 
 		#endregion
 
-		#region ITab Rendering
-
-        public override void PreOpen()
+        public override void PreClose()
         {
-            base.PreOpen();
-            OpenedAt = System.DateTime.Now;
-            Controller.Data.RestartWarningIsOpen = true;
-            Controller.Data.ContinueWithoutRestart = false;
-            okAnyway = false;
+            if( Controller.Data.PlayWithoutRestart )
+            {
+                Controller.MainMonoBehaviour.ReloadRimWorld();
+            }
+            Controller.Data.RestartWarningIsOpen = false;
+            Controller.Data.WarnedAboutRestart = true;
+            base.PreClose();
         }
 
+		#region Window Rendering
+
+#if RELEASE
         private void DrawCountDownLabel( Rect localRect, double TimeLeft )
         {
             var labelText = string.Format( "{0}", (int) TimeLeft );
@@ -69,6 +71,7 @@ namespace CommunityCoreLibrary
             Widgets.Label( labelRect, labelText );
             GUI.color = oldColor;
         }
+#endif
 
 		public override void DoWindowContents( Rect inRect )
         {
@@ -77,110 +80,84 @@ namespace CommunityCoreLibrary
             var localRect = inRect.ContractedBy( 10f );
             GUI.BeginGroup( localRect );
 
-            var warnLabel = "WarnAboutRestart".Translate();
-            var warnRect = new Rect( 0, 0, localRect.width, Text.CalcHeight( warnLabel, localRect.width ) );
-            Widgets.Label( warnRect, warnLabel );
-
 #if RELEASE
-            var CurrentTime = System.DateTime.Now;
-            var OpenFor = ( CurrentTime - OpenedAt ).TotalSeconds;
-#else
-            var OpenFor = (double) 30.1;
-#endif
-
-            bool closeMe = false;
-            if( OpenFor < 30.0 )
+            var warnLabel = string.Empty;
+            if( !Controller.Data.WarnedAboutRestart )
             {
-                DrawCountDownLabel( localRect, 30.0 - OpenFor );
+                warnLabel = "WarnAboutRestart".Translate();
             }
             else
             {
-                var continueVector = new Vector2( 0, localRect.height - 45f - 16f - 24f );
-                var continueRect = new Rect( 28f, continueVector.y, localRect.width - 28f, 24f );
-                Widgets.Checkbox( continueVector, ref Controller.Data.ContinueWithoutRestart );
-                var continueLabel = "ContinueWithoutRestart".Translate();
-                Widgets.Label( continueRect, continueLabel );
-                if(
-                    ( !okAnyway )&&
-                    ( Controller.Data.ContinueWithoutRestart )
-                )
+                warnLabel = "ReallyWarnAboutRestart".Translate();
+            }
+#else
+            var warnLabel = "WarnAboutRestartDebug".Translate();
+#endif
+            var warnRect = new Rect( 0, 0, localRect.width, Text.CalcHeight( warnLabel, localRect.width ) );
+            Widgets.Label( warnRect, warnLabel );
+
+            bool closeWindow = false;
+            var continueVector = new Vector2( 0, localRect.height - 45f - 16f - 24f );
+            var continueRect = new Rect( 28f, continueVector.y, localRect.width - 28f, 24f );
+#if RELEASE
+            var oldValue = Controller.Data.PlayWithoutRestart;
+#endif
+            Widgets.Checkbox( continueVector, ref Controller.Data.PlayWithoutRestart );
+            var continueLabel = "ContinueWithoutRestart".Translate();
+            Widgets.Label( continueRect, continueLabel );
+#if RELEASE
+            if(
+                ( Controller.Data.PlayWithoutRestart )&&
+                ( Controller.Data.PlayWithoutRestart != oldValue )
+            )
+            {
+                PlayWithoutRestartStart = System.DateTime.Now;
+            }
+#endif
+
+            if( !Controller.Data.PlayWithoutRestart )
+            {
+                var restartLaterButtonRect = new Rect( 0, localRect.height - 45f, 100f, 45f );
+                GUI.color = Color.red;
+                closeWindow = Widgets.TextButton( restartLaterButtonRect, "RestartLater".Translate() );
+                var restartNowButtonRect = new Rect( localRect.width - 100f, localRect.height - 45f, 100f, 45f );
+                GUI.color = Color.green;
+                if( Widgets.TextButton( restartNowButtonRect, "RestartNow".Translate() ) )
                 {
-                    okAnyway = true;
-                    okAnywayStart = System.DateTime.Now;
+                    Controller.MainMonoBehaviour.RestartRimWorld();
                 }
-                if( !Controller.Data.ContinueWithoutRestart )
+            }
+            else
+            {
+#if RELEASE
+                var CurrentTime = System.DateTime.Now;
+                var OpenFor = ( CurrentTime - PlayWithoutRestartStart ).TotalSeconds;
+                if( OpenFor < 30.0 )
                 {
-                    okAnyway = false;
-                    var okButtonRect = new Rect( 0, localRect.height - 45f, 100f, 45f );
-                    closeMe = Widgets.TextButton( okButtonRect, "Continue".Translate() );
-                    var restartButtonRect = new Rect( localRect.width - 100f, localRect.height - 45f, 100f, 45f );
-                    if( Widgets.TextButton( restartButtonRect, "RestartNow".Translate() ) )
-                    {
-                        var args = Environment.GetCommandLineArgs();
-                        var commandLine = "\"" + args[ 0 ] + "\"";
-                        var arguements = string.Empty;
-                        for( int index = 1; index < args.GetLength( 0 ); ++index )
-                        {
-                            if( index > 1 )
-                            {
-                                arguements += " ";
-                            }
-                            arguements += args[ index ];
-                        }
-                        Log.Message( "Restarting RimWorld:\n" + commandLine + " " + arguements );
-                        Process.Start( commandLine, arguements );
-                        Root.Shutdown();
-                    }
+                    DrawCountDownLabel( localRect, 30.0 - OpenFor );
                 }
                 else
                 {
-#if RELEASE
-                    CurrentTime = System.DateTime.Now;
-                    OpenFor = ( CurrentTime - okAnywayStart ).TotalSeconds;
 #endif
-                    if( OpenFor < 30.0 )
-                    {
-                        DrawCountDownLabel( localRect, 30.0 - OpenFor );
-                    }
-                    else
-                    {
-                        var consequencesLabel = "AcceptTheConsequences".Translate();
-                        var consequencesSize = Text.CalcSize( consequencesLabel );
-                        consequencesSize.x += 24f;
-                        var okButtonRect = new Rect( localRect.width - consequencesSize.x, localRect.height - 45f, consequencesSize.x, 45f );
-                        closeMe = Widgets.TextButton( okButtonRect, consequencesLabel );
-                    }
+                    var consequencesLabel = "AcceptTheConsequences".Translate();
+                    var consequencesSize = Text.CalcSize( consequencesLabel );
+                    consequencesSize.x += 24f;
+                    var okButtonRect = new Rect( localRect.width - consequencesSize.x, localRect.height - 45f, consequencesSize.x, 45f );
+                    GUI.color = Color.red;
+                    closeWindow = Widgets.TextButton( okButtonRect, consequencesLabel );
+                    GUI.color = Color.white;
+#if RELEASE
                 }
+#endif
             }
 
             GUI.EndGroup();
 
-            if( closeMe )
+            if( closeWindow )
             {
                 this.Close();
             }
 		}
-
-        public override void PostClose()
-        {
-            Controller.Data.WarnedAboutRestart = true;
-            base.PostClose();
-            LanguageDatabase.Clear();
-            LoadedModManager.ClearDestroy();
-            foreach( Type genericParam in GenTypes.AllSubclasses( typeof( Def ) ) )
-            {
-                GenGeneric.InvokeStaticMethodOnGenericType( typeof( DefDatabase<> ), genericParam, "Clear" );
-            }
-            ThingCategoryNodeDatabase.Clear();
-            BackstoryDatabase.Clear();
-            SolidBioDatabase.Clear();
-            PlayDataLoader.loaded = false;
-            Controller.Data.RestartWarningIsOpen = false;
-            if( Detour._PlayDataLoader.CallLoadAllPlayerDataWhenFinished )
-            {
-                Detour._PlayDataLoader._LoadAllPlayData( Detour._PlayDataLoader.queueRecovering );
-            }
-        }
 
 		#endregion
 

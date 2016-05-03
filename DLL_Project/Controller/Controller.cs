@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 using UnityEngine;
 using Verse;
@@ -34,9 +34,10 @@ namespace CommunityCoreLibrary.Controller
 
         // Some settings or windows require a game restart
         public static bool                  RequireRestart = false;
-        public static bool                  WarnedAboutRestart = false;
-        public static bool                  ContinueWithoutRestart = false;
+        public static bool                  ReloadingPlayData = false;
+        public static bool                  PlayWithoutRestart = false;
         public static bool                  RestartWarningIsOpen = false;
+        public static bool                  WarnedAboutRestart = false;
 
         // For tracing in global functions
         private static ModHelperDef         _Trace_Current_Mod = null;

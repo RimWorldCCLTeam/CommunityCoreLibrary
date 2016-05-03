@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using RimWorld;
-using Verse;
 using UnityEngine;
+using Verse;
 
 namespace CommunityCoreLibrary.Controller
 {
@@ -22,6 +23,10 @@ namespace CommunityCoreLibrary.Controller
         private static int                  ticks;
 
         private List<SubController>         UpdateControllers = null;
+
+        private static MethodInfo           _DoPlayLoad;
+        private static bool                 queueRecovering = false;
+        private static bool                 queueLoadAllPlayData = false;
 
         #endregion
 
@@ -109,6 +114,151 @@ namespace CommunityCoreLibrary.Controller
                 Verbosity.Injections,
                 stringBuilder.ToString(),
                 "PreLoader" );
+        }
+
+        #endregion
+
+        #region Reload RimWorld
+
+        public static void ReloadRimWorld()
+        {
+            Controller.Data.ReloadingPlayData = true;
+            LongEventHandler.QueueLongEvent(
+                ReloadQueue,
+                "",
+                true,
+                null
+            );
+        }
+
+        private static void ReloadQueue()
+        {
+            ClearAllPlayData();
+            if( queueLoadAllPlayData )
+            {
+                LoadAllPlayData( queueRecovering );
+            }
+            Controller.Data.ReloadingPlayData = false;
+        }
+
+        #endregion
+
+        #region Restart RimWorld
+
+        internal static void RestartRimWorld()
+        {
+            var args = Environment.GetCommandLineArgs();
+            var commandLine = "\"" + args[ 0 ] + "\"";
+            var arguements = string.Empty;
+            for( int index = 1; index < args.GetLength( 0 ); ++index )
+            {
+                if( index > 1 )
+                {
+                    arguements += " ";
+                }
+                arguements += args[ index ];
+            }
+#if DEVELOPER
+            Log.Message( "Restarting RimWorld:\n" + commandLine + " " + arguements );
+#endif
+            Process.Start( commandLine, arguements );
+            Root.Shutdown();
+        }
+
+        #endregion
+
+        #region Play Data
+
+        private static void ClearAllPlayData()
+        {
+            LanguageDatabase.Clear();
+            LoadedModManager.ClearDestroy();
+            foreach( Type genericParam in GenTypes.AllSubclasses( typeof( Def ) ) )
+            {
+                GenGeneric.InvokeStaticMethodOnGenericType( typeof( DefDatabase<> ), genericParam, "Clear" );
+            }
+            ThingCategoryNodeDatabase.Clear();
+            BackstoryDatabase.Clear();
+            SolidBioDatabase.Clear();
+            PlayDataLoader.loaded = false;
+        }
+
+        internal static void QueueLoadAllPlayData( bool recovering = false )
+        {
+            queueRecovering = recovering;
+            queueLoadAllPlayData = true;
+        }
+
+        private static void DoPlayLoad()
+        {
+            if( _DoPlayLoad == null )
+            {
+                _DoPlayLoad = typeof( PlayDataLoader ).GetMethod( "DoPlayLoad", BindingFlags.Static | BindingFlags.NonPublic );
+            }
+            _DoPlayLoad.Invoke( null, null );
+        }
+
+        internal static void LoadAllPlayData( bool recovering = false )
+        {
+            if( PlayDataLoader.loaded )
+            {
+                Log.Error( "Loading play data when already loaded. Call ClearAllPlayData first." );
+            }
+            else
+            {
+                queueRecovering = false;
+                queueLoadAllPlayData = false;
+
+                DeepProfiler.Start( "LoadAllPlayData" );
+                try
+                {
+                    DoPlayLoad();
+                }
+                catch( Exception ex )
+                {
+                    if( !Prefs.ResetModsConfigOnCrash )
+                        throw;
+                    else if( recovering )
+                    {
+                        Log.Warning( "Could not recover from errors loading play data. Giving up." );
+                        throw;
+                    }
+                    else
+                    {
+                        IEnumerable<InstalledMod> activeMods = ModsConfig.ActiveMods;
+                        if( Enumerable.Count<InstalledMod>( activeMods ) == 1 && Enumerable.First<InstalledMod>( activeMods ).IsCoreMod )
+                        {
+                            throw;
+                        }
+                        else
+                        {
+                            Log.Warning( "Caught exception while loading play data but there are active mods other than Core. Resetting mods config and trying again.\nThe exception was: " + (object)ex );
+                            try
+                            {
+                                PlayDataLoader.ClearAllPlayData();
+                            }
+                            catch
+                            {
+                                Log.Warning( "Caught exception while recovering from errors and trying to clear all play data. Ignoring it.\nThe exception was: " + (object)ex );
+                            }
+                            ModsConfig.Reset();
+                            CrossRefLoader.Clear();
+                            PostLoadInitter.Clear();
+                            PlayDataLoader.LoadAllPlayData( true );
+                            return;
+                        }
+                    }
+                }
+                finally
+                {
+                    DeepProfiler.End();
+                }
+                PlayDataLoader.loaded = true;
+                if( !recovering )
+                    return;
+                Log.Message( "Successfully recovered from errors and loaded play data." );
+                DelayedErrorWindowRequest.Add( Translator.Translate( "RecoveredFromErrorsText" ), Translator.Translate( "RecoveredFromErrorsDialogTitle" ) );
+            }
         }
 
         #endregion

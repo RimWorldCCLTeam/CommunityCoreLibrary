@@ -276,8 +276,11 @@ namespace CommunityCoreLibrary
         private void                        FixDoors()
         {
             foreach( var doorDef in DefDatabase<ThingDef>.AllDefs.Where( def => (
-                ( def.thingClass == typeof( Building_Door ) )||
-                ( def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
+                ( def.thingClass != null )&&
+                (
+                    ( def.thingClass == typeof( Building_Door ) )||
+                    ( def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
+                )
             ) ) )
             {
                 doorDef.regionBarrier = true;

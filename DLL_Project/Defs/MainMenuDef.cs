@@ -19,6 +19,7 @@ namespace CommunityCoreLibrary
         public int                  order;
         public Type                 menuClass;
         public bool                 closeMainTab = false;
+        public bool                 showIfRestartRequired = false;
 
         #endregion
 

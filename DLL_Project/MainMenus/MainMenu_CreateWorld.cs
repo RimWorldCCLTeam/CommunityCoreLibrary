@@ -8,16 +8,17 @@ namespace CommunityCoreLibrary
 	public class MainMenu_CreateWorld : MainMenu
 	{
 
+        public override Color               Color
+        {
+            get
+            {
+                return Controller.Data.RequireRestart ? Color.red : Color.white;
+            }
+        }
+
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-            if(
-                ( Controller.Data.RequireRestart )&&
-                ( !Controller.Data.ContinueWithoutRestart )
-            )
-            {
-                return false;
-            }
-            return ( Game.Mode == GameMode.Entry );
+			return ( Game.Mode == GameMode.Entry );
 		}
 
 		public override void ClickAction()

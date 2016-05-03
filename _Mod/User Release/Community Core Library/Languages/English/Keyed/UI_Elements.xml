@@ -35,9 +35,11 @@
     <ModConfigurationOptions>Mod Options</ModConfigurationOptions>
     <ModConfigurationSaved>Saved {0} mod configuration</ModConfigurationSaved>
 
-    <WarnAboutRestart>A major change has been made to the game engine, such as the loaded mods or the language.\n\nAny major change requires RimWorld to be restarted.\n\nPlaying the game without restarting can cause any number of problems from small errors to aliens invading Earth.</WarnAboutRestart>
+    <WarnAboutRestart>A major change has been made to the games data set, such as the loaded mods or the language.\n\nAny major change requires RimWorld to be restarted.\n\nPlaying the game without restarting can cause any number of problems from small errors to aliens invading Earth.</WarnAboutRestart>
+    <ReallyWarnAboutRestart>You really like playing with fire.\n\nYou should stop now while you're behind.</ReallyWarnAboutRestart>
+    <WarnAboutRestartDebug>You should restart the game after making any major to the games data set.\n\nAs a modder you already know this, right?</WarnAboutRestartDebug>
     <ContinueWithoutRestart>Play without restart</ContinueWithoutRestart>
-    <Continue>Continue</Continue>
+    <RestartLater>Later</RestartLater>
     <RestartNow>Restart Now</RestartNow>
     <AcceptTheConsequences>I accept the consequences</AcceptTheConsequences>
 

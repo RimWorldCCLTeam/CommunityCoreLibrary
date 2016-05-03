@@ -8,15 +8,16 @@ namespace CommunityCoreLibrary
 	public class MainMenu_LoadGame : MainMenu
 	{
 
+        public override Color               Color
+        {
+            get
+            {
+                return Controller.Data.RequireRestart ? Color.red : Color.white;
+            }
+        }
+
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-            if(
-                ( Controller.Data.RequireRestart )&&
-                ( !Controller.Data.ContinueWithoutRestart )
-            )
-            {
-                return false;
-            }
 			return ( anyMapFiles );
 		}
 
