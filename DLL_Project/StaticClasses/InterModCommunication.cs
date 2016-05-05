@@ -12,9 +12,15 @@ namespace CommunityCoreLibrary
     public static class InterModCommunication
     {
 
+        #region Fields
+
         private static Dictionary<string,Action>    handlers;
 
         private static unsafe Dictionary<string,Action<object>>    packetHandlers;
+
+        #endregion
+
+        #region Messages with no Packets
 
         /// <summary>
         /// Registers a message handler.
@@ -29,9 +35,12 @@ namespace CommunityCoreLibrary
             }
             if( handlers.ContainsKey( message ) )
             {
-                return;
+                handlers[ message ] += callback;
             }
-            handlers.Add( message, callback );
+            else
+            {
+                handlers.Add( message, callback );
+            }
         }
 
         /// <summary>
@@ -51,6 +60,10 @@ namespace CommunityCoreLibrary
             handlers[ message ].Invoke();
         }
 
+        #endregion
+
+        #region Messages with Packets
+
         /// <summary>
         /// Registers a message handler.
         /// </summary>
@@ -64,9 +77,12 @@ namespace CommunityCoreLibrary
             }
             if( packetHandlers.ContainsKey( message ) )
             {
-                return;
+                packetHandlers[ message ] += callback;
             }
-            packetHandlers.Add( message, callback );
+            else
+            {
+                packetHandlers.Add( message, callback );
+            }
         }
 
         /// <summary>
@@ -86,6 +102,8 @@ namespace CommunityCoreLibrary
             }
             packetHandlers[ message ].Invoke( packet );
         }
+
+        #endregion
 
     }
 
