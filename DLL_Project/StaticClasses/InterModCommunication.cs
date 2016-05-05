@@ -12,7 +12,9 @@ namespace CommunityCoreLibrary
     public static class InterModCommunication
     {
 
-        private static Dictionary<string,Action>   handlers;
+        private static Dictionary<string,Action>    handlers;
+
+        private static unsafe Dictionary<string,Action<object>>    packetHandlers;
 
         /// <summary>
         /// Registers a message handler.
@@ -47,6 +49,42 @@ namespace CommunityCoreLibrary
                 return;
             }
             handlers[ message ].Invoke();
+        }
+
+        /// <summary>
+        /// Registers a message handler.
+        /// </summary>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="callback">Action callback when the message is broadcast with a packet.</param>
+        public static void           RegisterForMessagePacket( string message, Action<object> callback )
+        {
+            if( packetHandlers == null )
+            {
+                packetHandlers = new Dictionary<string, Action<object>>();
+            }
+            if( packetHandlers.ContainsKey( message ) )
+            {
+                return;
+            }
+            packetHandlers.Add( message, callback );
+        }
+
+        /// <summary>
+        /// Broadcasts a message to a handler with an attached packet.
+        /// </summary>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="packet">Packet to send.</param>
+        public static unsafe void       BroadcastMessagePacket( string message, object packet )
+        {
+            if( packetHandlers == null )
+            {
+                packetHandlers = new Dictionary<string, Action<object>>();
+            }
+            if( !packetHandlers.ContainsKey( message ) )
+            {
+                return;
+            }
+            packetHandlers[ message ].Invoke( packet );
         }
 
     }

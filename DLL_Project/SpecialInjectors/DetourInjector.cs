@@ -290,6 +290,8 @@ namespace CommunityCoreLibrary
         private void                        FixGlowers()
         {
             foreach( var def in DefDatabase<ThingDef>.AllDefs.Where( def => (
+                ( def != null )&&
+                ( def.comps != null )&&
                 ( def.HasComp( typeof( CompGlower ) ) )
             ) ) )
             {
