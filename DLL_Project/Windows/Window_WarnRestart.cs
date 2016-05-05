@@ -12,6 +12,9 @@ namespace CommunityCoreLibrary
 
 		#region Instance Data
 
+        public static string            messageKey = string.Empty;
+        public static Action            callbackBeforeRestart = null;
+
 #if RELEASE
         private DateTime PlayWithoutRestartStart;
 #endif
@@ -80,19 +83,7 @@ namespace CommunityCoreLibrary
             var localRect = inRect.ContractedBy( 10f );
             GUI.BeginGroup( localRect );
 
-#if RELEASE
-            var warnLabel = string.Empty;
-            if( !Controller.Data.WarnedAboutRestart )
-            {
-                warnLabel = "WarnAboutRestart".Translate();
-            }
-            else
-            {
-                warnLabel = "ReallyWarnAboutRestart".Translate();
-            }
-#else
-            var warnLabel = "WarnAboutRestartDebug".Translate();
-#endif
+            var warnLabel = messageKey.Translate();
             var warnRect = new Rect( 0, 0, localRect.width, Text.CalcHeight( warnLabel, localRect.width ) );
             Widgets.Label( warnRect, warnLabel );
 
@@ -124,7 +115,7 @@ namespace CommunityCoreLibrary
                 GUI.color = Color.green;
                 if( Widgets.TextButton( restartNowButtonRect, "RestartNow".Translate() ) )
                 {
-                    Controller.MainMonoBehaviour.RestartRimWorld();
+                    RestartRimWorld();
                 }
             }
             else
@@ -160,6 +151,15 @@ namespace CommunityCoreLibrary
 		}
 
 		#endregion
+
+        private void RestartRimWorld()
+        {
+            if( callbackBeforeRestart != null )
+            {
+                callbackBeforeRestart.Invoke();
+            }
+            Controller.MainMonoBehaviour.RestartRimWorld();
+        }
 
 	}
 

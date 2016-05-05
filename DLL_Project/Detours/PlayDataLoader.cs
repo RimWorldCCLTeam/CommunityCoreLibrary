@@ -22,6 +22,19 @@ namespace CommunityCoreLibrary.Detour
             )
             {
 #endif
+#if RELEASE
+                if( !Controller.Data.WarnedAboutRestart )
+                {
+                    Window_WarnRestart.messageKey = "WarnAboutRestart";
+                }
+                else
+                {
+                    Window_WarnRestart.messageKey = "ReallyWarnAboutRestart";
+                }
+#else
+                Window_WarnRestart.messageKey = "WarnAboutRestartDebug";
+#endif
+                Window_WarnRestart.callbackBeforeRestart = null;
                 Find.WindowStack.Add( new Window_WarnRestart() );
 #if DEBUG
             }
