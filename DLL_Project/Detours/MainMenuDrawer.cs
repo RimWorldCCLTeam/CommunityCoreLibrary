@@ -11,26 +11,26 @@ using UnityEngine;
 namespace CommunityCoreLibrary.Detour
 {
 
-    public static class _MainMenuDrawer
+    internal static class _MainMenuDrawer
     {
 
-        public const float        GameRectWidth = 200f;
-        public const float        NewsRectWidth = 350f;
-        public const int          ButCount = 3;
-        public const float        TitleShift = 50f;
-        public const float        TitlePaneSpacing = 10f;
-        public const float        OptionsEdgeSpacing = 30f;
-        public const float        CreditHeight = 30f;
-        public const float        CreditTitleSpacing = 3f;
-        public const float        LudeonEdgeSpacing = 8f;
-        public const float        OptionListSpacing = 17f;
-        public const float        LinkOptionMinHeight = 24f;
-        public const float        LanguageOptionWidth = 64f;
-        public const float        LanguageOptionHeight = 32f;
-        public const float        LanguageOptionSpacing = 10f;
+        internal const float        GameRectWidth = 200f;
+        internal const float        NewsRectWidth = 350f;
+        internal const int          ButCount = 3;
+        internal const float        TitleShift = 50f;
+        internal const float        TitlePaneSpacing = 10f;
+        internal const float        OptionsEdgeSpacing = 30f;
+        internal const float        CreditHeight = 30f;
+        internal const float        CreditTitleSpacing = 3f;
+        internal const float        LudeonEdgeSpacing = 8f;
+        internal const float        OptionListSpacing = 17f;
+        internal const float        LinkOptionMinHeight = 24f;
+        internal const float        LanguageOptionWidth = 64f;
+        internal const float        LanguageOptionHeight = 32f;
+        internal const float        LanguageOptionSpacing = 10f;
 
-        public const float        OptionSpacingDefault = 7f;
-        public const float        OptionButtonHeightDefault = 45f;
+        internal const float        OptionSpacingDefault = 7f;
+        internal const float        OptionButtonHeightDefault = 45f;
 
         internal static Type        _Verse_TexButton;
 
@@ -53,7 +53,7 @@ namespace CommunityCoreLibrary.Detour
         private static FieldInfo    _TexLudeonLogo;
         private static FieldInfo    _LudeonLogoSize;
 
-        public static Vector2      _optionsScroll = new Vector2();
+        private static Vector2      _optionsScroll = new Vector2();
 
         private static List<MainMenuDef>  _MainMenuDefs;
 
@@ -91,7 +91,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Properties Reflecting Original Fields
 
-        public static Vector2 ScreenCentre
+        internal static Vector2 ScreenCentre
         {
             get
             {
@@ -99,7 +99,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static bool AnyWorldFiles
+        internal static bool AnyWorldFiles
         {
             get
             {
@@ -107,7 +107,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static bool AnyMapFiles
+        internal static bool AnyMapFiles
         {
             get
             {
@@ -115,7 +115,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Vector2 PaneSize
+        internal static Vector2 PaneSize
         {
             get
             {
@@ -127,7 +127,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Vector2 TitleSize
+        internal static Vector2 TitleSize
         {
             get
             {
@@ -135,7 +135,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Vector2 LudeonLogoSize
+        internal static Vector2 LudeonLogoSize
         {
             get
             {
@@ -143,7 +143,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D TexTitle
+        internal static Texture2D TexTitle
         {
             get
             {
@@ -151,7 +151,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D TexLudeonLogo
+        internal static Texture2D TexLudeonLogo
         {
             get
             {
@@ -159,7 +159,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D IconBlog
+        internal static Texture2D IconBlog
         {
             get
             {
@@ -167,7 +167,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D IconForums
+        internal static Texture2D IconForums
         {
             get
             {
@@ -175,7 +175,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D IconTwitter
+        internal static Texture2D IconTwitter
         {
             get
             {
@@ -183,7 +183,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D IconBook
+        internal static Texture2D IconBook
         {
             get
             {
@@ -191,7 +191,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static Texture2D IconSoundtrack
+        internal static Texture2D IconSoundtrack
         {
             get
             {
@@ -203,7 +203,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Sorted, Translated Main Menu Defs
 
-        public static List<MainMenuDef> AllMainMenuDefs
+        internal static List<MainMenuDef> AllMainMenuDefs
         {
             get
             {
@@ -240,7 +240,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static List<MainMenuDef> CurrentMainMenuDefs( bool anyWorldFiles, bool anyMapFiles )
+        internal static List<MainMenuDef> CurrentMainMenuDefs( bool anyWorldFiles, bool anyMapFiles )
         {
             return AllMainMenuDefs.Where( def => (
                 (
@@ -254,7 +254,7 @@ namespace CommunityCoreLibrary.Detour
             ) ).ToList();
         }
 
-        public static float CurrentMainMenuDefHeight( int count )
+        internal static float CurrentMainMenuDefHeight( int count )
         {
             return 
                 count * OptionButtonHeightDefault +
@@ -265,7 +265,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Link Options
 
-        public static List<ListableOption> LinkOptions
+        internal static List<ListableOption> LinkOptions
         {
             get
             {
@@ -287,7 +287,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static float LinkOptionsHeight
+        internal static float LinkOptionsHeight
         {
             get
             {
@@ -333,7 +333,7 @@ namespace CommunityCoreLibrary.Detour
         1.0 +--------------------------------------------------------------+
         */
 
-        public static void _MainMenuOnGUI()
+        internal static void _MainMenuOnGUI()
         {
             if(
                 ( Controller.Data.RestartWarningIsOpen )||
@@ -435,7 +435,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        public static void _DoMainMenuButtons( Rect rect, bool anyWorldFiles, bool anyMapFiles, Action backToGameButtonAction = null )
+        internal static void _DoMainMenuButtons( Rect rect, bool anyWorldFiles, bool anyMapFiles, Action backToGameButtonAction = null )
         {
             var mainOptionRect = new Rect( 0.0f, 0.0f, GameRectWidth, rect.height );
             Text.Font = GameFont.Small;
@@ -522,7 +522,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Language Picked Helper Class
 
-        public class SwitchLang
+        internal class SwitchLang
         {
 
             public LoadedLanguage localLang;
@@ -546,14 +546,14 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
-        public static void            CloseMainTab()
+        internal static void            CloseMainTab()
         {
             _CloseMainTab.Invoke( null, null );
         }
 
         #region Main Menu Listable Options
 
-        public class ListableOption_MainMenu : ListableOption
+        internal class ListableOption_MainMenu : ListableOption
         {
             MainMenuDef     menuDef;
 
@@ -585,7 +585,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Link Buttons
 
-        public static ListableOption  _FictionPrimerOption()
+        internal static ListableOption  _FictionPrimerOption()
         {
             return new ListableOption_WebLink(
                 "FictionPrimer".Translate(),
@@ -594,7 +594,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _BlogOption()
+        internal static ListableOption  _BlogOption()
         {
             return new ListableOption_WebLink(
                 "LudeonBlog".Translate(),
@@ -603,7 +603,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _ForumsOption()
+        internal static ListableOption  _ForumsOption()
         {
             return new ListableOption_WebLink(
                 "Forums".Translate(),
@@ -612,7 +612,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _WikiOption()
+        internal static ListableOption  _WikiOption()
         {
             return new ListableOption_WebLink(
                 "OfficialWiki".Translate(),
@@ -621,7 +621,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _TwitterOption()
+        internal static ListableOption  _TwitterOption()
         {
             return new ListableOption_WebLink(
                 "TynansTwitter".Translate(),
@@ -630,7 +630,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _DesignBookOption()
+        internal static ListableOption  _DesignBookOption()
         {
             return new ListableOption_WebLink(
                 "TynansDesignBook".Translate(),
@@ -639,7 +639,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _TranslateOption()
+        internal static ListableOption  _TranslateOption()
         {
             return new ListableOption_WebLink(
                 "HelpTranslate".Translate(),
@@ -648,7 +648,7 @@ namespace CommunityCoreLibrary.Detour
             );
         }
 
-        public static ListableOption  _BuySoundTrack()
+        internal static ListableOption  _BuySoundTrack()
         {
             return new ListableOption_WebLink(
                 "BuySoundtrack".Translate(),
