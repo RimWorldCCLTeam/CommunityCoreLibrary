@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
 
         private static Dictionary<string,Action>    handlers;
 
-        private static unsafe Dictionary<string,Action<object>>    packetHandlers;
+        private static Dictionary<string,Action<object>>    packetHandlers;
 
         #endregion
 
@@ -90,7 +90,7 @@ namespace CommunityCoreLibrary
         /// </summary>
         /// <param name="message">Message to handle.</param>
         /// <param name="packet">Packet to send.</param>
-        public static unsafe void       BroadcastMessagePacket( string message, object packet )
+        public static void       BroadcastMessagePacket( string message, object packet )
         {
             if( packetHandlers == null )
             {
