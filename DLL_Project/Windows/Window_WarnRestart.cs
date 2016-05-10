@@ -25,7 +25,7 @@ namespace CommunityCoreLibrary
 		{
 			get
 			{
-				return new Vector2( 400f, 300f );
+				return new Vector2( 600f, 500f );
 			}
 		}
 
@@ -40,11 +40,22 @@ namespace CommunityCoreLibrary
 			closeOnEscapeKey = false;
 			forcePause = true;
             absorbInputAroundWindow = true;
-            Controller.Data.RestartWarningIsOpen = true;
-            Controller.Data.PlayWithoutRestart = false;
 		}
 
 		#endregion
+
+        #region PreOpen
+
+        public override void PreOpen()
+        {
+            Controller.Data.RestartWarningIsOpen = true;
+            Controller.Data.PlayWithoutRestart = false;
+            base.PreOpen();
+        }
+
+        #endregion
+
+        #region PreClose, Restart
 
         public override void PreClose()
         {
@@ -56,6 +67,8 @@ namespace CommunityCoreLibrary
             Controller.Data.WarnedAboutRestart = true;
             base.PreClose();
         }
+
+        #endregion
 
 		#region Window Rendering
 

@@ -63,13 +63,11 @@
     <Compile Include="Extensions\Vector3_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
     <Compile Include="Interfaces\IHelpDefView.cs" />
-    <Compile Include="StaticClasses\Detours.cs" />
     <Compile Include="Structures\CompInjectionSet.cs" />
     <Compile Include="Defs\MainTab_HelpMenuDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyUnderRoof.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_WallAttachment.cs" />
-    <Compile Include="StaticClasses\CCL_Log.cs" />
     <Compile Include="Structures\StringDescTriplet.cs" />
     <Compile Include="ThingComps\CompPawnGizmo.cs" />
     <Compile Include="ThingComps\CompPowerLowIdleDraw.cs" />
@@ -78,12 +76,8 @@
     <Compile Include="ThingComps\CompRangedGizmoGiver.cs" />
     <Compile Include="Toils\Toils_Common.cs" />
     <Compile Include="ThingComps\CompRefrigerated.cs" />
-    <Compile Include="StaticClasses\Icons.cs" />
-    <Compile Include="StaticClasses\CommonFunctions.cs" />
     <Compile Include="CompProperties\CompProperties_ColoredLight.cs" />
-    <Compile Include="StaticClasses\LightColor.cs" />
     <Compile Include="ThingComps\CompColoredLight.cs" />
-    <Compile Include="StaticClasses\Research.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_OnlyOnSurface.cs" />
     <Compile Include="Buildings\Building_SunLampHeatController.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_RestrictedCount.cs" />
@@ -104,7 +98,6 @@
     <Compile Include="Commands\TouchingByThingComp.cs" />
     <Compile Include="Commands\TouchingByDef.cs" />
     <Compile Include="Commands\TouchingByLinker.cs" />
-    <Compile Include="StaticClasses\PlaceWorker_Restriction_Alert_Data.cs" />
     <Compile Include="Enumerations\LowIdleDrawMode.cs" />
     <Compile Include="Structures\ColorName.cs" />
     <Compile Include="Extensions\Thing_Extensions.cs" />
@@ -121,7 +114,6 @@
     <Compile Include="Verbs\VerbProperties_Extended.cs" />
     <Compile Include="Verbs\Verb_ShootExtended.cs" />
     <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
-    <Compile Include="StaticClasses\HelpCategoryDefOf.cs" />
     <Compile Include="Extensions\RecipeDef_Extensions.cs" />
     <Compile Include="Extensions\ReverseDesignatorDatabase_Extensions.cs" />
     <Compile Include="Alerts\Alert_BuildingNeedsHopper.cs" />
@@ -131,12 +123,11 @@
     <Compile Include="Interfaces\IHopperUser.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_HopperMagnifier.cs" />
     <Compile Include="PlaceWorkers\PlaceWorker_HopperUserMagnifier.cs" />
-    <Compile Include="StaticClasses\HopperHelper.cs" />
     <Compile Include="ThingComps\CompHopper.cs" />
     <Compile Include="ThingComps\CompHopperUser.cs" />
     <Compile Include="WorkGivers\WorkGiver_FillHopper.cs" />
     <Compile Include="Extensions\HelpDetailSection_Extensions.cs" />
-    <Compile Include="StaticClasses\HelpDetailSectionHelper.cs" />
+    <Compile Include="Classes\HelpDetailSectionHelper.cs" />
     <Compile Include="Structures\DefStringTriplet.cs" />
     <Compile Include="Structures\HelpDetailSection.cs" />
     <Compile Include="Enumerations\ResearchEnableMode.cs" />
@@ -183,7 +174,6 @@
     <Compile Include="Enumerations\FactoryOutputVector.cs" />
     <Compile Include="ThingComps\CompAutomatedFactory.cs" />
     <Compile Include="CompProperties\CompProperties_AutomatedFactory.cs" />
-    <Compile Include="StaticClasses\FoodSynthesis.cs" />
     <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
     <Compile Include="SpecialInjectors\DetourInjector.cs" />
     <Compile Include="SubControllers\LibrarySubController.cs" />
@@ -191,7 +181,6 @@
     <Compile Include="SubControllers\ResearchSubController.cs" />
     <Compile Include="SubControllers\InjectionSubController.cs" />
     <Compile Include="SubControllers\HelpSubController.cs" />
-    <Compile Include="StaticClasses\HelpBuilder.cs" />
     <Compile Include="Structures\FacilityInjectionSet.cs" />
     <Compile Include="Defs\ModHelperDef\SpecialInjectors.cs" />
     <Compile Include="Defs\ModHelperDef\ThingComps.cs" />
@@ -199,11 +188,9 @@
     <Compile Include="Defs\ModHelperDef\MapComponents.cs" />
     <Compile Include="Defs\ModHelperDef\Designators.cs" />
     <Compile Include="Interfaces\IInjector.cs" />
-    <Compile Include="StaticClasses\SpecialInjector.cs" />
     <Compile Include="Defs\ModHelperDef\Facilities.cs" />
     <Compile Include="Structures\StockGeneratorInjectionSet.cs" />
     <Compile Include="Defs\ModHelperDef\TraderKinds.cs" />
-    <Compile Include="StaticClasses\ModConfigurationMenu.cs" />
     <Compile Include="Detours\MainMenuDrawer.cs" />
     <Compile Include="Windows\Window_ModConfigurationMenu.cs" />
     <Compile Include="Extensions\GenTemperature_Extensions.cs" />
@@ -219,8 +206,7 @@
     <Compile Include="MainMenus\MainMenu_QuitToMain.cs" />
     <Compile Include="MainMenus\MainMenu_QuitToOS.cs" />
     <Compile Include="MainMenus\MainMenu_Options.cs" />
-    <Compile Include="StaticClasses\MainMenu.cs" />
-    <Compile Include="StaticClasses\MCMInjectionSet.cs" />
+    <Compile Include="Classes\MCMInjectionSet.cs" />
     <Compile Include="MainMenus\MainMenu_SaveQuitToMain.cs" />
     <Compile Include="MainMenus\MainMenu_SaveQuitToOS.cs" />
     <Compile Include="Detours\CompRottable.cs" />
@@ -238,10 +224,28 @@
     <Compile Include="Detours\CompGlower.cs" />
     <Compile Include="ThingComps\CompGlowerToggleable.cs" />
     <Compile Include="Extensions\CompFacility_Extensions.cs" />
-    <Compile Include="StaticClasses\InterModCommunication.cs" />
     <Compile Include="Windows\Window_WarnRestart.cs" />
     <Compile Include="Detours\PlayDataLoader.cs" />
     <Compile Include="MainMenus\MainMenu_RestartRimWorld.cs" />
+    <Compile Include="Detours\UIRoot_Entry.cs" />
+    <Compile Include="Extensions\MainMenuDrawer_Extensions.cs" />
+    <Compile Include="Classes\Static\CCL_Log.cs" />
+    <Compile Include="Classes\Static\CommonFunctions.cs" />
+    <Compile Include="Classes\Static\Detours.cs" />
+    <Compile Include="Classes\Static\FoodSynthesis.cs" />
+    <Compile Include="Classes\Static\HelpBuilder.cs" />
+    <Compile Include="Classes\Static\HelpCategoryDefOf.cs" />
+    <Compile Include="Classes\Static\HopperHelper.cs" />
+    <Compile Include="Classes\Static\Icons.cs" />
+    <Compile Include="Classes\Static\InterModCommunication.cs" />
+    <Compile Include="Classes\Static\LightColor.cs" />
+    <Compile Include="Classes\Abstract\MainMenu.cs" />
+    <Compile Include="Classes\Static\MainMenuDrawer_LinkOptions.cs" />
+    <Compile Include="Classes\Abstract\ModConfigurationMenu.cs" />
+    <Compile Include="Classes\Static\PlaceWorker_Restriction_Alert_Data.cs" />
+    <Compile Include="Classes\Static\Research.cs" />
+    <Compile Include="Classes\Abstract\SpecialInjector.cs" />
+    <Compile Include="Classes\ListableOption_MainMenuDef.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -256,5 +260,9 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="PostBuild.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\Static\" />
+    <Folder Include="Classes\Abstract\" />
   </ItemGroup>
 </Project>

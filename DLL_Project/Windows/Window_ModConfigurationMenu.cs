@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
 	public class Window_ModConfigurationMenu : Window
 	{
 
-		private class MenuWorkers : IExposable
+		private class MenuWorker : IExposable
 		{
 			public string Label;
 			public ModConfigurationMenu worker;
@@ -33,7 +33,7 @@ namespace CommunityCoreLibrary
                 }
             }
 
-			public MenuWorkers()
+			public MenuWorker()
 			{
 				this.Label = "?";
 				this.worker = null;
@@ -41,7 +41,7 @@ namespace CommunityCoreLibrary
                 this.OpenedThisSession = false;
 			}
 
-			public MenuWorkers( string Label, ModConfigurationMenu worker )
+			public MenuWorker( string Label, ModConfigurationMenu worker )
 			{
 				this.Label = Label;
 				this.worker = worker;
@@ -88,16 +88,16 @@ namespace CommunityCoreLibrary
 		public float SelectionHeight = 9999f;
 		public float ContentHeight = 9999f;
 
-		private MenuWorkers SelectedMenu;
-        private MenuWorkers PreviouslySelectedMenu;
+		private MenuWorker SelectedMenu;
+        private MenuWorker PreviouslySelectedMenu;
 
 		private static string _filterString = "";
 		private string _lastFilterString = "";
 		private int _lastFilterTick;
 		private bool _filtered;
-		private List<MenuWorkers> filteredMenus;
+		private List<MenuWorker> filteredMenus;
 
-		private static List<MenuWorkers> allMenus;
+		private static List<MenuWorker> allMenus;
 
 		public static bool AnyMenus
 		{
@@ -119,34 +119,59 @@ namespace CommunityCoreLibrary
 
 		#region Constructor
 
-		public static bool InitializeMCMs()
+		public static bool InitializeMCMs( bool preload = false )
 		{
-			allMenus = new List<MenuWorkers>();
+            if( preload )
+            {
+			    allMenus = new List<MenuWorker>();
+            }
 
 			// Get the mods with config menus
 			foreach( var mhd in Controller.Data.ModHelperDefs )
 			{
-				if( !mhd.ModConfigurationMenus.NullOrEmpty() )
-				{
-					foreach( var mcm in mhd.ModConfigurationMenus )
-					{
-						var menu = new MenuWorkers();
-						menu.Label = mcm.label;
-						menu.worker = (ModConfigurationMenu)Activator.CreateInstance( mcm.mcmClass );
-						if( menu.worker == null )
-						{
-							CCL_Log.Error( "Unable to create instance of {0}", mcm.mcmClass.ToString() );
-                            return false;
-						}
-						else
-						{
-                            menu.worker.InjectionSet = mcm;
-                            menu.worker.Initialize();
-							allMenus.Add( menu );
-							LoadMCMData( menu );
-						}
-					}
-				}
+                if( // Filter out preload during non-preload and non-preload during preload
+                    (
+                        ( preload )&&
+                        ( mhd.PreloadMCMs )
+                    )||
+                    (
+                        ( !preload )&&
+                        ( !mhd.PreloadMCMs )
+                    )
+                )
+                {   // Create all the menus for it
+    				if( !mhd.ModConfigurationMenus.NullOrEmpty() )
+    				{
+    					foreach( var mcm in mhd.ModConfigurationMenus )
+    					{
+                            var menu = allMenus.Find( m => m.worker.InjectionSet == mcm );
+                            if( menu != null )
+                            {   // MCM already created....?
+                                CCL_Log.TraceMod(
+                                    mhd,
+                                    Verbosity.Warnings,
+                                    string.Format( "{0} - Tried to create an MCM when an MCM already exists", mcm.mcmClass.ToString() )
+                                );
+                                continue;
+                            }
+    						menu = new MenuWorker();
+    						menu.Label = mcm.label;
+    						menu.worker = (ModConfigurationMenu)Activator.CreateInstance( mcm.mcmClass );
+    						if( menu.worker == null )
+    						{
+                                CCL_Log.Error( string.Format( "Unable to create instance of {0}", mcm.mcmClass.ToString() ) );
+                                return false;
+    						}
+    						else
+    						{   // Initialize, add it to the menu list and then load it's data
+                                menu.worker.InjectionSet = mcm;
+                                menu.worker.Initialize();
+    							allMenus.Add( menu );
+    							LoadMCMData( menu );
+    						}
+    					}
+    				}
+                }
 			}
             return true;
 		}
@@ -167,7 +192,7 @@ namespace CommunityCoreLibrary
 
 		#region Load/Save MCM Data
 
-		static string MCMFilePath( MenuWorkers menu )
+		static string MCMFilePath( MenuWorker menu )
 		{
 			// Generate the config file name
 			string filePath = Path.Combine( GenFilePaths.ConfigFolderPath, ConfigFilePrefix );
@@ -176,7 +201,7 @@ namespace CommunityCoreLibrary
 			return filePath;
 		}
 
-		static void LoadMCMData( MenuWorkers menu )
+		static void LoadMCMData( MenuWorker menu )
 		{
 			var filePath = MCMFilePath( menu );
 
@@ -222,7 +247,7 @@ namespace CommunityCoreLibrary
 							menu.Label,
 							menu.worker
 						};
-						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.key, args );
+						Scribe_Deep.LookDeep<MenuWorker>( ref menu, menu.key, args );
 					}
 				}
 			}
@@ -269,7 +294,7 @@ namespace CommunityCoreLibrary
     						Scribe_Values.LookValue<string>( ref version, "ccl_version" );
 
     						// Call the worker scribe
-    						Scribe_Deep.LookDeep<MenuWorkers>( ref menu, menu.key );
+    						Scribe_Deep.LookDeep<MenuWorker>( ref menu, menu.key );
     					}
     				}
     				catch( Exception e )
@@ -342,7 +367,7 @@ namespace CommunityCoreLibrary
 
 		#endregion
 
-		#region ITab Rendering
+		#region Window Rendering
 
 		public override void DoWindowContents( Rect rect )
 		{
@@ -420,7 +445,7 @@ namespace CommunityCoreLibrary
 			GUI.EndGroup();
 		}
 
-		private bool DrawModEntry( ref Vector2 cur, Rect view, MenuWorkers menu )
+		private bool DrawModEntry( ref Vector2 cur, Rect view, MenuWorker menu )
 		{
 			float width = view.width - cur.x - Margin;
 			float height = EntryHeight;
@@ -507,7 +532,7 @@ namespace CommunityCoreLibrary
             string userErrorStr = string.Empty;
             try
             {
-			    ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect );
+                ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect.AtZero() );
             }
             catch( Exception e )
             {

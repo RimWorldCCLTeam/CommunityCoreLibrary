@@ -85,6 +85,12 @@ namespace CommunityCoreLibrary.Controller
             MethodInfo CCL_PlayDataLoader_ClearAllPlayData = typeof( Detour._PlayDataLoader ).GetMethod( "_ClearAllPlayData", BindingFlags.Static | BindingFlags.NonPublic );
             InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_ClearAllPlayData, CCL_PlayDataLoader_ClearAllPlayData );
 
+            // Detour Verse.UIRoot_Entry.ShouldShowMainMenuGUI_get
+            PropertyInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI = typeof( UIRoot_Entry ).GetProperty( "ShouldShowMainMenuGUI", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get = Verse_UIRoot_Entry_ShouldShowMainMenuGUI.GetGetMethod( true );
+            MethodInfo CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldShowMainMenuGUI_get", BindingFlags.Static | BindingFlags.NonPublic );
+            InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get, CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get );
+
             // Detour RimWorld.MainMenuDrawer.MainMenuOnGUI
             MethodInfo RimWorld_MainMenuDrawer_MainMenuOnGUI = typeof( MainMenuDrawer ).GetMethod( "MainMenuOnGUI", BindingFlags.Static | BindingFlags.Public );
             MethodInfo CCL_MainMenuDrawer_MainMenuOnGUI = typeof( Detour._MainMenuDrawer ).GetMethod( "_MainMenuOnGUI", BindingFlags.Static | BindingFlags.NonPublic );

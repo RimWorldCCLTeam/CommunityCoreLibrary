@@ -13,6 +13,12 @@ namespace CommunityCoreLibrary
         /// <param name="rect">Rect</param>
         public abstract float               DoWindowContents( Rect rect );
 
+        /// NOTE:  If your def is marked as PreloadMCMs, your Initialize()
+        ///        and ExposeData() will be called before the injection
+        ///        sequence starts.  Default behaviour is after the injection
+        ///        sequence ends.  If will happen at one time or the other,
+        ///        not both.
+
         /// <summary>
         /// Exposes the data.
         /// Called with Scribe.mode = LoadingVars after Initialize()

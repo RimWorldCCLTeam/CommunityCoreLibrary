@@ -69,6 +69,15 @@ namespace CommunityCoreLibrary.Controller
             var stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
 
+            // Initialize preload-MCMs
+            if( !Window_ModConfigurationMenu.InitializeMCMs( true ) )
+            {
+                CCL_Log.CaptureEnd( stringBuilder, "Errors initializing Mod Configuration Menus" );
+                strReturn = stringBuilder.ToString();
+                State = SubControllerState.InitializationError;
+                return false;
+            }
+
             foreach( var injector in initInjectors )
             {
                 // Inject the group into the system

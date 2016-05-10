@@ -76,20 +76,21 @@ namespace CommunityCoreLibrary.Controller
             {
                 LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
                 stringBuilder.AppendLine( "\tUnable to find 'Core' in mod load order!" );
-                rVal = false;
+                //rVal = false; // Don't throw as an error, will be caught special
             }
             else if( coreModIndex != 0 )
             {
                 LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
                 stringBuilder.AppendLine( "\t'Core' must be first in mod load order!" );
-                rVal = false;
+                //rVal = false; // Don't throw as an error, will be caught special
             }
             if( cclModIndex == -1 )
             {
+                LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
                 stringBuilder.Append( "\tUnable to find '" );
                 stringBuilder.Append( Controller.Data.UnityObjectName );
                 stringBuilder.AppendLine( "' in mod load order!" );
-                rVal = false;
+                //rVal = false; // Don't throw as an error, will be caught special
             }
             else if( cclModIndex != 1 )
             {
@@ -97,7 +98,7 @@ namespace CommunityCoreLibrary.Controller
                 stringBuilder.Append( "\t'" );
                 stringBuilder.Append( Controller.Data.UnityObjectName );
                 stringBuilder.AppendLine( "' must be second in mod load order, immediately after 'Core'! :: Current position is #" + ( cclModIndex + 1 ).ToString() );
-                rVal = false;
+                //rVal = false; // Don't throw as an error, will be caught special
             }
             if( rVal )
             {
@@ -205,7 +206,7 @@ namespace CommunityCoreLibrary.Controller
 		public override bool Initialize()
 		{
 			// Don't need to keep checking on this controller
-            if( !Window_ModConfigurationMenu.InitializeMCMs() )
+            if( !Window_ModConfigurationMenu.InitializeMCMs( false ) )
             {
                 strReturn = "Errors initializing Mod Configuration Menus";
                 State = SubControllerState.InitializationError;
@@ -218,6 +219,7 @@ namespace CommunityCoreLibrary.Controller
 
         private static void ShowLoadOrderWindow()
         {
+            Controller.Data.RequireRestart = true;
             Window_WarnRestart.messageKey = "BadLoadOrder";
             Window_WarnRestart.callbackBeforeRestart = CorrectLoadOrderBeforeRestart;
             Find.WindowStack.Add( new Window_WarnRestart() );
