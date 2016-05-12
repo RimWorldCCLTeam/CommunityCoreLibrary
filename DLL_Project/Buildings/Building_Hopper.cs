@@ -128,13 +128,14 @@ namespace CommunityCoreLibrary
             //settings.filter.BlockDefaultAcceptanceFilters( GetParentStoreSettings() );
         }
 
-        public override void                Destroy( DestroyMode mode = DestroyMode.Vanish )
+        public override void                DeSpawn()
         {
             if( slotGroup != null )
             {
                 slotGroup.Notify_ParentDestroying();
+                slotGroup = null;
             }
-            base.Destroy( mode );
+            base.DeSpawn();
         }
 
         public override IEnumerable<Gizmo>  GetGizmos()

@@ -3,6 +3,7 @@
 
     <WorkGiverDef>
         <defName>CommunityCoreLibraryFillHopper</defName>
+        <label>fill hoppers</label>
         <giverClass>CommunityCoreLibrary.WorkGiver_FillHopper</giverClass>
         <workType>Hauling</workType>
         <priorityInType>125</priorityInType>
