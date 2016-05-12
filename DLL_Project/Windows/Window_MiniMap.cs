@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
     // TODO:  Handle right-click on minimap icon for float menu options (MiniMap.GetFloatMenuOptions())
@@ -46,6 +46,7 @@ namespace CommunityCoreLibrary
 
 		#region Properties
 
+        // remove window padding so the minimap fills the entire available space
 		protected override float WindowPadding
 		{
 			get
@@ -92,13 +93,13 @@ namespace CommunityCoreLibrary
 		public override void ExtraOnGUI()
 		{
 			// get minimaps we should draw toggles for
-            var minimaps = MiniMapController.miniMaps.Where( overlay => !overlay.miniMapDef.alwaysVisible ).ToArray();
+            var minimaps = MiniMapController.miniMaps.Where( overlay => !overlay.def.alwaysVisible ).ToArray();
 
 			// how many overlays can we draw on a single line?
 			// note that we don't want to draw in the complete outer edge, because that will trigger map movement, which is annoying as fuck.
 			int iconsPerRow = Mathf.FloorToInt( ( MiniMapController.windowSize.x - screenEdgeDollyWidth ) / ( iconSize + iconMargin ) );
 
-			// draw a button for each overlay
+			// draw a button for each minimap
 			for( int i = 0; i < minimaps.Count(); i++ )
 			{
 				// calculate x, y position to spread over rows
@@ -114,17 +115,27 @@ namespace CommunityCoreLibrary
 
 
 				// Draw tooltip
-				GUI.color = Color.white;
                 TooltipHandler.TipRegion( iconRect, minimap.ToolTip );
 
-				// Draw the icon and handle buttonpress
-				if( minimap.Hidden )
-				{   // For some reason, passing color to ImageButton does not yield correct results
-					GUI.color = Color.gray;
-				}
+                // grey out draw color if hidden
+                GUI.color = minimap.Hidden ? Color.grey : Color.white;
+
+                // handle mouse clicks
 				if( Widgets.ImageButton( iconRect, minimap.Icon ) )
 				{
-					minimap.Hidden = !minimap.Hidden;
+                    // toggle on LMB
+                    if (Event.current.button == 0)
+                        minimap.Hidden = !minimap.Hidden;
+
+                    // if there's any options, open float menu on RMB
+                    else if ( Event.current.button == 1 )
+                    {
+                        var options = minimap.GetFloatMenuOptions();
+                        if ( !options.NullOrEmpty() )
+                        {
+                            Find.WindowStack.Add( new FloatMenu( options, minimap.LabelCap ) );
+                        }
+                    }
 				}
 			}
 			GUI.color = Color.white;

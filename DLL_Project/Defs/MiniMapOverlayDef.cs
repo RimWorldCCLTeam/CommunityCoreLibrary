@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
     public class MiniMapOverlayDef : Def

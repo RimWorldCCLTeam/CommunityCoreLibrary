@@ -6,7 +6,7 @@
         <defName>MiniMap_ViewPort</defName>
         <label>view port</label>
         <description>Show current view port.</description>
-        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <miniMapClass>CommunityCoreLibrary.MiniMap.MiniMap</miniMapClass>
         <updateInterval>5</updateInterval>
         <drawOrder>1000</drawOrder>
         <alwaysOnTop>true</alwaysOnTop>
@@ -19,10 +19,10 @@
         <defName>MiniMap_Fog</defName>
         <label>fog</label>
         <description>Show the fog.</description>
-        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <miniMapClass>CommunityCoreLibrary.MiniMap.MiniMap</miniMapClass>
         <updateInterval>2500</updateInterval>
         <drawOrder>990</drawOrder>
-        <alwaysVisible>true</alwaysVisible>
+        <!-- <alwaysVisible>true</alwaysVisible> -->
         <alwaysOnTop>true</alwaysOnTop>
         <overlays>
             <li>MiniMapOverlay_Fog</li>
@@ -33,7 +33,7 @@
         <defName>MiniMap_Pawns</defName>
         <label>pawns</label>
         <description>Show pawns.</description>
-        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <miniMapClass>CommunityCoreLibrary.MiniMap.MiniMap</miniMapClass>
         <updateInterval>5</updateInterval>
         <drawOrder>500</drawOrder>
         <!-- TODO: Create ModHelperDef entry for MCM -->
@@ -49,7 +49,7 @@
         <defName>MiniMap_Utilities</defName>
         <label>utilities</label>
         <description>Show the utilities.</description>
-        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <miniMapClass>CommunityCoreLibrary.MiniMap.MiniMap</miniMapClass>
         <updateInterval>50</updateInterval>
         <hiddenByDefault>true</hiddenByDefault>
         <drawOrder>200</drawOrder>
@@ -63,7 +63,7 @@
         <defName>MiniMap_Terrain</defName>
         <label>terrain</label>
         <description>Show terrain details.</description>
-        <miniMapClass>CommunityCoreLibrary.MiniMap_Terrain</miniMapClass>
+        <miniMapClass>CommunityCoreLibrary.MiniMap.MiniMap</miniMapClass>
         <updateInterval>250</updateInterval>
         <drawOrder>0</drawOrder>
         <overlays>

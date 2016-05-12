@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	// TODO: While terrainDefs have the color tag, it is left at default (white), and is therefore not useful.

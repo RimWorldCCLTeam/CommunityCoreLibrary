@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
     
     public abstract class MiniMapOverlay
@@ -18,15 +18,31 @@ namespace CommunityCoreLibrary
         // TODO:  Make overlays individually selectable, currently fixed at def default
         private bool                _hidden = false;
 
-        public Texture2D            texture;
+        private Texture2D            _texture;
         private MiniMap             minimap;
-        public MiniMapOverlayDef    overlayDef;
+        public MiniMapOverlayDef    def;
 
         #endregion Instance Data
 
         #region Properties
 
-        public bool                 Hidden
+        public Texture2D texture
+        {
+            get
+            {
+                if ( _texture == null )
+                {
+                    _texture = new Texture2D( MiniMap_Utilities.Size.x, MiniMap_Utilities.Size.z );
+
+                    // not sure clearing pixels is strictly necessary, but can't hurt much
+                    _texture.SetPixels( MiniMap_Utilities.GetClearPixelArray );
+                    _texture.Apply();
+                }
+                return _texture;
+            }
+        }
+
+        public virtual bool                 Hidden
         {
             get
             {
@@ -35,10 +51,17 @@ namespace CommunityCoreLibrary
             set
             {
                 _hidden = value;
+
+                // make entire minimap visible if any overlay is made visible
                 if( !_hidden )
                 {
                     minimap.Hidden = value;
                 }
+
+                // update overlay since this was paused while hidden
+                Update();
+
+                // mark the controller dirty so everything is properly sorted
                 MiniMapController.dirty = true;
             }
         }
@@ -47,11 +70,11 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if( overlayDef.labelKey.NullOrEmpty() )
+                if( def.labelKey.NullOrEmpty() )
                 {
-                    return overlayDef.label;
+                    return def.label;
                 }
-                return overlayDef.labelKey.Translate();
+                return def.labelKey.Translate();
             }
         }
 
@@ -65,30 +88,20 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        public void ClearTexture( bool apply = false )
+        {
+            texture.SetPixels( MiniMap_Utilities.GetClearPixelArray );
+            if ( apply )
+                texture.Apply();
+        }
+
         #region Constructors
 
         public                      MiniMapOverlay( MiniMap minimap, MiniMapOverlayDef overlayDef )
         {
             this.minimap = minimap;
-            this.overlayDef = overlayDef;
+            this.def = overlayDef;
             _hidden = overlayDef.hiddenByDefault;
-
-            // create texture
-            texture = new Texture2D( MiniMap.Size.x, MiniMap.Size.z );
-            if( texture == null )
-            {
-                CCL_Log.Trace(
-                    Verbosity.NonFatalErrors,
-                    string.Format( "Unable to create texture for '{0}'", this.GetType().Name )
-                );
-                return;
-            }
-
-            // transparent.... for now!
-            texture.SetPixels( MiniMap.GetClearPixelArray );
-
-            // apply changes
-            texture.Apply();
         }
 
         #endregion Constructors
@@ -99,16 +112,27 @@ namespace CommunityCoreLibrary
         public abstract void        Update();
 
         // Optional float menu option for this overlay
-        public virtual FloatMenuOption  GetFloatMenuOption()
+        public virtual List<FloatMenuOption>  GetFloatMenuOptions()
         {
-            return null;
+            // create empty list of options
+            var options = new List<FloatMenuOption>();
+
+            // add a toggle option for overlays that are not always on, and only if there's more than one overlay on this minimap 'mode'
+            if ( !minimap.def.alwaysVisible && minimap.overlayWorkers.Count > 1 )
+                options.Add( new FloatMenuOption( "MiniMap.ToggleX".Translate( LabelCap ), delegate
+                { Hidden = !Hidden; } ) );
+
+            // done!
+            return options;
         }
 
-        // Optional mod configuration menu content region, inRect is only valid for x, y, width; return final height (inRect.height can be ignored)
-        public virtual float        DoMCMRegion( Rect inRect )
-        {
-            return 0f;
-        }
+        //// This is going to be tricky - save for later time.
+        //// -- Fluffy.
+        //// Optional mod configuration menu content region, inRect is only valid for x, y, width; return final height (inRect.height can be ignored)
+        //public virtual float        DoMCMRegion( Rect inRect )
+        //{
+        //    return 0f;
+        //}
 
         #endregion Methods
     }

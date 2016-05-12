@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	public class MiniMapOverlay_Fog : MiniMapOverlay
@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary
 			var fog = Find.Map.fogGrid.fogGrid;
 
 			// loop over all cells
-			for( int i = 0; i < MiniMap.Size.x * MiniMap.Size.z; i++ )
+			for( int i = 0; i < CellIndices.NumGridCells; i++ )
 			{
 				// set pixel color
 				var pos = CellIndices.IndexToCell( i );
