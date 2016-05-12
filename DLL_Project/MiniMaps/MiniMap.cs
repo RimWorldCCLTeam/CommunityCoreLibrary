@@ -15,39 +15,43 @@ namespace CommunityCoreLibrary
         
         #region Instance Data
 
-        private bool            _hidden = false;
+        private bool                    _hidden = false;
 
-        public MiniMapDef       def;
+        public MiniMapDef               miniMapDef;
 
-        public List<MiniMapOverlay>   overlayWorkers;
+        public List<MiniMapOverlay>     overlayWorkers;
+
+        private Texture2D               iconTexture;
 
         #endregion Instance Data
 
-        private Texture2D       iconTexture;
+        #region Static Data
 
-        static Color[]          _clearPixelArray;
+        static Color[]                  _clearPixelArray;
+
+        #endregion
 
         #region Constructors
 
-        public MiniMap( MiniMapDef miniMapDef )
+        public                          MiniMap( MiniMapDef miniMapDef )
         {
-            this.def = miniMapDef;
-            this._hidden = this.def.hiddenByDefault;
+            this.miniMapDef = miniMapDef;
+            this._hidden = this.miniMapDef.hiddenByDefault;
 
-            if( !this.def.iconTex.NullOrEmpty() )
+            if( !this.miniMapDef.iconTex.NullOrEmpty() )
             {
-                iconTexture = ContentFinder<Texture2D>.Get( this.def.iconTex, true );
+                iconTexture = ContentFinder<Texture2D>.Get( this.miniMapDef.iconTex, true );
             }
             overlayWorkers = new List<MiniMapOverlay>();
 
-            for( int index = 0; index < def.overlays.Count; ++index )
+            for( int index = 0; index < this.miniMapDef.overlays.Count; ++index )
             {
-                var overlayData = def.overlays[ index ];
+                var overlayData = this.miniMapDef.overlays[ index ];
                 if(
                     ( overlayData.overlayClass == null )||
                     (
-                        ( overlayData.overlayClass != typeof( MiniMapOverlay ) )&&
-                        ( !overlayData.overlayClass.IsSubclassOf( typeof( MiniMapOverlay ) ) )
+                        ( overlayData.overlayClass != typeof(MiniMapOverlay ) )&&
+                        ( !overlayData.overlayClass.IsSubclassOf( typeof(MiniMapOverlay ) ) )
                     )
                 )
                 {
@@ -60,7 +64,7 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    var overlayWorker = (MiniMapOverlay) Activator.CreateInstance( overlayData.overlayClass, new System.Object[] { this, overlayData } );
+                    var overlayWorker = (MiniMapOverlay)Activator.CreateInstance( overlayData.overlayClass, new System.Object[] { this, overlayData } );
                     if( overlayWorker == null )
                     {
                         CCL_Log.TraceMod(
@@ -79,13 +83,25 @@ namespace CommunityCoreLibrary
 
             // log a bit
             CCL_Log.TraceMod(
-                this.def,
+                this.miniMapDef,
                 Verbosity.Injections,
-                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.def.drawOrder )
+                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.miniMapDef.drawOrder )
             );
         }
 
         #endregion Constructors
+
+        #region Properties
+
+        public List<MiniMapOverlay>     VisibleOverlays
+        {
+            get
+            {
+                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.overlayDef.drawOffset ).ToList();
+            }
+        }
+
+        #endregion
 
         #region Static Properties
 
@@ -144,15 +160,23 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public string label
+        {
+            get
+            {
+                if( miniMapDef.labelKey.NullOrEmpty() )
+                {
+                    return miniMapDef.label;
+                }
+                return miniMapDef.labelKey.Translate();
+            }
+        }
+
         public string LabelCap
         {
             get
             {
-                if( def.labelKey.NullOrEmpty() )
-                {
-                    return def.label.CapitalizeFirst();
-                }
-                return def.labelKey.Translate().CapitalizeFirst();
+                return label.CapitalizeFirst();
             }
         }
 
@@ -171,14 +195,65 @@ namespace CommunityCoreLibrary
 
         public virtual void DrawOverlays( Rect inRect )
         {
-            var workers = overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.overlayData.drawOffset );
-            if( !workers.Any() )
+            var workers = VisibleOverlays;
+            if( workers.Any() )
             {
-                return;
+                foreach( var worker in workers )
+                {
+                    GUI.DrawTexture( inRect, worker.texture );
+                }
             }
-            foreach( var worker in workers )
+        }
+
+        public virtual List<FloatMenuOption>  GetFloatMenuOptions()
+        {
+            var list = new List<FloatMenuOption>();
+            foreach( var overlay in overlayWorkers )
             {
-                GUI.DrawTexture( inRect, worker.texture );
+                var option = overlay.GetFloatMenuOption();
+                if( option != null )
+                {
+                    list.Add( option );
+                }
+            }
+            if( miniMapDef.mcmWorker != null )
+            {
+                list.Add( new FloatMenuOption(
+                    "MiniMap.ShowMCMOption".Translate( label ),
+                    () =>
+                {
+                    // TODO:  Open MCM Window to this worker
+                    return;
+                } ) );
+            }
+            return list.NullOrEmpty() ? null : list;
+        }
+
+        public virtual string   ToolTip
+        {
+            get
+            {
+                // Get tool tip (w/ description)
+                // Use core translations for "Off" and "On"
+                var tipString = string.Empty;
+                if( !miniMapDef.description.NullOrEmpty() )
+                {
+                    tipString = miniMapDef.description + "\n\n";
+                }
+                tipString += "MiniMap.OverlayIconTip".Translate( LabelCap, Hidden ? "Off".Translate() : "On".Translate() );
+                tipString += "\n\n";
+                if( overlayWorkers.Count > 1 )
+                {
+                    for( int index = 0; index < overlayWorkers.Count; ++index )
+                    {
+                        var worker = overlayWorkers[ index ];
+                        tipString += "MiniMap.OverlayIconTip".Translate( worker.LabelCap, worker.Hidden ? "Off".Translate() : "On".Translate() );
+                        tipString += "\n";
+                    }
+                    tipString += "\n";
+                }
+                tipString += "MiniMap.Toggle".Translate();
+                return tipString;
             }
         }
 

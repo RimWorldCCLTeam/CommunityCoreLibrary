@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
+    <!-- TODO:  Switch to labelKey -->
     <MiniMapDef>
         <defName>MiniMap_ViewPort</defName>
         <label>view port</label>
@@ -10,9 +11,7 @@
         <drawOrder>1000</drawOrder>
         <alwaysOnTop>true</alwaysOnTop>
         <overlays>
-            <li>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_ViewPort</overlayClass>
-            </li>
+            <li>MiniMapOverlay_ViewPort</li>
         </overlays>
     </MiniMapDef>
 
@@ -26,9 +25,7 @@
         <alwaysVisible>true</alwaysVisible>
         <alwaysOnTop>true</alwaysOnTop>
         <overlays>
-            <li>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Fog</overlayClass>
-            </li>
+            <li>MiniMapOverlay_Fog</li>
         </overlays>
     </MiniMapDef>
 
@@ -39,22 +36,12 @@
         <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
         <updateInterval>5</updateInterval>
         <drawOrder>500</drawOrder>
+        <!-- TODO: Create ModHelperDef entry for MCM -->
+        <mcmClass>CommunityCoreLibrary.MCM_MiniMap_Pawns</mcmClass>
         <overlays>
-            <li>
-                <label>colonists</label>
-                <drawOffset>100</drawOffset>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Colonists</overlayClass>
-            </li>
-            <li>
-                <label>non-colonists</label>
-                <drawOffset>90</drawOffset>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_NonColonistPawns</overlayClass>
-            </li>
-            <li>
-                <label>wildlife</label>
-                <drawOffset>80</drawOffset>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Wildlife</overlayClass>
-            </li>
+            <li>MiniMapOverlay_Colonists</li>
+            <li>MiniMapOverlay_NonColonistPawns</li>
+            <li>MiniMapOverlay_Wildlife</li>
         </overlays>
     </MiniMapDef>
 
@@ -62,16 +49,12 @@
         <defName>MiniMap_Utilities</defName>
         <label>utilities</label>
         <description>Show the utilities.</description>
-        <miniMapClass>CommunityCoreLibrary.MiniMap_Utilities</miniMapClass>
+        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
         <updateInterval>50</updateInterval>
         <hiddenByDefault>true</hiddenByDefault>
         <drawOrder>200</drawOrder>
         <overlays>
-            <li>
-                <label>power grid</label>
-                <drawOffset>100</drawOffset>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_PowerGrid</overlayClass>
-            </li>
+            <li>MiniMapOverlay_PowerGrid</li>
         </overlays>
     </MiniMapDef>
 
@@ -84,9 +67,7 @@
         <updateInterval>250</updateInterval>
         <drawOrder>0</drawOrder>
         <overlays>
-            <li>
-                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Terrain</overlayClass>
-            </li>
+            <li>MiniMapOverlay_Terrain</li>
         </overlays>
     </MiniMapDef>
     -->

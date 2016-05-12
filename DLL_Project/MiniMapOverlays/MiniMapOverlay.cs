@@ -15,17 +15,18 @@ namespace CommunityCoreLibrary
         
         #region Instance Data
 
+        // TODO:  Make overlays individually selectable, currently fixed at def default
         private bool                _hidden = false;
 
         public Texture2D            texture;
         private MiniMap             minimap;
-        public MiniMapOverlayData   overlayData;
+        public MiniMapOverlayDef    overlayDef;
 
         #endregion Instance Data
 
         #region Properties
 
-        public bool Hidden
+        public bool                 Hidden
         {
             get
             {
@@ -42,15 +43,23 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public string LabelCap
+        public string               label
         {
             get
             {
-                if( overlayData.labelKey.NullOrEmpty() )
+                if( overlayDef.labelKey.NullOrEmpty() )
                 {
-                    return overlayData.label.CapitalizeFirst();
+                    return overlayDef.label;
                 }
-                return overlayData.label.Translate().CapitalizeFirst();
+                return overlayDef.labelKey.Translate();
+            }
+        }
+
+        public string               LabelCap
+        {
+            get
+            {
+                return label.CapitalizeFirst();
             }
         }
 
@@ -58,10 +67,11 @@ namespace CommunityCoreLibrary
 
         #region Constructors
 
-        public MiniMapOverlay( MiniMap minimap, MiniMapOverlayData overlayData )
+        public                      MiniMapOverlay( MiniMap minimap, MiniMapOverlayDef overlayDef )
         {
             this.minimap = minimap;
-            this.overlayData = overlayData;
+            this.overlayDef = overlayDef;
+            _hidden = overlayDef.hiddenByDefault;
 
             // create texture
             texture = new Texture2D( MiniMap.Size.x, MiniMap.Size.z );
@@ -75,9 +85,7 @@ namespace CommunityCoreLibrary
             }
 
             // transparent.... for now!
-            for ( int x = 0; x < MiniMap.Size.x; x++ )
-                for ( int z = 0; z < MiniMap.Size.z; z++ )
-                    texture.SetPixel( x, z, Color.clear );
+            texture.SetPixels( MiniMap.GetClearPixelArray );
 
             // apply changes
             texture.Apply();
@@ -87,7 +95,20 @@ namespace CommunityCoreLibrary
 
         #region Methods
 
-        public abstract void Update();
+        // Required, update your texture, caller (MiniMap.Update()) will re-Apply()
+        public abstract void        Update();
+
+        // Optional float menu option for this overlay
+        public virtual FloatMenuOption  GetFloatMenuOption()
+        {
+            return null;
+        }
+
+        // Optional mod configuration menu content region, inRect is only valid for x, y, width; return final height (inRect.height can be ignored)
+        public virtual float        DoMCMRegion( Rect inRect )
+        {
+            return 0f;
+        }
 
         #endregion Methods
     }

@@ -13,13 +13,13 @@ namespace CommunityCoreLibrary
 	public class MiniMapOverlay_Colonists : MiniMapOverlay_Pawns
 	{
 
-        #region Constructors
+		#region Constructors
 
-        public MiniMapOverlay_Colonists( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
-        {
-        }
+		public MiniMapOverlay_Colonists( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
+		{
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
 		#region Methods
 

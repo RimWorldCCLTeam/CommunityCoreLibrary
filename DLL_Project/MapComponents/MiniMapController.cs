@@ -10,16 +10,19 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+
+    // TODO:  Move all validation and inialization to a proper sub-controller
+
     public class MiniMapController : MapComponent
     {
         #region Fields
 
-        public static bool          dirty = true;
-        public bool                 hidden = false;
-        public bool                 initialized = false;
-        public List<MiniMap>        miniMaps = new List<MiniMap>();
-        public Vector2              size = new Vector2( 250f, 250f );
-        public List<MiniMap>        visibleMiniMaps = new List<MiniMap>();
+        public static bool              dirty = true;
+        public static bool              hidden = false;
+        public static bool              initialized = false;
+        public static List<MiniMap>     miniMaps = new List<MiniMap>();
+        public static Vector2           windowSize = new Vector2( 250f, 250f );
+        public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
 
         #endregion Fields
 
@@ -46,7 +49,7 @@ namespace CommunityCoreLibrary
             foreach ( var overlay in visibleMiniMaps )
             {
                 // update overlay grid, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
-                if ( ( Time.frameCount + overlay.GetHashCode() ) % overlay.def.updateInterval == 0 )
+                if ( ( Time.frameCount + overlay.GetHashCode() ) % overlay.miniMapDef.updateInterval == 0 )
                 {
                     overlay.Update();
                 }
@@ -66,8 +69,8 @@ namespace CommunityCoreLibrary
             var window = Find.WindowStack.WindowOfType<Window_MiniMap>();
             if( window == null )
             {
-                Window_MiniMap.windowRect = new Rect( Screen.width - size.x, 0f, size.y, size.x );
-                window = new Window_MiniMap( Window_MiniMap.windowRect, this );
+                Window_MiniMap.windowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x );
+                window = new Window_MiniMap( Window_MiniMap.windowRect );
                 if( window == null )
                 {
                     CCL_Log.Error( "Unable to create Window_MiniMap", "MiniMap" );
@@ -133,6 +136,26 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
+                    // Make sure the minimap def has a list of overlay defs
+                    if( miniMapDef.overlays == null )
+                    {
+                        miniMapDef.overlays = new List<MiniMapOverlayDef>();
+                    }
+                    // Fetch any overlays which may want to add-in
+                    var overlayDefs =
+                        DefDatabase<MiniMapOverlayDef>
+                            .AllDefs
+                            .Where( overlayDef => (
+                                ( overlayDef.miniMapDef != null )&&
+                                ( overlayDef.miniMapDef == miniMapDef )
+                            ) );
+                    if( overlayDefs.Count() > 0 )
+                    {   // Add-in the overlay defs
+                        foreach( var overlayDef in overlayDefs )
+                        {
+                            miniMapDef.overlays.AddUnique( overlayDef );
+                        }
+                    }
                     miniMapDef.miniMapWorker = (MiniMap) Activator.CreateInstance( miniMapDef.miniMapClass, new System.Object[] { miniMapDef } );
                     if( miniMapDef.miniMapWorker == null )
                     {
@@ -145,24 +168,11 @@ namespace CommunityCoreLibrary
                     }
                     else
                     {
-                        miniMapDef.miniMapWorker.def = miniMapDef;
+                        miniMapDef.miniMapWorker.miniMapDef = miniMapDef;
                         miniMaps.Add( miniMapDef.miniMapWorker );
                     }
                 }
             }
-
-            // quickly add some test overlays
-            // TODO: Migrate to def-based system
-            /*
-            overlays.Add( new MiniMap_Fog( this ) );
-            overlays.Add( new MiniMap_ViewPort( this ) );
-            overlays.Add( new MiniMap_Colonists( this ) );
-            overlays.Add( new MiniMap_Wildlife( this ) );
-            overlays.Add( new MiniMap_NonColonistPawns( this ) );
-            overlays.Add( new MiniMap_PowerGrid( this ) );
-            // overlays.Add( new MiniMap_Terrain( this ) );
-            // overlays.Add( new MiniMap_Minerals( this ) );
-            */
 
             // sort them in drawOrder
             SortOverlays();
@@ -192,8 +202,8 @@ namespace CommunityCoreLibrary
         {
             // keep in mind that default sort ordering is FALSE > TRUE (which makes sense given the binary representation).
             visibleMiniMaps = miniMaps.Where( overlay => !overlay.Hidden )
-                               .OrderBy( overlay => overlay.def.alwaysOnTop )
-                               .ThenBy( overlay => overlay.def.drawOrder )
+                               .OrderBy( overlay => overlay.miniMapDef.alwaysOnTop )
+                               .ThenBy( overlay => overlay.miniMapDef.drawOrder )
                                .ToList();
 
             dirty = false;

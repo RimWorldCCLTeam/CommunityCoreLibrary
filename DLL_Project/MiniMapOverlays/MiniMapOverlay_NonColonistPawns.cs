@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-        public MiniMapOverlay_NonColonistPawns( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
+		public MiniMapOverlay_NonColonistPawns( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
 		{
 			radius = 2f;
 		}

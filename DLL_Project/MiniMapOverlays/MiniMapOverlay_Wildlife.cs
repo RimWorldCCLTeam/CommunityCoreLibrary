@@ -15,9 +15,9 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-        public MiniMapOverlay_Wildlife( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
+		public MiniMapOverlay_Wildlife( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
 		{
-            radius = 1f;
+			radius = 1f;
 		}
 
 		#endregion Constructors

@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-        public MiniMapOverlay_Terrain( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
+		public MiniMapOverlay_Terrain( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
 		{
 		}
 
@@ -35,9 +35,6 @@ namespace CommunityCoreLibrary
 				// paint it... brownish?
 				texture.SetPixel( position.x, position.z, Find.Map.terrainGrid.TerrainAt( i ).color );
 			}
-
-			// apply changes
-			texture.Apply();
 		}
 
 		#endregion Methods

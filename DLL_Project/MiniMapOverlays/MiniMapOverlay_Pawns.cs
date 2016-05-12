@@ -19,13 +19,13 @@ namespace CommunityCoreLibrary
 
 		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        protected MiniMapOverlay_Pawns( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
-        {
-        }
+		protected MiniMapOverlay_Pawns( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
+		{
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
 		#region Methods
 
@@ -71,9 +71,9 @@ namespace CommunityCoreLibrary
 
 			// create a marker for each pawn
 			foreach( var pawn in pawns )
-            {
+			{
 				CreateMarker( pawn, radius );
-            }
+			}
 		}
 
 		#endregion Methods

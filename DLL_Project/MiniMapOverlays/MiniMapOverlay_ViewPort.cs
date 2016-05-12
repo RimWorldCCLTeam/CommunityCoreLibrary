@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-        public MiniMapOverlay_ViewPort( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
+		public MiniMapOverlay_ViewPort( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
 		{
 		}
 
@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary
 		public override void Update()
 		{
 			// clear texture
-            texture.SetPixels( MiniMap.GetClearPixelArray );
+			texture.SetPixels( MiniMap.GetClearPixelArray );
 
 			// draw square
 			var edges = Find.CameraMap.CurrentViewRect.EdgeCells;
@@ -37,9 +37,6 @@ namespace CommunityCoreLibrary
 					texture.SetPixel( edge.x, edge.z, Color.white );
 				}
 			}
-
-			// done!
-			texture.Apply();
 		}
 
 		#endregion Methods

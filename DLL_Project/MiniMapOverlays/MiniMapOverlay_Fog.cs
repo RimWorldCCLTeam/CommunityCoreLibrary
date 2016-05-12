@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-        public MiniMapOverlay_Fog( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
+		public MiniMapOverlay_Fog( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
 		{
 		}
 

@@ -10,20 +10,12 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-	public class MiniMap_Utilities : MiniMap
+	public static class MiniMap_Utilities
 	{
 
-		#region Constructors
+		#region Rendering
 
-        public MiniMap_Utilities( MiniMapDef miniMapDef ) : base( miniMapDef )
-		{
-		}
-
-		#endregion Constructors
-
-		#region Internal Rendering
-
-		protected virtual void DrawThing( Texture2D texture, Thing thing, Color color )
+		public static void DrawThing( Texture2D texture, Thing thing, Color color )
 		{
 #if DEVELOPER
             CCL_Log.Message( "Painting cells for " + thing.LabelCap + thing.Position + color );

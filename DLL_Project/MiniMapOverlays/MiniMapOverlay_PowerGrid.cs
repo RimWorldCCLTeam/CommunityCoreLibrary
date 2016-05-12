@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-        public MiniMapOverlay_PowerGrid( MiniMap minimap, MiniMapOverlayData overlayData ) : base( minimap, overlayData )
+        public MiniMapOverlay_PowerGrid( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
 		{
 		}
 
@@ -36,9 +36,6 @@ namespace CommunityCoreLibrary
 			{
 				DrawConnection( comp );
 			}
-
-			// apply changes.
-			texture.Apply();
 		}
 
 		#endregion
@@ -97,7 +94,7 @@ namespace CommunityCoreLibrary
 				}
 			}
 
-			DrawThing( transmitter.parent, color );
+			MiniMap_Utilities.DrawThing( texture, transmitter.parent, color );
 		}
 
 		private void DrawTrader( CompPowerTrader trader )
@@ -125,7 +122,7 @@ namespace CommunityCoreLibrary
 				color = Color.grey;
 			}
 
-			DrawThing( trader.parent, color );
+            MiniMap_Utilities.DrawThing( texture, trader.parent, color );
 		}
 
 		private void DrawBattery( CompPowerBattery battery )
@@ -137,38 +134,7 @@ namespace CommunityCoreLibrary
 
 			var color = battery.StoredEnergy > 1f ? GenUI.MouseoverColor : Color.gray;
 
-			DrawThing( battery.parent, color );
-		}
-
-		private void DrawThing( Thing thing, Color color )
-		{
-#if DEVELOPER
-            CCL_Log.Message( "Painting cells for " + thing.LabelCap + thing.Position + color );
-#endif
-
-			// check if this makes sense
-			if( thing == null )
-			{
-				CCL_Log.Error( "tried to get occupied rect for NULL thing" );
-				return;
-			}
-			if(
-				( thing.OccupiedRect().Cells == null ) ||
-				( thing.OccupiedRect().Cells.Count() == 0 )
-			)
-			{
-				CCL_Log.Error( "tried to get occupier rect for " + thing.LabelCap + " but it is NULL or empty" );
-				return;
-			}
-
-			// paint all cells occupied by thing in 'color'.
-			foreach( var cell in thing.OccupiedRect().Cells )
-			{
-				if( cell.InBounds() )
-				{
-					texture.SetPixel( cell.x, cell.z, color );
-				}
-			}
+            MiniMap_Utilities.DrawThing( texture, battery.parent, color );
 		}
 
 		#endregion Methods
