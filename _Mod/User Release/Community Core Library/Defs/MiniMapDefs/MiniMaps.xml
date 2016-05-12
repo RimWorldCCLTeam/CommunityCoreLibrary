@@ -10,6 +10,7 @@
         <updateInterval>5</updateInterval>
         <drawOrder>1000</drawOrder>
         <alwaysOnTop>true</alwaysOnTop>
+        <iconTex>UI/Icons/MiniMap/frame</iconTex>
         <overlays>
             <li>MiniMapOverlay_ViewPort</li>
         </overlays>
@@ -38,6 +39,7 @@
         <drawOrder>500</drawOrder>
         <!-- TODO: Create ModHelperDef entry for MCM -->
         <mcmClass>CommunityCoreLibrary.MCM_MiniMap_Pawns</mcmClass>
+        <iconTex>UI/Icons/MiniMap/pawns</iconTex>
         <overlays>
             <li>MiniMapOverlay_Colonists</li>
             <li>MiniMapOverlay_NonColonistPawns</li>
@@ -53,6 +55,7 @@
         <updateInterval>50</updateInterval>
         <hiddenByDefault>true</hiddenByDefault>
         <drawOrder>200</drawOrder>
+        <iconTex>UI/Icons/MiniMap/power</iconTex>
         <overlays>
             <li>MiniMapOverlay_PowerGrid</li>
         </overlays>
@@ -66,6 +69,7 @@
         <miniMapClass>CommunityCoreLibrary.MiniMap.MiniMap</miniMapClass>
         <updateInterval>250</updateInterval>
         <drawOrder>0</drawOrder>
+        <iconTex>UI/Icons/MiniMap/mountain</iconTex>
         <overlays>
             <li>MiniMapOverlay_Terrain</li>
         </overlays>
