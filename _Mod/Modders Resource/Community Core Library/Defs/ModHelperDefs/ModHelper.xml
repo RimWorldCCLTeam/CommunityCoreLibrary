@@ -10,6 +10,7 @@
 
         <MapComponents>
             <li>CommunityCoreLibrary.HideItemManager</li>
+            <li>CommunityCoreLibrary.MiniMapController</li>
         </MapComponents>
 
         <SpecialInjectors>

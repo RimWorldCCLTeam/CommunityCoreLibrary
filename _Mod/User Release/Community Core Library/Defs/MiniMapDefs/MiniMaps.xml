@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <MiniMapDef>
+        <defName>MiniMap_ViewPort</defName>
+        <label>view port</label>
+        <description>Show current view port.</description>
+        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <updateInterval>5</updateInterval>
+        <drawOrder>1000</drawOrder>
+        <alwaysOnTop>true</alwaysOnTop>
+        <overlays>
+            <li>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_ViewPort</overlayClass>
+            </li>
+        </overlays>
+    </MiniMapDef>
+
+    <MiniMapDef>
+        <defName>MiniMap_Fog</defName>
+        <label>fog</label>
+        <description>Show the fog.</description>
+        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <updateInterval>2500</updateInterval>
+        <drawOrder>990</drawOrder>
+        <alwaysVisible>true</alwaysVisible>
+        <alwaysOnTop>true</alwaysOnTop>
+        <overlays>
+            <li>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Fog</overlayClass>
+            </li>
+        </overlays>
+    </MiniMapDef>
+
+    <MiniMapDef>
+        <defName>MiniMap_Pawns</defName>
+        <label>pawns</label>
+        <description>Show pawns.</description>
+        <miniMapClass>CommunityCoreLibrary.MiniMap</miniMapClass>
+        <updateInterval>5</updateInterval>
+        <drawOrder>500</drawOrder>
+        <overlays>
+            <li>
+                <label>colonists</label>
+                <drawOffset>100</drawOffset>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Colonists</overlayClass>
+            </li>
+            <li>
+                <label>non-colonists</label>
+                <drawOffset>90</drawOffset>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_NonColonistPawns</overlayClass>
+            </li>
+            <li>
+                <label>wildlife</label>
+                <drawOffset>80</drawOffset>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Wildlife</overlayClass>
+            </li>
+        </overlays>
+    </MiniMapDef>
+
+    <MiniMapDef>
+        <defName>MiniMap_Utilities</defName>
+        <label>utilities</label>
+        <description>Show the utilities.</description>
+        <miniMapClass>CommunityCoreLibrary.MiniMap_Utilities</miniMapClass>
+        <updateInterval>50</updateInterval>
+        <hiddenByDefault>true</hiddenByDefault>
+        <drawOrder>200</drawOrder>
+        <overlays>
+            <li>
+                <label>power grid</label>
+                <drawOffset>100</drawOffset>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_PowerGrid</overlayClass>
+            </li>
+        </overlays>
+    </MiniMapDef>
+
+    <!--
+    <MiniMapDef>
+        <defName>MiniMap_Terrain</defName>
+        <label>terrain</label>
+        <description>Show terrain details.</description>
+        <miniMapClass>CommunityCoreLibrary.MiniMap_Terrain</miniMapClass>
+        <updateInterval>250</updateInterval>
+        <drawOrder>0</drawOrder>
+        <overlays>
+            <li>
+                <overlayClass>CommunityCoreLibrary.MiniMapOverlay_Terrain</overlayClass>
+            </li>
+        </overlays>
+    </MiniMapDef>
+    -->
+
+</Defs>

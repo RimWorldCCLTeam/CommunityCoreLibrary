@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <MiniMap.OverlayIconTip>{0} overlay is currently {1}.</MiniMap.OverlayIconTip>
+    <MiniMap.Toggle>Click to toggle.</MiniMap.Toggle>
+
+</LanguageData>

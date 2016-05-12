@@ -246,6 +246,20 @@
     <Compile Include="Classes\Static\Research.cs" />
     <Compile Include="Classes\Abstract\SpecialInjector.cs" />
     <Compile Include="Classes\ListableOption_MainMenuDef.cs" />
+    <Compile Include="MapComponents\MiniMapController.cs" />
+    <Compile Include="Windows\Window_MiniMap.cs" />
+    <Compile Include="MiniMaps\MiniMap.cs" />
+    <Compile Include="MiniMaps\MiniMap_Utilities.cs" />
+    <Compile Include="Defs\MiniMapDef.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_Colonists.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_Fog.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_NonColonistPawns.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_Pawns.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_PowerGrid.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_Terrain.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_ViewPort.cs" />
+    <Compile Include="MiniMapOverlays\MiniMapOverlay_Wildlife.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -264,5 +278,6 @@
   <ItemGroup>
     <Folder Include="Classes\Static\" />
     <Folder Include="Classes\Abstract\" />
+    <Folder Include="MiniMapOverlays\" />
   </ItemGroup>
 </Project>
