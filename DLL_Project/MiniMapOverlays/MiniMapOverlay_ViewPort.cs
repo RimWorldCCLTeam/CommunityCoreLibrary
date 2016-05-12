@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	public class MiniMapOverlay_ViewPort : MiniMapOverlay
@@ -25,8 +25,8 @@ namespace CommunityCoreLibrary
 
 		public override void Update()
 		{
-			// clear texture
-			texture.SetPixels( MiniMap.GetClearPixelArray );
+            // clear texture
+            ClearTexture();
 
 			// draw square
 			var edges = Find.CameraMap.CurrentViewRect.EdgeCells;

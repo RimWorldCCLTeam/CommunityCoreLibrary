@@ -7,15 +7,42 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	public static class MiniMap_Utilities
-	{
+    {
 
-		#region Rendering
+        static Color[]                  _clearPixelArray;
 
-		public static void DrawThing( Texture2D texture, Thing thing, Color color )
+        public static IntVec2 Size
+        {
+            get
+            {
+                return new IntVec2( Find.Map.Size.x, Find.Map.Size.z );
+            }
+        }
+        
+        public static Color[] GetClearPixelArray
+        {
+            get
+            {
+                if ( _clearPixelArray == null )
+                {
+                    // create a clear pixel array for resetting textures
+                    _clearPixelArray = new Color[Find.Map.Size.x * Find.Map.Size.z];
+                    for ( int i = 0; i < _clearPixelArray.Count(); i++ )
+                    {
+                        _clearPixelArray[i] = Color.clear;
+                    }
+                }
+                return _clearPixelArray;
+            }
+        }
+
+        #region Rendering
+
+        public static void DrawThing( Texture2D texture, Thing thing, Color color )
 		{
 #if DEVELOPER
             CCL_Log.Message( "Painting cells for " + thing.LabelCap + thing.Position + color );

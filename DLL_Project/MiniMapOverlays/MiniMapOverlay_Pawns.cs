@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	public abstract class MiniMapOverlay_Pawns : MiniMapOverlay
@@ -66,8 +66,8 @@ namespace CommunityCoreLibrary
 			// get list of pawns
 			var pawns = GetPawns();
 
-			// clear image
-			texture.SetPixels( MiniMap.GetClearPixelArray );
+            // clear texture
+            ClearTexture();
 
 			// create a marker for each pawn
 			foreach( var pawn in pawns )

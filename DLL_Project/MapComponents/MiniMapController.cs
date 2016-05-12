@@ -8,7 +8,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
     // TODO:  Move all validation and inialization to a proper sub-controller
@@ -46,12 +46,12 @@ namespace CommunityCoreLibrary
                 SortOverlays();
 
             // draw overlays
-            foreach ( var overlay in visibleMiniMaps )
+            foreach ( var minimap in visibleMiniMaps )
             {
                 // update overlay grid, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
-                if ( ( Time.frameCount + overlay.GetHashCode() ) % overlay.miniMapDef.updateInterval == 0 )
+                if ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.def.updateInterval == 0 )
                 {
-                    overlay.Update();
+                    minimap.Update();
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace CommunityCoreLibrary
                     }
                     else
                     {
-                        miniMapDef.miniMapWorker.miniMapDef = miniMapDef;
+                        miniMapDef.miniMapWorker.def = miniMapDef;
                         miniMaps.Add( miniMapDef.miniMapWorker );
                     }
                 }
@@ -182,9 +182,9 @@ namespace CommunityCoreLibrary
 
             // perform initial update for all overlays
             // do after initialization flag to avoid infinite loop.
-            foreach( var overlay in visibleMiniMaps )
+            foreach( var minimap in visibleMiniMaps )
             {
-                overlay.Update();
+                minimap.Update();
             }
 
             CCL_Log.CaptureEnd( stringBuilder, errors ? "Initialization Errors" : "Initialized" );
@@ -202,8 +202,8 @@ namespace CommunityCoreLibrary
         {
             // keep in mind that default sort ordering is FALSE > TRUE (which makes sense given the binary representation).
             visibleMiniMaps = miniMaps.Where( overlay => !overlay.Hidden )
-                               .OrderBy( overlay => overlay.miniMapDef.alwaysOnTop )
-                               .ThenBy( overlay => overlay.miniMapDef.drawOrder )
+                               .OrderBy( overlay => overlay.def.alwaysOnTop )
+                               .ThenBy( overlay => overlay.def.drawOrder )
                                .ToList();
 
             dirty = false;

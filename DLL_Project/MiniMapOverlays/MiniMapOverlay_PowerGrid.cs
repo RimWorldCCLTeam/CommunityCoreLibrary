@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	public class MiniMapOverlay_PowerGrid : MiniMapOverlay
@@ -25,8 +25,8 @@ namespace CommunityCoreLibrary
 
 		public override void Update()
 		{
-			// clear existing image
-            texture.SetPixels( MiniMap.GetClearPixelArray );
+            // clear existing image
+            ClearTexture();
 
 			// get all powercomps attached to things of our colony
 			var powerComps = Find.ListerBuildings.allBuildingsColonist.SelectMany( building => building.AllComps ).OfType<CompPower>();

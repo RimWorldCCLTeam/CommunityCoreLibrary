@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
 
 	public class MiniMapOverlay_NonColonistPawns : MiniMapOverlay_Pawns
@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
 
 		#region Constructors
 
-		public MiniMapOverlay_NonColonistPawns( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
+		public MiniMapOverlay_NonColonistPawns( MiniMap minimap, MiniMapOverlayDef overlayDef ) : base( minimap, overlayDef )
 		{
 			radius = 2f;
 		}

@@ -7,7 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace CommunityCoreLibrary
+namespace CommunityCoreLibrary.MiniMap
 {
     
     public class MiniMap
@@ -17,36 +17,30 @@ namespace CommunityCoreLibrary
 
         private bool                    _hidden = false;
 
-        public MiniMapDef               miniMapDef;
+        public MiniMapDef               def;
 
         public List<MiniMapOverlay>     overlayWorkers;
 
-        private Texture2D               iconTexture;
+        private Texture2D               _iconTexture;
 
         #endregion Instance Data
-
-        #region Static Data
-
-        static Color[]                  _clearPixelArray;
-
-        #endregion
 
         #region Constructors
 
         public                          MiniMap( MiniMapDef miniMapDef )
         {
-            this.miniMapDef = miniMapDef;
-            this._hidden = this.miniMapDef.hiddenByDefault;
+            this.def = miniMapDef;
+            this._hidden = this.def.hiddenByDefault;
 
-            if( !this.miniMapDef.iconTex.NullOrEmpty() )
+            if( !this.def.iconTex.NullOrEmpty() )
             {
-                iconTexture = ContentFinder<Texture2D>.Get( this.miniMapDef.iconTex, true );
+                _iconTexture = ContentFinder<Texture2D>.Get( this.def.iconTex, true );
             }
             overlayWorkers = new List<MiniMapOverlay>();
 
-            for( int index = 0; index < this.miniMapDef.overlays.Count; ++index )
+            for( int index = 0; index < this.def.overlays.Count; ++index )
             {
-                var overlayData = this.miniMapDef.overlays[ index ];
+                var overlayData = this.def.overlays[ index ];
                 if(
                     ( overlayData.overlayClass == null )||
                     (
@@ -83,9 +77,9 @@ namespace CommunityCoreLibrary
 
             // log a bit
             CCL_Log.TraceMod(
-                this.miniMapDef,
+                this.def,
                 Verbosity.Injections,
-                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.miniMapDef.drawOrder )
+                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.def.drawOrder )
             );
         }
 
@@ -97,44 +91,11 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.overlayDef.drawOffset ).ToList();
+                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.def.drawOffset ).ToList();
             }
         }
-
-        #endregion
-
-        #region Static Properties
-
-        public static IntVec2 Size
-        {
-            get
-            {
-                return new IntVec2( Find.Map.Size.x, Find.Map.Size.z );
-            }
-        }
-
-        public static Color[] GetClearPixelArray
-        {
-            get
-            {
-                if( _clearPixelArray == null )
-                {
-                    // create a clear pixel array for resetting textures
-                    _clearPixelArray = new Color[ Find.Map.Size.x * Find.Map.Size.z ];
-                    for( int i = 0; i < _clearPixelArray.Count(); i++ )
-                    {
-                        _clearPixelArray[ i ] = Color.clear;
-                    }
-                }
-                return _clearPixelArray;
-            }
-        }
-
-        #endregion
-
-        #region Properties
-
-        public bool Hidden
+        
+        public virtual bool Hidden
         {
             get
             {
@@ -143,7 +104,11 @@ namespace CommunityCoreLibrary
             set
             {
                 _hidden = value;
-                //controller.dirty = true;
+
+                // give it an update since it's not updated while hidden
+                Update();
+
+                // mark the controller dirty so overlays get re-ordered.
                 MiniMapController.dirty = true;
             }
         }
@@ -152,27 +117,27 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                if( iconTexture.NullOrBad() )
+                if( _iconTexture.NullOrBad() )
                 {
                     return TexUI.UnknownThing;
                 }
-                return iconTexture;
+                return _iconTexture;
             }
         }
 
-        public string label
+        public virtual string label
         {
             get
             {
-                if( miniMapDef.labelKey.NullOrEmpty() )
+                if( def.labelKey.NullOrEmpty() )
                 {
-                    return miniMapDef.label;
+                    return def.label;
                 }
-                return miniMapDef.labelKey.Translate();
+                return def.labelKey.Translate();
             }
         }
 
-        public string LabelCap
+        public virtual string LabelCap
         {
             get
             {
@@ -184,12 +149,25 @@ namespace CommunityCoreLibrary
 
         #region Methods
 
+        public void ClearTextures( bool apply = false )
+        {
+            foreach ( var overlay in overlayWorkers )
+            {
+                overlay.ClearTexture( apply );
+                overlay.texture.Apply();
+            }
+        }
+
         public virtual void Update()
         {
-            foreach( var overlay in overlayWorkers )
+            var workers = VisibleOverlays;
+            if ( workers.Any() )
             {
-                overlay.Update();
-                overlay.texture.Apply();
+                foreach ( var worker in workers )
+                {
+                    worker.Update();
+                    worker.texture.Apply();
+                }
             }
         }
 
@@ -207,18 +185,11 @@ namespace CommunityCoreLibrary
 
         public virtual List<FloatMenuOption>  GetFloatMenuOptions()
         {
-            var list = new List<FloatMenuOption>();
-            foreach( var overlay in overlayWorkers )
+            List<FloatMenuOption> options = overlayWorkers.SelectMany( worker => worker.GetFloatMenuOptions() ).ToList();
+            
+            if( def.mcmWorker != null )
             {
-                var option = overlay.GetFloatMenuOption();
-                if( option != null )
-                {
-                    list.Add( option );
-                }
-            }
-            if( miniMapDef.mcmWorker != null )
-            {
-                list.Add( new FloatMenuOption(
+                options.Add( new FloatMenuOption(
                     "MiniMap.ShowMCMOption".Translate( label ),
                     () =>
                 {
@@ -226,7 +197,7 @@ namespace CommunityCoreLibrary
                     return;
                 } ) );
             }
-            return list.NullOrEmpty() ? null : list;
+            return options;
         }
 
         public virtual string   ToolTip
@@ -236,9 +207,9 @@ namespace CommunityCoreLibrary
                 // Get tool tip (w/ description)
                 // Use core translations for "Off" and "On"
                 var tipString = string.Empty;
-                if( !miniMapDef.description.NullOrEmpty() )
+                if( !def.description.NullOrEmpty() )
                 {
-                    tipString = miniMapDef.description + "\n\n";
+                    tipString = def.description + "\n\n";
                 }
                 tipString += "MiniMap.OverlayIconTip".Translate( LabelCap, Hidden ? "Off".Translate() : "On".Translate() );
                 tipString += "\n\n";
