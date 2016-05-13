@@ -10,7 +10,7 @@ using Verse;
 namespace CommunityCoreLibrary.MiniMap
 {
     
-    public abstract class MiniMapOverlay
+    public abstract class MiniMapOverlay // : IConfigurable
     {
         
         #region Instance Data
@@ -125,14 +125,6 @@ namespace CommunityCoreLibrary.MiniMap
             // done!
             return options;
         }
-
-        //// This is going to be tricky - save for later time.
-        //// -- Fluffy.
-        //// Optional mod configuration menu content region, inRect is only valid for x, y, width; return final height (inRect.height can be ignored)
-        //public virtual float        DoMCMRegion( Rect inRect )
-        //{
-        //    return 0f;
-        //}
 
         #endregion Methods
     }
