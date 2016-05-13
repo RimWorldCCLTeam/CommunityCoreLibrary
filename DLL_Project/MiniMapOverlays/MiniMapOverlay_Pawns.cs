@@ -10,7 +10,7 @@ using Verse;
 namespace CommunityCoreLibrary.MiniMap
 {
 
-	public abstract class MiniMapOverlay_Pawns : MiniMapOverlay //, IConfigurable
+	public abstract class MiniMapOverlay_Pawns : MiniMapOverlay
 	{
 
 		#region Fields
@@ -75,11 +75,6 @@ namespace CommunityCoreLibrary.MiniMap
 				CreateMarker( pawn, radius );
 			}
 		}
-
-        public float DrawMCMRegion( Rect canvas )
-        {
-
-        }
 
 		#endregion Methods
 
