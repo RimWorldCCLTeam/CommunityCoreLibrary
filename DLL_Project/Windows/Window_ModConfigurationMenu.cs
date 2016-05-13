@@ -13,62 +13,7 @@ namespace CommunityCoreLibrary
 	public class Window_ModConfigurationMenu : Window
 	{
 
-		private class MenuWorker : IExposable
-		{
-			public string Label;
-			public ModConfigurationMenu worker;
-
-            public bool OpenedThisSession;
-
-            private string _key;
-            public string key
-            {
-                get
-                {
-                    if( string.IsNullOrEmpty( _key ) )
-                    {
-                        _key = Label.Replace( " ", "_" );
-                    }
-                    return _key;
-                }
-            }
-
-			public MenuWorker()
-			{
-				this.Label = "?";
-				this.worker = null;
-                this._key = "";
-                this.OpenedThisSession = false;
-			}
-
-			public MenuWorker( string Label, ModConfigurationMenu worker )
-			{
-				this.Label = Label;
-				this.worker = worker;
-                this._key = "";
-                this.OpenedThisSession = false;
-			}
-
-			public void ExposeData()
-			{
-				if( worker == null )
-				{
-					CCL_Log.Trace(
-						Verbosity.FatalErrors,
-						string.Format( "worker is null in MenuWorkers for {0}", Label ),
-						"Mod Configuration Menu" );
-					return;
-				}
-				// Call the worker expose data
-				worker.ExposeData();
-			}
-
-		}
-
 		#region Control Constants
-
-		public const string ConfigFilePrefix = "MCM_Data_";
-		public const string ConfigFileSuffix = ".xml";
 
 		public const float MinListWidth = 200f;
 
@@ -88,24 +33,14 @@ namespace CommunityCoreLibrary
 		public float SelectionHeight = 9999f;
 		public float ContentHeight = 9999f;
 
-		private MenuWorker SelectedMenu;
-        private MenuWorker PreviouslySelectedMenu;
+        private MCMHost SelectedHost;
+        private MCMHost PreviouslySelectedHost;
 
 		private static string _filterString = "";
 		private string _lastFilterString = "";
 		private int _lastFilterTick;
 		private bool _filtered;
-		private List<MenuWorker> filteredMenus;
-
-		private static List<MenuWorker> allMenus;
-
-		public static bool AnyMenus
-		{
-			get
-			{
-				return !allMenus.NullOrEmpty();
-			}
-		}
+        private List<MCMHost> filteredHosts;
 
 		#endregion
 
@@ -119,200 +54,50 @@ namespace CommunityCoreLibrary
 
 		#region Constructor
 
-		public static bool InitializeMCMs( bool preload = false )
-		{
-            if( preload )
-            {
-			    allMenus = new List<MenuWorker>();
-            }
-
-			// Get the mods with config menus
-			foreach( var mhd in Controller.Data.ModHelperDefs )
-			{
-                if( // Filter out preload during non-preload and non-preload during preload
-                    (
-                        ( preload )&&
-                        ( mhd.PreloadMCMs )
-                    )||
-                    (
-                        ( !preload )&&
-                        ( !mhd.PreloadMCMs )
-                    )
-                )
-                {   // Create all the menus for it
-    				if( !mhd.ModConfigurationMenus.NullOrEmpty() )
-    				{
-    					foreach( var mcm in mhd.ModConfigurationMenus )
-    					{
-                            var menu = allMenus.Find( m => m.worker.InjectionSet == mcm );
-                            if( menu != null )
-                            {   // MCM already created....?
-                                CCL_Log.TraceMod(
-                                    mhd,
-                                    Verbosity.Warnings,
-                                    string.Format( "{0} - Tried to create an MCM when an MCM already exists", mcm.mcmClass.ToString() )
-                                );
-                                continue;
-                            }
-    						menu = new MenuWorker();
-    						menu.Label = mcm.label;
-    						menu.worker = (ModConfigurationMenu)Activator.CreateInstance( mcm.mcmClass );
-    						if( menu.worker == null )
-    						{
-                                CCL_Log.Error( string.Format( "Unable to create instance of {0}", mcm.mcmClass.ToString() ) );
-                                return false;
-    						}
-    						else
-    						{   // Initialize, add it to the menu list and then load it's data
-                                menu.worker.InjectionSet = mcm;
-                                menu.worker.Initialize();
-    							allMenus.Add( menu );
-    							LoadMCMData( menu );
-    						}
-    					}
-    				}
-                }
-			}
-            return true;
-		}
+        private void cTor_Common()
+        {
+            layer = WindowLayer.GameUI;
+            soundAppear = null;
+            soundClose = null;
+            doCloseButton = false;
+            doCloseX = true;
+            closeOnEscapeKey = true;
+            forcePause = true;
+            filteredHosts = Controller.Data.MCMHosts.ListFullCopy();
+        }
 
 		public Window_ModConfigurationMenu()
 		{
-			layer = WindowLayer.GameUI;
-			soundAppear = null;
-			soundClose = null;
-			doCloseButton = false;
-			doCloseX = true;
-			closeOnEscapeKey = true;
-			forcePause = true;
-			filteredMenus = allMenus.ListFullCopy();
+            cTor_Common();
 		}
+
+        public Window_ModConfigurationMenu( ModConfigurationMenu selectedMenu )
+        {
+            cTor_Common();
+            this.SelectedHost = filteredHosts.Find( host => host.worker == selectedMenu );
+        }
 
 		#endregion
 
-		#region Load/Save MCM Data
-
-		static string MCMFilePath( MenuWorker menu )
-		{
-			// Generate the config file name
-			string filePath = Path.Combine( GenFilePaths.ConfigFolderPath, ConfigFilePrefix );
-            filePath += menu.key;
-			filePath += ConfigFileSuffix;
-			return filePath;
-		}
-
-		static void LoadMCMData( MenuWorker menu )
-		{
-			var filePath = MCMFilePath( menu );
-
-			if( !File.Exists( filePath ) )
-			{
-				return;
-			}
-
-			try
-			{
-				// Open it for reading
-				Scribe.InitLoading( filePath );
-				if( Scribe.mode == LoadSaveMode.LoadingVars )
-				{
-					// Version check
-					string version = "";
-					Scribe_Values.LookValue<string>( ref version, "ccl_version" );
-
-					bool okToLoad = true;
-					var result = Version.Compare( version );
-					if( result == Version.VersionCompare.GreaterThanMax )
-					{
-						CCL_Log.Trace(
-							Verbosity.NonFatalErrors,
-							string.Format( "Data for {0} is newer ({1}) than the version you are using ({2}).", menu.Label, version, Version.Current.ToString() ),
-							"Mod Configuration Menu" );
-						okToLoad = false;
-					}
-					else if( result == Version.VersionCompare.Invalid )
-					{
-						CCL_Log.Trace(
-							Verbosity.NonFatalErrors,
-							string.Format( "Data for {0} is corrupt and will be discarded", menu.Label ),
-							"Mod Configuration Menu" );
-						okToLoad = false;
-					}
-
-					if( okToLoad )
-					{
-						// Call the worker scribe
-						var args = new object[]
-						{
-							menu.Label,
-							menu.worker
-						};
-						Scribe_Deep.LookDeep<MenuWorker>( ref menu, menu.key, args );
-					}
-				}
-			}
-			catch( Exception e )
-			{
-				CCL_Log.Trace(
-					Verbosity.NonFatalErrors,
-					string.Format( "Unexpected error scribing data for mod {0}\n{1}", menu.Label, e.ToString() ),
-					"Mod Configuration Menu" );
-			}
-			finally
-			{
-				// Finish
-				Scribe.FinalizeLoading();
-				Scribe.mode = LoadSaveMode.Inactive;
-			}
-		}
+        #region Window PreClose
 
 		public override void PreClose()
 		{
-            if( SelectedMenu != null )
+            if( SelectedHost != null )
             {
-                SelectedMenu.worker.PostClose();
+                SelectedHost.worker.PostClose();
             }
 			base.PreClose();
 
-			for( int index = 0; index < allMenus.Count; ++index )
+            for( int index = 0; index < Controller.Data.MCMHosts.Count; ++index )
 			{
-				// Get menu to work with
-				var menu = allMenus[ index ];
+				// Get host to work with
+                var host = Controller.Data.MCMHosts[ index ];
 
-                if( menu.OpenedThisSession )
+                if( host.OpenedThisSession )
                 {
-    				var filePath = MCMFilePath( menu );
-
-    				// Open it for writing
-    				try
-    				{
-    					Scribe.InitWriting( filePath, "ModConfigurationData" );
-    					if( Scribe.mode == LoadSaveMode.Saving )
-    					{
-    						// Write this library version as the one saved with
-    						string version = Version.Current.ToString();
-    						Scribe_Values.LookValue<string>( ref version, "ccl_version" );
-
-    						// Call the worker scribe
-    						Scribe_Deep.LookDeep<MenuWorker>( ref menu, menu.key );
-    					}
-    				}
-    				catch( Exception e )
-    				{
-    					CCL_Log.Trace(
-    						Verbosity.NonFatalErrors,
-    						string.Format( "Unexpected error scribing data for mod {0}\n{1}", menu.Label, e.ToString() ),
-    						"Mod Configuration Menu" );
-    				}
-    				finally
-    				{
-    					// Finish
-    					Scribe.FinalizeWriting();
-    					Scribe.mode = LoadSaveMode.Inactive;
-                        Messages.Message( "ModConfigurationSaved".Translate( menu.Label ), MessageSound.Standard );
-    				}
+                    MCMHost.SaveHostData( host );
                 }
-                menu.OpenedThisSession = false;
 			}
 
 		}
@@ -343,16 +128,16 @@ namespace CommunityCoreLibrary
 
 		public void Filter()
 		{
-			filteredMenus.Clear();
-			foreach( var menu in allMenus )
+			filteredHosts.Clear();
+            foreach( var host in Controller.Data.MCMHosts )
 			{
 				if( string.IsNullOrEmpty( _filterString ) )
 				{
-					filteredMenus.Add( menu );
+					filteredHosts.Add( host );
 				}
-				else if( menu.Label.Contains( _filterString ) )
+				else if( host.Label.Contains( _filterString ) )
 				{
-					filteredMenus.Add( menu );
+					filteredHosts.Add( host );
 				}
 			}
 			_filtered = true;
@@ -369,7 +154,7 @@ namespace CommunityCoreLibrary
 
 		#region Window Rendering
 
-		public override void DoWindowContents( Rect rect )
+        public override void DoWindowContents( Rect inRect )
 		{
 			if( Game.Mode == GameMode.Entry )
 			{
@@ -382,12 +167,12 @@ namespace CommunityCoreLibrary
 
 			Text.Font = GameFont.Small;
 
-			GUI.BeginGroup( rect );
+			GUI.BeginGroup( inRect );
 
-			SelectionRect = new Rect( 0f, 0f, MinListWidth, rect.height );
+			SelectionRect = new Rect( 0f, 0f, MinListWidth, inRect.height );
 			DisplayRect = new Rect(
 				SelectionRect.width + Margin, 0f,
-				rect.width - SelectionRect.width - Margin, rect.height
+				inRect.width - SelectionRect.width - Margin, inRect.height
 			);
 
 			DrawSelectionArea( SelectionRect );
@@ -426,15 +211,15 @@ namespace CommunityCoreLibrary
 			GUI.BeginGroup( outRect );
 			Widgets.BeginScrollView( outRect.AtZero(), ref SelectionScrollPos, viewRect );
 
-			if( !filteredMenus.NullOrEmpty() )
+			if( !filteredHosts.NullOrEmpty() )
 			{
 				Vector2 cur = Vector2.zero;
 
-				foreach( var menu in filteredMenus )
+                foreach( var host in filteredHosts )
 				{
-					if( DrawModEntry( ref cur, viewRect, menu ) )
+					if( DrawHost( ref cur, viewRect, host ) )
 					{
-						SelectedMenu = menu;
+						SelectedHost = host;
 					}
 				}
 
@@ -445,11 +230,11 @@ namespace CommunityCoreLibrary
 			GUI.EndGroup();
 		}
 
-		private bool DrawModEntry( ref Vector2 cur, Rect view, MenuWorker menu )
+        private bool DrawHost( ref Vector2 cur, Rect view, MCMHost host )
 		{
 			float width = view.width - cur.x - Margin;
 			float height = EntryHeight;
-			string label = menu.Label;
+			string label = host.Label;
 
 			if( Text.CalcHeight( label, width ) > EntryHeight )
 			{
@@ -472,7 +257,7 @@ namespace CommunityCoreLibrary
 			GUI.color = Color.grey;
 			Widgets.DrawLineHorizontal( view.xMin, cur.y, view.width );
 			GUI.color = Color.white;
-			if( SelectedMenu == menu )
+			if( SelectedHost == host )
 			{
 				Widgets.DrawHighlightSelected( buttonRect );
 			}
@@ -491,29 +276,29 @@ namespace CommunityCoreLibrary
 		{
 			Widgets.DrawMenuSection( rect );
 
-			if( SelectedMenu == null )
+			if( SelectedHost == null )
 			{
 				return;
 			}
             if(
-                ( PreviouslySelectedMenu != null )&&
-                ( PreviouslySelectedMenu != SelectedMenu )
+                ( PreviouslySelectedHost != null )&&
+                ( PreviouslySelectedHost != SelectedHost )
             )
             {
-                PreviouslySelectedMenu.worker.PostClose();
+                PreviouslySelectedHost.worker.PostClose();
             }
-            if( PreviouslySelectedMenu != SelectedMenu )
+            if( PreviouslySelectedHost != SelectedHost )
             {
-                SelectedMenu.OpenedThisSession = true;
-                SelectedMenu.worker.PreOpen();
+                SelectedHost.OpenedThisSession = true;
+                SelectedHost.worker.PreOpen();
             }
-            PreviouslySelectedMenu = SelectedMenu;
+            PreviouslySelectedHost = SelectedHost;
 
 			Text.Font = GameFont.Medium;
 			Text.WordWrap = false;
 			var titleRect = new Rect( rect.xMin, rect.yMin, rect.width, 60f );
 			Text.Anchor = TextAnchor.MiddleCenter;
-			Widgets.Label( titleRect, SelectedMenu.Label );
+			Widgets.Label( titleRect, SelectedHost.Label );
 
 			Text.Font = GameFont.Small;
 			Text.Anchor = TextAnchor.UpperLeft;
@@ -532,7 +317,7 @@ namespace CommunityCoreLibrary
             string userErrorStr = string.Empty;
             try
             {
-                ContentHeight = SelectedMenu.worker.DoWindowContents( viewRect.AtZero() );
+                ContentHeight = SelectedHost.worker.DoWindowContents( viewRect.AtZero() );
             }
             catch( Exception e )
             {

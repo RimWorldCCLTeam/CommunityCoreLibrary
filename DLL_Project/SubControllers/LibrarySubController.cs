@@ -206,7 +206,7 @@ namespace CommunityCoreLibrary.Controller
 		public override bool Initialize()
 		{
 			// Don't need to keep checking on this controller
-            if( !Window_ModConfigurationMenu.InitializeMCMs( false ) )
+            if( !MCMHost.InitializeHosts( false ) )
             {
                 strReturn = "Errors initializing Mod Configuration Menus";
                 State = SubControllerState.InitializationError;

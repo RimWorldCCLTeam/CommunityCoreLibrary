@@ -17,11 +17,13 @@ namespace CommunityCoreLibrary.MiniMap
 
         private bool                    _hidden = false;
 
-        public MiniMapDef               def;
+        public MiniMapDef               miniMapDef;
 
         public List<MiniMapOverlay>     overlayWorkers;
 
         private Texture2D               _iconTexture;
+
+        public ModConfigurationMenu     mcmWorker = null;
 
         #endregion Instance Data
 
@@ -29,18 +31,18 @@ namespace CommunityCoreLibrary.MiniMap
 
         public                          MiniMap( MiniMapDef miniMapDef )
         {
-            this.def = miniMapDef;
-            this._hidden = this.def.hiddenByDefault;
+            this.miniMapDef = miniMapDef;
+            this._hidden = this.miniMapDef.hiddenByDefault;
 
-            if( !this.def.iconTex.NullOrEmpty() )
+            if( !this.miniMapDef.iconTex.NullOrEmpty() )
             {
-                _iconTexture = ContentFinder<Texture2D>.Get( this.def.iconTex, true );
+                _iconTexture = ContentFinder<Texture2D>.Get( this.miniMapDef.iconTex, true );
             }
             overlayWorkers = new List<MiniMapOverlay>();
 
-            for( int index = 0; index < this.def.overlays.Count; ++index )
+            for( int index = 0; index < this.miniMapDef.overlays.Count; ++index )
             {
-                var overlayData = this.def.overlays[ index ];
+                var overlayData = this.miniMapDef.overlays[ index ];
                 if(
                     ( overlayData.overlayClass == null )||
                     (
@@ -75,11 +77,35 @@ namespace CommunityCoreLibrary.MiniMap
                 }
             }
 
+            // Link MCM Class to mcmWorker
+            if( miniMapDef.mcmClass != null )
+            {
+                if( !miniMapDef.mcmClass.IsSubclassOf( typeof( ModConfigurationMenu ) ) )
+                {
+                    CCL_Log.TraceMod(
+                        miniMapDef,
+                        Verbosity.NonFatalErrors,
+                        string.Format( "Unable to resolve mcmClass for '{0}'", miniMapDef.defName )
+                    );
+                    return;
+                }
+                else if( !Controller.Data.MCMHosts.NullOrEmpty() )
+                {
+                    foreach( var host in Controller.Data.MCMHosts )
+                    {
+                        if( host.worker.GetType() == miniMapDef.mcmClass )
+                        {
+                            this.mcmWorker = host.worker;
+                        }
+                    }
+                }
+            }
+
             // log a bit
             CCL_Log.TraceMod(
-                this.def,
+                this.miniMapDef,
                 Verbosity.Injections,
-                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.def.drawOrder )
+                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.miniMapDef.drawOrder )
             );
         }
 
@@ -129,11 +155,11 @@ namespace CommunityCoreLibrary.MiniMap
         {
             get
             {
-                if( def.labelKey.NullOrEmpty() )
+                if( miniMapDef.labelKey.NullOrEmpty() )
                 {
-                    return def.label;
+                    return miniMapDef.label;
                 }
-                return def.labelKey.Translate();
+                return miniMapDef.labelKey.Translate();
             }
         }
 
@@ -187,13 +213,13 @@ namespace CommunityCoreLibrary.MiniMap
         {
             List<FloatMenuOption> options = overlayWorkers.SelectMany( worker => worker.GetFloatMenuOptions() ).ToList();
             
-            if( def.mcmWorker != null )
+            if( this.mcmWorker != null )
             {
                 options.Add( new FloatMenuOption(
                     "MiniMap.ShowMCMOption".Translate( label ),
                     () =>
                 {
-                    // TODO:  Open MCM Window to this worker
+                    Find.WindowStack.Add( new Window_ModConfigurationMenu( this.mcmWorker ) );
                     return;
                 } ) );
             }
@@ -207,9 +233,9 @@ namespace CommunityCoreLibrary.MiniMap
                 // Get tool tip (w/ description)
                 // Use core translations for "Off" and "On"
                 var tipString = string.Empty;
-                if( !def.description.NullOrEmpty() )
+                if( !miniMapDef.description.NullOrEmpty() )
                 {
-                    tipString = def.description + "\n\n";
+                    tipString = miniMapDef.description + "\n\n";
                 }
                 tipString += "MiniMap.OverlayIconTip".Translate( LabelCap, Hidden ? "Off".Translate() : "On".Translate() );
                 tipString += "\n\n";

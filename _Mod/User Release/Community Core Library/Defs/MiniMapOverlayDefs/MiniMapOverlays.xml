@@ -30,7 +30,7 @@
     <MiniMapOverlayDef>
         <defName>MiniMapOverlay_Wildlife</defName>
         <overlayClass>CommunityCoreLibrary.MiniMap.MiniMapOverlay_Wildlife</overlayClass>
-        <label>wild-life</label> <!-- TODO:  Grammar check -->
+        <label>wildlife</label>
         <drawOffset>80</drawOffset>
         <hiddenByDefault>true</hiddenByDefault>
     </MiniMapOverlayDef>

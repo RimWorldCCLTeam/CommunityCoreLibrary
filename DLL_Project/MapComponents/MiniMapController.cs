@@ -49,7 +49,7 @@ namespace CommunityCoreLibrary.MiniMap
             foreach ( var minimap in visibleMiniMaps )
             {
                 // update overlay grid, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
-                if ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.def.updateInterval == 0 )
+                if ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.miniMapDef.updateInterval == 0 )
                 {
                     minimap.Update();
                 }
@@ -156,8 +156,8 @@ namespace CommunityCoreLibrary.MiniMap
                             miniMapDef.overlays.AddUnique( overlayDef );
                         }
                     }
-                    miniMapDef.miniMapWorker = (MiniMap) Activator.CreateInstance( miniMapDef.miniMapClass, new System.Object[] { miniMapDef } );
-                    if( miniMapDef.miniMapWorker == null )
+                    var miniMapWorker = (MiniMap) Activator.CreateInstance( miniMapDef.miniMapClass, new System.Object[] { miniMapDef } );
+                    if( miniMapWorker == null )
                     {
                         CCL_Log.TraceMod(
                             miniMapDef,
@@ -168,8 +168,8 @@ namespace CommunityCoreLibrary.MiniMap
                     }
                     else
                     {
-                        miniMapDef.miniMapWorker.def = miniMapDef;
-                        miniMaps.Add( miniMapDef.miniMapWorker );
+                        miniMapWorker.miniMapDef = miniMapDef;
+                        miniMaps.Add( miniMapWorker );
                     }
                 }
             }
@@ -202,8 +202,8 @@ namespace CommunityCoreLibrary.MiniMap
         {
             // keep in mind that default sort ordering is FALSE > TRUE (which makes sense given the binary representation).
             visibleMiniMaps = miniMaps.Where( overlay => !overlay.Hidden )
-                               .OrderBy( overlay => overlay.def.alwaysOnTop )
-                               .ThenBy( overlay => overlay.def.drawOrder )
+                               .OrderBy( overlay => overlay.miniMapDef.alwaysOnTop )
+                               .ThenBy( overlay => overlay.miniMapDef.drawOrder )
                                .ToList();
 
             dirty = false;

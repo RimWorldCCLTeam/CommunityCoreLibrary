@@ -30,6 +30,8 @@ namespace CommunityCoreLibrary.Controller
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
+        private static List<MCMHost>        mcmHosts;
+
         internal static SubController[]     SubControllers;
 
         // Some settings or windows require a game restart
@@ -131,6 +133,18 @@ namespace CommunityCoreLibrary.Controller
                     advancedResearchDefs = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
                 }
                 return advancedResearchDefs;
+            }
+        }
+
+        public static List< MCMHost >   MCMHosts
+        {
+            get
+            {
+                if( mcmHosts == null )
+                {
+                    mcmHosts = new List<MCMHost>();
+                }
+                return mcmHosts;
             }
         }
 

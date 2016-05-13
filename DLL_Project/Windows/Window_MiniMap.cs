@@ -10,7 +10,7 @@ using Verse;
 namespace CommunityCoreLibrary.MiniMap
 {
 
-    // TODO:  Handle right-click on minimap icon for float menu options (MiniMap.GetFloatMenuOptions())
+	// TODO:  Handle right-click on minimap icon for float menu options (MiniMap.GetFloatMenuOptions())
 
 	public class Window_MiniMap : Window
 	{
@@ -46,7 +46,7 @@ namespace CommunityCoreLibrary.MiniMap
 
 		#region Properties
 
-        // remove window padding so the minimap fills the entire available space
+		// remove window padding so the minimap fills the entire available space
 		protected override float WindowPadding
 		{
 			get
@@ -62,9 +62,9 @@ namespace CommunityCoreLibrary.MiniMap
 		public override void DoWindowContents( Rect inRect )
 		{
 			// draw all minimaps
-            foreach( var overlay in MiniMapController.visibleMiniMaps )
+			foreach( var overlay in MiniMapController.visibleMiniMaps )
 			{
-                overlay.DrawOverlays( inRect );
+				overlay.DrawOverlays( inRect );
 			}
 
 			// handle minimap click & drag
@@ -93,7 +93,7 @@ namespace CommunityCoreLibrary.MiniMap
 		public override void ExtraOnGUI()
 		{
 			// get minimaps we should draw toggles for
-            var minimaps = MiniMapController.miniMaps.Where( overlay => !overlay.def.alwaysVisible ).ToArray();
+			var minimaps = MiniMapController.miniMaps.Where( overlay => !overlay.miniMapDef.alwaysVisible ).ToArray();
 
 			// how many overlays can we draw on a single line?
 			// note that we don't want to draw in the complete outer edge, because that will trigger map movement, which is annoying as fuck.
@@ -103,7 +103,7 @@ namespace CommunityCoreLibrary.MiniMap
 			for( int i = 0; i < minimaps.Count(); i++ )
 			{
 				// calculate x, y position to spread over rows
-                var minimap = minimaps[ i ];
+				var minimap = minimaps[ i ];
 				int x = i % iconsPerRow;
 				int y = i / iconsPerRow;
 
@@ -115,27 +115,27 @@ namespace CommunityCoreLibrary.MiniMap
 
 
 				// Draw tooltip
-                TooltipHandler.TipRegion( iconRect, minimap.ToolTip );
+				TooltipHandler.TipRegion( iconRect, minimap.ToolTip );
 
-                // grey out draw color if hidden
-                GUI.color = minimap.Hidden ? Color.grey : Color.white;
+				// grey out draw color if hidden
+				GUI.color = minimap.Hidden ? Color.grey : Color.white;
 
-                // handle mouse clicks
+				// handle mouse clicks
 				if( Widgets.ImageButton( iconRect, minimap.Icon ) )
 				{
-                    // toggle on LMB
-                    if (Event.current.button == 0)
-                        minimap.Hidden = !minimap.Hidden;
+					// toggle on LMB
+					if( Event.current.button == 0 )
+						minimap.Hidden = !minimap.Hidden;
 
-                    // if there's any options, open float menu on RMB
-                    else if ( Event.current.button == 1 )
-                    {
-                        var options = minimap.GetFloatMenuOptions();
-                        if ( !options.NullOrEmpty() )
-                        {
-                            Find.WindowStack.Add( new FloatMenu( options, minimap.LabelCap ) );
-                        }
-                    }
+					// if there's any options, open float menu on RMB
+					else if( Event.current.button == 1 )
+					{
+						var options = minimap.GetFloatMenuOptions();
+						if( !options.NullOrEmpty() )
+						{
+							Find.WindowStack.Add( new FloatMenu( options, minimap.LabelCap ) );
+						}
+					}
 				}
 			}
 			GUI.color = Color.white;

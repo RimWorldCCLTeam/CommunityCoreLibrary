@@ -70,7 +70,7 @@ namespace CommunityCoreLibrary.Controller
             CCL_Log.CaptureBegin( stringBuilder );
 
             // Initialize preload-MCMs
-            if( !Window_ModConfigurationMenu.InitializeMCMs( true ) )
+            if( !MCMHost.InitializeHosts( true ) )
             {
                 CCL_Log.CaptureEnd( stringBuilder, "Errors initializing Mod Configuration Menus" );
                 strReturn = stringBuilder.ToString();

@@ -15,6 +15,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region XML Data
 
+        // Provide label or labelKey to translate
         public string               labelKey            = string.Empty;
 
         public int                  updateInterval      = 250;
@@ -36,14 +37,6 @@ namespace CommunityCoreLibrary.MiniMap
         // Undecided if this is the best place/way to hook this
         // Optional link to MCM handler (must be declared in ModHelperDef)
         public Type                 mcmClass            = null;
-
-        #endregion
-
-        #region Instance Data
-
-        public MiniMap              miniMapWorker       = null;
-
-        public ModConfigurationMenu mcmWorker           = null;
 
         #endregion
 

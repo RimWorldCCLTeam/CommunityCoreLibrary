@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary.MiniMap
         // TODO:  Make overlays individually selectable, currently fixed at def default
         private bool                _hidden = false;
 
-        private Texture2D            _texture;
+        private Texture2D           _texture;
         private MiniMap             minimap;
         public MiniMapOverlayDef    def;
 
@@ -118,7 +118,7 @@ namespace CommunityCoreLibrary.MiniMap
             var options = new List<FloatMenuOption>();
 
             // add a toggle option for overlays that are not always on, and only if there's more than one overlay on this minimap 'mode'
-            if ( !minimap.def.alwaysVisible && minimap.overlayWorkers.Count > 1 )
+            if ( !minimap.miniMapDef.alwaysVisible && minimap.overlayWorkers.Count > 1 )
                 options.Add( new FloatMenuOption( "MiniMap.ToggleX".Translate( LabelCap ), delegate
                 { Hidden = !Hidden; } ) );
 
