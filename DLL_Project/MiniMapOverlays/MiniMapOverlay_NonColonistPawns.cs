@@ -1,50 +1,54 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace CommunityCoreLibrary.MiniMap
 {
+    public class MiniMapOverlay_NonColonistPawns : MiniMapOverlay_Pawns, IConfigurable
+    {
+        #region Fields
 
-	public class MiniMapOverlay_NonColonistPawns : MiniMapOverlay_Pawns, IConfigurable
-	{
-        // draw options
-        private Color visitorColor = Color.green;
-        private Color traderColor = Color.blue;
         private Color enemyColor = Color.red;
-        private int visitorRadius = 2;
-        private int traderRadius = 2;
-        private int enemyRadius = 2;
 
         // inputfield classes for configurable options
-        UI.LabeledInput_Color enemyColorField;
-        UI.LabeledInput_Color visitorColorField;
-        UI.LabeledInput_Color traderColorField;
-        UI.LabeledInput_Int enemyRadiusField;
-        UI.LabeledInput_Int visitorRadiusField;
-        UI.LabeledInput_Int traderRadiusField;
+        private UI.LabeledInput_Color enemyColorField;
+
+        private int enemyRadius = 2;
+
+        private UI.LabeledInput_Int enemyRadiusField;
+
+        private Color traderColor = Color.blue;
+
+        private UI.LabeledInput_Color traderColorField;
+
+        private int traderRadius = 2;
+
+        private UI.LabeledInput_Int traderRadiusField;
+
+        // draw options
+        private Color visitorColor = Color.green;
+
+        private UI.LabeledInput_Color visitorColorField;
+        private int visitorRadius = 2;
+        private UI.LabeledInput_Int visitorRadiusField;
+
+        #endregion Fields
 
         #region Constructors
 
         public MiniMapOverlay_NonColonistPawns( MiniMap minimap, MiniMapOverlayDef overlayDef ) : base( minimap, overlayDef )
         {
-            radius = 2f;
-            enemyColorField = new UI.LabeledInput_Color( enemyColor, "MiniMap.NCP.EnemyColor".Translate() );
-            traderColorField = new UI.LabeledInput_Color( traderColor, "MiniMap.NCP.TraderColor".Translate() );
-            visitorColorField = new UI.LabeledInput_Color( visitorColor, "MiniMap.NCP.VisitorColor".Translate() );
-            enemyRadiusField = new UI.LabeledInput_Int( enemyRadius, "Minimap.NCP.EnemyRadius".Translate() );
-            visitorRadiusField = new UI.LabeledInput_Int( visitorRadius, "Minimap.NCP.VisitorRadius".Translate() );
-            traderRadiusField = new UI.LabeledInput_Int( traderRadius, "Minimap.NCP.TraderRadius".Translate() );
+            CreateInputFields();
         }
 
         #endregion Constructors
 
-        #region Iconfigurable implementation
-        
+        #region Methods
+
         public float DrawMCMRegion( Rect InRect )
         {
             Rect row = InRect;
@@ -84,26 +88,64 @@ namespace CommunityCoreLibrary.MiniMap
             Scribe_Values.LookValue( ref visitorRadius, "visitorRadius" );
             Scribe_Values.LookValue( ref traderRadius, "traderRadius" );
             Scribe_Values.LookValue( ref enemyRadius, "enemyRadius" );
+
+            // re-create input fields to update values
+            if ( Scribe.mode == LoadSaveMode.PostLoadInit )
+                UpdateInputFields();
         }
 
-        #endregion
+        public override Color GetColor( Pawn pawn )
+        {
+            if ( pawn.HostileTo( Faction.OfColony ) )
+                return enemyColor;
 
-        #region Methods
+            if ( pawn.trader != null )
+                return traderColor;
 
-        public override Color GetColor( Pawn pawn, float opacity = 1 )
-		{
-			var color = pawn.HostileTo( Faction.OfColony ) ? Color.red : GenUI.MouseoverColor;
-			color.a = opacity;
-			return color;
-		}
+            return visitorColor;
+        }
 
-		public override IEnumerable<Pawn> GetPawns()
-		{
-			return Find.MapPawns.AllPawnsSpawned.Where( pawn => !pawn.RaceProps.Animal && pawn.Faction != Faction.OfColony );
-		}
+        public override IEnumerable<Pawn> GetPawns()
+        {
+            return Find.MapPawns.AllPawnsSpawned.Where( pawn => !pawn.RaceProps.Animal && pawn.Faction != Faction.OfColony );
+        }
 
-		#endregion Methods
+        public override float GetRadius( Pawn pawn )
+        {
+            if ( pawn.HostileTo( Faction.OfColony ) )
+                return enemyRadius;
 
-	}
+            if ( pawn.trader != null )
+                return traderRadius;
 
+            return visitorRadius;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+        }
+
+        private void CreateInputFields()
+        {
+            enemyColorField    = new UI.LabeledInput_Color( enemyColor, "MiniMap.NCP.EnemyColor".Translate(), "MiniMap.NCP.EnemyColorTip".Translate() );
+            traderColorField   = new UI.LabeledInput_Color( traderColor, "MiniMap.NCP.TraderColor".Translate(), "MiniMap.NCP.TraderColorTip".Translate() );
+            visitorColorField  = new UI.LabeledInput_Color( visitorColor, "MiniMap.NCP.VisitorColor".Translate(), "MiniMap.NCP.VisitorColorTip".Translate() );
+            enemyRadiusField   = new UI.LabeledInput_Int( enemyRadius, "MiniMap.NCP.EnemyRadius".Translate(), "MiniMap.NCP.EnemyRadiusTip".Translate() );
+            visitorRadiusField = new UI.LabeledInput_Int( visitorRadius, "MiniMap.NCP.VisitorRadius".Translate(), "MiniMap.NCP.VisitorRadiusTip".Translate() );
+            traderRadiusField  = new UI.LabeledInput_Int( traderRadius, "MiniMap.NCP.TraderRadius".Translate(), "MiniMap.NCP.TraderRadiusTip".Translate() );
+        }
+
+        private void UpdateInputFields()
+        {
+            enemyColorField.Value    = enemyColor;
+            traderColorField.Value   = traderColor;
+            visitorColorField.Value  = visitorColor;
+            enemyRadiusField.Value   = enemyRadius;
+            visitorRadiusField.Value = visitorRadius;
+            traderRadiusField.Value  = traderRadius;
+        }
+
+        #endregion Methods
+    }
 }

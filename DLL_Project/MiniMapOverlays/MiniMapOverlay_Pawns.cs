@@ -13,12 +13,6 @@ namespace CommunityCoreLibrary.MiniMap
 	public abstract class MiniMapOverlay_Pawns : MiniMapOverlay
 	{
 
-		#region Fields
-
-		public float radius = 3f;
-
-		#endregion Fields
-
 		#region Constructors
 
 		protected MiniMapOverlay_Pawns( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
@@ -29,8 +23,10 @@ namespace CommunityCoreLibrary.MiniMap
 
 		#region Methods
 
-		public virtual void CreateMarker( Pawn pawn, float radius = 3f, bool transparentEdges = true, float opacity = 1f, float edgeOpacity = .5f )
+		public virtual void CreateMarker( Pawn pawn, bool transparentEdges = true, float edgeOpacity = .5f )
 		{
+            float radius = GetRadius( pawn );
+
 			// check for valid radius
 			if( radius < 1f )
 			{
@@ -42,14 +38,14 @@ namespace CommunityCoreLibrary.MiniMap
 			int opaqueCount = transparentEdges && radius >= 2f ? GenRadial.NumCellsInRadius( radius - 1f ) : count;
 
 			// get colors
-			var opaqueColor = GetColor( pawn, opacity );
-			var transparentColor = GetColor( pawn, edgeOpacity );
+			var opaqueColor = GetColor( pawn );
+            var transparentColor = new Color( opaqueColor.r, opaqueColor.g, opaqueColor.b, opaqueColor.a * edgeOpacity );
 
 			// get all cells in a circle around the pawn
 			var cells = GenRadial.RadialCellsAround( pawn.Position, radius, true ).ToArray();
 			for( int i = 0; i < count; i++ )
 			{
-				// paint it green!
+				// paint it black!
 				if( cells[ i ].InBounds() )
 				{
 					texture.SetPixel( cells[ i ].x, cells[ i ].z, transparentEdges && i > opaqueCount ? transparentColor : opaqueColor );
@@ -57,7 +53,9 @@ namespace CommunityCoreLibrary.MiniMap
 			}
 		}
 
-		public abstract Color GetColor( Pawn pawn, float opacity = 1f );
+		public abstract Color GetColor( Pawn pawn );
+
+        public virtual float GetRadius( Pawn pawn ) { return 3f; }
 
 		public abstract IEnumerable<Pawn> GetPawns();
 
@@ -72,7 +70,7 @@ namespace CommunityCoreLibrary.MiniMap
 			// create a marker for each pawn
 			foreach( var pawn in pawns )
 			{
-				CreateMarker( pawn, radius );
+				CreateMarker( pawn );
 			}
 		}
 

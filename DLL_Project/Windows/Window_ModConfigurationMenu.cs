@@ -56,7 +56,7 @@ namespace CommunityCoreLibrary
 
         private void cTor_Common()
         {
-            layer = WindowLayer.Super;
+            layer = WindowLayer.Dialog;
             soundAppear = null;
             soundClose = null;
             doCloseButton = false;
