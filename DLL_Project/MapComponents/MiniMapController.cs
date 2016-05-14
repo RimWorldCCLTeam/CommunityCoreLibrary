@@ -11,16 +11,14 @@ using Verse;
 namespace CommunityCoreLibrary.MiniMap
 {
 
-    // TODO:  Move all validation and inialization to a proper sub-controller
-
     public class MiniMapController : MapComponent
     {
+
         #region Fields
+        public static bool              hidden = true;
 
         public static bool              dirty = true;
-        public static bool              hidden = false;
         public static bool              initialized = false;
-        public static List<MiniMap>     miniMaps = new List<MiniMap>();
         public static Vector2           windowSize = new Vector2( 250f, 250f );
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
 
@@ -28,23 +26,85 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region Properties
 
+        private Window_MiniMap          GetWindow
+        {
+            get
+            {
+                return Find.WindowStack.WindowOfType<Window_MiniMap>();
+            }
+        }
+
         #endregion Properties
 
         #region Base Overrides
 
-        public override void MapComponentOnGUI()
+        public override void            MapComponentOnGUI()
         {
-            // actual drawing logic is handled in the window's DoWindowContent();
-            AddWindowIfNecessary();
+            // No minimap
+            if( hidden )
+            {
+                // Close the window if needed
+                if( GetWindow != null )
+                {
+                    CloseWindow();
+                }
+                return;
+            }
 
-            // set some global vars
-            if ( !initialized )
+            // Initialize the map component
+            if( !initialized )
+            {
                 Initialize();
+            }
 
-            // (re-)sort overlays
-            if ( dirty )
-                SortOverlays();
+            // Make sure the window is open
+            if( GetWindow == null )
+            {
+                if( !OpenWindow() )
+                {
+                    return;
+                }
+            }
 
+            // Update the window
+            UpdateWindow();
+
+            // (Re-)sort minimaps
+            if( dirty )
+            {
+                SortMiniMaps();
+            }
+
+            // Update the minimaps
+            UpdateMiniMaps();
+        }
+
+        #endregion
+
+        #region Initialization
+
+        private void Initialize()
+        {
+            // Sort minimaps in drawOrder
+            SortMiniMaps();
+
+            // ready to go
+            initialized = true;
+
+            // perform initial update for all overlays
+            // do after initialization flag to avoid infinite loop.
+            foreach( var minimap in visibleMiniMaps )
+            {
+                minimap.Update();
+            }
+        }
+
+        #endregion
+
+        #region Update Methods
+
+        private void UpdateMiniMaps()
+        {
             // draw overlays
             foreach ( var minimap in visibleMiniMaps )
             {
@@ -56,28 +116,14 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        #endregion
-
-        #region Methods
-
-        private void AddWindowIfNecessary()
+        private void UpdateWindow()
         {
-            if( hidden )
+            var window = GetWindow;
+            if( window == null )
             {
                 return;
             }
-            var window = Find.WindowStack.WindowOfType<Window_MiniMap>();
-            if( window == null )
-            {
-                Window_MiniMap.windowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x );
-                window = new Window_MiniMap( Window_MiniMap.windowRect );
-                if( window == null )
-                {
-                    CCL_Log.Error( "Unable to create Window_MiniMap", "MiniMap" );
-                    return;
-                }
-                Find.WindowStack.Add( window );
-            }
+
             if( Prefs.DevMode )
             {   // Adjust window position to accomodate the dev icon bar on smaller resolutions
                 var devIconBarStart = Screen.width * 0.6666667f;
@@ -110,98 +156,46 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        private void Initialize()
+        #endregion
+
+        #region Open/Close Window
+
+        private void CloseWindow()
         {
-            var errors = false;
-            var stringBuilder = new StringBuilder();
-            CCL_Log.CaptureBegin( stringBuilder );
-
-            var miniMapDefs = DefDatabase<MiniMapDef>.AllDefsListForReading;
-            foreach( var miniMapDef in miniMapDefs )
+            var window = GetWindow;
+            if( window != null )
             {
-                if(
-                    ( miniMapDef.miniMapClass == null )||
-                    (
-                        ( miniMapDef.miniMapClass != typeof( MiniMap ) )&&
-                        ( !miniMapDef.miniMapClass.IsSubclassOf( typeof( MiniMap ) ) )
-                    )
-                )
-                {
-                    CCL_Log.TraceMod(
-                        miniMapDef,
-                        Verbosity.NonFatalErrors,
-                        string.Format( "Unable to resolve miniMapClass for '{0}' to 'CommunityCoreLibrary.MiniMap'", miniMapDef.defName )
-                    );
-                    errors = true;
-                }
-                else
-                {
-                    // Make sure the minimap def has a list of overlay defs
-                    if( miniMapDef.overlays == null )
-                    {
-                        miniMapDef.overlays = new List<MiniMapOverlayDef>();
-                    }
-                    // Fetch any overlays which may want to add-in
-                    var overlayDefs =
-                        DefDatabase<MiniMapOverlayDef>
-                            .AllDefs
-                            .Where( overlayDef => (
-                                ( overlayDef.miniMapDef != null )&&
-                                ( overlayDef.miniMapDef == miniMapDef )
-                            ) );
-                    if( overlayDefs.Count() > 0 )
-                    {   // Add-in the overlay defs
-                        foreach( var overlayDef in overlayDefs )
-                        {
-                            miniMapDef.overlays.AddUnique( overlayDef );
-                        }
-                    }
-                    var miniMapWorker = (MiniMap) Activator.CreateInstance( miniMapDef.miniMapClass, new System.Object[] { miniMapDef } );
-                    if( miniMapWorker == null )
-                    {
-                        CCL_Log.TraceMod(
-                            miniMapDef,
-                            Verbosity.NonFatalErrors,
-                            string.Format( "Unable to create instance of '{0}' for '{1}'", miniMapDef.miniMapClass.Name, miniMapDef.defName )
-                        );
-                        errors = true;
-                    }
-                    else
-                    {
-                        miniMapWorker.miniMapDef = miniMapDef;
-                        miniMaps.Add( miniMapWorker );
-                    }
-                }
-            }
-
-            // sort them in drawOrder
-            SortOverlays();
-
-            // ready to go
-            initialized = true;
-
-            // perform initial update for all overlays
-            // do after initialization flag to avoid infinite loop.
-            foreach( var minimap in visibleMiniMaps )
-            {
-                minimap.Update();
-            }
-
-            CCL_Log.CaptureEnd( stringBuilder, errors ? "Initialization Errors" : "Initialized" );
-            if( errors )
-            {
-                CCL_Log.Error( stringBuilder.ToString(), "MiniMap" );
-            }
-            else
-            {
-                CCL_Log.Message( stringBuilder.ToString(), "MiniMap" );
+                Find.WindowStack.TryRemove( window );
             }
         }
 
-        private void SortOverlays()
+        private bool OpenWindow()
+        {
+            var window = GetWindow;
+            if( window != null )
+            {
+                return true;
+            }
+
+            Window_MiniMap.windowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x );
+            window = new Window_MiniMap( Window_MiniMap.windowRect );
+            if( window == null )
+            {
+                CCL_Log.Error( "Unable to create Window_MiniMap", "MiniMap" );
+                return false;
+            }
+            Find.WindowStack.Add( window );
+            return true;
+        }
+
+        #endregion
+
+        #region Sort MiniMaps
+
+        private void SortMiniMaps()
         {
             // keep in mind that default sort ordering is FALSE > TRUE (which makes sense given the binary representation).
-            visibleMiniMaps = miniMaps.Where( overlay => !overlay.Hidden )
+            visibleMiniMaps = Controller.Data.MiniMaps.Where( overlay => !overlay.Hidden )
                                .OrderBy( overlay => overlay.miniMapDef.alwaysOnTop )
                                .ThenBy( overlay => overlay.miniMapDef.drawOrder )
                                .ToList();
@@ -209,6 +203,8 @@ namespace CommunityCoreLibrary.MiniMap
             dirty = false;
         }
 
-        #endregion Methods
+        #endregion
+
     }
+
 }

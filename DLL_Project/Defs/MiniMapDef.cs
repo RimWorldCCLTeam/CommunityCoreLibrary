@@ -34,10 +34,6 @@ namespace CommunityCoreLibrary.MiniMap
         // Can link overlays directly here
         public List<MiniMapOverlayDef> overlays         = null;
 
-        // Undecided if this is the best place/way to hook this
-        // Optional link to MCM handler (must be declared in ModHelperDef)
-        public Type                 mcmClass            = null;
-
         #endregion
 
     }

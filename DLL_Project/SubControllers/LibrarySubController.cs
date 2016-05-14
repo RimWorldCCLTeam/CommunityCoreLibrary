@@ -18,31 +18,11 @@ namespace CommunityCoreLibrary.Controller
         private static int coreModIndex = -1;
         private static int cclModIndex = -1;
 
-		public override string Name
-		{
-			get
-			{
-				return "Library Core";
-			}
-		}
+        public override string              Name => "Library Core";
 
 		// Override sequence priorities
-		public override int ValidationPriority
-		{
-			get
-			{
-				return 100;
-			}
-		}
-
-        // Override sequence priorities
-        public override int InitializationPriority
-        {
-            get
-            {
-                return -100;
-            }
-        }
+		public override int                 ValidationPriority      => 100;
+        public override int                 InitializationPriority  => 50;
 
 		// Validate ModHelperDefs, CCL load order, CCL versioning
 		public override bool Validate()

@@ -44,7 +44,7 @@ namespace CommunityCoreLibrary.Controller
         {
             get
             {
-                return -50;
+                return 90;
             }
         }
         public override int                 UpdatePriority

@@ -93,7 +93,7 @@ namespace CommunityCoreLibrary.MiniMap
 		public override void ExtraOnGUI()
 		{
 			// get minimaps we should draw toggles for
-			var minimaps = MiniMapController.miniMaps.Where( overlay => !overlay.miniMapDef.alwaysVisible ).ToArray();
+			var minimaps = Controller.Data.MiniMaps.Where( overlay => !overlay.miniMapDef.alwaysVisible ).ToArray();
 
 			// how many overlays can we draw on a single line?
 			// note that we don't want to draw in the complete outer edge, because that will trigger map movement, which is annoying as fuck.

@@ -38,29 +38,11 @@ namespace CommunityCoreLibrary.Controller
             };
         }
 
-        public override string              Name
-        {
-            get
-            {
-                return "Injection Controller";
-            }
-        }
+        public override string              Name => "Injection Controller";
 
         // Override sequence priorities
-        public override int                 InitializationPriority
-        {
-            get
-            {
-                return 100;
-            }
-        }
-        public override int                 UpdatePriority
-        {
-            get
-            {
-                return 100;
-            }
-        }
+        public override int                 InitializationPriority  => 100;
+        public override int                 UpdatePriority          => 100;
 
         public override bool                Initialize()
         {

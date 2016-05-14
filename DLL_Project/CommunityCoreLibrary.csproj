@@ -177,7 +177,6 @@
     <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
     <Compile Include="SpecialInjectors\DetourInjector.cs" />
     <Compile Include="SubControllers\LibrarySubController.cs" />
-    <Compile Include="Controller\SubController.cs" />
     <Compile Include="SubControllers\ResearchSubController.cs" />
     <Compile Include="SubControllers\InjectionSubController.cs" />
     <Compile Include="SubControllers\HelpSubController.cs" />
@@ -261,9 +260,11 @@
     <Compile Include="MiniMapOverlays\MiniMapOverlay_Wildlife.cs" />
     <Compile Include="Defs\MiniMapOverlayDef.cs" />
     <Compile Include="ModConfigurationMenus\ModConfigurationMenu.cs" />
-    <Compile Include="ModConfigurationMenus\MCM_MiniMap_Pawns.cs" />
+    <Compile Include="ModConfigurationMenus\MCM_MiniMap.cs" />
     <Compile Include="Classes\MCMHost.cs" />
     <Compile Include="Interfaces\IConfigurable.cs" />
+    <Compile Include="SubControllers\MiniMapSubController.cs" />
+    <Compile Include="SubControllers\SubController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -278,6 +279,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="PostBuild.bat" />
+    <None Include="SubControllers\SubControllerOrderingReference.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes\Static\" />

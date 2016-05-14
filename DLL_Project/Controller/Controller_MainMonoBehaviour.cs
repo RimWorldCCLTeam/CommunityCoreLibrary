@@ -72,6 +72,7 @@ namespace CommunityCoreLibrary.Controller
                 new Controller.LibrarySubController(),
                 new Controller.ResearchSubController(),
                 new Controller.InjectionSubController(),
+                new Controller.MiniMapSubController(),
                 new Controller.HelpSubController()
             };
 

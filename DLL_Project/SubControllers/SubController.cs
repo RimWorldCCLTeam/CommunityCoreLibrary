@@ -57,48 +57,16 @@ namespace CommunityCoreLibrary.Controller
         }
 
         // Get sequence priorities
-        public virtual int                  ValidationPriority
-        {
-            get
-            {
-                // Default class property for sub-classes which don't need to do this
-                return DontProcessThisPhase;
-            }
-        }
-        public virtual int                  InitializationPriority
-        {
-            get
-            {
-                // Default class property for sub-classes which don't need to do this
-                return DontProcessThisPhase;
-            }
-        }
-        public virtual int                  UpdatePriority
-        {
-            get
-            {
-                // Default class property for sub-classes which don't need to do this
-                return DontProcessThisPhase;
-            }
-        }
+        // Default class property for sub-classes which don't need to do this
+        public virtual int                  ValidationPriority      => DontProcessThisPhase;
+        public virtual int                  InitializationPriority  => DontProcessThisPhase;
+        public virtual int                  UpdatePriority          => DontProcessThisPhase;
 
-        public virtual int                  UpdateTicks
-        {
-            get
-            {
-                // Default update rate is every 30 ticks
-                return 30;
-            }
-        }
+        // Default update rate is every 30 ticks
+        public virtual int                  UpdateTicks             => 30;
 
-        public virtual bool                 ReinitializeOnGameLoad
-        {
-            get
-            {
-                // If the controller Initialize() method should be called on game load return true
-                return false;
-            }
-        }
+        // If the controller Initialize() method should be called on game load return true
+        public virtual bool                 ReinitializeOnGameLoad  => false;
 
         // Entry with controller state Uninitialized
         // Exit with ValidationError (false) on error

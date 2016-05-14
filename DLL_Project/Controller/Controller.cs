@@ -32,6 +32,8 @@ namespace CommunityCoreLibrary.Controller
 
         private static List<MCMHost>        mcmHosts;
 
+        private static List<MiniMap.MiniMap> miniMaps;
+
         internal static SubController[]     SubControllers;
 
         // Some settings or windows require a game restart
@@ -145,6 +147,18 @@ namespace CommunityCoreLibrary.Controller
                     mcmHosts = new List<MCMHost>();
                 }
                 return mcmHosts;
+            }
+        }
+
+        public static List<MiniMap.MiniMap> MiniMaps
+        {
+            get
+            {
+                if( miniMaps == null )
+                {
+                    miniMaps = new List<MiniMap.MiniMap>();
+                }
+                return miniMaps;
             }
         }
 

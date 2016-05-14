@@ -23,8 +23,6 @@ namespace CommunityCoreLibrary.MiniMap
 
         private Texture2D               _iconTexture;
 
-        public ModConfigurationMenu     mcmWorker = null;
-
         #endregion Instance Data
 
         #region Constructors
@@ -51,8 +49,7 @@ namespace CommunityCoreLibrary.MiniMap
                     )
                 )
                 {
-                    CCL_Log.TraceMod(
-                        miniMapDef,
+                    CCL_Log.Trace(
                         Verbosity.NonFatalErrors,
                         string.Format( "Unable to resolve overlayClass for '{0}' at index {1} to 'CommunityCoreLibrary.MiniMapOverlay'", miniMapDef.defName, index )
                     );
@@ -63,8 +60,7 @@ namespace CommunityCoreLibrary.MiniMap
                     var overlayWorker = (MiniMapOverlay)Activator.CreateInstance( overlayData.overlayClass, new System.Object[] { this, overlayData } );
                     if( overlayWorker == null )
                     {
-                        CCL_Log.TraceMod(
-                            miniMapDef,
+                        CCL_Log.Trace(
                             Verbosity.NonFatalErrors,
                             string.Format( "Unable to create instance of '{0}' for '{1}'", overlayData.overlayClass.Name, miniMapDef.defName )
                         );
@@ -73,11 +69,16 @@ namespace CommunityCoreLibrary.MiniMap
                     else
                     {
                         overlayWorkers.Add( overlayWorker );
+                        CCL_Log.Trace(
+                            Verbosity.Injections,
+                            string.Format( "Added overlay '{0}' to '{1}' at draw position {2}", overlayData.overlayClass.Name, this.miniMapDef.defName, ( this.miniMapDef.drawOrder + overlayData.drawOffset ) )
+                        );
                     }
                 }
             }
 
             // Link MCM Class to mcmWorker
+            /*
             if( miniMapDef.mcmClass != null )
             {
                 if( !miniMapDef.mcmClass.IsSubclassOf( typeof( ModConfigurationMenu ) ) )
@@ -100,13 +101,8 @@ namespace CommunityCoreLibrary.MiniMap
                     }
                 }
             }
+            */
 
-            // log a bit
-            CCL_Log.TraceMod(
-                this.miniMapDef,
-                Verbosity.Injections,
-                string.Format( "Added overlay '{0}' at draw position {1}", this.GetType().FullName, this.miniMapDef.drawOrder )
-            );
         }
 
         #endregion Constructors
@@ -212,7 +208,10 @@ namespace CommunityCoreLibrary.MiniMap
         public virtual List<FloatMenuOption>  GetFloatMenuOptions()
         {
             List<FloatMenuOption> options = overlayWorkers.SelectMany( worker => worker.GetFloatMenuOptions() ).ToList();
-            
+
+            /*
+             * This is being worked on
+             * 
             if( this.mcmWorker != null )
             {
                 options.Add( new FloatMenuOption(
@@ -223,6 +222,7 @@ namespace CommunityCoreLibrary.MiniMap
                     return;
                 } ) );
             }
+            */
             return options;
         }
 
