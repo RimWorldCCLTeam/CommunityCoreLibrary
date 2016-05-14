@@ -20,7 +20,7 @@ namespace CommunityCoreLibrary
         {
             var listing = new Listing_Standard( rect );
             {
-                listing.OverrideColumnWidth = rect.width;
+                listing.OverrideColumnWidth = rect.width - 4f;
 
                 #region Main Description
                 var descLabel = "MiniMap.MCMDescription".Translate();
@@ -38,71 +38,59 @@ namespace CommunityCoreLibrary
 
                 foreach( var minimap in Controller.Data.MiniMaps )
                 {
-                    bool drewMinimapHeader = false;
-                    var iMinimap = minimap as IConfigurable;
-
-                    #region Handle MiniMap IConfigurable
-                    if( iMinimap != null )
+                    if( minimap.IsOrHasIConfigurable )
                     {
+                        var iMinimap = minimap as IConfigurable;
+
                         #region Minimap Header
                         MinimapHeader( listing, minimap );
-                        drewMinimapHeader = true;
                         #endregion
 
-                        #region Minimap IConfigurable
-                        var iMinimapRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
-                        GUI.BeginGroup( iMinimapRect );
-                        var iMinimapHeight = iMinimap.DrawMCMRegion( iMinimapRect.AtZero() );
-                        GUI.EndGroup();
-                        listing.DoGap( iMinimapHeight + 6f );
-                        #endregion
-                    }
-                    #endregion
-
-                    #region Handle all MiniMap Overlays
-                    foreach( var overlay in minimap.overlayWorkers )
-                    {
-                        var iOverlay = overlay as IConfigurable;
-
-                        #region Handle Overlay IConfigurable
-                        if( iOverlay != null )
+                        #region Handle MiniMap IConfigurable
+                        if( iMinimap != null )
                         {
-
-                            #region Draw MiniMap Header if needed
-                            if( !drewMinimapHeader )
-                            {
-                                #region Minimap Header
-                                MinimapHeader( listing, minimap );
-                                drewMinimapHeader = true;
-                                #endregion
-                            }
-                            #endregion
-
-                            #region Overlay Header
-                            OverlayHeader( listing, overlay );
-                            #endregion
-
-                            #region Overlay IConfigurable
-                            var iOverlayRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
-                            GUI.BeginGroup( iOverlayRect );
-                            var iOverlayHeight = iOverlay.DrawMCMRegion( iOverlayRect.AtZero() );
+                            #region Minimap IConfigurable
+                            var iMinimapRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
+                            GUI.BeginGroup( iMinimapRect );
+                            var iMinimapHeight = iMinimap.DrawMCMRegion( iMinimapRect.AtZero() );
                             GUI.EndGroup();
-                            listing.DoGap( iOverlayHeight + 6f );
-                            listing.Undent();
+                            listing.DoGap( iMinimapHeight + 6f );
                             #endregion
-
                         }
                         #endregion
-                    }
-                    #endregion
 
-                    #region Final Undentation
-                    if( drewMinimapHeader )
-                    {
+                        #region Handle all MiniMap Overlays
+                        foreach( var overlay in minimap.overlayWorkers )
+                        {
+                            var iOverlay = overlay as IConfigurable;
+
+                            #region Handle Overlay IConfigurable
+                            if( iOverlay != null )
+                            {
+
+                                #region Overlay Header
+                                OverlayHeader( listing, overlay );
+                                #endregion
+
+                                #region Overlay IConfigurable
+                                var iOverlayRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
+                                GUI.BeginGroup( iOverlayRect );
+                                var iOverlayHeight = iOverlay.DrawMCMRegion( iOverlayRect.AtZero() );
+                                GUI.EndGroup();
+                                listing.DoGap( iOverlayHeight + 6f );
+                                listing.Undent();
+                                #endregion
+
+                            }
+                            #endregion
+                        }
+                        #endregion
+
+                        #region Final Undentation
                         listing.DoGap();
                         listing.Undent();
+                        #endregion
                     }
-                    #endregion
                 }
 
                 #endregion
@@ -135,6 +123,55 @@ namespace CommunityCoreLibrary
         /// </summary>
         public override void                ExposeData()
         {
+
+            Scribe_Values.LookValue( ref MiniMap.MiniMapController.visible, "visible" );
+
+            #region Handle all MiniMaps and Overlays
+
+            foreach( var minimap in Controller.Data.MiniMaps )
+            {
+                if( minimap.IsOrHasIConfigurable )
+                {
+                    #region Minimap Header
+                    Scribe.EnterNode( minimap.miniMapDef.defName );
+                    #endregion
+
+                    #region Handle MiniMap IConfigurable
+                    var iMinimap = minimap as IConfigurable;
+                    if( iMinimap != null )
+                    {
+                        iMinimap.ExposeData();
+                    }
+                    #endregion
+
+                    #region Handle all MiniMap Overlays
+                    foreach( var overlay in minimap.overlayWorkers )
+                    {
+                        #region Overlay Header
+                        Scribe.EnterNode( overlay.overlayDef.defName );
+                        #endregion
+
+                        #region Handle Overlay IConfigurable
+                        var iOverlay = overlay as IConfigurable;
+                        if( iOverlay != null )
+                        {
+                            iOverlay.ExposeData();
+                        }
+                        #endregion
+
+                        #region Finalize Overlay
+                        Scribe.ExitNode();
+                        #endregion
+                    }
+                    #endregion
+
+                    #region Finalize Minimap
+                    Scribe.ExitNode();
+                    #endregion
+                }
+            }
+
+            #endregion
 
         }
 

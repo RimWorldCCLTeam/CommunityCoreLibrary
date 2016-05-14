@@ -113,10 +113,29 @@ namespace CommunityCoreLibrary.MiniMap
         {
             get
             {
-                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.def.drawOffset ).ToList();
+                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.overlayDef.drawOffset ).ToList();
             }
         }
-        
+
+        public bool                     IsOrHasIConfigurable
+        {
+            get
+            {
+                if( this is IConfigurable )
+                {
+                    return true;
+                }
+                foreach( var overlay in overlayWorkers )
+                {
+                    if( overlay is IConfigurable )
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         public virtual bool Hidden
         {
             get

@@ -20,7 +20,7 @@ namespace CommunityCoreLibrary.MiniMap
         private Texture2D           _texture;
         private MiniMap             minimap;
 
-        public MiniMapOverlayDef    def;
+        public MiniMapOverlayDef    overlayDef;
 
         #endregion Instance Data
 
@@ -70,11 +70,11 @@ namespace CommunityCoreLibrary.MiniMap
         {
             get
             {
-                if( def.labelKey.NullOrEmpty() )
+                if( overlayDef.labelKey.NullOrEmpty() )
                 {
-                    return def.label;
+                    return overlayDef.label;
                 }
-                return def.labelKey.Translate();
+                return overlayDef.labelKey.Translate();
             }
         }
 
@@ -100,7 +100,7 @@ namespace CommunityCoreLibrary.MiniMap
         public                      MiniMapOverlay( MiniMap minimap, MiniMapOverlayDef overlayDef )
         {
             this.minimap = minimap;
-            this.def = overlayDef;
+            this.overlayDef = overlayDef;
             _hidden = overlayDef.hiddenByDefault;
         }
 

@@ -63,7 +63,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         public void ExposeData()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public override void Update()
