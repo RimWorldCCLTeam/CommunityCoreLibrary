@@ -267,6 +267,8 @@
     <Compile Include="Interfaces\IConfigurable.cs" />
     <Compile Include="SubControllers\MiniMapSubController.cs" />
     <Compile Include="SubControllers\SubController.cs" />
+    <Compile Include="Extensions\Listing_Extensions.cs" />
+    <Compile Include="Extensions\Listing_Standard_Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

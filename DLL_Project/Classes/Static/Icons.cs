@@ -17,9 +17,6 @@ namespace CommunityCoreLibrary
         public static readonly Texture2D    HelpMenuArrowDown   = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowDown" );
         public static readonly Texture2D    HelpMenuArrowRight  = ContentFinder<Texture2D>.Get( "UI/HelpMenu/ArrowRight" );
 
-        // Research tab
-        public static readonly Texture2D    SortByName          = ContentFinder<Texture2D>.Get( "UI/ResearchTab/A" );
-        public static readonly Texture2D    SortByCost          = ContentFinder<Texture2D>.Get( "UI/ResearchTab/Research" );
     }
 
 }

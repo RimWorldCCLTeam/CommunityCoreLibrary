@@ -15,11 +15,11 @@ namespace CommunityCoreLibrary.MiniMap
         
         #region Instance Data
 
-        // TODO:  Make overlays individually selectable, currently fixed at def default
         private bool                _hidden = false;
 
         private Texture2D           _texture;
         private MiniMap             minimap;
+
         public MiniMapOverlayDef    def;
 
         #endregion Instance Data

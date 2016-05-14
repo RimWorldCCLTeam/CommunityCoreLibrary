@@ -5,5 +5,7 @@
     <MiniMap.Toggle>Click to toggle.</MiniMap.Toggle>
     <MiniMap.ShowMCMOption>Open menu for {0}</MiniMap.ShowMCMOption>
     <MiniMap.ToggleX>Toggle {0}</MiniMap.ToggleX>
+    <MiniMap.MCMDescription>TODO:  Write me!</MiniMap.MCMDescription>
+    <MiniMap.MCMToggleMain>Enable minimaps</MiniMap.MCMToggleMain>
 
 </LanguageData>

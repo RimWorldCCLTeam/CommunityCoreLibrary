@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary.MiniMap
     {
 
         #region Fields
-        public static bool              hidden = true;
+        public static bool              visible = false;
 
         public static bool              dirty = true;
         public static bool              initialized = false;
@@ -41,7 +41,7 @@ namespace CommunityCoreLibrary.MiniMap
         public override void            MapComponentOnGUI()
         {
             // No minimap
-            if( hidden )
+            if( !visible )
             {
                 // Close the window if needed
                 if( GetWindow != null )

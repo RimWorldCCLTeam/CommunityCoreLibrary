@@ -32,6 +32,7 @@ namespace CommunityCoreLibrary.MiniMap
 
 		public Window_MiniMap()
 		{
+            layer = WindowLayer.GameUI;
 			absorbInputAroundWindow = false;
 			closeOnClickedOutside = false;
 			closeOnEscapeKey = false;
