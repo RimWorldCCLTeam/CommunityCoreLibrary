@@ -76,7 +76,7 @@ namespace CommunityCoreLibrary.MiniMap
 
 			if( transmitter.transNet == null )
 			{   // not connected
-				color = Color.gray;
+				color = Color.red;
 			}
 			else
 			{   // connected
@@ -84,7 +84,7 @@ namespace CommunityCoreLibrary.MiniMap
 				{   // excess power
 					color = GenUI.MouseoverColor;
 				}
-				else if( transmitter.transNet.CurrentStoredEnergy() > 0f )
+				else if( transmitter.transNet.CurrentStoredEnergy() > 1f )
 				{   // stored power
 					color = Color.green;
 				}
@@ -132,7 +132,19 @@ namespace CommunityCoreLibrary.MiniMap
 				throw new ArgumentNullException( "battery" );
 			}
 
-			var color = battery.StoredEnergy > 1f ? GenUI.MouseoverColor : Color.gray;
+            var color = Color.clear;
+
+            // blue if gaining energy
+            if ( battery.PowerNet?.CurrentEnergyGainRate() > 1f )
+                color = GenUI.MouseoverColor;
+
+            // green if draining but has power
+            else if ( battery.StoredEnergy > 1f )
+                color = Color.green;
+
+            // red if out of power
+            else
+                color = Color.red;
 
             MiniMap_Utilities.DrawThing( texture, battery.parent, color );
 		}

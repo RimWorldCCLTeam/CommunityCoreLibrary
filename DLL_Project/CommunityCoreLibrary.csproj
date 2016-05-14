@@ -57,6 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\InputField.cs" />
+    <Compile Include="Classes\Static\CCL_Widgets.cs" />
     <Compile Include="Detours\MentalStateWorker_Binging.cs" />
     <Compile Include="Extensions\BiomeDef_Extensions.cs" />
     <Compile Include="Extensions\Texture2D_Extensions.cs" />
@@ -281,10 +283,5 @@
     <None Include="PostBuild.bat" />
     <None Include="SubControllers\SubControllerOrderingReference.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\Static\" />
-    <Folder Include="Classes\Abstract\" />
-    <Folder Include="MiniMapOverlays\" />
-    <Folder Include="ModConfigurationMenus\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

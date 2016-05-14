@@ -19,11 +19,11 @@ namespace CommunityCoreLibrary.MiniMap
 		{
 		}
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		public override Color GetColor( Pawn pawn, float opacity = 1f )
+        public override Color GetColor( Pawn pawn, float opacity = 1f )
 		{
 			var color = Color.green;
 			color.a = opacity;
