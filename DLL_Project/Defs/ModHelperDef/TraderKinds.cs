@@ -21,13 +21,7 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "Stock Generators injected";
-            }
-        }
+        public string                       InjectString => "Stock Generators injected";
 
         public bool                         IsValid( ModHelperDef def, ref string errors )
         {
@@ -40,28 +34,36 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.TraderKinds.Count; ++index )
             {
-                var traderKind = def.TraderKinds[ index ];
-                if( traderKind.targetDef.NullOrEmpty() )
+                var traderKindSet = def.TraderKinds[ index ];
+                bool processThis = true;
+                if( !traderKindSet.requiredMod.NullOrEmpty() )
                 {
-                    errors += string.Format( "\n\ttargetDef in TraderKinds {0} is null", index );
-                    isValid = false;
+                    processThis = Find_Extensions.ModByName( traderKindSet.requiredMod ) != null;
                 }
-                else
+                if( processThis )
                 {
-                    var target = traderKind.targetDef;
-                    var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( target, false );
-                    if( traderKindDef == null )
+                    if( traderKindSet.targetDef.NullOrEmpty() )
                     {
-                        errors += string.Format( "Unable to resolve targetDef '{0}' in TraderKinds", target );
+                        errors += string.Format( "\n\ttargetDef in TraderKinds {0} is null", index );
                         isValid = false;
                     }
-                }
-                for( int index2 = 0; index2 < traderKind.stockGenerators.Count; ++index2 )
-                {
-                    if( traderKind.stockGenerators[ index2 ] == null )
+                    else
                     {
-                        errors += string.Format( "\n\tstockGenerator {0} in TraderKinds {1} is null", index2, index );
-                        isValid = false;
+                        var target = traderKindSet.targetDef;
+                        var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( target, false );
+                        if( traderKindDef == null )
+                        {
+                            errors += string.Format( "Unable to resolve targetDef '{0}' in TraderKinds", target );
+                            isValid = false;
+                        }
+                    }
+                    for( int index2 = 0; index2 < traderKindSet.stockGenerators.Count; ++index2 )
+                    {
+                        if( traderKindSet.stockGenerators[ index2 ] == null )
+                        {
+                            errors += string.Format( "\n\tstockGenerator {0} in TraderKinds {1} is null", index2, index );
+                            isValid = false;
+                        }
                     }
                 }
             }
@@ -93,20 +95,28 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var traderKind in def.TraderKinds )
+            foreach( var traderKindSet in def.TraderKinds )
             {
-                var targetDef = traderKind.targetDef;
-                foreach( var stockGenerator in traderKind.stockGenerators )
+                bool processThis = true;
+                if( !traderKindSet.requiredMod.NullOrEmpty() )
                 {
-                    var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( targetDef, false );
-                    traderKindDef.stockGenerators.Add( stockGenerator );
-                    stockGenerator.PostLoad();
-                    stockGenerator.ResolveReferences(traderKindDef);
-                    CCL_Log.TraceMod(
-                        def,
-                        Verbosity.Injections,
-                        string.Format( "Injecting {0} into {1}", stockGenerator.GetType().Name, traderKindDef.label ),
-                        "TraderKinds" );
+                    processThis = Find_Extensions.ModByName( traderKindSet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    var targetDef = traderKindSet.targetDef;
+                    foreach( var stockGenerator in traderKindSet.stockGenerators )
+                    {
+                        var traderKindDef = DefDatabase<TraderKindDef>.GetNamed( targetDef, false );
+                        traderKindDef.stockGenerators.Add( stockGenerator );
+                        stockGenerator.PostLoad();
+                        stockGenerator.ResolveReferences(traderKindDef);
+                        CCL_Log.TraceMod(
+                            def,
+                            Verbosity.Injections,
+                            string.Format( "Injecting {0} into {1}", stockGenerator.GetType().Name, traderKindDef.label ),
+                            "TraderKinds" );
+                    }
                 }
             }
 

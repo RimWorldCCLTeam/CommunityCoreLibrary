@@ -68,13 +68,7 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "Facilities injected";
-            }
-        }
+        public string                       InjectString => "Facilities injected";
 
         public bool                         IsValid( ModHelperDef def, ref string errors )
         {
@@ -88,39 +82,47 @@ namespace CommunityCoreLibrary
             for( int index = 0; index < def.Facilities.Count; ++index )
             {
                 var facilitySet = def.Facilities[ index ];
-                if( facilitySet.facility.NullOrEmpty() )
+                bool processThis = true;
+                if( !facilitySet.requiredMod.NullOrEmpty() )
                 {
-                    errors += string.Format( "\n\tfacility in Facilities {0} is null", index );
-                    isValid = false;
+                    processThis = Find_Extensions.ModByName( facilitySet.requiredMod ) != null;
                 }
-                else
+                if( processThis )
                 {
-                    var facilityDef = DefDatabase<ThingDef>.GetNamed( facilitySet.facility, false );
-                    if( facilityDef == null )
+                    if( facilitySet.facility.NullOrEmpty() )
                     {
-                        errors += string.Format( "Unable to resolve facility '{0}' in Facilities", facilitySet.facility );
+                        errors += string.Format( "\n\tfacility in Facilities {0} is null", index );
                         isValid = false;
                     }
-                    else if( facilityDef.GetCompProperties<CompProperties_Facility>() == null )
+                    else
                     {
-                        // Check comps
-                        errors += string.Format( "'{0}' is missing CompFacility for facility injection", facilitySet.facility );
-                        isValid = false;
+                        var facilityDef = DefDatabase<ThingDef>.GetNamed( facilitySet.facility, false );
+                        if( facilityDef == null )
+                        {
+                            errors += string.Format( "Unable to resolve facility '{0}' in Facilities", facilitySet.facility );
+                            isValid = false;
+                        }
+                        else if( facilityDef.GetCompProperties<CompProperties_Facility>() == null )
+                        {
+                            // Check comps
+                            errors += string.Format( "'{0}' is missing CompFacility for facility injection", facilitySet.facility );
+                            isValid = false;
+                        }
                     }
-                }
-                for( int index2 = 0; index2 < facilitySet.targetDefs.Count; ++index2 )
-                {
-                    var target = facilitySet.targetDefs[ index2 ];
-                    var targetDef = DefDatabase<ThingDef>.GetNamed( target, false );
-                    if( targetDef == null )
+                    for( int index2 = 0; index2 < facilitySet.targetDefs.Count; ++index2 )
                     {
-                        errors += string.Format( "Unable to resolve targetDef '{0}' in Facilities", target );
-                        isValid = false;
-                    }
-                    else if( targetDef.GetCompProperties<CompProperties_AffectedByFacilities>() == null )
-                    {
-                        errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", target );
-                        isValid = false;
+                        var target = facilitySet.targetDefs[ index2 ];
+                        var targetDef = DefDatabase<ThingDef>.GetNamed( target, false );
+                        if( targetDef == null )
+                        {
+                            errors += string.Format( "Unable to resolve targetDef '{0}' in Facilities", target );
+                            isValid = false;
+                        }
+                        else if( targetDef.GetCompProperties<CompProperties_AffectedByFacilities>() == null )
+                        {
+                            errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", target );
+                            isValid = false;
+                        }
                     }
                 }
             }
@@ -136,17 +138,25 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var facility in def.Facilities )
+            foreach( var facilitySet in def.Facilities )
             {
-                var facilityDef = DefDatabase<ThingDef>.GetNamed( facility.facility );
-
-                foreach( var target in facility.targetDefs )
+                bool processThis = true;
+                if( !facilitySet.requiredMod.NullOrEmpty() )
                 {
-                    var targetDef = DefDatabase<ThingDef>.GetNamed( target );
-                    var targetComp = targetDef.GetCompProperties<CompProperties_AffectedByFacilities>();
-                    if( !targetComp.linkableFacilities.Contains( facilityDef ) )
+                    processThis = Find_Extensions.ModByName( facilitySet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    var facilityDef = DefDatabase<ThingDef>.GetNamed( facilitySet.facility );
+
+                    foreach( var target in facilitySet.targetDefs )
                     {
-                        return false;
+                        var targetDef = DefDatabase<ThingDef>.GetNamed( target );
+                        var targetComp = targetDef.GetCompProperties<CompProperties_AffectedByFacilities>();
+                        if( !targetComp.linkableFacilities.Contains( facilityDef ) )
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -161,13 +171,21 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var facility in def.Facilities )
+            foreach( var facilitySet in def.Facilities )
             {
-                var facilityDef = DefDatabase<ThingDef>.GetNamed( facility.facility );
-                foreach( var target in facility.targetDefs )
+                bool processThis = true;
+                if( !facilitySet.requiredMod.NullOrEmpty() )
                 {
-                    var targetDef = DefDatabase<ThingDef>.GetNamed( target );
-                    LinkFacility( targetDef, facilityDef );
+                    processThis = Find_Extensions.ModByName( facilitySet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    var facilityDef = DefDatabase<ThingDef>.GetNamed( facilitySet.facility );
+                    foreach( var target in facilitySet.targetDefs )
+                    {
+                        var targetDef = DefDatabase<ThingDef>.GetNamed( target );
+                        LinkFacility( targetDef, facilityDef );
+                    }
                 }
             }
 

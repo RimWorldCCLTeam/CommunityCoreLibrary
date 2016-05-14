@@ -30,7 +30,10 @@
 
         <ThingComps>                    [optional] List of ThingComps to inject
             <li>
-                <compProps>             [required] Property of ThingComp to inject
+                <requiredMod>string</requiredMod>
+                                        [optional] Name of required mod to perform this injection
+
+                                        <compProps>             [required] Property of ThingComp to inject
 
                     <compClass>ThingComp</compClass>
                     ...
@@ -45,6 +48,9 @@
 
         <tickerSwitcher>                [optional] List of ticker types to override on ThingDefs
             <li>
+                <requiredMod>string</requiredMod>
+                                        [optional] Name of required mod to perform this injection
+                                        
                 <tickerType>TickerType</tickerType>
                                         [required] New ticker type to override on ThingDefs
                 <targetDefs>            [required] List of ThingDefs to override tickerType
@@ -55,6 +61,9 @@
 
         <Facilities>                    [optional] List of facilities (buildings with CompFacility) to inject into buildings with CompAffectedByFacilities
             <li>
+                <requiredMod>string</requiredMod>
+                                        [optional] Name of required mod to perform this injection
+                                        
                 <facility>ThingDef</facility>
                                         [required] Facility to inject into buildings
                 <targetDefs>
@@ -65,6 +74,9 @@
 
         <TraderKinds>                   [optional] List of StockGenerators to inject into TraderKindDefs
             <li>
+                <requiredMod>string</requiredMod>
+                                        [optional] Name of required mod to perform this injection
+                                        
                 <targetDef>TraderKindDef</targetDef>
                                         [required] Trader to inject StockGenerator into
                 <stockGenerators>
@@ -77,6 +89,9 @@
         <ThingDefAvailability>          [optional] List of override values to set on ThingDefs (primarily used to enable or disable ThingDefs)
 
             <li>
+                <requiredMod>string</requiredMod>
+                                        [optional] Name of required mod to perform this injection
+                                        
                 <menuHidden>bool</menuHidden>
                                         [optional] If set, will update ThingDef.menuHidden with the new value
                                         

@@ -98,6 +98,20 @@ namespace CommunityCoreLibrary
             return list.ConvertAll( def => ( (T) def ) );
         }
 
+        // Search for mod by name
+        public static LoadedMod             ModByName( string name )
+        {
+            var allMods = Controller.Data.Mods;
+            foreach( var mod in allMods )
+            {
+                if( mod.name == name )
+                {
+                    return mod;
+                }
+            }
+            return null;
+        }
+
         // Search for mod by def
         public static LoadedMod             ModByDef<T>( T def, int InitialIndex = -1 ) where T : Def, new()
         {

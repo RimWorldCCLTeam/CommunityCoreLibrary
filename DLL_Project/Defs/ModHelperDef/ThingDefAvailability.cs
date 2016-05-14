@@ -20,13 +20,7 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "ThingDefs availability changed";
-            }
-        }
+        public string                       InjectString => "ThingDefs availability changed";
 
         public bool                         IsValid( ModHelperDef def, ref string errors )
         {
@@ -39,59 +33,67 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.ThingDefAvailability.Count; ++index )
             {
-                var availability = def.ThingDefAvailability[ index ];
-                if( !availability.menuHidden.NullOrEmpty() )
+                var availabilitySet = def.ThingDefAvailability[ index ];
+                bool processThis = true;
+                if( !availabilitySet.requiredMod.NullOrEmpty() )
                 {
-                    var menuHidden = availability.menuHidden.ToLower();
-                    if(
-                        ( menuHidden != "true" )&&
-                        ( menuHidden != "false" )
-                    )
+                    processThis = Find_Extensions.ModByName( availabilitySet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    if( !availabilitySet.menuHidden.NullOrEmpty() )
                     {
-                        isValid = false;
-                        errors += string.Format( "\n\tmenuHidden '{0}' is invalid in ThingDefAvailability", availability.menuHidden );
-                    }
-                    if( !availability.designationCategory.NullOrEmpty() )
-                    {
-                        if( availability.designationCategory != "None" )
+                        var menuHidden = availabilitySet.menuHidden.ToLower();
+                        if(
+                            ( menuHidden != "true" )&&
+                            ( menuHidden != "false" )
+                        )
                         {
-                            var category = DefDatabase<DesignationCategoryDef>.GetNamed( availability.designationCategory, true );
-                            if( category == null )
-                            {
-                                isValid = false;
-                                errors += string.Format( "\n\tDesignationCategory '{0}' is invalid in ThingDefAvailability", availability.designationCategory );
-                            }
+                            isValid = false;
+                            errors += string.Format( "\n\tmenuHidden '{0}' is invalid in ThingDefAvailability", availabilitySet.menuHidden );
                         }
-                    }
-                    if( availability.researchPrerequisites != null )
-                    {
-                        if( availability.researchPrerequisites.Count > 0 )
+                        if( !availabilitySet.designationCategory.NullOrEmpty() )
                         {
-                            for( int index2 = 0; index2 < availability.researchPrerequisites.Count; ++index2 )
+                            if( availabilitySet.designationCategory != "None" )
                             {
-                                var projectDef = DefDatabase<ResearchProjectDef>.GetNamed( availability.researchPrerequisites[ index2 ], true );
-                                if( projectDef == null )
+                                var category = DefDatabase<DesignationCategoryDef>.GetNamed( availabilitySet.designationCategory, true );
+                                if( category == null )
                                 {
                                     isValid = false;
-                                    errors += string.Format( "\n\tresearchPrerequisite '{0}' is invalid in ThingDefAvailability", availability.researchPrerequisites[ index2 ] );
+                                    errors += string.Format( "\n\tDesignationCategory '{0}' is invalid in ThingDefAvailability", availabilitySet.designationCategory );
                                 }
                             }
                         }
-                    }
-                    if( availability.targetDefs.NullOrEmpty() )
-                    {
-                        errors += "\n\tNull or no targetDefs in ThingDefAvailability";
-                        isValid = false;
-                    }
-                    else
-                    {
-                        for( int index2 = 0; index2 < availability.targetDefs.Count; ++index2 )
+                        if( availabilitySet.researchPrerequisites != null )
                         {
-                            var targetDef = DefDatabase<ThingDef>.GetNamed( availability.targetDefs[ index2 ], true );
-                            if( targetDef == null )
+                            if( availabilitySet.researchPrerequisites.Count > 0 )
                             {
-                                isValid = false;
-                                errors += string.Format( "\n\ttargetDef '{0}' is invalid in ThingDefAvailability", availability.targetDefs[ index2 ] );
+                                for( int index2 = 0; index2 < availabilitySet.researchPrerequisites.Count; ++index2 )
+                                {
+                                    var projectDef = DefDatabase<ResearchProjectDef>.GetNamed( availabilitySet.researchPrerequisites[ index2 ], true );
+                                    if( projectDef == null )
+                                    {
+                                        isValid = false;
+                                        errors += string.Format( "\n\tresearchPrerequisite '{0}' is invalid in ThingDefAvailability", availabilitySet.researchPrerequisites[ index2 ] );
+                                    }
+                                }
+                            }
+                        }
+                        if( availabilitySet.targetDefs.NullOrEmpty() )
+                        {
+                            errors += "\n\tNull or no targetDefs in ThingDefAvailability";
+                            isValid = false;
+                        }
+                        else
+                        {
+                            for( int index2 = 0; index2 < availabilitySet.targetDefs.Count; ++index2 )
+                            {
+                                var targetDef = DefDatabase<ThingDef>.GetNamed( availabilitySet.targetDefs[ index2 ], true );
+                                if( targetDef == null )
+                                {
+                                    isValid = false;
+                                    errors += string.Format( "\n\ttargetDef '{0}' is invalid in ThingDefAvailability", availabilitySet.targetDefs[ index2 ] );
+                                }
                             }
                         }
                     }
@@ -127,87 +129,95 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.ThingDefAvailability.Count; ++index )
             {
-                var availability = def.ThingDefAvailability[ index ];
+                var availabilitySet = def.ThingDefAvailability[ index ];
 
-                bool setMenuHidden = !availability.menuHidden.NullOrEmpty();
-                bool setDesignation = !availability.designationCategory.NullOrEmpty();
-                bool setResearch = availability.researchPrerequisites != null;
-
-                bool menuHidden = false;
-                DesignationCategoryDef newCategory = null;
-                List<ResearchProjectDef> research = null;
-
-                if( setMenuHidden )                                  
+                bool processThis = true;
+                if( !availabilitySet.requiredMod.NullOrEmpty() )
                 {
-                    menuHidden = availability.menuHidden.ToLower() == "true" ? true : false;
+                    processThis = Find_Extensions.ModByName( availabilitySet.requiredMod ) != null;
                 }
-                if( setDesignation )
+                if( processThis )
                 {
-                    newCategory = availability.designationCategory == "None"
-                                ? null
-                                : DefDatabase<DesignationCategoryDef>.GetNamed( availability.designationCategory );
-                }
-                if(
-                    ( setResearch )&&
-                    ( availability.researchPrerequisites.Count > 0 )
-                )
-                {
-                    research = DefDatabase<ResearchProjectDef>.AllDefs.Where( projectDef => availability.researchPrerequisites.Contains( projectDef.defName ) ).ToList();
-                }
+                    bool setMenuHidden = !availabilitySet.menuHidden.NullOrEmpty();
+                    bool setDesignation = !availabilitySet.designationCategory.NullOrEmpty();
+                    bool setResearch = availabilitySet.researchPrerequisites != null;
 
-                var targetDefs = DefDatabase<ThingDef>.AllDefs.Where( thingDef => availability.targetDefs.Contains( thingDef.defName ) ).ToList();
+                    bool menuHidden = false;
+                    DesignationCategoryDef newCategory = null;
+                    List<ResearchProjectDef> research = null;
 
-                foreach( var target in targetDefs )
-                {
-                    if( setMenuHidden )
+                    if( setMenuHidden )                                  
                     {
-                        target.menuHidden = menuHidden;
+                        menuHidden = availabilitySet.menuHidden.ToLower() == "true" ? true : false;
                     }
                     if( setDesignation )
                     {
-                        DesignationCategoryDef oldCategory = null;
-                        Designator_Build oldDesignator = null;
-                        if( target.designationCategory != availability.designationCategory )
+                        newCategory = availabilitySet.designationCategory == "None"
+                                    ? null
+                                    : DefDatabase<DesignationCategoryDef>.GetNamed( availabilitySet.designationCategory );
+                    }
+                    if(
+                        ( setResearch )&&
+                        ( availabilitySet.researchPrerequisites.Count > 0 )
+                    )
+                    {
+                        research = DefDatabase<ResearchProjectDef>.AllDefs.Where( projectDef => availabilitySet.researchPrerequisites.Contains( projectDef.defName ) ).ToList();
+                    }
+
+                    var targetDefs = DefDatabase<ThingDef>.AllDefs.Where( thingDef => availabilitySet.targetDefs.Contains( thingDef.defName ) ).ToList();
+
+                    foreach( var target in targetDefs )
+                    {
+                        if( setMenuHidden )
                         {
-                            // Only change if it's actually changed
-                            if(
-                                ( !target.designationCategory.NullOrEmpty() )&&
-                                ( target.designationCategory != "None" )
-                            )
+                            target.menuHidden = menuHidden;
+                        }
+                        if( setDesignation )
+                        {
+                            DesignationCategoryDef oldCategory = null;
+                            Designator_Build oldDesignator = null;
+                            if( target.designationCategory != availabilitySet.designationCategory )
                             {
-                                oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( target.designationCategory );
-                                oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
-                                    ( d is Designator_Build )&&
-                                    ( ( d as Designator_Build ).PlacingDef == (BuildableDef) target )
-                                ) );
-                            }
-                            if( newCategory == null )
-                            {
-                                if( oldCategory != null )
+                                // Only change if it's actually changed
+                                if(
+                                    ( !target.designationCategory.NullOrEmpty() )&&
+                                    ( target.designationCategory != "None" )
+                                )
                                 {
-                                    oldCategory.resolvedDesignators.Remove( oldDesignator );
+                                    oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( target.designationCategory );
+                                    oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
+                                        ( d is Designator_Build )&&
+                                        ( ( d as Designator_Build ).PlacingDef == (BuildableDef) target )
+                                    ) );
                                 }
-                            }
-                            else
-                            {
-                                Designator_Build newDesignator = null;
-                                if( oldDesignator != null )
+                                if( newCategory == null )
                                 {
-                                    oldCategory.resolvedDesignators.Remove( oldDesignator );
-                                    newDesignator = oldDesignator;
+                                    if( oldCategory != null )
+                                    {
+                                        oldCategory.resolvedDesignators.Remove( oldDesignator );
+                                    }
                                 }
                                 else
                                 {
-                                    newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) target } );
+                                    Designator_Build newDesignator = null;
+                                    if( oldDesignator != null )
+                                    {
+                                        oldCategory.resolvedDesignators.Remove( oldDesignator );
+                                        newDesignator = oldDesignator;
+                                    }
+                                    else
+                                    {
+                                        newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) target } );
+                                    }
+                                    newCategory.resolvedDesignators.Add( newDesignator );
                                 }
-                                newCategory.resolvedDesignators.Add( newDesignator );
+                                target.designationCategory = availabilitySet.designationCategory;
                             }
-                            target.designationCategory = availability.designationCategory;
                         }
-                    }
-                    if( setResearch )
-                    {
-                        target.researchPrerequisites = research;
+                        if( setResearch )
+                        {
+                            target.researchPrerequisites = research;
+                        }
                     }
                 }
             }
