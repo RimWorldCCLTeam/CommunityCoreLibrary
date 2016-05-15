@@ -112,8 +112,8 @@ namespace CommunityCoreLibrary
         public override void                SpawnSetup()
         {
             base.SpawnSetup();
-            slotGroup = new SlotGroup( (ISlotGroupParent) this );
             cachedOccupiedCells = this.OccupiedRect().Cells;
+            slotGroup = new SlotGroup( (ISlotGroupParent) this );
         }
 
         public override void                ExposeData()
