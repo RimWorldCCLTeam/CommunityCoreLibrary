@@ -79,6 +79,50 @@ namespace CommunityCoreLibrary.MiniMap
             UpdateMiniMaps();
         }
 
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            foreach( var minimap in Controller.Data.MiniMaps )
+            {
+                #region Minimap Header
+                Scribe.EnterNode( minimap.miniMapDef.defName );
+                #endregion
+
+                var hidden = minimap.Hidden;
+                Scribe_Values.LookValue( ref hidden, "hidden" );
+
+                if( Scribe.mode == LoadSaveMode.LoadingVars )
+                {
+                    minimap.Hidden = hidden;
+                }
+
+                #region Handle all MiniMap Overlays
+                foreach( var overlay in minimap.overlayWorkers )
+                {
+                    #region Overlay Header
+                    Scribe.EnterNode( overlay.overlayDef.defName );
+                    #endregion
+
+                    hidden = overlay.Hidden;
+                    Scribe_Values.LookValue( ref hidden, "hidden" );
+
+                    if( Scribe.mode == LoadSaveMode.LoadingVars )
+                    {
+                        overlay.Hidden = hidden;
+                    }
+
+                    #region Finalize Overlay
+                    Scribe.ExitNode();
+                    #endregion
+                }
+                #endregion
+
+                #region Finalize Minimap
+                Scribe.ExitNode();
+                #endregion
+            }
+        }
+
         #endregion
 
         #region Initialization
