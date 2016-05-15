@@ -147,21 +147,21 @@ namespace CommunityCoreLibrary
                     #region Handle all MiniMap Overlays
                     foreach( var overlay in minimap.overlayWorkers )
                     {
-                        #region Overlay Header
-                        Scribe.EnterNode( overlay.overlayDef.defName );
-                        #endregion
-
-                        #region Handle Overlay IConfigurable
                         var iOverlay = overlay as IConfigurable;
                         if( iOverlay != null )
                         {
-                            iOverlay.ExposeData();
-                        }
-                        #endregion
+                            #region Overlay Header
+                            Scribe.EnterNode( overlay.overlayDef.defName );
+                            #endregion
 
-                        #region Finalize Overlay
-                        Scribe.ExitNode();
-                        #endregion
+                            #region Handle Overlay IConfigurable
+                            iOverlay.ExposeData();
+                            #endregion
+
+                            #region Finalize Overlay
+                            Scribe.ExitNode();
+                            #endregion
+                        }
                     }
                     #endregion
 
