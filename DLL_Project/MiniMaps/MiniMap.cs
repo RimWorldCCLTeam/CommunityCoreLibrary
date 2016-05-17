@@ -201,15 +201,6 @@ namespace CommunityCoreLibrary.MiniMap
 
         public virtual void Update()
         {
-            var workers = VisibleOverlays;
-            if ( workers.Any() )
-            {
-                foreach ( var worker in workers )
-                {
-                    worker.Update();
-                    worker.texture.Apply();
-                }
-            }
         }
 
         public virtual void DrawOverlays( Rect inRect )

@@ -137,25 +137,57 @@ namespace CommunityCoreLibrary.MiniMap
 
             // perform initial update for all overlays
             // do after initialization flag to avoid infinite loop.
-            foreach( var minimap in visibleMiniMaps )
-            {
-                minimap.Update();
-            }
+            UpdateMiniMaps( true );
         }
 
         #endregion
 
         #region Update Methods
 
-        private void UpdateMiniMaps()
+        private bool ShouldUpdateMiniMap( MiniMap minimap )
         {
-            // draw overlays
-            foreach ( var minimap in visibleMiniMaps )
+            return (
+                ( minimap.miniMapDef.updateInterval > 0 )&&
+                ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.miniMapDef.updateInterval == 0 )
+            );
+        }
+
+        private bool ShouldUpdateOverlay( MiniMapOverlay overlay )
+        {
+            return (
+                ( overlay.overlayDef.updateInterval > 0 )&&
+                ( ( Time.frameCount + overlay.GetHashCode() ) % overlay.overlayDef.updateInterval == 0 )
+            );
+        }
+
+        private void UpdateMiniMaps( bool forceUpdate = false )
+        {
+            // Update minimaps and overlays, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
+            foreach( var minimap in visibleMiniMaps )
             {
-                // update overlay grid, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
-                if ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.miniMapDef.updateInterval == 0 )
+                // Update minimap
+                if(
+                    ( forceUpdate )||
+                    ( ShouldUpdateMiniMap( minimap ) )
+                )
                 {
                     minimap.Update();
+                }
+                // Update overlays for minimap 
+                var workers = minimap.VisibleOverlays;
+                if( workers.Any() )
+                {
+                    foreach( var overlay in workers )
+                    {
+                        if(
+                            ( forceUpdate )||
+                            ( ShouldUpdateOverlay( overlay ) )
+                        )
+                        {
+                            overlay.Update();
+                            overlay.texture.Apply();
+                        }
+                    }
                 }
             }
         }
