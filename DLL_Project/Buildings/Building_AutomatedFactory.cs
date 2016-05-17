@@ -30,6 +30,7 @@ namespace CommunityCoreLibrary
         }
 
         private Dictionary<ThingDef,Allowances> productionAllowances;
+        private Dictionary<RecipeDef, bool>     recipeAllowances;
 
         private RecipeDef                   currentRecipe;
 
@@ -51,6 +52,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                //Log.Message( string.Format( "{0}.AdjacentNeighbouringCells()", this.ThingID ) );
                 if( _adjacentNeighbouringCells == null )
                 {
                     _adjacentNeighbouringCells = GenAdj.CellsAdjacentCardinal( this ).ToList();
@@ -113,20 +115,23 @@ namespace CommunityCoreLibrary
 
         public                              Building_AutomatedFactory()
         {
+            //Log.Message( "Building_AutomatedFactory.cTor()" );
             nextProductIndex = 0;
             currentRecipe = null;
             currentProductionTick = 0;
             productionAllowances = new Dictionary<ThingDef, Allowances>();
+            recipeAllowances = new Dictionary<RecipeDef, bool>();
         }
 
         #endregion
 
         #region Base Class Overrides
 
-#if DEBUG
         public override void                SpawnSetup()
         {
+            //Log.Message( string.Format( "{0}.SpawnSetup()", this.ThingID ) );
             base.SpawnSetup();
+#if DEBUG
             if( CompAutomatedFactory == null )
             {
                 CCL_Log.TraceMod(
@@ -159,53 +164,51 @@ namespace CommunityCoreLibrary
                     "CompAutomatedFactory.productionMode is invalid" );
                 return;
             }
-        }
 #endif
-        
+        }
+
         public override void                ExposeData()
         {
+            //Log.Message( string.Format( "Building_AutomatedFactory.ExposeData( {0} )", Scribe.mode.ToString() ) );
             // Scribe base data
             base.ExposeData();
 
-            // Scribe current recipe
             string recipe = string.Empty;
-            if( currentRecipe != null )
-            {
-                recipe = currentRecipe.defName;
-            }
-            Scribe_Values.LookValue<string>( ref recipe, "currentRecipe", string.Empty );
-            if( !recipe.NullOrEmpty() )
-            {
-                currentRecipe = DefDatabase<RecipeDef>.GetNamed( recipe, true );
-            }
-
-            // Scribe current production tick
-            Scribe_Values.LookValue<int>( ref currentProductionTick, "currentProductionTick", 0 );
-
-            // Scribe recipe allowances
-            var pa = new Dictionary<RecipeDef, bool>();
             if( Scribe.mode == LoadSaveMode.Saving )
             {
+                if( currentRecipe != null )
+                {
+                    recipe = currentRecipe.defName;
+                }
                 foreach( var entry in productionAllowances )
                 {
-                    if( !pa.ContainsKey( entry.Value.recipe ) )
+                    if( !recipeAllowances.ContainsKey( entry.Value.recipe ) )
                     {
-                        pa.Add( entry.Value.recipe, entry.Value.allowed );
+                        recipeAllowances.Add( entry.Value.recipe, entry.Value.allowed );
                     }
                 }
             }
-            Scribe_Collections.LookDictionary<RecipeDef,bool>( ref pa, "productionAllowances", LookMode.DefReference, LookMode.Value );
-            if( Scribe.mode == LoadSaveMode.LoadingVars )
+
+            // Scribe data
+            Scribe_Values.LookValue<string>( ref recipe, "currentRecipe", string.Empty );
+            Scribe_Values.LookValue<int>( ref currentProductionTick, "currentProductionTick", 0 );
+            Scribe_Collections.LookDictionary<RecipeDef,bool>( ref recipeAllowances, "productionAllowances", LookMode.DefReference, LookMode.Value );
+            Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
+
+            // Resolve cross-references
+            if( Scribe.mode == LoadSaveMode.ResolvingCrossRefs )
             {
-                foreach( var pair in pa )
+                if( !recipe.NullOrEmpty() )
+                {
+                    currentRecipe = DefDatabase<RecipeDef>.GetNamed( recipe, true );
+                }
+                foreach( var pair in recipeAllowances )
                 {
                     var key = pair.Key.products[0].thingDef;
                     SetAllowed( pair.Key, pair.Value );
                 }
+                ResetAndReprogramHoppers();
             }
-
-            // Scribe current thing
-            Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
         }
 
         public override void                Tick()
@@ -248,6 +251,7 @@ namespace CommunityCoreLibrary
 
         private void                        ProductionTick( int ticks )
         {
+            //Log.Message( string.Format( "{0}.ProductionTick( {1} )", this.ThingID, ticks ) );
             if( !CompPowerTrader.PowerOn )
             {
                 return;
@@ -306,6 +310,7 @@ namespace CommunityCoreLibrary
 
         private void                        RescanTick()
         {
+            //Log.Message( string.Format( "{0}.RescanTick()", this.ThingID ) );
             if( currentRecipeCount != this.def.AllRecipes.Count )
             {
                 ResetAndReprogramHoppers();
@@ -320,6 +325,7 @@ namespace CommunityCoreLibrary
 
         public void                         ResetAndReprogramHoppers()
         {
+            //Log.Message( string.Format( "{0}.ResetAndReprogramHoppers()", this.ThingID ) );
             resourceFilter = null;
             CompHopperUser.ResetResourceSettings();
             CompHopperUser.FindAndProgramHoppers();
@@ -329,6 +335,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                //Log.Message( string.Format( "{0}.ResourceFilter()", this.ThingID ) );
                 if( def.AllRecipes.NullOrEmpty() )
                 {
                     CCL_Log.TraceMod(
@@ -396,6 +403,7 @@ namespace CommunityCoreLibrary
 
         public void                         SetAllowed( ThingDef thingDef, bool allowed )
         {
+            //Log.Message( string.Format( "{0}.SetAllowed( {1}, {2} )", this.ThingID, thingDef == null ? "null" : thingDef.defName, allowed ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
@@ -410,11 +418,13 @@ namespace CommunityCoreLibrary
 
         public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
         {
+            var inAllowed = allowed;
             var product = recipeDef.products[ 0 ].thingDef;
             allowed &= (
                 ( recipeDef.researchPrerequisite == null )||
                 ( recipeDef.researchPrerequisite.IsFinished )
             );
+            //Log.Message( string.Format( "{0}.SetAllowed( {1}, {2}->{3} )", this.ThingID, recipeDef.defName, inAllowed, allowed ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( product, out allowance ) )
             {
@@ -430,6 +440,7 @@ namespace CommunityCoreLibrary
 
         public bool                         GetAllowed( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.GetAllowed( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
@@ -440,6 +451,7 @@ namespace CommunityCoreLibrary
 
         public bool                         GetAllowed( RecipeDef recipeDef )
         {
+            //Log.Message( string.Format( "{0}.GetAllowed( {1} )", this.ThingID, recipeDef == null ? "null" : recipeDef.defName ) );
             foreach( var pair in productionAllowances )
             {
                 if( pair.Value.recipe == recipeDef )
@@ -452,6 +464,7 @@ namespace CommunityCoreLibrary
 
         public Allowances                   GetAllowance( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.GetAllowance( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
@@ -462,6 +475,7 @@ namespace CommunityCoreLibrary
 
         public Allowances                   GetAllowance( RecipeDef recipeDef )
         {
+            //Log.Message( string.Format( "{0}.GetAllowance( {1} )", this.ThingID, recipeDef == null ? "null" : recipeDef.defName ) );
             foreach( var pair in productionAllowances )
             {
                 if( pair.Value.recipe == recipeDef )
@@ -478,6 +492,7 @@ namespace CommunityCoreLibrary
 
         private Thing                       NextProductToProduce()
         {
+            //Log.Message( string.Format( "{0}.NextProductToProduce()", this.ThingID ) );
             if( currentRecipe != null )
             {
                 return null;
@@ -522,6 +537,7 @@ namespace CommunityCoreLibrary
 
         private bool                        OutputThingTo( out Thing stackWith, out IntVec3 dropCell )
         {
+            //Log.Message( string.Format( "{0}.OutputThingTo()", this.ThingID ) );
             stackWith = null;
             dropCell = IntVec3.Invalid;
             switch( CompAutomatedFactory.Properties.outputVector )
@@ -666,6 +682,7 @@ namespace CommunityCoreLibrary
 
         private RecipeDef                   TryGetProductionReadyRecipeFor( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.TryGetProductionReadyRecipeFor( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
@@ -690,6 +707,7 @@ namespace CommunityCoreLibrary
 
         public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.FindRecipeForProduct( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
@@ -706,6 +724,7 @@ namespace CommunityCoreLibrary
 
         public int                          ProductionTicks( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.ProductionTicks( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
             {
@@ -716,6 +735,7 @@ namespace CommunityCoreLibrary
 
         public bool                         CanDispenseNow( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.CanDispenseNow( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             if( CompPowerTrader.PowerOn )
             {
                 return HasEnoughResourcesInHoppersFor( thingDef );
@@ -725,11 +745,13 @@ namespace CommunityCoreLibrary
 
         public bool                         CanProduce( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.CanProduce( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             return FindRecipeForProduct( thingDef ) != null;
         }
 
         public Building                     AdjacentReachableHopper( Pawn reacher )
         {
+            //Log.Message( string.Format( "{0}.AdjacentReachableHopper( {1} )", this.ThingID, reacher == null ? "null" : reacher.NameStringShort ) );
             var hoppers = CompHopperUser.FindHoppers();
             if( !hoppers.NullOrEmpty() )
             {
@@ -752,6 +774,7 @@ namespace CommunityCoreLibrary
 
         public bool                         HasEnoughResourcesInHoppersFor( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.HasEnoughResourcesInHoppersFor( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
             {
@@ -762,6 +785,7 @@ namespace CommunityCoreLibrary
 
         public List<ThingDef>               AllProducts()
         {
+            //Log.Message( string.Format( "{0}.AllProducts()", this.ThingID ) );
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
             {
@@ -778,6 +802,7 @@ namespace CommunityCoreLibrary
 
         public List<ThingDef>               AllowedProducts()
         {
+            //Log.Message( string.Format( "{0}.AllowedProducts()", this.ThingID ) );
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
             {
@@ -797,6 +822,8 @@ namespace CommunityCoreLibrary
 
         public ThingDef                     BestProduct( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
         {
+            //Log.Message( string.Format( "{0}.BestProduct()", this.ThingID ) );
+
             var thingDefs = AllProducts().Where( where.Invoke ).ToList();
             thingDefs.Sort( sort.Invoke );
 
@@ -813,6 +840,7 @@ namespace CommunityCoreLibrary
 
         public Thing                        TryProduceThingDef( ThingDef thingDef )
         {
+            //Log.Message( string.Format( "{0}.TryProduceThingDef( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
             {

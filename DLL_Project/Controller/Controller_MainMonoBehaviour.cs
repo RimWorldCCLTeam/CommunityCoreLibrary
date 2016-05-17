@@ -56,8 +56,6 @@ namespace CommunityCoreLibrary.Controller
             // This is a pre-start sequence to hook some deeper level functions.
             // These functions can be hooked later but it would be after the sequence
             // of operations which call them is complete.
-            // This is done in the class constructor of a ThingDef override class so the
-            // class PostLoad is not detoured while it's being executed for this object.
 
             // Log CCL version
             Version.Log();
@@ -66,52 +64,134 @@ namespace CommunityCoreLibrary.Controller
             StringBuilder stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
 
-            // Create system controllers
-            Controller.Data.SubControllers = new SubController[]
+            // Find all sub-controllers
+            var subControllerClasses = typeof( SubController ).AllSubclasses();
+            var subControllerCount = subControllerClasses.Count();
+            if( subControllerCount == 0 )
             {
-                new Controller.LibrarySubController(),
-                new Controller.ResearchSubController(),
-                new Controller.InjectionSubController(),
-                new Controller.MiniMapSubController(),
-                new Controller.HelpSubController()
-            };
+                InjectionsOk = false;
+                CCL_Log.Error(
+                    "Unable to find sub-controllers",
+                    "PreLoader"
+                );
+            }
+
+            // Create sub-controllers
+            if( InjectionsOk )
+            {
+                var subControllers = new SubController[ subControllerCount ];
+                for( int index = 0; index < subControllerCount; ++index )
+                {
+                    var subControllerType = subControllerClasses.ElementAt( index );
+                    var subController = (SubController) Activator.CreateInstance( subControllerType );
+                    if( subController == null )
+                    {
+                        CCL_Log.Error(
+                            string.Format( "Unable to create sub-controller {0}", subControllerType.Name ),
+                            "PreLoader"
+                        );
+                        InjectionsOk = false;
+                        break;
+                    }
+                    else
+                    {
+                        subControllers[ index ] = subController;
+                    }
+                }
+                if( InjectionsOk )
+                {
+                    Controller.Data.SubControllers = subControllers;
+                }
+            }
 
             // Detour Verse.PlayDataLoader.LoadAllPlayData
-            MethodInfo Verse_PlayDataLoader_LoadAllPlayData = typeof( PlayDataLoader ).GetMethod( "LoadAllPlayData", BindingFlags.Static | BindingFlags.Public );
-            MethodInfo CCL_PlayDataLoader_LoadAllPlayData = typeof( Detour._PlayDataLoader ).GetMethod( "_LoadAllPlayData", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_LoadAllPlayData, CCL_PlayDataLoader_LoadAllPlayData );
+            if( InjectionsOk )
+            {
+                MethodInfo Verse_PlayDataLoader_LoadAllPlayData = typeof( PlayDataLoader ).GetMethod( "LoadAllPlayData", BindingFlags.Static | BindingFlags.Public );
+                MethodInfo CCL_PlayDataLoader_LoadAllPlayData = typeof( Detour._PlayDataLoader ).GetMethod( "_LoadAllPlayData", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_LoadAllPlayData, CCL_PlayDataLoader_LoadAllPlayData );
+            }
 
             // Detour Verse.PlayDataLoader.ClearAllPlayData
-            MethodInfo Verse_PlayDataLoader_ClearAllPlayData = typeof( PlayDataLoader ).GetMethod( "ClearAllPlayData", BindingFlags.Static | BindingFlags.Public );
-            MethodInfo CCL_PlayDataLoader_ClearAllPlayData = typeof( Detour._PlayDataLoader ).GetMethod( "_ClearAllPlayData", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_ClearAllPlayData, CCL_PlayDataLoader_ClearAllPlayData );
+            if( InjectionsOk )
+            {
+                MethodInfo Verse_PlayDataLoader_ClearAllPlayData = typeof( PlayDataLoader ).GetMethod( "ClearAllPlayData", BindingFlags.Static | BindingFlags.Public );
+                MethodInfo CCL_PlayDataLoader_ClearAllPlayData = typeof( Detour._PlayDataLoader ).GetMethod( "_ClearAllPlayData", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_ClearAllPlayData, CCL_PlayDataLoader_ClearAllPlayData );
+            }
 
             // Detour Verse.UIRoot_Entry.ShouldShowMainMenuGUI_get
-            PropertyInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI = typeof( UIRoot_Entry ).GetProperty( "ShouldShowMainMenuGUI", BindingFlags.Instance | BindingFlags.NonPublic );
-            MethodInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get = Verse_UIRoot_Entry_ShouldShowMainMenuGUI.GetGetMethod( true );
-            MethodInfo CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldShowMainMenuGUI_get", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get, CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get );
+            if( InjectionsOk )
+            {
+                PropertyInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI = typeof( UIRoot_Entry ).GetProperty( "ShouldShowMainMenuGUI", BindingFlags.Instance | BindingFlags.NonPublic );
+                MethodInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get = Verse_UIRoot_Entry_ShouldShowMainMenuGUI.GetGetMethod( true );
+                MethodInfo CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldShowMainMenuGUI_get", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get, CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get );
+            }
 
             // Detour RimWorld.MainMenuDrawer.MainMenuOnGUI
-            MethodInfo RimWorld_MainMenuDrawer_MainMenuOnGUI = typeof( MainMenuDrawer ).GetMethod( "MainMenuOnGUI", BindingFlags.Static | BindingFlags.Public );
-            MethodInfo CCL_MainMenuDrawer_MainMenuOnGUI = typeof( Detour._MainMenuDrawer ).GetMethod( "_MainMenuOnGUI", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_MainMenuOnGUI, CCL_MainMenuDrawer_MainMenuOnGUI );
+            if( InjectionsOk )
+            {
+                MethodInfo RimWorld_MainMenuDrawer_MainMenuOnGUI = typeof( MainMenuDrawer ).GetMethod( "MainMenuOnGUI", BindingFlags.Static | BindingFlags.Public );
+                MethodInfo CCL_MainMenuDrawer_MainMenuOnGUI = typeof( Detour._MainMenuDrawer ).GetMethod( "_MainMenuOnGUI", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_MainMenuOnGUI, CCL_MainMenuDrawer_MainMenuOnGUI );
+            }
 
             // Detour RimWorld.MainMenuDrawer.DoMainMenuButtons
-            MethodInfo RimWorld_MainMenuDrawer_DoMainMenuButtons = typeof( MainMenuDrawer ).GetMethod( "DoMainMenuButtons", BindingFlags.Static | BindingFlags.Public );
-            MethodInfo CCL_MainMenuDrawer_DoMainMenuButtons = typeof( Detour._MainMenuDrawer ).GetMethod( "_DoMainMenuButtons", BindingFlags.Static | BindingFlags.NonPublic );
-            InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_DoMainMenuButtons, CCL_MainMenuDrawer_DoMainMenuButtons );
+            if( InjectionsOk )
+            {
+                MethodInfo RimWorld_MainMenuDrawer_DoMainMenuButtons = typeof( MainMenuDrawer ).GetMethod( "DoMainMenuButtons", BindingFlags.Static | BindingFlags.Public );
+                MethodInfo CCL_MainMenuDrawer_DoMainMenuButtons = typeof( Detour._MainMenuDrawer ).GetMethod( "_DoMainMenuButtons", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_DoMainMenuButtons, CCL_MainMenuDrawer_DoMainMenuButtons );
+            }
 
-            Controller.Data.UnityObject = new GameObject( Controller.Data.UnityObjectName );
-            Controller.Data.UnityObject.AddComponent< Controller.MainMonoBehaviour >();
-            UnityEngine.Object.DontDestroyOnLoad( Controller.Data.UnityObject );
+            // Detour Verse.PostLoadInitter.DoAllPostLoadInits
+            /*
+            if( InjectionsOk )
+            {
+                MethodInfo Verse_PostLoadInitter_DoAllPostLoadInits = typeof( PostLoadInitter ).GetMethod( "DoAllPostLoadInits", BindingFlags.Static | BindingFlags.Public );
+                MethodInfo CCL_PostLoadInitter_DoAllPostLoadInits = typeof( Detour._PostLoadInitter ).GetMethod( "_DoAllPostLoadInits", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( Verse_PostLoadInitter_DoAllPostLoadInits, CCL_PostLoadInitter_DoAllPostLoadInits );
+            }
+            */
 
-            CCL_Log.Message(
-                "Queueing Library Initialization",
-                "PreLoader"
-            );
+            if( InjectionsOk )
+            {
+                var gameObject = new GameObject( Controller.Data.UnityObjectName );
+                if( gameObject == null )
+                {
+                    InjectionsOk = false;
+                    CCL_Log.Error(
+                        "Unable to create GameObject",
+                        "PreLoader"
+                    );
+                }
+                else
+                {
+                    if( gameObject.AddComponent< Controller.MainMonoBehaviour >() == null )
+                    {
+                        InjectionsOk = false;
+                        CCL_Log.Error(
+                            "Unable to create MonoBehaviour",
+                            "PreLoader"
+                        );
+                    }
+                    else
+                    {
+                        UnityEngine.Object.DontDestroyOnLoad( gameObject );
+                        Controller.Data.UnityObject = gameObject;
+                    }
+                }
+            }
 
-            LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
+            if( InjectionsOk )
+            {
+                CCL_Log.Message(
+                    "Queueing Library Initialization",
+                    "PreLoader"
+                );
+                LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
+            }
 
             CCL_Log.CaptureEnd(
                 stringBuilder,
