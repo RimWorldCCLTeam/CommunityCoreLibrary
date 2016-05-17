@@ -15,12 +15,12 @@ namespace CommunityCoreLibrary.MiniMap
     {
 
         #region Fields
-        public static bool              visible = false;
-
+        
         public static bool              dirty = true;
         public static bool              initialized = false;
-        public static Vector2           windowSize = new Vector2( 250f, 250f );
+        public static bool              visible = false;
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
+        public static Vector2           windowSize = new Vector2( 250f, 250f );
 
         #endregion Fields
 
@@ -66,9 +66,6 @@ namespace CommunityCoreLibrary.MiniMap
                 }
             }
 
-            // Update the window
-            UpdateWindow();
-
             // (Re-)sort minimaps
             if( dirty )
             {
@@ -85,7 +82,9 @@ namespace CommunityCoreLibrary.MiniMap
             foreach( var minimap in Controller.Data.MiniMaps )
             {
                 #region Minimap Header
+                
                 Scribe.EnterNode( minimap.miniMapDef.defName );
+                
                 #endregion
 
                 var hidden = minimap.Hidden;
@@ -97,10 +96,13 @@ namespace CommunityCoreLibrary.MiniMap
                 }
 
                 #region Handle all MiniMap Overlays
+                
                 foreach( var overlay in minimap.overlayWorkers )
                 {
                     #region Overlay Header
+                    
                     Scribe.EnterNode( overlay.overlayDef.defName );
+                    
                     #endregion
 
                     hidden = overlay.Hidden;
@@ -112,13 +114,18 @@ namespace CommunityCoreLibrary.MiniMap
                     }
 
                     #region Finalize Overlay
+                    
                     Scribe.ExitNode();
+                    
                     #endregion
                 }
+                
                 #endregion
 
                 #region Finalize Minimap
+                
                 Scribe.ExitNode();
+                
                 #endregion
             }
         }
@@ -189,46 +196,6 @@ namespace CommunityCoreLibrary.MiniMap
                         }
                     }
                 }
-            }
-        }
-
-        private void UpdateWindow()
-        {
-            var window = GetWindow;
-            if( window == null )
-            {
-                return;
-            }
-
-            if( Prefs.DevMode )
-            {   // Adjust window position to accomodate the dev icon bar on smaller resolutions
-                var devIconBarStart = Screen.width * 0.6666667f;
-                int num = 6;
-                if (Game.Mode == GameMode.MapPlaying)
-                {
-                    num += 2;
-                }
-                var devIconBarSize = ( num * 28.0 - 4.0 + 1.0 );
-                var devIconBarRight = devIconBarStart + devIconBarSize;
-                var windowX = window.currentWindowRect.x;
-                if( devIconBarRight >= windowX )
-                {
-                    Window_MiniMap.windowRect.y = 0f;
-                    var offsetFromTop = 3f + 25f + 3f;
-                    if(
-                        ( Game.Mode == GameMode.MapPlaying )&&
-                        ( Game.GodMode )&&
-                        ( devIconBarStart + 60f >= windowX )
-                    )
-                    {
-                        offsetFromTop+= 15f + 3f;
-                    }
-                    Window_MiniMap.windowRect.y += offsetFromTop;
-                }
-            }
-            if( window.currentWindowRect != Window_MiniMap.windowRect )
-            {
-                window.currentWindowRect = Window_MiniMap.windowRect;
             }
         }
 
