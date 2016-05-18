@@ -7,8 +7,10 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+    
     public static class BiomeDef_Extensions
     {
+        
         public static List<TerrainDef> AllTerrainDefs( this BiomeDef biome )
         {
             List<TerrainDef> ret = new List<TerrainDef>();
@@ -30,5 +32,25 @@ namespace CommunityCoreLibrary
 
             return ret;
         }
+
+        public static List<IncidentDef> AllDiseases( this BiomeDef biome )
+        {
+            var list = new List<IncidentDef>();
+            var incidents = DefDatabase<IncidentDef>.AllDefsListForReading;
+            if( !incidents.NullOrEmpty() )
+            {
+                foreach( var incident in incidents )
+                {
+                    var mtb = biome.MTBDaysOfDisease( incident );
+                    if( mtb < 99999f )
+                    {
+                        list.Add( incident );
+                    }
+                }
+            }
+            return list;
+        }
+
     }
+
 }

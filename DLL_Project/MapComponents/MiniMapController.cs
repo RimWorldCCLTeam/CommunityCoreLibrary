@@ -1,18 +1,21 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
+using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace CommunityCoreLibrary.MiniMap
 {
+
     public class MiniMapController : MapComponent
     {
-        #region Fields
 
+        #region Fields
+        
         public static bool              dirty = true;
         public static bool              initialized = false;
         public static bool              visible = false;
@@ -23,7 +26,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region Properties
 
-        private Window_MiniMap GetWindow
+        private Window_MiniMap          GetWindow
         {
             get
             {
@@ -33,69 +36,15 @@ namespace CommunityCoreLibrary.MiniMap
 
         #endregion Properties
 
-        #region Methods
+        #region Base Overrides
 
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            foreach ( var minimap in Controller.Data.MiniMaps )
-            {
-                #region Minimap Header
-
-                Scribe.EnterNode( minimap.miniMapDef.defName );
-
-                #endregion Minimap Header
-
-                var hidden = minimap.Hidden;
-                Scribe_Values.LookValue( ref hidden, "hidden" );
-
-                if ( Scribe.mode == LoadSaveMode.LoadingVars )
-                {
-                    minimap.Hidden = hidden;
-                }
-
-                #region Handle all MiniMap Overlays
-
-                foreach ( var overlay in minimap.overlayWorkers )
-                {
-                    #region Overlay Header
-
-                    Scribe.EnterNode( overlay.overlayDef.defName );
-
-                    #endregion Overlay Header
-
-                    hidden = overlay.Hidden;
-                    Scribe_Values.LookValue( ref hidden, "hidden" );
-
-                    if ( Scribe.mode == LoadSaveMode.LoadingVars )
-                    {
-                        overlay.Hidden = hidden;
-                    }
-
-                    #region Finalize Overlay
-
-                    Scribe.ExitNode();
-
-                    #endregion Finalize Overlay
-                }
-
-                #endregion Handle all MiniMap Overlays
-
-                #region Finalize Minimap
-
-                Scribe.ExitNode();
-
-                #endregion Finalize Minimap
-            }
-        }
-
-        public override void MapComponentOnGUI()
+        public override void            MapComponentOnGUI()
         {
             // No minimap
-            if ( !visible )
+            if( !visible )
             {
                 // Close the window if needed
-                if ( GetWindow != null )
+                if( GetWindow != null )
                 {
                     CloseWindow();
                 }
@@ -103,22 +52,22 @@ namespace CommunityCoreLibrary.MiniMap
             }
 
             // Initialize the map component
-            if ( !initialized )
+            if( !initialized )
             {
                 Initialize();
             }
 
             // Make sure the window is open
-            if ( GetWindow == null )
+            if( GetWindow == null )
             {
-                if ( !OpenWindow() )
+                if( !OpenWindow() )
                 {
                     return;
                 }
             }
 
             // (Re-)sort minimaps
-            if ( dirty )
+            if( dirty )
             {
                 SortMiniMaps();
             }
@@ -127,14 +76,63 @@ namespace CommunityCoreLibrary.MiniMap
             UpdateMiniMaps();
         }
 
-        private void CloseWindow()
+        public override void ExposeData()
         {
-            var window = GetWindow;
-            if ( window != null )
+            base.ExposeData();
+            foreach( var minimap in Controller.Data.MiniMaps )
             {
-                Find.WindowStack.TryRemove( window );
+                #region Minimap Header
+                
+                Scribe.EnterNode( minimap.miniMapDef.defName );
+                
+                #endregion
+
+                var hidden = minimap.Hidden;
+                Scribe_Values.LookValue( ref hidden, "hidden" );
+
+                if( Scribe.mode == LoadSaveMode.LoadingVars )
+                {
+                    minimap.Hidden = hidden;
+                }
+
+                #region Handle all MiniMap Overlays
+                
+                foreach( var overlay in minimap.overlayWorkers )
+                {
+                    #region Overlay Header
+                    
+                    Scribe.EnterNode( overlay.overlayDef.defName );
+                    
+                    #endregion
+
+                    hidden = overlay.Hidden;
+                    Scribe_Values.LookValue( ref hidden, "hidden" );
+
+                    if( Scribe.mode == LoadSaveMode.LoadingVars )
+                    {
+                        overlay.Hidden = hidden;
+                    }
+
+                    #region Finalize Overlay
+                    
+                    Scribe.ExitNode();
+                    
+                    #endregion
+                }
+                
+                #endregion
+
+                #region Finalize Minimap
+                
+                Scribe.ExitNode();
+                
+                #endregion
             }
         }
+
+        #endregion
+
+        #region Initialization
 
         private void Initialize()
         {
@@ -146,25 +144,85 @@ namespace CommunityCoreLibrary.MiniMap
 
             // perform initial update for all overlays
             // do after initialization flag to avoid infinite loop.
-            foreach ( var minimap in visibleMiniMaps )
+            UpdateMiniMaps( true );
+        }
+
+        #endregion
+
+        #region Update Methods
+
+        private bool ShouldUpdateMiniMap( MiniMap minimap )
+        {
+            return (
+                ( minimap.miniMapDef.updateInterval > 0 )&&
+                ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.miniMapDef.updateInterval == 0 )
+            );
+        }
+
+        private bool ShouldUpdateOverlay( MiniMapOverlay overlay )
+        {
+            return (
+                ( overlay.overlayDef.updateInterval > 0 )&&
+                ( ( Time.frameCount + overlay.GetHashCode() ) % overlay.overlayDef.updateInterval == 0 )
+            );
+        }
+
+        private void UpdateMiniMaps( bool forceUpdate = false )
+        {
+            // Update minimaps and overlays, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
+            foreach( var minimap in visibleMiniMaps )
             {
-                minimap.Update();
+                // Update minimap
+                if(
+                    ( forceUpdate )||
+                    ( ShouldUpdateMiniMap( minimap ) )
+                )
+                {
+                    minimap.Update();
+                }
+                // Update overlays for minimap 
+                var workers = minimap.VisibleOverlays;
+                if( workers.Any() )
+                {
+                    foreach( var overlay in workers )
+                    {
+                        if(
+                            ( forceUpdate )||
+                            ( ShouldUpdateOverlay( overlay ) )
+                        )
+                        {
+                            overlay.Update();
+                            overlay.texture.Apply();
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Open/Close Window
+
+        private void CloseWindow()
+        {
+            var window = GetWindow;
+            if( window != null )
+            {
+                Find.WindowStack.TryRemove( window );
             }
         }
 
         private bool OpenWindow()
         {
             var window = GetWindow;
-            if ( window != null )
+            if( window != null )
             {
                 return true;
             }
 
-            window = new Window_MiniMap( Window_MiniMap.windowRect )
-            {
-                currentWindowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x )
-            };
-            if ( window == null )
+            Window_MiniMap.windowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x );
+            window = new Window_MiniMap( Window_MiniMap.windowRect );
+            if( window == null )
             {
                 CCL_Log.Error( "Unable to create Window_MiniMap", "MiniMap" );
                 return false;
@@ -172,6 +230,10 @@ namespace CommunityCoreLibrary.MiniMap
             Find.WindowStack.Add( window );
             return true;
         }
+
+        #endregion
+
+        #region Sort MiniMaps
 
         private void SortMiniMaps()
         {
@@ -184,19 +246,8 @@ namespace CommunityCoreLibrary.MiniMap
             dirty = false;
         }
 
-        private void UpdateMiniMaps()
-        {
-            // draw overlays
-            foreach ( var minimap in visibleMiniMaps )
-            {
-                // update overlay grid, stagger it out a bit so stuff doesn't all get updated at the same time if they have the same interval
-                if ( ( Time.frameCount + minimap.GetHashCode() ) % minimap.miniMapDef.updateInterval == 0 )
-                {
-                    minimap.Update();
-                }
-            }
-        }
+        #endregion
 
-        #endregion Methods
     }
+
 }

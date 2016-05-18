@@ -6,6 +6,9 @@ These detours are done automatically by CCL and require nothing other than havin
 
 [list]
 [li][color=orange]RimWorld.Alert_PasteDispenserNeedsHopper.Report[/color] - Allows custom nutrient paste dispensers[sup][size=8pt]5.2[/size][/sup] to use generic hoppers.[/li]
+[li][color=orange]RimWorld.BiomeDef.CommonalityOfAnimal[/color] - Fixes adding animals to biomes from PawnKindDef.[/li]
+[li][color=orange]RimWorld.BiomeDef.CommonalityOfPlant[/color] - Fixes adding plants to biomes from ThingDef.[/li]
+[li][color=orange]RimWorld.BiomeDef.MTBDaysOfDisease[/color] - Fixes adding diseases to biomes from IncidentDef.[/li]
 [li][color=orange]RimWorld.Building_Door.AlignQualityAgainst[/color] - Custom doors[sup][size=8pt]5.1[/size][/sup] will align with walls and other doors properly.[/li]
 [li][color=orange]RimWorld.Building_NutrientPasteDispenser.AdjacentReachableHopper[/color] - Allows custom nutrient paste dispensers[sup][size=8pt]5.2[/size][/sup] to use generic hoppers.[/li]
 [li][color=orange]RimWorld.Building_NutrientPasteDispenser.FindFeedInAnyHopper[/color] - Allows custom nutrient paste dispensers[sup][size=8pt]5.2[/size][/sup] to use generic hoppers.[/li]
