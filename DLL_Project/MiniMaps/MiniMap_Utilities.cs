@@ -14,15 +14,7 @@ namespace CommunityCoreLibrary.MiniMap
     {
 
         static Color[]                  _clearPixelArray;
-
-        public static IntVec2 Size
-        {
-            get
-            {
-                return new IntVec2( Find.Map.Size.x, Find.Map.Size.z );
-            }
-        }
-        
+                
         public static Color[] GetClearPixelArray
         {
             get

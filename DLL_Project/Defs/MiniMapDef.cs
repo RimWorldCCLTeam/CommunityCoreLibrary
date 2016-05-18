@@ -32,7 +32,8 @@ namespace CommunityCoreLibrary.MiniMap
         public Type                 miniMapClass        = null;
 
         // Can link overlays directly here
-        public List<MiniMapOverlayDef> overlays         = null;
+        public List<MiniMapOverlayDef> overlays         = new List<MiniMapOverlayDef>();
+        public bool                 dynamicOverlays     = false;
 
         #endregion
 

@@ -16,6 +16,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         public static Rect windowRect;
         private static Texture2D _lockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/locked");
+        private static Texture2D _scaleIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/scale");
         private static Texture2D _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
         private bool _locked = true;
         private float iconMargin = 6f;
@@ -105,8 +106,6 @@ namespace CommunityCoreLibrary.MiniMap
                 // jump map
                 Find.CameraMap.JumpTo( new Vector3( position.x * scale.x, 0f, position.y * scale.y ) );
             }
-
-            // TODO: draw additional UI stuff
         }
 
         public override void ExtraOnGUI()
@@ -141,15 +140,89 @@ namespace CommunityCoreLibrary.MiniMap
         private void DrawMiniMapButtons()
         {
             // button left/right of map depending on current position of windowRect
-            Rect lockRect;
+            Rect iconRect;
             if ( currentWindowRect.center.x > Screen.width / 2f )
-                lockRect = new Rect( currentWindowRect.xMin - iconMargin - iconSize, currentWindowRect.yMin + iconMargin, iconSize, iconSize );
+                iconRect = new Rect( currentWindowRect.xMin - iconMargin - iconSize, currentWindowRect.yMin + iconMargin, iconSize, iconSize );
             else
-                lockRect = new Rect( currentWindowRect.xMax + iconMargin, currentWindowRect.yMin + iconMargin, iconSize, iconSize );
+                iconRect = new Rect( currentWindowRect.xMax + iconMargin, currentWindowRect.yMin + iconMargin, iconSize, iconSize );
 
-            // draw icon + toggle
-            if ( Widgets.ImageButton( lockRect, Locked ? _lockedIcon : _unlockedIcon ) )
+            // lock icon
+            TooltipHandler.TipRegion( iconRect, Locked ? "MiniMap.Unlock".Translate() : "MiniMap.Lock".Translate() );
+            if ( Widgets.ImageButton( iconRect, Locked ? _lockedIcon : _unlockedIcon ) )
                 Locked = !Locked;
+            iconRect.y += iconSize + iconMargin;
+
+            // scale icon
+            bool scaled = currentWindowRect.width == Find.Map.Size.x && currentWindowRect.height == Find.Map.Size.z;
+            TooltipHandler.TipRegion( iconRect, scaled ? "MiniMap.DefaultSize".Translate() : "MiniMap.OneToOneScale".Translate() );
+            if ( Widgets.ImageButton( iconRect, _scaleIcon ) )
+            {
+                // anchor and position based on quadrant of minimap
+                TextAnchor anchor = TextAnchor.MiddleCenter;
+                Vector2 position = Vector2.zero;
+
+                var center = currentWindowRect.center;
+                var screen = new Vector2( Screen.width, Screen.height ) / 2f;
+
+                if (center.x > screen.x && center.y < screen.y )
+                {
+                    anchor = TextAnchor.UpperRight;
+                    position = new Vector2( currentWindowRect.xMax, currentWindowRect.yMin );
+                }
+                if ( center.x > screen.x && center.y > screen.y )
+                {
+                    anchor = TextAnchor.LowerRight;
+                    position = new Vector2( currentWindowRect.xMax, currentWindowRect.yMax );
+                }
+                if ( center.x < screen.x && center.y > screen.y )
+                {
+                    anchor = TextAnchor.LowerLeft;
+                    position = new Vector2( currentWindowRect.xMin, currentWindowRect.yMax );
+                }
+                if ( center.x < screen.x && center.y < screen.y )
+                {
+                    // lower right
+                    anchor = TextAnchor.UpperLeft;
+                    position = new Vector2( currentWindowRect.xMin, currentWindowRect.yMin );
+                }
+
+
+                if ( scaled )
+                {
+                    currentWindowRect.width = MiniMapController.windowSize.x;
+                    currentWindowRect.height = MiniMapController.windowSize.y;
+                    ClampWindowToScreen();
+                }
+                else
+                {
+                    currentWindowRect.width = Find.Map.Size.x;
+                    currentWindowRect.height = Find.Map.Size.z;
+                    ClampWindowToScreen();
+                }
+
+                // relocate window to match initial anchor
+                switch ( anchor )
+                {
+                    case TextAnchor.UpperLeft:
+                        currentWindowRect.x = position.x;
+                        currentWindowRect.y = position.y;
+                        break;
+                    case TextAnchor.UpperRight:
+                        currentWindowRect.x = position.x - currentWindowRect.width;
+                        currentWindowRect.y = position.y;
+                        break;
+                    case TextAnchor.LowerLeft:
+                        currentWindowRect.x = position.x;
+                        currentWindowRect.y = position.y - currentWindowRect.height;
+                        break;
+                    case TextAnchor.LowerRight:
+                        currentWindowRect.x = position.x - currentWindowRect.width;
+                        currentWindowRect.y = position.y - currentWindowRect.height;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private void DrawOverlayButtons()
@@ -159,7 +232,8 @@ namespace CommunityCoreLibrary.MiniMap
 
             // how many overlays can we draw on a single line?
             // note that we don't want to draw in the complete outer edge, because that will trigger map movement, which is annoying as fuck.
-            int iconsPerRow = Mathf.FloorToInt( ( MiniMapController.windowSize.x - screenEdgeDollyWidth ) / ( iconSize + iconMargin ) );
+            float width = currentWindowRect.xMin - Mathf.Min( currentWindowRect.xMax, Screen.width - screenEdgeDollyWidth );
+            int iconsPerRow = Mathf.FloorToInt( width / ( iconSize + iconMargin ) );
 
             // should we draw icons below the minimap, or above?
             bool drawBelow = currentWindowRect.center.y < Screen.height / 2f;

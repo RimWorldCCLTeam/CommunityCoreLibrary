@@ -70,7 +70,7 @@ namespace CommunityCoreLibrary.Controller
                             miniMapDef.overlays.AddUnique( overlayDef );
                         }
                     }
-                    if( miniMapDef.overlays.NullOrEmpty() )
+                    if( miniMapDef.overlays.NullOrEmpty() && !miniMapDef.dynamicOverlays )
                     {
                         CCL_Log.Trace(
                             Verbosity.NonFatalErrors,
