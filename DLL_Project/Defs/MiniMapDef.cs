@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary.MiniMap
         // Provide label or labelKey to translate
         public string               labelKey            = string.Empty;
 
-        public int                  updateInterval      = 250;
+        public int                  updateInterval      = -1;
         public int                  drawOrder           = 100;
 
         public bool                 hiddenByDefault     = false;

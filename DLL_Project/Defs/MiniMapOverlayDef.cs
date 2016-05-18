@@ -17,6 +17,7 @@ namespace CommunityCoreLibrary.MiniMap
         // If more than one overlay is provided for a MiniMap, provide label or labelKey to translate
         public string               labelKey;
 
+        public int                  updateInterval      = 250;
         public int                  drawOffset          = 0;
 
         public bool                 hiddenByDefault     = false;
