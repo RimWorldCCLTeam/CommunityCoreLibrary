@@ -91,13 +91,17 @@ namespace CommunityCoreLibrary.Detour
                 cachedAnimalCommonalities = new Dictionary<PawnKindDef, float>();
                 for (int index = 0; index < _this.wildAnimals().Count; ++index)
                     cachedAnimalCommonalities.Add(_this.wildAnimals()[index].animal, _this.wildAnimals()[index].commonality);
-                foreach (PawnKindDef pawnKindDef in DefDatabase<PawnKindDef>.AllDefs)
+                foreach (PawnKindDef current in DefDatabase<PawnKindDef>.AllDefs)
                 {
-                    if (pawnKindDef.RaceProps.wildBiomes != null)
+                    if (current.RaceProps.wildBiomes != null)
                     {
-                        for (int index = 0; index < pawnKindDef.RaceProps.wildBiomes.Count; ++index)
-                            if (pawnKindDef.RaceProps.wildBiomes[index].biome.defName == _this.defName)
-                                cachedAnimalCommonalities.Add(pawnKindDef.RaceProps.wildBiomes[index].animal, pawnKindDef.RaceProps.wildBiomes[index].commonality);
+                        for (int index = 0; index < current.RaceProps.wildBiomes.Count; ++index)
+                        {
+                            if (current.RaceProps.wildBiomes[index].biome.defName == _this.defName)
+                            {
+                                cachedAnimalCommonalities.Add(current.RaceProps.wildBiomes[index].animal, current.RaceProps.wildBiomes[index].commonality);
+                            }
+                        }
                     }
                 }
                 _this.cachedAnimalCommonalitiesSet(cachedAnimalCommonalities);
@@ -123,8 +127,12 @@ namespace CommunityCoreLibrary.Detour
                     if (current.plant != null && current.plant.wildBiomes != null)
                     {
                         for (int index = 0; index < current.plant.wildBiomes.Count; ++index)
+                        {
                             if (current.plant.wildBiomes[index].biome.defName == _this.defName)
+                            {
                                 cachedPlantCommonalities.Add(current.plant.wildBiomes[index].plant, current.plant.wildBiomes[index].commonality);
+                            }
+                        }
                     }
                 }
                 _this.cachedPlantCommonalitiesSet(cachedPlantCommonalities);

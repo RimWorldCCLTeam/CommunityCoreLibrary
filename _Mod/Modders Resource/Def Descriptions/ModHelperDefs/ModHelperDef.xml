@@ -19,6 +19,7 @@
                 <label>string</label>   [required] Name** to be displayed in the Mod Options menu
                 <mcmClass>ModConfigurationMenu</mcmClass>
                                         [required] Class name of Mod Configuration Menu
+                <preload>bool</preload> [optional] If set to true, this MCM will be loaded before the injection sequence starts (before SpecialInjectors are injected).  Normal behaviour is that MCMs are loaded after the injection sequence (after all injectors are complete).
             </li>
         </ModConfigurationMenus>
 

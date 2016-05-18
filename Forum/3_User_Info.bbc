@@ -7,12 +7,17 @@ The list of auto-generated help includes virtually every in-game object and more
 
 If you decide you don't want the auto-generated help, you can use the command-line switch "-nohelp" to disable it.  This will only disable the auto-generated help, you will still get explicitly defined help.  If you use the "-quicktest" command-line switch, auto-generated help will similarily be disabled.
 
+[color=orange]Minimap[/color]
+v0.13.2 adds a resizable, draggable, moddable minimap framework.  It comes with a basic set of minimaps and overlays including showing colonists, non-colonists, wildlife and the power grid.  By default the minimap is disabled and needs to be turned on in the Mod Configuration Menu.
+
 [color=orange]Mod Configuration Menu[/color] (Mod Options)
 If any mods are installed with an MCM, the main menu will display a "Mod Options" button which will allow you to set configuration settings for the mod(s).
 
 [color=orange]Proper Refrigeration[/color]
 Buildings implementing refrigeration will refrigerate rottable items without the usual "rot-unrot" cycle.  CCL automatically handles refrigerated buildings properly by simply not rotting the item.
 
+[color=orange]Restart Warning[/color]
+Under certain situations the game will need to be restarted.  These situations include changing mods and the language.  Any time CCL detects such a change, it will open a window to warn the user that a restart is required.
 
 
 [size=12pt][color=orange]What the "Vanilla Tweaks" mod offers[/color][/size]
