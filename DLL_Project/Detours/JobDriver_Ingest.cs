@@ -17,21 +17,30 @@ namespace CommunityCoreLibrary.Detour
     internal static class _JobDriver_Ingest
     {
 
-        internal const TargetIndex FoodInd = TargetIndex.A;
-        internal const TargetIndex AlcoholInd = TargetIndex.C;
-        internal const TargetIndex DispenserInd = FoodInd;
+        internal const TargetIndex FoodOrDispenserInd = TargetIndex.A;
         internal const TargetIndex TableCellInd = TargetIndex.B;
+        internal const TargetIndex AlcoholInd = TargetIndex.C;
 
         #region Helper Methods
 
+        internal static bool IsDispenser( this JobDriver_Ingest obj )
+        {
+            return obj.pawn.CurJob.GetTarget( FoodOrDispenserInd ).Thing is Building;
+        }
+
+        internal static bool IsMeal( this JobDriver_Ingest obj )
+        {
+            return obj.pawn.CurJob.GetTarget( FoodOrDispenserInd ).Thing is Meal;
+        }
+
         internal static Thing Dispenser( this JobDriver_Ingest obj )
         {
-            return obj.pawn.CurJob.GetTarget( DispenserInd ).Thing;
+            return obj.pawn.CurJob.GetTarget( FoodOrDispenserInd ).Thing;
         }
 
         internal static Thing Food( this JobDriver_Ingest obj )
         {
-            return obj.pawn.CurJob.GetTarget( FoodInd ).Thing;
+            return obj.pawn.CurJob.GetTarget( FoodOrDispenserInd ).Thing;
         }
 
         internal static Thing Alcohol( this JobDriver_Ingest obj )
@@ -76,23 +85,20 @@ namespace CommunityCoreLibrary.Detour
 
         internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_Ingest obj )
         {
-            //var targetThingA = obj.TargetThingA();
-            //var targetThingB = obj.TargetThingB();
-
-            if( obj.Dispenser() is Building )
+            if( obj.IsDispenser() )
             {
-                yield return Toils_Goto.GotoThing( DispenserInd, PathEndMode.InteractionCell ).FailOnDespawnedNullOrForbidden( DispenserInd );
+                yield return Toils_Goto.GotoThing( FoodOrDispenserInd, PathEndMode.InteractionCell ).FailOnDespawnedNullOrForbidden( FoodOrDispenserInd );
 
                 if( obj.Alcohol() == null )
                 {
                     // Meals
                     if( obj.Dispenser() is Building_NutrientPasteDispenser )
                     {
-                        yield return Toils_Ingest.TakeMealFromDispenser( FoodInd, obj.pawn );
+                        yield return Toils_Ingest.TakeMealFromDispenser( FoodOrDispenserInd, obj.pawn );
                     }
                     if( obj.Dispenser() is Building_AutomatedFactory )
                     {
-                        yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodInd, obj.pawn );
+                        yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodOrDispenserInd, obj.pawn );
                     }
                 }
                 else
@@ -100,11 +106,11 @@ namespace CommunityCoreLibrary.Detour
                     // Alcohol
                     if( obj.Dispenser() is Building_AutomatedFactory )
                     {
-                        yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer( FoodInd, obj.pawn );
+                        yield return Toils_FoodSynthesizer.TakeAlcoholFromSynthesizer( FoodOrDispenserInd, obj.pawn );
                     }
                 }
-                yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedNullOrForbidden( FoodInd );
-                yield return Toils_Ingest.FindAdjacentEatSurface( TableCellInd, FoodInd );
+                yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedNullOrForbidden( FoodOrDispenserInd );
+                yield return Toils_Ingest.FindAdjacentEatSurface( TableCellInd, FoodOrDispenserInd );
             }
             else if( obj.pawn.RaceProps.ToolUser )
             {
@@ -135,26 +141,26 @@ namespace CommunityCoreLibrary.Detour
                             {
                                 return;
                             }
-                            pawn.CurJob.SetTarget( FoodInd, (TargetInfo) resultingThing );
+                            pawn.CurJob.SetTarget( FoodOrDispenserInd, (TargetInfo) resultingThing );
                         }
                     } );
 
                     yield return dropIfNeeded;
                 }
                 yield return obj.ReserveFoodIfWillEatWholeStack();
-                yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.ClosestTouch ).FailOnDespawnedNullOrForbidden( FoodInd );
-                yield return Toils_Ingest.PickupIngestible( FoodInd, obj.pawn );
-                yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedNullOrForbidden( FoodInd );
-                yield return Toils_Ingest.FindAdjacentEatSurface( TableCellInd, FoodInd );
+                yield return Toils_Goto.GotoThing( FoodOrDispenserInd, PathEndMode.ClosestTouch ).FailOnDespawnedNullOrForbidden( FoodOrDispenserInd );
+                yield return Toils_Ingest.PickupIngestible( FoodOrDispenserInd, obj.pawn );
+                yield return Toils_Ingest.CarryIngestibleToChewSpot( obj.pawn ).FailOnDestroyedNullOrForbidden( FoodOrDispenserInd );
+                yield return Toils_Ingest.FindAdjacentEatSurface( TableCellInd, FoodOrDispenserInd );
             }
             else // Non-Tool User
             {
                 yield return obj.ReserveFoodIfWillEatWholeStack();
-                yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.ClosestTouch ).FailOnDespawnedNullOrForbidden( FoodInd );
+                yield return Toils_Goto.GotoThing( FoodOrDispenserInd, PathEndMode.ClosestTouch ).FailOnDespawnedNullOrForbidden( FoodOrDispenserInd );
             }
 
             var durationMultiplier = 1f / obj.pawn.GetStatValue( StatDefOf.EatingSpeed, true );
-            var chew = Toils_Ingest.ChewIngestible( obj.pawn, durationMultiplier, FoodInd, TableCellInd ).FailOn( () =>
+            var chew = Toils_Ingest.ChewIngestible( obj.pawn, durationMultiplier, FoodOrDispenserInd, TableCellInd ).FailOn( () =>
             {
                 if( !obj.Food().Spawned )
                 {
@@ -163,7 +169,7 @@ namespace CommunityCoreLibrary.Detour
                 return false;
             } );
             yield return chew;
-            yield return Toils_Ingest.FinalizeIngest( obj.pawn, FoodInd );
+            yield return Toils_Ingest.FinalizeIngest( obj.pawn, FoodOrDispenserInd );
             yield return Toils_Jump.JumpIf( chew, () =>
             {
                 if( obj.Food() is Corpse )

@@ -38,29 +38,11 @@ namespace CommunityCoreLibrary.Controller
             };
         }
 
-        public override string              Name
-        {
-            get
-            {
-                return "Injection Controller";
-            }
-        }
+        public override string              Name => "Injection Controller";
 
         // Override sequence priorities
-        public override int                 InitializationPriority
-        {
-            get
-            {
-                return 100;
-            }
-        }
-        public override int                 UpdatePriority
-        {
-            get
-            {
-                return 100;
-            }
-        }
+        public override int                 InitializationPriority  => 100;
+        public override int                 UpdatePriority          => 100;
 
         public override bool                Initialize()
         {
@@ -68,6 +50,15 @@ namespace CommunityCoreLibrary.Controller
 
             var stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
+
+            // Initialize preload-MCMs
+            if( !MCMHost.InitializeHosts( true ) )
+            {
+                CCL_Log.CaptureEnd( stringBuilder, "Errors initializing Mod Configuration Menus" );
+                strReturn = stringBuilder.ToString();
+                State = SubControllerState.InitializationError;
+                return false;
+            }
 
             foreach( var injector in initInjectors )
             {

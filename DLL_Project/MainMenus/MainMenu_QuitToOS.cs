@@ -8,11 +8,22 @@ namespace CommunityCoreLibrary
 	public class MainMenu_QuitToOS : MainMenu
 	{
 
+        public override Color               Color
+        {
+            get
+            {
+                return Controller.Data.RequireRestart ? Color.green : Color.white;
+            }
+        }
+
         public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
         {
             return(
                 ( Game.Mode == GameMode.Entry )||
-                ( !Find.Map.info.permadeathMode )
+                (
+                    ( !Find.Map.info.permadeathMode )||
+                    ( Controller.Data.RequireRestart )
+                )
             );
         }
 

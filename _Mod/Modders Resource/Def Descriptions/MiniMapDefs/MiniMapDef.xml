@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    <MiniMapDef>
+
+        <defName>string</defName>       [required] Some unique identifier in class
+
+        <label>string</label>           [required] Label for minimap
+        <labelKey>string</labelKey>     [optional] Key used for label translations, if not supplied, will use <label> directly.  Default: null 
+
+        <description>string</description>
+                                        [optional] Description of minimap (shown in tool tip)
+
+        <updateInterval>int</updateInterval>
+                                        [optional] Update frequency of minimap (ticks).  Default: -1 (no updates)
+
+        <drawOrder>int</drawOrder>      [required] Index order to draw minimap and overlays
+        
+        <hiddenByDefault>bool</hiddenByDefault>
+                                        [optional] Hide minimap by default.  Default: false
+        
+        <alwaysVisible>bool</alwaysVisible>
+                                        [optional] Always show minimap (non-toggleable).  Default: false
+        
+        <alwaysOnTop>bool</alwaysOnTop>
+                                        [optional] Always render on top of other minimaps.  Default: false
+        
+        <iconTex>string</iconTex>       [required] Icon texture file path
+        
+        <miniMapClass>MiniMap</miniMapClass>
+                                        [required] Minimap driver class
+
+        <overlays>                      [optional] Overlay defs for this minimap (can be defined here or in MiniMapOverLayDef)
+            <li>MiniMapOverlayDef</li>
+        </overlays>
+
+    </MiniMapDef>
+
+    -->
+
+</Defs>

@@ -12,13 +12,7 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "Tickers switched";
-            }
-        }
+        public string                       InjectString => "Tickers switched";
 
         public bool                         IsValid( ModHelperDef def, ref string errors )
         {
@@ -29,15 +23,23 @@ namespace CommunityCoreLibrary
 
             bool isValid = true;
 
-            foreach( var switcher in def.tickerSwitcher )
+            foreach( var switcherSet in def.tickerSwitcher )
             {
-                foreach( var targetName in switcher.targetDefs )
+                bool processThis = true;
+                if( !switcherSet.requiredMod.NullOrEmpty() )
                 {
-                    var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                    if( targetDef == null )
+                    processThis = Find_Extensions.ModByName( switcherSet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    foreach( var targetName in switcherSet.targetDefs )
                     {
-                        errors += string.Format( "Unable to resolve targetDef '{0}' in TickerSwitcher", targetName );
-                        isValid = false;
+                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
+                        if( targetDef == null )
+                        {
+                            errors += string.Format( "Unable to resolve targetDef '{0}' in TickerSwitcher", targetName );
+                            isValid = false;
+                        }
                     }
                 }
             }
@@ -53,14 +55,22 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var switcher in def.tickerSwitcher )
+            foreach( var switcherSet in def.tickerSwitcher )
             {
-                foreach( var targetName in switcher.targetDefs )
+                bool processThis = true;
+                if( !switcherSet.requiredMod.NullOrEmpty() )
                 {
-                    var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                    if( targetDef.tickerType != switcher.tickerType )
+                    processThis = Find_Extensions.ModByName( switcherSet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    foreach( var targetName in switcherSet.targetDefs )
                     {
-                        return false;
+                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
+                        if( targetDef.tickerType != switcherSet.tickerType )
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -75,12 +85,20 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var switcher in def.tickerSwitcher )
+            foreach( var switcherSet in def.tickerSwitcher )
             {
-                foreach( var targetName in switcher.targetDefs )
+                bool processThis = true;
+                if( !switcherSet.requiredMod.NullOrEmpty() )
                 {
-                    var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                    targetDef.tickerType = switcher.tickerType;
+                    processThis = Find_Extensions.ModByName( switcherSet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    foreach( var targetName in switcherSet.targetDefs )
+                    {
+                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
+                        targetDef.tickerType = switcherSet.tickerType;
+                    }
                 }
             }
 

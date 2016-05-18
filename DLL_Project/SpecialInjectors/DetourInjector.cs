@@ -276,8 +276,11 @@ namespace CommunityCoreLibrary
         private void                        FixDoors()
         {
             foreach( var doorDef in DefDatabase<ThingDef>.AllDefs.Where( def => (
-                ( def.thingClass == typeof( Building_Door ) )||
-                ( def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
+                ( def.thingClass != null )&&
+                (
+                    ( def.thingClass == typeof( Building_Door ) )||
+                    ( def.thingClass.IsSubclassOf( typeof( Building_Door ) ) )
+                )
             ) ) )
             {
                 doorDef.regionBarrier = true;
@@ -287,6 +290,8 @@ namespace CommunityCoreLibrary
         private void                        FixGlowers()
         {
             foreach( var def in DefDatabase<ThingDef>.AllDefs.Where( def => (
+                ( def != null )&&
+                ( def.comps != null )&&
                 ( def.HasComp( typeof( CompGlower ) ) )
             ) ) )
             {

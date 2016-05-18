@@ -12,13 +12,7 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "ThingComps injected";
-            }
-        }
+        public string                       InjectString => "ThingComps injected";
 
         public bool                         IsValid( ModHelperDef def, ref string errors )
         {
@@ -31,54 +25,62 @@ namespace CommunityCoreLibrary
 
             foreach( var compSet in def.ThingComps )
             {
-                if( compSet.targetDefs.NullOrEmpty() )
+                bool processThis = true;
+                if( !compSet.requiredMod.NullOrEmpty() )
                 {
-                    errors += "\n\tNull or no targetDefs in ThingComps";
-                    isValid = false;
+                    processThis = Find_Extensions.ModByName( compSet.requiredMod ) != null;
                 }
-                if( compSet.compProps == null )
+                if( processThis )
                 {
-                    errors += "\n\tNull compProps in ThingComps";
-                    isValid = false;
-                }
-                for( int index = 0; index < compSet.targetDefs.Count; ++index )
-                {
-                    if( compSet.targetDefs[ index ].NullOrEmpty() )
+                    if( compSet.targetDefs.NullOrEmpty() )
                     {
-                        errors += string.Format( "targetDef in ThingComps is null or empty at index {0}", index.ToString() );
+                        errors += "\n\tNull or no targetDefs in ThingComps";
                         isValid = false;
                     }
-                    else
+                    if( compSet.compProps == null )
                     {
-                        var target = compSet.targetDefs[ index ];
-                        var targetDef = DefDatabase< ThingDef >.GetNamed( target, false );
-                        if( targetDef == null )
+                        errors += "\n\tNull compProps in ThingComps";
+                        isValid = false;
+                    }
+                    for( int index = 0; index < compSet.targetDefs.Count; ++index )
+                    {
+                        if( compSet.targetDefs[ index ].NullOrEmpty() )
                         {
-                            errors += string.Format( "Unable to resolve targetDef '{0}' in ThingComps", target );
+                            errors += string.Format( "targetDef in ThingComps is null or empty at index {0}", index.ToString() );
                             isValid = false;
                         }
                         else
                         {
-                            if( compSet.compProps.compClass != null )
+                            var target = compSet.targetDefs[ index ];
+                            var targetDef = DefDatabase< ThingDef >.GetNamed( target, false );
+                            if( targetDef == null )
                             {
-                                if( targetDef.HasComp( compSet.compProps.compClass ) )
-                                {
-                                    errors += string.Format( "targetDef '{0}' in ThingComps already has comp '{1}'", target, compSet.compProps.compClass );
-                                    isValid = false;
-                                }
-                            }
-                            else if( compSet.compProps.GetType() != typeof( CompProperties ) )
-                            {
-                                if( targetDef.GetCompProperty( compSet.compProps.GetType() ) != null )
-                                {
-                                    errors += string.Format( "targetDef '{0}' in ThingComps already has comp '{1}'", target, compSet.compProps );
-                                    isValid = false;
-                                }
+                                errors += string.Format( "Unable to resolve targetDef '{0}' in ThingComps", target );
+                                isValid = false;
                             }
                             else
                             {
-                                errors += string.Format( "Can not inject CompProperties without a compClass into '{0}'", target );
-                                isValid = false;
+                                if( compSet.compProps.compClass != null )
+                                {
+                                    if( targetDef.HasComp( compSet.compProps.compClass ) )
+                                    {
+                                        errors += string.Format( "targetDef '{0}' in ThingComps already has comp '{1}'", target, compSet.compProps.compClass );
+                                        isValid = false;
+                                    }
+                                }
+                                else if( compSet.compProps.GetType() != typeof( CompProperties ) )
+                                {
+                                    if( targetDef.GetCompProperty( compSet.compProps.GetType() ) != null )
+                                    {
+                                        errors += string.Format( "targetDef '{0}' in ThingComps already has comp '{1}'", target, compSet.compProps );
+                                        isValid = false;
+                                    }
+                                }
+                                else
+                                {
+                                    errors += string.Format( "Can not inject CompProperties without a compClass into '{0}'", target );
+                                    isValid = false;
+                                }
                             }
                         }
                     }
@@ -98,19 +100,27 @@ namespace CommunityCoreLibrary
 
             foreach( var compSet in def.ThingComps )
             {
-                foreach( var targetName in compSet.targetDefs )
+                bool processThis = true;
+                if( !compSet.requiredMod.NullOrEmpty() )
                 {
-                    var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                    if(
-                        ( compSet.compProps.compClass != null )&&
-                        ( !targetDef.comps.Exists( s => ( s.compClass == compSet.compProps.compClass ) ) )
-                    )
+                    processThis = Find_Extensions.ModByName( compSet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    foreach( var targetName in compSet.targetDefs )
                     {
-                        return false;
-                    }
-                    else if( targetDef.GetCompProperty( compSet.compProps.GetType() ) == null )
-                    {
-                        return false;
+                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
+                        if(
+                            ( compSet.compProps.compClass != null )&&
+                            ( !targetDef.comps.Exists( s => ( s.compClass == compSet.compProps.compClass ) ) )
+                        )
+                        {
+                            return false;
+                        }
+                        else if( targetDef.GetCompProperty( compSet.compProps.GetType() ) == null )
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -127,22 +137,30 @@ namespace CommunityCoreLibrary
 
             foreach( var compSet in def.ThingComps )
             {
-                foreach( var targetName in compSet.targetDefs )
+                bool processThis = true;
+                if( !compSet.requiredMod.NullOrEmpty() )
                 {
-                    // TODO:  Make a full copy using the comp in this def as a template
-                    // Currently adds the comp in this def so all target use the same def
-                    var targetDef = DefDatabase< ThingDef >.GetNamed( targetName );
-                    if( targetDef.HasComp( compSet.compProps.compClass ) )
+                    processThis = Find_Extensions.ModByName( compSet.requiredMod ) != null;
+                }
+                if( processThis )
+                {
+                    foreach( var targetName in compSet.targetDefs )
                     {
-                        CCL_Log.TraceMod(
-                            def,
-                            Verbosity.Warnings,
-                            string.Format( "Trying to inject ThingComp '{0}' into '{1}' when it already exists (another mod may have already injected).", compSet.compProps.compClass.ToString(), targetName ),
-                            "ThingComp Injector" );
-                    }
-                    else
-                    {
-                        targetDef.comps.Add( compSet.compProps );
+                        // TODO:  Make a full copy using the comp in this def as a template
+                        // Currently adds the comp in this def so all target use the same def
+                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName );
+                        if( targetDef.HasComp( compSet.compProps.compClass ) )
+                        {
+                            CCL_Log.TraceMod(
+                                def,
+                                Verbosity.Warnings,
+                                string.Format( "Trying to inject ThingComp '{0}' into '{1}' when it already exists (another mod may have already injected).", compSet.compProps.compClass.ToString(), targetName ),
+                                "ThingComp Injector" );
+                        }
+                        else
+                        {
+                            targetDef.comps.Add( compSet.compProps );
+                        }
                     }
                 }
             }

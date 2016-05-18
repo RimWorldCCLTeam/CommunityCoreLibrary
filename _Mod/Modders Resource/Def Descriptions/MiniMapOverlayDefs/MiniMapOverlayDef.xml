@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    <MiniMapOverlayDef>
+
+        <defName>string</defName>       [required] Some unique identifier in class
+
+        <label>string</label>           [optional*] Label for overlay
+        <labelKey>string</labelKey>     [optional*] Key used for label translations, if not supplied, will use <label> directly.  Default: null 
+
+        <updateInterval>int</updateInterval>
+                                        [required] Update frequency of overlay (ticks).  Default: 250
+
+        <drawOffset>int</drawOffset>    [optional] Index order to draw overlay in minimap.  Default: 0
+        
+        <hiddenByDefault>bool</hiddenByDefault>
+                                        [optional] Hide overlay by default.  Default: false
+        
+        <miniMapDef>MiniMapDef</miniMapDef>
+                                        [optional] MiniMapDef to add this overlay to (can be defined here or in MiniMapDef)
+
+    </MiniMapOverlayDef>
+
+    -->
+
+</Defs>

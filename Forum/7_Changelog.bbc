@@ -1,8 +1,11 @@
 [size=12pt][color=orange]Changelog[/color][/size]
 
-For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/]commit log[/url].  This section is just for convenience sake.
+For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/87]commit log[/url].  This section is just for convenience sake.
 
-[code]v0.13.1 - Adds InterModCommunication, CompGlowerToggleable, fixes some issues reported.v0.13.0 - Alpha 13 update.
+[code]v0.13.2 - New Minimap feature!  Fixes some bugs in CCL and in core (BiomeDef).
+v0.13.1.1 - Bug fixes
+v0.13.1 - Adds InterModCommunication, CompGlowerToggleable, fixes some issues reported.
+v0.13.0 - Alpha 13 update.
 v0.12.7.2 - Small bug-fixes and additional MCM functionality
 v0.12.7.1 - Small change to the MCM
 v0.12.7 - Detouring of core methods, automated factories, main menu def, mod configuation menu (MCM), research tree, more changes and additions to the help menu system, tighter control of the mod load order (CCL must be #2), as always more bugs quashed and different ones introduced.

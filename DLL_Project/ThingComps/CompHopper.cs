@@ -24,6 +24,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                //Log.Message( string.Format( "{0}.CompHopper.Building", this.parent.ThingID ) );
                 return parent as Building_Hopper;
             }
         }
@@ -32,10 +33,12 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                //Log.Message( string.Format( "{0}.CompHopper.WasProgrammed", this.parent.ThingID ) );
                 return wasProgrammed;
             }
             set
             {
+                //Log.Message( string.Format( "{0}.CompHopper.WasProgrammed = {1}", this.parent.ThingID, value ) );
                 wasProgrammed = value;
             }
         }
@@ -44,6 +47,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                //Log.Message( string.Format( "{0}.CompHopper.ResourceDefs", this.parent.ThingID ) );
                 return Building.GetStoreSettings().filter.AllowedThingDefs.ToList();
             }
         }
@@ -52,6 +56,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                //Log.Message( string.Format( "{0}.CompHopper.IsRefrigerated", this.parent.ThingID ) );
                 return ( Building.TryGetComp<CompRefrigerated>() != null );
             }
         }
@@ -62,6 +67,7 @@ namespace CommunityCoreLibrary
 
         public override void                PostSpawnSetup()
         {
+            //Log.Message( string.Format( "{0}.CompHopper.PostSpawnSetup()", this.parent.ThingID ) );
             base.PostSpawnSetup();
             hopperUser = FindHopperUser();
             if(
@@ -75,12 +81,14 @@ namespace CommunityCoreLibrary
 
         public override void                PostExposeData()
         {
+            //Log.Message( string.Format( "CompHopper.PostExposeData( {0} )", Scribe.mode.ToString() ) );
             base.PostExposeData();
             Scribe_Values.LookValue( ref wasProgrammed, "wasProgrammed", false );
         }
 
         public override void                PostDeSpawn()
         {
+            //Log.Message( string.Format( "{0}.CompHopper.PostDeSpawn()", this.parent.ThingID ) );
             base.PostDeSpawn();
             DeprogramHopper();
             if( hopperUser != null )
@@ -96,6 +104,7 @@ namespace CommunityCoreLibrary
 
         public void                         DeprogramHopper()
         {
+            //Log.Message( string.Format( "{0}.CompHopper.DeprogramHopper()", this.parent.ThingID ) );
             if( !WasProgrammed )
             {
                 return;
@@ -116,6 +125,7 @@ namespace CommunityCoreLibrary
 
         public void                         ProgramHopper( StorageSettings HopperUserSettings )
         {
+            //Log.Message( string.Format( "{0}.CompHopper.ProgramHopper( StorageSettings )", this.parent.ThingID ) );
             if(
                 ( WasProgrammed )||
                 ( Building == null )||
@@ -146,11 +156,13 @@ namespace CommunityCoreLibrary
 
         public StorageSettings              GetStoreSettings()
         {
+            //Log.Message( string.Format( "{0}.CompHopper.GetStoreSettings()", this.parent.ThingID ) );
             return Building.GetStoreSettings();
         }
 
         public Thing                        GetResource( ThingFilter acceptableResources )
         {
+            //Log.Message( string.Format( "{0}.CompHopper.GetResource( ThingFilter )", this.parent.ThingID ) );
             var things = GetAllResources( acceptableResources );
             if( things.NullOrEmpty() )
             {
@@ -161,6 +173,7 @@ namespace CommunityCoreLibrary
 
         public Thing                        GetResource( ThingDef resourceDef )
         {
+            //Log.Message( string.Format( "{0}.CompHopper.GetResource( {1} )", this.parent.ThingID, resourceDef == null ? "null" : resourceDef.defName ) );
             var things = GetAllResources( resourceDef );
             if( things.NullOrEmpty() )
             {
@@ -171,6 +184,7 @@ namespace CommunityCoreLibrary
 
         public List< Thing >                GetAllResources( ThingFilter acceptableResources )
         {
+            //Log.Message( string.Format( "{0}.CompHopper.GetAllResources( ThingFilter )", this.parent.ThingID ) );
             var things = parent.Position.GetThingList().Where( t => (
                 ( acceptableResources.Allows( t.def ) )
             ) ).ToList();
@@ -187,6 +201,7 @@ namespace CommunityCoreLibrary
 
         public List< Thing >                GetAllResources( ThingDef resourceDef )
         {
+            //Log.Message( string.Format( "{0}.CompHopper.GetAllResources( {1} )", this.parent.ThingID, resourceDef == null ? "null" : resourceDef.defName ) );
             var things = parent.Position.GetThingList().Where( t => (
                 ( resourceDef == t.def )
             ) ).ToList();
@@ -207,31 +222,51 @@ namespace CommunityCoreLibrary
 
         public CompHopperUser               FindHopperUser()
         {
+            //Log.Message( string.Format( "{0}.CompHopper.FindHopperUser()", this.parent.ThingID ) );
             return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
         }
 
         public static CompHopperUser        FindHopperUser( IntVec3 cell )
         {
+            //var str = string.Format( "CompHopper.FindHopperUser( {0} )", cell.ToString() );
             if( !cell.InBounds() )
             {
-                // Out of bounds
+                //Log.Message( str );
                 return null;
             }
-            var thingList = cell.GetThingList();
-            foreach( var thing in thingList )
-            {
-                var thingDef = GenSpawn.BuiltDefOf( thing.def ) as ThingDef;
+            List<Thing> thingList = null;
+            if( Scribe.mode != LoadSaveMode.Inactive )
+            {   // Find hopper user in world matching cell
                 if(
-                    ( thingDef != null )&&
-                    ( thingDef.IsHopperUser() )
+                    ( Find.ThingGrid == null )||
+                    ( Find.ThingGrid.ThingsAt( cell ).Count() == 0 )
                 )
                 {
-                    // This thing wants a hopper
-                    return thing.TryGetComp<CompHopperUser>();
+                    //Log.Message( str );
+                    return null;
+                }
+                thingList = Find.ThingGrid.ThingsAt( cell ).ToList();
+            }
+            else
+            {   // Find hopper user in cell
+                thingList = cell.GetThingList();
+            }
+            if( !thingList.NullOrEmpty() )
+            {
+                var hopperUser = thingList.FirstOrDefault( (thing) =>
+                {
+                    var thingDef = GenSpawn.BuiltDefOf( thing.def ) as ThingDef;
+                    return ( thingDef != null )&&( thingDef.IsHopperUser() );
+                } );
+                if( hopperUser != null )
+                {   // Found a hopper user
+                    //str += " = " + hopperUser.ThingID;
+                    //Log.Message( str );
+                    return hopperUser.TryGetComp<CompHopperUser>();
                 }
             }
-
             // Nothing found
+            //Log.Message( str );
             return null;
         }
 

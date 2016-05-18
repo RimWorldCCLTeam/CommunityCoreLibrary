@@ -6,10 +6,18 @@
 
         <ModName>Community Core Library</ModName>
 
-        <minCCLVersion>0.13.1.1</minCCLVersion>
+        <minCCLVersion>0.13.2</minCCLVersion>
+
+        <ModConfigurationMenus>
+            <li>
+                <label>Minimap</label>
+                <mcmClass>CommunityCoreLibrary.MCM_MiniMap</mcmClass>
+            </li>
+        </ModConfigurationMenus>
 
         <MapComponents>
             <li>CommunityCoreLibrary.HideItemManager</li>
+            <li>CommunityCoreLibrary.MiniMap.MiniMapController</li>
         </MapComponents>
 
         <SpecialInjectors>

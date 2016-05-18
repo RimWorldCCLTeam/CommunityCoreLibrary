@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 using UnityEngine;
 using Verse;
@@ -30,7 +30,18 @@ namespace CommunityCoreLibrary.Controller
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
+        private static List<MCMHost>        mcmHosts;
+
+        private static List<MiniMap.MiniMap> miniMaps;
+
         internal static SubController[]     SubControllers;
+
+        // Some settings or windows require a game restart
+        public static bool                  RequireRestart = false;
+        public static bool                  ReloadingPlayData = false;
+        public static bool                  PlayWithoutRestart = false;
+        public static bool                  RestartWarningIsOpen = false;
+        public static bool                  WarnedAboutRestart = false;
 
         // For tracing in global functions
         private static ModHelperDef         _Trace_Current_Mod = null;
@@ -124,6 +135,30 @@ namespace CommunityCoreLibrary.Controller
                     advancedResearchDefs = DefDatabase< AdvancedResearchDef >.AllDefs.OrderBy( a => a.Priority ).ToList();
                 }
                 return advancedResearchDefs;
+            }
+        }
+
+        public static List< MCMHost >   MCMHosts
+        {
+            get
+            {
+                if( mcmHosts == null )
+                {
+                    mcmHosts = new List<MCMHost>();
+                }
+                return mcmHosts;
+            }
+        }
+
+        public static List<MiniMap.MiniMap> MiniMaps
+        {
+            get
+            {
+                if( miniMaps == null )
+                {
+                    miniMaps = new List<MiniMap.MiniMap>();
+                }
+                return miniMaps;
             }
         }
 

@@ -12,15 +12,25 @@ namespace CommunityCoreLibrary.Detour
     {
 
         internal static MethodInfo          _HideRainPrimary;
+        internal static FieldInfo           _section;
 
-        internal static void _Regenerate( this object obj )
+        private static Section              Section( this object obj )
+        {
+            if( _section == null )
+            {
+                _section = typeof( SectionLayer ).GetField( "section", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            return (Section)_section.GetValue( obj );
+        }
+
+        private static void                 _Regenerate( this object obj )
         {
             if( !MatBases.SunShadow.shader.isSupported )
             {
                 return;
             }
 
-            Section section = typeof( SectionLayer ).GetField( "section", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( obj ) as Section;
+            Section section = obj.Section();
             var sectionLayer = obj as SectionLayer;
 
             LayerSubMesh subMesh = sectionLayer.GetSubMesh( MatBases.IndoorMask );

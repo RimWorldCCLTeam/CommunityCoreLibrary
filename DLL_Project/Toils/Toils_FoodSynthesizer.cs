@@ -20,24 +20,37 @@ namespace CommunityCoreLibrary
             var synthesizer = (Building_AutomatedFactory) eater.jobs.curJob.GetTarget( ind ).Thing;
             var bestDef = synthesizer.BestProduct( validator, sorter );
             var takeFromSynthesizer = new Toil();
-            takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
-            takeFromSynthesizer.AddFinishAction( () =>
-                {
-                    var def = synthesizer.BestProduct( validator, sorter );
-                    Thing thing = synthesizer.TryProduceThingDef( def );
-                    if( thing == null )
+            //Log.Message( string.Format( "{0}.TakeMealFromSynthesizier( {1}, {2} )", eater == null ? "null" : eater.NameStringShort, synthesizer == null ? "null" : synthesizer.ThingID, bestDef == null ? "null" : bestDef.defName ) );
+            if( bestDef == null )
+            {
+                takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
+                takeFromSynthesizer.AddEndCondition( () =>
                     {
-                        Log.Error( eater.Label + " unable to take " + def.label + " from " + synthesizer.ThingID );
-                        eater.jobs.curDriver.EndJobWith( JobCondition.Incompletable );
+                        return JobCondition.Incompletable;
                     }
-                    else
+                );
+                takeFromSynthesizer.defaultDuration = 999;
+            }
+            else
+            {
+                takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
+                takeFromSynthesizer.AddFinishAction( () =>
                     {
-                        eater.carrier.TryStartCarry( thing );
-                        eater.jobs.curJob.targetA = (TargetInfo) eater.carrier.CarriedThing;
+                        Thing thing = synthesizer.TryProduceThingDef( bestDef );
+                        if( thing == null )
+                        {
+                            Log.Error( eater.Label + " unable to take " + bestDef.label + " from " + synthesizer.ThingID );
+                            eater.jobs.curDriver.EndJobWith( JobCondition.Incompletable );
+                        }
+                        else
+                        {
+                            eater.carrier.TryStartCarry( thing );
+                            eater.jobs.curJob.targetA = (TargetInfo) eater.carrier.CarriedThing;
+                        }
                     }
-                }
-            );
-            takeFromSynthesizer.defaultDuration = synthesizer.ProductionTicks( bestDef );
+                );
+                takeFromSynthesizer.defaultDuration = synthesizer.ProductionTicks( bestDef );
+            }
             return takeFromSynthesizer;
         }
 

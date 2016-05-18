@@ -15,22 +15,11 @@ namespace CommunityCoreLibrary.Controller
     internal class HelpSubController : SubController
     {
 
-        public override string              Name
-        {
-            get
-            {
-                return "Help Generator";
-            }
-        }
+        public override string              Name => "Help Generator";
 
         // Override sequence priorities
-        public override int                 InitializationPriority
-        {
-            get
-            {
-                return -75;
-            }
-        }
+        public override int                 InitializationPriority => 80;
+
         public override bool                Initialize()
         {
             // Don't auto-gen help if "quicktest" or "nohelp" command line switches are used
