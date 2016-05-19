@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary.MiniMap
         #region Fields
 
         private Color
-                    wildColor = Color.yellow,
+            wildColor = Color.yellow,
             tameColor = Color.green,
             hostileColor = Color.red,
             huntingColor = GenUI.MouseoverColor,

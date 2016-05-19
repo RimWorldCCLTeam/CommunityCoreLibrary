@@ -211,15 +211,23 @@ namespace CommunityCoreLibrary.MiniMap
 
         private void ExposeDataSave()
         {
+            bool hidden;
             foreach( var minimap in Controller.Data.MiniMaps )
             {
+                // Note: Minimaps with dynamic overlays break scribing because they have
+                // a machine generated defName which may not be the same after load.
+                if( minimap.miniMapDef.dynamicOverlays )
+                {
+                    continue;
+                }
+
                 #region Minimap Header
 
                 Scribe.EnterNode( minimap.miniMapDef.defName );
 
                 #endregion
 
-                var hidden = minimap.Hidden;
+                hidden = minimap.Hidden;
                 Scribe_Values.LookValue( ref hidden, "hidden" );
 
                 #region Handle all MiniMap Overlays
@@ -254,10 +262,14 @@ namespace CommunityCoreLibrary.MiniMap
 
         private void ExposeDataLoad()
         {
+            bool hidden = true; // Don't really need to set this but the compiler complains if we don't
             foreach( var minimap in Controller.Data.MiniMaps )
             {
-                if( !XmlNodeExists( Scribe.curParent, minimap.miniMapDef.defName ) )
-                {   // No saved data for this minimap
+                if(
+                    ( minimap.miniMapDef.dynamicOverlays )||
+                    ( !XmlNodeExists( Scribe.curParent, minimap.miniMapDef.defName ) )
+                )
+                {   // Dynamic minimap overlays or no saved data for this minimap
                     continue;
                 }
 
@@ -267,7 +279,6 @@ namespace CommunityCoreLibrary.MiniMap
 
                 #endregion
 
-                bool hidden = true;
                 Scribe_Values.LookValue( ref hidden, "hidden" );
                 minimap.Hidden = hidden;
 
@@ -307,17 +318,18 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        private bool XmlNodeExists( System.Xml.XmlNode parentNode, string name )
+        private bool XmlNodeExists( System.Xml.XmlNode parentNode, string childNode )
         {
             var xmlEnumerator = parentNode.ChildNodes.GetEnumerator();
             while( xmlEnumerator.MoveNext() )
             {
                 var node = (System.Xml.XmlNode) xmlEnumerator.Current;
-                if( node.Name == name )
+                if( node.Name == childNode )
                 {   // Node exists
                     return true;
                 }
             }
+            // Node doesn't exist
             return false;
         }
 
