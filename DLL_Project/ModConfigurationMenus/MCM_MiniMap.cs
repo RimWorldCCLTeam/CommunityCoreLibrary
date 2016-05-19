@@ -22,12 +22,6 @@ namespace CommunityCoreLibrary
             {
                 listing.OverrideColumnWidth = rect.width - 4f;
 
-                #region Main Description
-                var descLabel = "MiniMap.MCMDescription".Translate();
-                listing.DoLabel( descLabel );
-                listing.DoGap();
-                #endregion
-
                 #region Main Toggle
                 var toggleLabel = "MiniMap.MCMToggleMain".Translate();
                 listing.DoLabelCheckbox( toggleLabel, ref MiniMap.MiniMapController.visible );
