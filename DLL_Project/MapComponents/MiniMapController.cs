@@ -82,10 +82,10 @@ namespace CommunityCoreLibrary.MiniMap
             foreach( var minimap in Controller.Data.MiniMaps )
             {
                 #region Minimap Header
-                
-                Scribe.EnterNode( minimap.miniMapDef.defName );
-                
-                #endregion
+
+               Scribe.EnterNode( minimap.miniMapDef.defName );
+
+               #endregion
 
                 var hidden = minimap.Hidden;
                 Scribe_Values.LookValue( ref hidden, "hidden" );
@@ -96,19 +96,29 @@ namespace CommunityCoreLibrary.MiniMap
                 }
 
                 #region Handle all MiniMap Overlays
+
+                // Note: dynamic (Area) overlays seem to magically break scribing. I can't currently figure out why.
+                // disabled scribing for hem altogether for now.
+                //
+                // See note below for breakpoint.
+                if ( minimap.miniMapDef.dynamicOverlays )
+                    continue;
                 
                 foreach( var overlay in minimap.overlayWorkers )
                 {
                     #region Overlay Header
-                    
-                    Scribe.EnterNode( overlay.overlayDef.defName );
-                    
-                    #endregion
 
-                    hidden = overlay.Hidden;
-                    Scribe_Values.LookValue( ref hidden, "hidden" );
+                   Scribe.EnterNode( overlay.overlayDef.defName );
 
-                    if( Scribe.mode == LoadSaveMode.LoadingVars )
+                   #endregion
+                    
+                   hidden = overlay.Hidden;
+
+                    // This is where dynamic (Area) overlays break.
+                   Scribe_Values.LookValue( ref hidden, "hidden" );
+
+
+                    if ( Scribe.mode == LoadSaveMode.LoadingVars )
                     {
                         overlay.Hidden = hidden;
                     }
@@ -117,7 +127,7 @@ namespace CommunityCoreLibrary.MiniMap
                     
                     Scribe.ExitNode();
                     
-                    #endregion
+                   #endregion
                 }
                 
                 #endregion
@@ -125,8 +135,8 @@ namespace CommunityCoreLibrary.MiniMap
                 #region Finalize Minimap
                 
                 Scribe.ExitNode();
-                
-                #endregion
+
+               #endregion
             }
         }
 

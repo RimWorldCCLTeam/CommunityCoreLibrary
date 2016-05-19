@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary.MiniMap
         #region Fields
 
         private Color
-                    poweredColor = GenUI.MouseoverColor,
+            poweredColor = GenUI.MouseoverColor,
             poweredByBatteriesColor = Color.green,
             notPoweredColor = Color.red,
             offColor = Color.grey;
@@ -63,7 +63,13 @@ namespace CommunityCoreLibrary.MiniMap
 
         public void ExposeData()
         {
-            //throw new NotImplementedException();
+            Scribe_Values.LookValue( ref poweredColor, "poweredColor" );
+            Scribe_Values.LookValue( ref poweredByBatteriesColor, "poweredByBatteriesColor" );
+            Scribe_Values.LookValue( ref notPoweredColor, "notPoweredColor" );
+            Scribe_Values.LookValue( ref offColor, "offColor" );
+
+            if ( Scribe.mode == LoadSaveMode.LoadingVars )
+                UpdateInputFields();
         }
 
         public override void Update()
