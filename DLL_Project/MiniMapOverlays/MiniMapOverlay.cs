@@ -54,7 +54,7 @@ namespace CommunityCoreLibrary.MiniMap
 
                 // mark the controller dirty so everything is properly sorted
                 MiniMapController.dirty = true;
-            }
+                }
         }
 
         public virtual string label

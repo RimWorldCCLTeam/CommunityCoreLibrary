@@ -79,54 +79,13 @@ namespace CommunityCoreLibrary.MiniMap
         public override void ExposeData()
         {
             base.ExposeData();
-            foreach( var minimap in Controller.Data.MiniMaps )
+            if( Scribe.mode == LoadSaveMode.Saving )
             {
-                #region Minimap Header
-                
-                Scribe.EnterNode( minimap.miniMapDef.defName );
-                
-                #endregion
-
-                var hidden = minimap.Hidden;
-                Scribe_Values.LookValue( ref hidden, "hidden" );
-
-                if( Scribe.mode == LoadSaveMode.LoadingVars )
-                {
-                    minimap.Hidden = hidden;
-                }
-
-                #region Handle all MiniMap Overlays
-                
-                foreach( var overlay in minimap.overlayWorkers )
-                {
-                    #region Overlay Header
-                    
-                    Scribe.EnterNode( overlay.overlayDef.defName );
-                    
-                    #endregion
-
-                    hidden = overlay.Hidden;
-                    Scribe_Values.LookValue( ref hidden, "hidden" );
-
-                    if( Scribe.mode == LoadSaveMode.LoadingVars )
-                    {
-                        overlay.Hidden = hidden;
-                    }
-
-                    #region Finalize Overlay
-                    
-                    Scribe.ExitNode();
-                    
-                    #endregion
-                }
-                
-                #endregion
-
-                #region Finalize Minimap
-                
-                Scribe.ExitNode();
-                
-                #endregion
+                ExposeDataSave();
+            }
+            else if( Scribe.mode == LoadSaveMode.LoadingVars )
+            {
+                ExposeDataLoad();
             }
         }
 
@@ -244,6 +203,134 @@ namespace CommunityCoreLibrary.MiniMap
                                .ToList();
 
             dirty = false;
+        }
+
+        #endregion
+
+        #region Save/Load Minimap and Overlays
+
+        private void ExposeDataSave()
+        {
+            bool hidden;
+            foreach( var minimap in Controller.Data.MiniMaps )
+            {
+                // Note: Minimaps with dynamic overlays break scribing because they have
+                // a machine generated defName which may not be the same after load.
+                if( minimap.miniMapDef.dynamicOverlays )
+                {
+                    continue;
+                }
+
+                #region Minimap Header
+
+                Scribe.EnterNode( minimap.miniMapDef.defName );
+
+                #endregion
+
+                hidden = minimap.Hidden;
+                Scribe_Values.LookValue( ref hidden, "hidden" );
+
+                #region Handle all MiniMap Overlays
+
+                foreach( var overlay in minimap.overlayWorkers )
+                {
+                    #region Overlay Header
+
+                    Scribe.EnterNode( overlay.overlayDef.defName );
+
+                    #endregion
+
+                    hidden = overlay.Hidden;
+                    Scribe_Values.LookValue( ref hidden, "hidden" );
+
+                    #region Finalize Overlay
+
+                    Scribe.ExitNode();
+
+                    #endregion
+                }
+
+                #endregion
+
+                #region Finalize Minimap
+
+                Scribe.ExitNode();
+
+                #endregion
+            }
+        }
+
+        private void ExposeDataLoad()
+        {
+            bool hidden = true; // Don't really need to set this but the compiler complains if we don't
+            foreach( var minimap in Controller.Data.MiniMaps )
+            {
+                if(
+                    ( minimap.miniMapDef.dynamicOverlays )||
+                    ( !XmlNodeExists( Scribe.curParent, minimap.miniMapDef.defName ) )
+                )
+                {   // Dynamic minimap overlays or no saved data for this minimap
+                    continue;
+                }
+
+                #region Minimap Header
+
+                Scribe.EnterNode( minimap.miniMapDef.defName );
+
+                #endregion
+
+                Scribe_Values.LookValue( ref hidden, "hidden" );
+                minimap.Hidden = hidden;
+
+                #region Handle all MiniMap Overlays
+
+                foreach( var overlay in minimap.overlayWorkers )
+                {
+
+                    if( !XmlNodeExists( Scribe.curParent, overlay.overlayDef.defName ) )
+                    {   // No saved data for this overlay
+                        continue;
+                    }
+
+                    #region Overlay Header
+
+                    Scribe.EnterNode( overlay.overlayDef.defName );
+
+                    #endregion
+
+                    Scribe_Values.LookValue( ref hidden, "hidden" );
+                    overlay.Hidden = hidden;
+
+                    #region Finalize Overlay
+
+                    Scribe.ExitNode();
+
+                    #endregion
+                }
+
+                #endregion
+
+                #region Finalize Minimap
+
+                Scribe.ExitNode();
+
+                #endregion
+            }
+        }
+
+        private bool XmlNodeExists( System.Xml.XmlNode parentNode, string childNode )
+        {
+            var xmlEnumerator = parentNode.ChildNodes.GetEnumerator();
+            while( xmlEnumerator.MoveNext() )
+            {
+                var node = (System.Xml.XmlNode) xmlEnumerator.Current;
+                if( node.Name == childNode )
+                {   // Node exists
+                    return true;
+                }
+            }
+            // Node doesn't exist
+            return false;
         }
 
         #endregion
