@@ -7,7 +7,7 @@
 
     <url>https://ludeon.com/forums/index.php?topic=14172.0</url>
 
-    <targetVersion>Community Core Library v0.13.2.1</targetVersion>
+    <targetVersion>Community Core Library v0.13.3</targetVersion>
 
     <description>Makes optional changes to the core game objects.\n\nThis mod is optional but recommended (by the CCL modding team, but we're biased).</description>
 

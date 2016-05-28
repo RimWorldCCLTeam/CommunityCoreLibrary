@@ -34,12 +34,13 @@
                 <requiredMod>string</requiredMod>
                                         [optional] Name of required mod to perform this injection
 
-                                        <compProps>             [required] Property of ThingComp to inject
+                <compProps>             [required] Property of ThingComp to inject
 
                     <compClass>ThingComp</compClass>
                     ...
 
                 </compProps>
+
                 <targetDefs>            [required] List of ThingDefs to inject ThingComp into
                     <li>ThingDef</li>
                 </targetDefs>
@@ -51,7 +52,7 @@
             <li>
                 <requiredMod>string</requiredMod>
                                         [optional] Name of required mod to perform this injection
-                                        
+
                 <tickerType>TickerType</tickerType>
                                         [required] New ticker type to override on ThingDefs
                 <targetDefs>            [required] List of ThingDefs to override tickerType
@@ -64,7 +65,7 @@
             <li>
                 <requiredMod>string</requiredMod>
                                         [optional] Name of required mod to perform this injection
-                                        
+
                 <facility>ThingDef</facility>
                                         [required] Facility to inject into buildings
                 <targetDefs>
