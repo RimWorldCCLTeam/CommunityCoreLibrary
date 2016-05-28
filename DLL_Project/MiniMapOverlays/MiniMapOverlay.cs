@@ -8,32 +8,37 @@ using Verse;
 
 namespace CommunityCoreLibrary.MiniMap
 {
+    
     public abstract class MiniMapOverlay // : IConfigurable
     {
+        
         #region Fields
 
-        public MiniMapOverlayDef    overlayDef;
-        private bool                _hidden = false;
+        public MiniMapOverlayDef        overlayDef;
+        private bool                    _hidden = false;
 
-        private Texture2D           _texture;
-        private MiniMap             minimap;
+        private Texture2D               _texture;
+        private MiniMap                 minimap;
+
+        public bool                     dirty;
 
         #endregion Fields
 
         #region Constructors
 
-        public MiniMapOverlay( MiniMap minimap, MiniMapOverlayDef overlayDef )
+        protected                       MiniMapOverlay( MiniMap minimap, MiniMapOverlayDef overlayDef )
         {
             this.minimap = minimap;
             this.overlayDef = overlayDef;
             _hidden = overlayDef.hiddenByDefault;
+            dirty = true;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public virtual bool Hidden
+        public virtual bool             Hidden
         {
             get
             {
@@ -44,20 +49,19 @@ namespace CommunityCoreLibrary.MiniMap
                 _hidden = value;
 
                 // make entire minimap visible if any overlay is made visible
-                if ( !_hidden )
+                if( !_hidden )
                 {
                     minimap.Hidden = value;
+                    // Mark as dirty for immediate update
+                    dirty = true;
                 }
-
-                // update overlay since this was paused while hidden
-                Update();
 
                 // mark the controller dirty so everything is properly sorted
                 MiniMapController.dirty = true;
-                }
+            }
         }
 
-        public virtual string label
+        public virtual string           label
         {
             get
             {
@@ -69,7 +73,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public virtual string LabelCap
+        public virtual string           LabelCap
         {
             get
             {
@@ -77,7 +81,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public Texture2D texture
+        public Texture2D                texture
         {
             get
             {
@@ -97,11 +101,13 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region Methods
 
-        public void ClearTexture( bool apply = false )
+        public void                     ClearTexture( bool apply = false )
         {
             texture.SetPixels( MiniMap_Utilities.GetClearPixelArray );
-            if ( apply )
+            if( apply )
+            {
                 texture.Apply();
+            }
         }
 
         // Optional float menu option for this overlay
@@ -111,16 +117,20 @@ namespace CommunityCoreLibrary.MiniMap
             var options = new List<FloatMenuOption>();
 
             // add a toggle option for overlays that are not always on, and only if there's more than one overlay on this minimap 'mode'
-            if ( !minimap.miniMapDef.alwaysVisible && minimap.overlayWorkers.Count > 1 )
+            if( !minimap.miniMapDef.alwaysVisible && minimap.overlayWorkers.Count > 1 )
+            {
                 options.Add( new FloatMenuOption( "MiniMap.ToggleX".Translate( Hidden ? "Off".Translate().ToUpper() : "On".Translate().ToUpper(), LabelCap ), delegate
-                { Hidden = !Hidden; } ) );
+                {
+                    Hidden = !Hidden;
+                } ) );
+            }
 
             // done!
             return options;
         }
 
         // Required, update your texture, caller (MiniMap.Update()) will re-Apply()
-        public abstract void Update();
+        public abstract void            Update();
 
         #endregion Methods
     }
