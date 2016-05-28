@@ -143,7 +143,6 @@ namespace CommunityCoreLibrary
                     bool setResearch = availabilitySet.researchPrerequisites != null;
 
                     bool menuHidden = false;
-                    DesignationCategoryDef newCategory = null;
                     List<ResearchProjectDef> research = null;
 
                     if( setMenuHidden )                                  
@@ -152,9 +151,6 @@ namespace CommunityCoreLibrary
                     }
                     if( setDesignation )
                     {
-                        newCategory = availabilitySet.designationCategory == "None"
-                                    ? null
-                                    : DefDatabase<DesignationCategoryDef>.GetNamed( availabilitySet.designationCategory );
                     }
                     if(
                         ( setResearch )&&
@@ -174,45 +170,7 @@ namespace CommunityCoreLibrary
                         }
                         if( setDesignation )
                         {
-                            DesignationCategoryDef oldCategory = null;
-                            Designator_Build oldDesignator = null;
-                            if( target.designationCategory != availabilitySet.designationCategory )
-                            {
-                                // Only change if it's actually changed
-                                if(
-                                    ( !target.designationCategory.NullOrEmpty() )&&
-                                    ( target.designationCategory != "None" )
-                                )
-                                {
-                                    oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( target.designationCategory );
-                                    oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
-                                        ( d is Designator_Build )&&
-                                        ( ( d as Designator_Build ).PlacingDef == (BuildableDef) target )
-                                    ) );
-                                }
-                                if( newCategory == null )
-                                {
-                                    if( oldCategory != null )
-                                    {
-                                        oldCategory.resolvedDesignators.Remove( oldDesignator );
-                                    }
-                                }
-                                else
-                                {
-                                    Designator_Build newDesignator = null;
-                                    if( oldDesignator != null )
-                                    {
-                                        oldCategory.resolvedDesignators.Remove( oldDesignator );
-                                        newDesignator = oldDesignator;
-                                    }
-                                    else
-                                    {
-                                        newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) target } );
-                                    }
-                                    newCategory.resolvedDesignators.Add( newDesignator );
-                                }
-                                target.designationCategory = availabilitySet.designationCategory;
-                            }
+                            target.ChangeDesignationCategory( availabilitySet.designationCategory );
                         }
                         if( setResearch )
                         {
