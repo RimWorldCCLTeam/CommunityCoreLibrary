@@ -27,7 +27,7 @@ namespace CommunityCoreLibrary
                 }
                 else
                 {
-                    HopperIndex = ( HopperIndex++ ) % HopperDefs.Count;
+                    HopperIndex = ( ++HopperIndex ) % HopperDefs.Count;
                 }
                 return ThingRequest.ForDef( HopperDefs[ HopperIndex ] );
             }
