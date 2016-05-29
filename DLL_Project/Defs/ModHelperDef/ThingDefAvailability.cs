@@ -149,9 +149,6 @@ namespace CommunityCoreLibrary
                     {
                         menuHidden = availabilitySet.menuHidden.ToLower() == "true" ? true : false;
                     }
-                    if( setDesignation )
-                    {
-                    }
                     if(
                         ( setResearch )&&
                         ( availabilitySet.researchPrerequisites.Count > 0 )
