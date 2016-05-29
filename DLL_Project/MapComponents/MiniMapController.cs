@@ -333,7 +333,7 @@ namespace CommunityCoreLibrary.MiniMap
             {
                 if(
                     ( minimap.miniMapDef.dynamicOverlays )||
-                    ( !XmlNodeExists( Scribe.curParent, minimap.miniMapDef.defName ) )
+                    ( !Scribe.curParent.HasChildNode( minimap.miniMapDef.defName ) )
                 )
                 {   // Dynamic minimap overlays or no saved data for this minimap
                     continue;
@@ -353,7 +353,7 @@ namespace CommunityCoreLibrary.MiniMap
                 foreach( var overlay in minimap.overlayWorkers )
                 {
 
-                    if( !XmlNodeExists( Scribe.curParent, overlay.overlayDef.defName ) )
+                    if( !Scribe.curParent.HasChildNode( overlay.overlayDef.defName ) )
                     {   // No saved data for this overlay
                         continue;
                     }
@@ -382,22 +382,6 @@ namespace CommunityCoreLibrary.MiniMap
 
                 #endregion
             }
-        }
-
-        // TODO:  Move this method to an extension class (question, under what though?)
-        private bool                    XmlNodeExists( System.Xml.XmlNode parentNode, string childNode )
-        {
-            var xmlEnumerator = parentNode.ChildNodes.GetEnumerator();
-            while( xmlEnumerator.MoveNext() )
-            {
-                var node = (System.Xml.XmlNode) xmlEnumerator.Current;
-                if( node.Name == childNode )
-                {   // Node exists
-                    return true;
-                }
-            }
-            // Node doesn't exist
-            return false;
         }
 
         #endregion
