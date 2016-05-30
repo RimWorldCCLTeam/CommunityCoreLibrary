@@ -274,6 +274,7 @@
     <Compile Include="Detours\PostLoadInitter.cs" />
     <Compile Include="Detours\BiomeDef.cs" />
     <Compile Include="Classes\Static\XML_Helper.cs" />
+    <Compile Include="Detours\SocialProperness.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

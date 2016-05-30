@@ -261,6 +261,15 @@ namespace CommunityCoreLibrary
                     return false;
             }
             
+            // Detour RimWorld.SocialProperness.IsSociallyProper
+            MethodInfo RimWorld_SocialProperness_IsSociallyProper = typeof( SocialProperness ).GetMethods().First<MethodInfo>( ( arg ) => (
+                ( arg.Name == "IsSociallyProper" ) &&
+                ( arg.GetParameters().Count() == 4 )
+            ) );
+            MethodInfo CCL_SocialProperness_IsSociallyProper = typeof( Detour._SocialProperness ).GetMethod( "_IsSociallyProper", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_SocialProperness_IsSociallyProper, CCL_SocialProperness_IsSociallyProper ) )
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
