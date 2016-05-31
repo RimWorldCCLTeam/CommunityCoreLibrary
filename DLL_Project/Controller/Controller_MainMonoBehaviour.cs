@@ -266,15 +266,11 @@ namespace CommunityCoreLibrary.Controller
                 {
                     arguements += " ";
                 }
-                arguements += args[ index ];
+                arguements += "\"" + args[ index ] + "\"";
             }
 #if DEVELOPER
             Log.Message( "Restarting RimWorld:\n" + commandLine + " " + arguements );
 #endif
-            if( !string.IsNullOrEmpty( arguements ) )
-            {
-                arguements = "\"" + arguements + "\"";
-            }
             Process.Start( commandLine, arguements );
             Root.Shutdown();
         }
