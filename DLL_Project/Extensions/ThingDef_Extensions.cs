@@ -153,6 +153,54 @@ namespace CommunityCoreLibrary
             return joyGiverDefs;
         }
 
+        public static bool                  ChangeDesignationCategory( this ThingDef thingDef, string newCategory )
+        {
+            if( string.IsNullOrEmpty( newCategory ) )
+            {   // Invalid category
+                return false;
+            }
+            if( thingDef.designationCategory == newCategory )
+            {   // Already this category
+                return true;
+            }
+            DesignationCategoryDef newCategoryDef =
+                newCategory == "None"
+                ? null
+                : DefDatabase<DesignationCategoryDef>.GetNamed( newCategory, false );
+            DesignationCategoryDef oldCategory = null;
+            Designator_Build oldDesignator = null;
+            if(
+                ( !thingDef.designationCategory.NullOrEmpty() )&&
+                ( thingDef.designationCategory != "None" )
+            )
+            {
+                oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( thingDef.designationCategory );
+                oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
+                    ( d is Designator_Build )&&
+                    ( ( d as Designator_Build ).PlacingDef == (BuildableDef) thingDef )
+                ) );
+            }
+            if( oldCategory != null )
+            {
+                oldCategory.resolvedDesignators.Remove( oldDesignator );
+            }
+            if( newCategoryDef != null )
+            {
+                Designator_Build newDesignator = null;
+                if( oldDesignator != null )
+                {
+                    newDesignator = oldDesignator;
+                }
+                else
+                {
+                    newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) thingDef } );
+                }
+                newCategoryDef.resolvedDesignators.Add( newDesignator );
+            }
+            thingDef.designationCategory = newCategory;
+            return true;
+        }
+
         #endregion
 
         #region Lists of affected data

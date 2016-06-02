@@ -33,7 +33,7 @@ namespace CommunityCoreLibrary.Detour
                     {
                         return obj.IngestJob( pawn, foodInInventory );
                     }
-                    CompRottable comp = foodInInventory.TryGetComp<CompRottable>();
+                    var comp = foodInInventory.TryGetComp<CompRottable>();
                     if(
                         ( comp != null )&&
                         ( comp.TicksUntilRotAtCurrentTemp < 30000 )
@@ -44,7 +44,7 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             ThingDef foodDef;
-            Thing bestFoodSource = FoodUtility.BestFoodSourceFor( pawn, pawn, false, out foodDef );
+            var bestFoodSource = FoodUtility.BestFoodSourceFor( pawn, pawn, false, out foodDef );
             if(
                 ( foodInInventory != null )&&
                 (
@@ -91,8 +91,8 @@ namespace CommunityCoreLibrary.Detour
                     }
                     else
                     {
-                        ISlotGroupParent hopperSgp = hopper as ISlotGroupParent;
-                        Job job = HopperFillFoodJob( pawn, hopperSgp, bestFoodSource );
+                        var hopperSgp = hopper as ISlotGroupParent;
+                        var job = HopperFillFoodJob( pawn, hopperSgp, bestFoodSource );
                         if( job != null )
                         {
                             return job;
@@ -106,21 +106,21 @@ namespace CommunityCoreLibrary.Detour
                     }
                 }
             }
-            Pawn prey = bestFoodSource as Pawn;
+            var prey = bestFoodSource as Pawn;
             if( prey != null )
             {
-                Job predatorHunt = new Job( JobDefOf.PredatorHunt, prey );
+                var predatorHunt = new Job( JobDefOf.PredatorHunt, prey );
                 predatorHunt.killIncappedTarget = true;
                 return predatorHunt;
             }
-            Job ingestJob = new Job( JobDefOf.Ingest, bestFoodSource );
+            var ingestJob = new Job( JobDefOf.Ingest, bestFoodSource );
             ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
             return ingestJob;
         }
 
         internal static Job HopperFillFoodJob( Pawn pawn, ISlotGroupParent hopperSgp, Thing parent )
         {
-            Building building = hopperSgp as Building;
+            var building = hopperSgp as Building;
             if(
                 ( !pawn.CanReserveAndReach(
                     ( TargetInfo )building.Position,
@@ -132,8 +132,8 @@ namespace CommunityCoreLibrary.Detour
             {
                 return (Job) null;
             }
-            ThingDef resourceDef = (ThingDef) null;
-            Thing firstItem = building.Position.GetFirstItem();
+            ThingDef resourceDef = null;
+            var firstItem = building.Position.GetFirstItem();
             if( firstItem != null )
             {
                 if(

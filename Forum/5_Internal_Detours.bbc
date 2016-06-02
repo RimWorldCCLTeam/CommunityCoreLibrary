@@ -31,6 +31,7 @@ These detours are done automatically by CCL and require nothing other than havin
 [li][color=orange]RimWorld.MainMenuDrawer.MainMenuOnGUI[/color] - Enables defining the main menu buttons in a def.[/li]
 [li][color=orange]RimWorld.MainTabWindow_Research.DrawLeftRect "NotFinished" predicate[/color] - Adds an additional check for IsLockedOut() to prevent showing research projects which can never be researched.[/li]
 [li][color=orange]RimWorld.PassingShip.Depart[/color] - Allows messages about departing trade ships to be displayed with custom comms consoles[sup][size=8pt]5.4[/size][/sup].[/li]
+[li][color=orange]RimWorld.SocialProperness.IsSociallyProper[/color] - Fixes logic where prisoners not in the same room as the thing being checked would return false, even if the prisoner could path to the thing and both rooms are prison cells.[/li]
 [li][color=orange]RimWorld.StatWorker.ShouldShowFor[/color] - Allows stats for custom doors[sup][size=8pt]5.1[/size][/sup] to be displayed.[/li]
 [li][color=orange]RimWorld.TargetingParameters.CanTarget[/color] - Allows custom doors[sup][size=8pt]5.1[/size][/sup] and custom fire[sup][size=8pt]5.6[/size][/sup] to be properly targeted.[/li]
 [li][color=orange]RimWorld.ThingSelectionUtility.SelectableNow[/color] - Support for CompHideItem to prevent item selection by the player for buildings which should represent containers.[/li]

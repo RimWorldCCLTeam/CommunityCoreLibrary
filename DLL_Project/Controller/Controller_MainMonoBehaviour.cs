@@ -266,7 +266,7 @@ namespace CommunityCoreLibrary.Controller
                 {
                     arguements += " ";
                 }
-                arguements += args[ index ];
+                arguements += "\"" + args[ index ] + "\"";
             }
 #if DEVELOPER
             Log.Message( "Restarting RimWorld:\n" + commandLine + " " + arguements );

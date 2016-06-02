@@ -103,5 +103,19 @@ namespace CommunityCoreLibrary.UI
         {
             return String.Join( seperator, enmumerable.ToArray() );
         }
+
+        public static bool ImageButton( Rect canvas, Texture2D tex, string altString, string tip = "" )
+        {
+            if( !tip.NullOrEmpty() )
+            {
+                TooltipHandler.TipRegion( canvas, tip );
+            }
+            if( tex == null )
+            {
+                return Widgets.TextButton( canvas, altString, false, true );
+            }
+            return Widgets.ImageButton( canvas, tex );
+        }
+
     }
 }

@@ -23,6 +23,8 @@ namespace CommunityCoreLibrary.MiniMap
 
         private Texture2D               _iconTexture;
 
+        public bool                     dirty;
+
         #endregion Instance Data
 
         #region Constructors
@@ -32,10 +34,6 @@ namespace CommunityCoreLibrary.MiniMap
             this.miniMapDef = miniMapDef;
             this._hidden = this.miniMapDef.hiddenByDefault;
 
-            if( !this.miniMapDef.iconTex.NullOrEmpty() )
-            {
-                _iconTexture = ContentFinder<Texture2D>.Get( this.miniMapDef.iconTex, true );
-            }
             overlayWorkers = new List<MiniMapOverlay>();
 
             for( int index = 0; index < this.miniMapDef.overlays.Count; ++index )
@@ -77,32 +75,7 @@ namespace CommunityCoreLibrary.MiniMap
                 }
             }
 
-            // Link MCM Class to mcmWorker
-            /*
-            if( miniMapDef.mcmClass != null )
-            {
-                if( !miniMapDef.mcmClass.IsSubclassOf( typeof( ModConfigurationMenu ) ) )
-                {
-                    CCL_Log.TraceMod(
-                        miniMapDef,
-                        Verbosity.NonFatalErrors,
-                        string.Format( "Unable to resolve mcmClass for '{0}'", miniMapDef.defName )
-                    );
-                    return;
-                }
-                else if( !Controller.Data.MCMHosts.NullOrEmpty() )
-                {
-                    foreach( var host in Controller.Data.MCMHosts )
-                    {
-                        if( host.worker.GetType() == miniMapDef.mcmClass )
-                        {
-                            this.mcmWorker = host.worker;
-                        }
-                    }
-                }
-            }
-            */
-
+            dirty = true;
         }
 
         #endregion Constructors
@@ -136,7 +109,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public virtual bool Hidden
+        public virtual bool             Hidden
         {
             get
             {
@@ -146,18 +119,28 @@ namespace CommunityCoreLibrary.MiniMap
             {
                 _hidden = value;
 
-                // give it an update since it's not updated while hidden
-                Update();
+                if( !_hidden )
+                {
+                    // Mark as dirty for immediate update
+                    dirty = true;
+                }
 
                 // mark the controller dirty so overlays get re-ordered.
                 MiniMapController.dirty = true;
             }
         }
 
-        public virtual Texture2D Icon
+        public virtual Texture2D        Icon
         {
             get
             {
+                if(
+                    ( _iconTexture == null )&&
+                    ( !this.miniMapDef.iconTex.NullOrEmpty() )
+                )
+                {
+                    _iconTexture = ContentFinder<Texture2D>.Get( this.miniMapDef.iconTex, true );
+                }
                 if( _iconTexture.NullOrBad() )
                 {
                     return TexUI.UnknownThing;
@@ -166,7 +149,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public virtual string label
+        public virtual string           label
         {
             get
             {
@@ -178,7 +161,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public virtual string LabelCap
+        public virtual string           LabelCap
         {
             get
             {
@@ -186,57 +169,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        #endregion Properties
-
-        #region Methods
-
-        public void ClearTextures( bool apply = false )
-        {
-            foreach ( var overlay in overlayWorkers )
-            {
-                overlay.ClearTexture( apply );
-                overlay.texture.Apply();
-            }
-        }
-
-        public virtual void Update()
-        {
-        }
-
-        public virtual void DrawOverlays( Rect inRect )
-        {
-            var workers = VisibleOverlays;
-            if( workers.Any() )
-            {
-                foreach( var worker in workers )
-                {
-                    GUI.DrawTexture( inRect, worker.texture );
-                }
-            }
-        }
-
-        public virtual List<FloatMenuOption>  GetFloatMenuOptions()
-        {
-            List<FloatMenuOption> options = overlayWorkers.SelectMany( worker => worker.GetFloatMenuOptions() ).ToList();
-
-            /*
-             * This is being worked on
-             * 
-            if( this.mcmWorker != null )
-            {
-                options.Add( new FloatMenuOption(
-                    "MiniMap.ShowMCMOption".Translate( label ),
-                    () =>
-                {
-                    Find.WindowStack.Add( new Window_ModConfigurationMenu( this.mcmWorker ) );
-                    return;
-                } ) );
-            }
-            */
-            return options;
-        }
-
-        public virtual string   ToolTip
+        public virtual string           ToolTip
         {
             get
             {
@@ -262,6 +195,41 @@ namespace CommunityCoreLibrary.MiniMap
                 tipString += "MiniMap.Toggle".Translate();
                 return tipString;
             }
+        }
+
+        #endregion Properties
+
+        #region Methods
+
+        public void                     ClearTextures( bool apply = false )
+        {
+            foreach ( var overlay in overlayWorkers )
+            {
+                overlay.ClearTexture( apply );
+                overlay.texture.Apply();
+            }
+        }
+
+        public virtual void             Update()
+        {
+        }
+
+        public virtual void             DrawOverlays( Rect inRect )
+        {
+            var workers = VisibleOverlays;
+            if( workers.Any() )
+            {
+                foreach( var worker in workers )
+                {
+                    GUI.DrawTexture( inRect, worker.texture );
+                }
+            }
+        }
+
+        public virtual List<FloatMenuOption>  GetFloatMenuOptions()
+        {
+            List<FloatMenuOption> options = overlayWorkers.SelectMany( worker => worker.GetFloatMenuOptions() ).ToList();
+            return options;
         }
 
         #endregion Methods

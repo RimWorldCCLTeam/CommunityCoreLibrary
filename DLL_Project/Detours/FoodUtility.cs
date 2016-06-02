@@ -89,7 +89,7 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
 
-            if( dispenserValidator.getter.RaceProps.ToolUser )
+            if( getter.RaceProps.ToolUser )
             {
                 // Try to find a working nutrient paste dispenser or food sythesizer
                 var validatorPredicate = new Predicate<Thing>( dispenserValidator.Validate );
@@ -118,9 +118,10 @@ namespace CommunityCoreLibrary.Detour
                         dispenserValidator.meal.def = null;
                         dispenserValidator.meal.score = FoodOptimalityUnusable;
                     }
+
                     // Now find the best/closest dispenser
                     var dispenser = GenClosest.ClosestThingReachable(
-                        dispenserValidator.getter.Position,
+                        getter.Position,
                         ThingRequest.ForUndefined(),
                         PathEndMode.InteractionCell,
                         TraverseParms.For(
@@ -131,7 +132,7 @@ namespace CommunityCoreLibrary.Detour
                         dispensers,
                         -1,
                         true );
-                    
+
                     if( dispenser != null )
                     {
                         // Found a dispenser/synthesizer and it's better than the spawned meal
