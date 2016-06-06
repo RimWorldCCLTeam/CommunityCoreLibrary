@@ -20,7 +20,8 @@ namespace CommunityCoreLibrary.MiniMap
         public static bool              initialized = false;
         public static bool              visible = false;
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
-        public static Vector2           windowSize = new Vector2( 250f, 250f );
+        public const float              MINWINDOWSIZE = 40f;
+        public const float              DEFAULTWINDOWSIZE = 250f;
 
         #endregion Fields
 
@@ -79,6 +80,22 @@ namespace CommunityCoreLibrary.MiniMap
         public override void            ExposeData()
         {
             base.ExposeData();
+
+            Scribe_Values.LookValue( ref visible, "visible" );
+            if( Scribe.mode == LoadSaveMode.Saving )
+            {   // Scribing directly as a rect causing extra formatting '(x:#, y:#, width:#, height:#)' which throws errors on load
+                var rectStr = "(" +
+                    Window_MiniMap.windowRect.x + "," +
+                    Window_MiniMap.windowRect.y + "," +
+                    Window_MiniMap.windowRect.width + "," +
+                    Window_MiniMap.windowRect.height + ")";
+                Scribe_Values.LookValue( ref rectStr, "windowRect" );
+            }
+            else if( Scribe.mode == LoadSaveMode.LoadingVars )
+            {
+                Scribe_Values.LookValue( ref Window_MiniMap.windowRect, "windowRect" );
+            }
+
             if( Scribe.mode == LoadSaveMode.Saving )
             {
                 ExposeDataSave();
@@ -177,7 +194,11 @@ namespace CommunityCoreLibrary.MiniMap
                 return true;
             }
 
-            Window_MiniMap.windowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x );
+            if( Window_MiniMap.windowRect.width < MINWINDOWSIZE )
+            {
+                Window_MiniMap.windowRect = new Rect( Screen.width - DEFAULTWINDOWSIZE, 0f, DEFAULTWINDOWSIZE, DEFAULTWINDOWSIZE );
+            }
+
             window = new Window_MiniMap( Window_MiniMap.windowRect );
             if( window == null )
             {

@@ -8,13 +8,13 @@ using Verse;
 
 namespace CommunityCoreLibrary.MiniMap
 {
-    // TODO:  Handle right-click on minimap icon for float menu options (MiniMap.GetFloatMenuOptions())
-
+    
     public class Window_MiniMap : Window
     {
         #region Fields
 
         public static Rect windowRect;
+
         private static Texture2D _lockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/locked");
         private static Texture2D _scaleIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/scale");
         private static Texture2D _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
@@ -82,9 +82,9 @@ namespace CommunityCoreLibrary.MiniMap
         public override void DoWindowContents( Rect inRect )
         {
             // draw all minimaps
-            foreach ( var overlay in MiniMapController.visibleMiniMaps )
+            foreach( var minimap in MiniMapController.visibleMiniMaps )
             {
-                overlay.DrawOverlays( inRect );
+                minimap.DrawOverlays( inRect );
             }
 
             // handle minimap click & drag
@@ -127,6 +127,14 @@ namespace CommunityCoreLibrary.MiniMap
 
         private void ClampWindowToScreen()
         {
+            if( currentWindowRect.width < MiniMapController.MINWINDOWSIZE )
+            {
+                currentWindowRect.width = MiniMapController.MINWINDOWSIZE;
+            }
+            if( currentWindowRect.height < MiniMapController.MINWINDOWSIZE )
+            {
+                currentWindowRect.height = MiniMapController.MINWINDOWSIZE;
+            }
             if ( currentWindowRect.xMax > Screen.width )
                 currentWindowRect.x -= currentWindowRect.xMax - Screen.width;
             if ( currentWindowRect.xMin < 0 )
@@ -135,6 +143,8 @@ namespace CommunityCoreLibrary.MiniMap
                 currentWindowRect.y -= currentWindowRect.yMax - Screen.height;
             if ( currentWindowRect.yMin < 0 )
                 currentWindowRect.y -= currentWindowRect.yMin;
+            // Update the master rect
+            windowRect = currentWindowRect;
         }
 
         private void DrawMiniMapButtons()
@@ -153,7 +163,7 @@ namespace CommunityCoreLibrary.MiniMap
             iconRect.y += iconSize + iconMargin;
 
             // scale icon
-            bool scaled = currentWindowRect.width == Find.Map.Size.x && currentWindowRect.height == Find.Map.Size.z;
+            bool scaled = Mathf.Approximately( currentWindowRect.width, Find.Map.Size.x ) && Mathf.Approximately( currentWindowRect.height, Find.Map.Size.z );
             TooltipHandler.TipRegion( iconRect, scaled ? "MiniMap.DefaultSize".Translate() : "MiniMap.OneToOneScale".Translate() );
             if ( Widgets.ImageButton( iconRect, _scaleIcon ) )
             {
@@ -189,8 +199,8 @@ namespace CommunityCoreLibrary.MiniMap
 
                 if ( scaled )
                 {
-                    currentWindowRect.width = MiniMapController.windowSize.x;
-                    currentWindowRect.height = MiniMapController.windowSize.y;
+                    currentWindowRect.width = MiniMapController.DEFAULTWINDOWSIZE;
+                    currentWindowRect.height = MiniMapController.DEFAULTWINDOWSIZE;
                     ClampWindowToScreen();
                 }
                 else

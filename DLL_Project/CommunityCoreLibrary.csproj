@@ -281,6 +281,7 @@
     <Compile Include="Extensions\Pawn_WorkSettings_Extensions.cs" />
     <Compile Include="Extensions\Room_Extensions.cs" />
     <Compile Include="Extensions\TraitSet_Extensions.cs" />
+    <Compile Include="Classes\Static\OverlayDrawer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

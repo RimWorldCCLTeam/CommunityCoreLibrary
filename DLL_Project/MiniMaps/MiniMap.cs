@@ -86,7 +86,7 @@ namespace CommunityCoreLibrary.MiniMap
         {
             get
             {
-                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.overlayDef.drawOffset ).ToList();
+                return overlayWorkers.Where( worker => !worker.Hidden ).OrderBy( worker => worker.overlayDef.drawOffset ).ToList();
             }
         }
 
