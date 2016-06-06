@@ -39,7 +39,14 @@ namespace CommunityCoreLibrary
             {
                 if( string.IsNullOrEmpty( _key ) )
                 {
-                    _key = Label.Replace( " ", "_" );
+                    if( string.IsNullOrEmpty( worker.InjectionSet.saveKey ) )
+                    {
+                        _key = Label.Replace( " ", "_" );
+                    }
+                    else
+                    {
+                        _key = worker.InjectionSet.saveKey;
+                    }
                 }
                 return _key;
             }

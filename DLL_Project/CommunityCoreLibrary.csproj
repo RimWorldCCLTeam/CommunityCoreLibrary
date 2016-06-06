@@ -275,6 +275,12 @@
     <Compile Include="Detours\BiomeDef.cs" />
     <Compile Include="Classes\Static\XML_Helper.cs" />
     <Compile Include="Detours\SocialProperness.cs" />
+    <Compile Include="Extensions\HediffSet_Extensions.cs" />
+    <Compile Include="Extensions\Pawn_ApparelTracker_Extensions.cs" />
+    <Compile Include="Extensions\Pawn_NeedsTracker_Extensions.cs" />
+    <Compile Include="Extensions\Pawn_WorkSettings_Extensions.cs" />
+    <Compile Include="Extensions\Room_Extensions.cs" />
+    <Compile Include="Extensions\TraitSet_Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
