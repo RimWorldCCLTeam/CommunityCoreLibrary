@@ -15,15 +15,34 @@ namespace CommunityCoreLibrary.MiniMap
     {
 
         #region Fields
-        
-        public static bool              dirty = true;
-        public static bool              initialized = false;
-        public static bool              visible = false;
-        public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
+
         public const float              MINWINDOWSIZE = 40f;
         public const float              DEFAULTWINDOWSIZE = 250f;
 
+        public static bool              defaultVisible = false;
+        public static Rect              defaultWindowRect;
+
+        public static bool              dirty = true;
+        public static bool              initialized = false;
+        public static bool              visible;
+        public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
+
         #endregion Fields
+
+        #region Constructors
+
+        static                          MiniMapController()
+        {
+            defaultWindowRect = new Rect( Screen.width - DEFAULTWINDOWSIZE, 0f, DEFAULTWINDOWSIZE, DEFAULTWINDOWSIZE );
+        }
+
+        public                          MiniMapController()
+        {
+            Window_MiniMap.windowRect = defaultWindowRect;
+            visible = defaultVisible;
+        }
+
+        #endregion
 
         #region Properties
 
@@ -192,11 +211,6 @@ namespace CommunityCoreLibrary.MiniMap
             if( window != null )
             {
                 return true;
-            }
-
-            if( Window_MiniMap.windowRect.width < MINWINDOWSIZE )
-            {
-                Window_MiniMap.windowRect = new Rect( Screen.width - DEFAULTWINDOWSIZE, 0f, DEFAULTWINDOWSIZE, DEFAULTWINDOWSIZE );
             }
 
             window = new Window_MiniMap( Window_MiniMap.windowRect );
