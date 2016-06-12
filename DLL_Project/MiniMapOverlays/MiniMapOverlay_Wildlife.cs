@@ -124,6 +124,10 @@ namespace CommunityCoreLibrary.MiniMap
             if ( pawn.Faction == Faction.OfColony )
                 return tameColor;
 
+            // predator
+            if ( pawn.def.race.predator )
+                return hostileColor;
+            
             // hostile
             if ( pawn.HostileTo( Faction.OfColony ) )
                 return hostileColor;
