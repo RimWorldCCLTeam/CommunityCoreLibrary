@@ -2,10 +2,11 @@
 
 [sup][size=8pt]4.1[/size][/sup] A ModHelperDef is required for any mod using CCL.  Without this def, the library will throw an error.  There can only be one of these defs per mod or, again, an error will be thrown.  This was previously a soft requirement but is now a hard requirement.
 [sup][size=8pt]4.2[/size][/sup] Depending on the operational and output mode of the factory.  Two examples are provided, an automated stonecutter (fully automated) and a food synthesizer (pawn-interaction).
-[sup][size=8pt]4.3[/size][/sup] Building's which directly control their own power are the obvious exception (eg: heaters, coolers, etc).
-[sup][size=8pt]4.4[/size][/sup] Requires RestrictedPlacement_Comp and RestrictedPlacement_Properties for information and/or support ticking.
-[sup][size=8pt]4.5[/size][/sup] Want to place that building [i]on[/i] (instead of [i]near[/i]) a steam geyser?  You can, the core method which hard-codes steam geysers to geothermal generators has been detoured to allow any building with the PlaceWorker_OnSteamGeyser or PlaceWorker_OnlyOnThing to allow placement on steam geysers.
-[sup][size=8pt]4.6[/size][/sup] Depending on your needs, use a normal or rare ticker to fire the periodic check to make sure the supports still exist.  If the support is removed, the thing is destroyed and an alert is fired to inform the player.  Normal tickers only check every 250 ticks.
+[sup][size=8pt]4.3[/size][/sup] Certain methods are too small to be detoured and may be optimized into the call site ("[url=https://msdn.microsoft.com/en-us/library/ms973858.aspx#highperfmanagedapps_topic10]inlined[/url]") by the JIT.  These methods are about the only exception to method detours in that they canot be detoured.
+[sup][size=8pt]4.4[/size][/sup] Building's which directly control their own power are the obvious exception (eg: heaters, coolers, etc).
+[sup][size=8pt]4.5[/size][/sup] Requires RestrictedPlacement_Comp and RestrictedPlacement_Properties for information and/or support ticking.
+[sup][size=8pt]4.6[/size][/sup] Want to place that building [i]on[/i] (instead of [i]near[/i]) a steam geyser?  You can, the core method which hard-codes steam geysers to geothermal generators has been detoured to allow any building with the PlaceWorker_OnSteamGeyser or PlaceWorker_OnlyOnThing to allow placement on steam geysers.
+[sup][size=8pt]4.7[/size][/sup] Depending on your needs, use a normal or rare ticker to fire the periodic check to make sure the supports still exist.  If the support is removed, the thing is destroyed and an alert is fired to inform the player.  Normal tickers only check every 250 ticks.
 
 [sup][size=8pt]5.1[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_Door will work.
 [sup][size=8pt]5.2[/size][/sup] Only ThingDefs with thingClass, or a class which inherits, RimWorld.Building_NutrientPasteDispenser will work.
