@@ -889,7 +889,7 @@ namespace CommunityCoreLibrary
             {
                 var hopper = thingList.FirstOrDefault( (thing) =>
                 {
-                    var thingDef = GenSpawn.BuiltDefOf( thing.def ) as ThingDef;
+                    var thingDef = GenConstruct.BuiltDefOf( thing.def ) as ThingDef;
                     return ( thingDef != null )&&( thingDef.IsHopper() );
                 } );
                 if( hopper != null )

@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary.MiniMap
                 var scale = new Vector2( Find.Map.Size.x / inRect.width, Find.Map.Size.z / inRect.height );
 
                 // jump map
-                Find.CameraMap.JumpTo( new Vector3( position.x * scale.x, 0f, position.y * scale.y ) );
+                Find.CameraDriver.JumpTo( new Vector3( position.x * scale.x, 0f, position.y * scale.y ) );
             }
         }
 

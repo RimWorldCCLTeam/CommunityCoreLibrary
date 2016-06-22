@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary.Detour
         //internal static bool _StateCanOccur( this MentalStateWorker_Binging obj, Pawn pawn )
         //{
         //    if(
-        //        ( pawn.Faction != Faction.OfColony )||
+        //        ( pawn.Faction != Faction.OfPlayer )||
         //        ( pawn.GetPosture() != PawnPosture.Standing )
         //    )
         //    {

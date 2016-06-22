@@ -19,14 +19,15 @@ namespace CommunityCoreLibrary
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
 			return (
-				( Game.Mode == GameMode.Entry ) &&
+				( Current.ProgramState == ProgramState.Entry ) &&
 				( anyWorldFiles )
 			);
 		}
 
 		public override void ClickAction()
 		{
-			MapInitData.Reset();
+            // A14 ????
+			Current.Game.InitData.ResetWorldRelatedMapInitData();
 			Find.WindowStack.Add( (Window)new Page_SelectStoryteller() );
 		}
 

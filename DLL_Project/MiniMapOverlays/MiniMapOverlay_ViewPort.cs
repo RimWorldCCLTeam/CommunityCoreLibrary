@@ -53,7 +53,7 @@ namespace CommunityCoreLibrary.MiniMap
             ClearTexture();
 
             // draw square
-            var edges = Find.CameraMap.CurrentViewRect.EdgeCells;
+            var edges = Find.CameraDriver.CurrentViewRect.EdgeCells;
             foreach ( var edge in edges )
             {
                 if ( edge.InBounds() )

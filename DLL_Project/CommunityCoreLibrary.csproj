@@ -61,6 +61,8 @@
     <Compile Include="Classes\Static\CCL_Widgets.cs" />
     <Compile Include="Detours\MentalStateWorker_Binging.cs" />
     <Compile Include="Extensions\BiomeDef_Extensions.cs" />
+    <Compile Include="Extensions\DesignationCategoryDef_Extensions.cs" />
+    <Compile Include="Extensions\Designator_Extensions.cs" />
     <Compile Include="Extensions\Texture2D_Extensions.cs" />
     <Compile Include="Extensions\Vector3_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />

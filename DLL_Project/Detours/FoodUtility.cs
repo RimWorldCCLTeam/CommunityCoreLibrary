@@ -76,8 +76,10 @@ namespace CommunityCoreLibrary.Detour
             var dispenserValidator = new DispenserValidator();
             dispenserValidator.getter = getter;
             dispenserValidator.fullDispensersOnly = fullDispensersOnly;
-            
-            Thing bestFoodSpawnedFor = FoodUtility.BestFoodSpawnedFor( getter, eater, getter == eater );
+
+            // A14 - method signature is drastically changed - desperate is now a required parameter, where before it was inferred.
+            bool desperate = eater.needs.food.CurCategory == HungerCategory.Starving;
+            Thing bestFoodSpawnedFor = FoodUtility.BestFoodSourceOnMap( getter, eater, desperate, allowPlant: getter == eater );
 
             if(
                 ( getter == eater )&&
@@ -152,7 +154,7 @@ namespace CommunityCoreLibrary.Detour
         internal static float _NutritionAvailableFromFor( Thing t, Pawn p )
         {
             if(
-                ( t.def.IsNutritionSource )&&
+                ( t.def.IsNutritionGivingIngestible )&&
                 ( p.RaceProps.WillAutomaticallyEat( t ) )
             )
             {

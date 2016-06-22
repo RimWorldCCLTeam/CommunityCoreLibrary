@@ -323,7 +323,7 @@ namespace CommunityCoreLibrary
 
         public static void      DrawLanguageOption( Rect rect )
         {
-            if( Game.Mode == GameMode.Entry )
+            if( Current.ProgramState == ProgramState.Entry )
             {
                 var lang = LanguageDatabase.activeLanguage;
                 if( lang.icon.NullOrBad() )
@@ -358,7 +358,7 @@ namespace CommunityCoreLibrary
                             MenuOptionPriority.Medium )
                         );
                     }
-                    Find.WindowStack.Add( (Window) new FloatMenu( languageOptions, false ) );
+                    Find.WindowStack.Add( new FloatMenu( languageOptions ) );
                 }
             }
         }

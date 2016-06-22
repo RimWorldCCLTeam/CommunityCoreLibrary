@@ -12,21 +12,6 @@ namespace CommunityCoreLibrary
     public class MHD_Designators : IInjector
     {
 
-        // A14 - resolvedDesignators is now private - the public accessor filters by currently allowed.
-        FieldInfo _resolvedDesignatorsField = typeof( DesignationCategoryDef ).GetField( "resolvedDesignators", BindingFlags.NonPublic | BindingFlags.Instance );
-
-        private List<Designator> _resolvedDesignators ( DesignationCategoryDef category )
-        {
-            return _resolvedDesignatorsField.GetValue( category ) as List<Designator>;
-        }
-
-        private bool DesignatorExists( DesignatorData designatorData )
-        {
-            var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
-            List<Designator> designators = _resolvedDesignatorsField.GetValue( designationCategory ) as List<Designator>;
-            return designators.Exists( d => d.GetType() == designatorData.designatorClass );
-        }
-
 #if DEBUG
         public string                       InjectString
         {
@@ -87,7 +72,7 @@ namespace CommunityCoreLibrary
 
             foreach( var designatorData in def.Designators )
             {
-                if (!DesignatorExists( designatorData ) )
+                if (!designatorData.DesignatorExists() )
                 {
                     return false;
                 }
@@ -109,7 +94,7 @@ namespace CommunityCoreLibrary
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
 
                 // First instatiate and inject the designator into the list of resolved designators
-                if ( !DesignatorExists( designatorData ) )
+                if ( !designatorData.DesignatorExists() )
                 {
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( designatorData.designatorClass );
@@ -122,12 +107,12 @@ namespace CommunityCoreLibrary
                     if( designatorData.designatorNextTo == null )
                     {
                         // Inject the designator
-                        _resolvedDesignators( designationCategory ).Add( designatorObject );
+                        designationCategory._resolvedDesignators().Add( designatorObject );
                     }
                     else
                     {
                         // Prefers to be beside a specific designator
-                        var designatorIndex = _resolvedDesignators( designationCategory ).FindIndex( d => (
+                        var designatorIndex = designationCategory._resolvedDesignators().FindIndex( d => (
                             ( d.GetType() == designatorData.designatorNextTo )
                         ) );
 
@@ -135,12 +120,12 @@ namespace CommunityCoreLibrary
                         {
                             // Other designator doesn't exist (yet?)
                             // Inject the designator at the end
-                            _resolvedDesignators( designationCategory ).Add( designatorObject );
+                            designationCategory._resolvedDesignators().Add( designatorObject );
                         }
                         else
                         {
                             // Inject beside desired designator
-                            _resolvedDesignators( designationCategory ).Insert( designatorIndex + 1, designatorObject );
+                            designationCategory._resolvedDesignators().Insert( designatorIndex + 1, designatorObject );
                         }
                     }
                 }

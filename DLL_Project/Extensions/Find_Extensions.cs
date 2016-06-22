@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary
             var allMods = Controller.Data.Mods;
             foreach( var mod in allMods )
             {
-                if( mod.name == name )
+                if( mod.Name == name )
                 {
                     return mod;
                 }

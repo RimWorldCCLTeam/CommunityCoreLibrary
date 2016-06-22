@@ -83,7 +83,7 @@ namespace CommunityCoreLibrary
         {
             base.PostOpen();
 
-            if( Game.Mode == GameMode.Entry )
+            if( Current.ProgramState == ProgramState.Entry )
             {
                 this.windowRect = new Rect(
                     ( Screen.width - RequestedTabSize.x ) / 2,

@@ -19,8 +19,8 @@ namespace CommunityCoreLibrary
         public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
         {
             return(
-                ( Game.Mode == GameMode.MapPlaying )&&
-                ( Find.Map.info.permadeathMode )
+                ( Current.ProgramState == ProgramState.MapPlaying )&&
+                ( Current.Game.Info.permadeathMode )
             );
         }
 
@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary
             LongEventHandler.QueueLongEvent(
                 () =>
                     {
-                        GameDataSaver.SaveGame( Find.Map, Find.Map.info.permadeathModeUniqueName );
+                        GameDataSaveLoader.SaveGame( Current.Game.Info.permadeathModeUniqueName );
                         LongEventHandler.ExecuteWhenFinished( Root.Shutdown );
                     },
                 "SavingLongEvent",

@@ -22,18 +22,19 @@ namespace CommunityCoreLibrary
             return (float)_curX.GetValue( obj );
         }
 
-        public static void                  Indent( this Listing_Standard obj, float distance = 24f )
+        public static void                  Indent( this Listing_Standard listing, float distance = 24f )
         {
             if( _curX == null )
             {
                 _curX = typeof( Listing_Standard ).GetField( "curX", BindingFlags.Instance | BindingFlags.NonPublic );
             }
-            var curX = (float)_curX.GetValue( obj );
+            var curX = (float)_curX.GetValue( listing );
             var newX = curX + distance;
-            var curW = obj.ColumnWidth();
+            var curW = listing.ColumnWidth();
             var newW = curW - distance;
-            _curX.SetValue( obj, newX );
-            obj.OverrideColumnWidth = newW;
+            _curX.SetValue( listing, newX );
+            // A14 - OverrideColumnWidth => ColumnWidth?
+            listing.ColumnWidth = newW;
         }
 
         public static void                  Undent( this Listing_Standard obj, float distance = 24f )

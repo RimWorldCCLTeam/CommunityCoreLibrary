@@ -142,10 +142,11 @@ namespace CommunityCoreLibrary.Detour
             #region Draw Main Buttons, Links and Language Option
             menuOptionsRect.y += MainMenuDrawerExt.OptionListSpacing;
             GUI.BeginGroup( menuOptionsRect );
-
+            
             MainMenuDrawer.DoMainMenuButtons(
                 menuOptionsRect,
-                MainMenuDrawerExt.AnyWorldFiles,
+                // A14
+                // MainMenuDrawerExt.AnyWorldFiles,
                 MainMenuDrawerExt.AnyMapFiles );
             
             GUI.EndGroup();

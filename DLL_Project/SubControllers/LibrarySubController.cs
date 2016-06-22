@@ -35,7 +35,7 @@ namespace CommunityCoreLibrary.Controller
 
 			// Limit one ModHelperDef per mod
 			// Create the ordered list by inserting dummies for mods which don't have one
-			var allMods = ModContentPackManager.ModContentPacks.ToList();
+			var allMods = LoadedModManager.RunningMods.ToList();
 
             // Find Core and CCL in the mod order
             coreModIndex = -1;
@@ -43,11 +43,11 @@ namespace CommunityCoreLibrary.Controller
             for( int i = 0; i < allMods.Count; ++i )
             {
                 ModContentPack mod = allMods[ i ];
-                if( mod.name == "Core" )
+                if( mod.Name == "Core" )
                 {
                     coreModIndex = i;
                 }
-                if( mod.name == Controller.Data.UnityObjectName )
+                if( mod.Name == Controller.Data.UnityObjectName )
                 {
                     cclModIndex = i;
                 }
@@ -91,7 +91,7 @@ namespace CommunityCoreLibrary.Controller
     				{
     					if( modHelperDefs.Count > 1 )
     					{
-    						stringBuilder.Append( "\t" + mod.name );
+    						stringBuilder.Append( "\t" + mod.Name );
     						CCL_Log.AppendSectionNewLine( ref stringBuilder, "Multiple ModHelperDefs detected" );
     						rVal = false;
     					}
@@ -102,14 +102,14 @@ namespace CommunityCoreLibrary.Controller
     						if( !modHelperDef.IsValid )
     						{
     							// Don't do anything special with broken mods
-    							stringBuilder.Append( "\t" + mod.name );
+    							stringBuilder.Append( "\t" + mod.Name );
     							CCL_Log.AppendSectionNewLine( ref stringBuilder, "ModHelperDef is invalid" );
     							rVal = false;
     						}
     						else if( !modHelperDef.dummy )
     						{
     							// Don't show validation message for dummy defs
-    							stringBuilder.Append( "\t" + mod.name );
+    							stringBuilder.Append( "\t" + mod.Name );
     							CCL_Log.AppendSection( ref stringBuilder, "ModHelperDef" );
     							CCL_Log.AppendSectionNewLine( ref stringBuilder, "Passed validation, requesting v" + modHelperDef.minCCLVersion );
     						}
@@ -120,9 +120,9 @@ namespace CommunityCoreLibrary.Controller
     					// Doesn't exist, create a dummy for logging but only
     					// create if we're not just checking for remaining errors
     					modHelperDef = new ModHelperDef();
-    					modHelperDef.defName = mod.name + "_ModHelperDef";
+    					modHelperDef.defName = mod.Name + "_ModHelperDef";
     					modHelperDef.minCCLVersion = Version.Minimum.ToString();
-    					modHelperDef.ModName = mod.name;
+    					modHelperDef.ModName = mod.Name;
     					modHelperDef.Verbosity = Verbosity.NonFatalErrors;
     					modHelperDef.dummy = true;
     				}
@@ -207,11 +207,11 @@ namespace CommunityCoreLibrary.Controller
 
         private static void CorrectLoadOrderBeforeRestart()
         {
-            var allMods = ModContentPackManager.ModContentPacks.ToList();
+            var allMods = LoadedModManager.RunningMods.ToList();
             // Deactivate all mods
             foreach( var mod in allMods )
             {
-                ModsConfig.SetActive( mod.name, false );
+                ModsConfig.SetActive( mod.Name, false );
             }
             // Activate core first
             ModsConfig.SetActive( "Core", true );
@@ -223,11 +223,11 @@ namespace CommunityCoreLibrary.Controller
             foreach( var mod in allMods )
             {
                 if(
-                    ( mod.name != "Core" )&&
-                    ( mod.name != Controller.Data.UnityObjectName )
+                    ( mod.Name != "Core" )&&
+                    ( mod.Name != Controller.Data.UnityObjectName )
                 )
                 {
-                    ModsConfig.SetActive( mod.name, true );
+                    ModsConfig.SetActive( mod.Name, true );
                 }
             }
             // Now save the config

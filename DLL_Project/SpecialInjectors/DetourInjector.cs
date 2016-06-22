@@ -108,11 +108,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_JobGiver_Binge_DrinkAlcoholJob, CCL_JobGiver_Binge_DrinkAlcoholJob ) )
                 return false;
 
-            // Detour Verse.BrokenStateWorker_Binging.StateCanOccur
-            MethodInfo Verse_BrokenStateWorker_Binging_StateCanOccur = typeof( MentalStateWorker_Binging ).GetMethod( "StateCanOccur", BindingFlags.Instance | BindingFlags.Public );
-            MethodInfo CCL_BrokenStateWorker_Binging_StateCanOccur = typeof( Detour._MentalStateWorker_Binging).GetMethod( "_StateCanOccur", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( Verse_BrokenStateWorker_Binging_StateCanOccur, CCL_BrokenStateWorker_Binging_StateCanOccur ) )
-                return false;
+            // A14 - state worker removed? - needs thorough check for changes
+            //// Detour Verse.BrokenStateWorker_Binging.StateCanOccur
+            //MethodInfo Verse_BrokenStateWorker_Binging_StateCanOccur = typeof( MentalStateWorker_Binging ).GetMethod( "StateCanOccur", BindingFlags.Instance | BindingFlags.Public );
+            //MethodInfo CCL_BrokenStateWorker_Binging_StateCanOccur = typeof( Detour._MentalStateWorker_Binging).GetMethod( "_StateCanOccur", BindingFlags.Static | BindingFlags.NonPublic );
+            //if( !Detours.TryDetourFromTo( Verse_BrokenStateWorker_Binging_StateCanOccur, CCL_BrokenStateWorker_Binging_StateCanOccur ) )
+            //    return false;
 
             // Detour RimWorld.JoyGiver_SocialRelax.TryGiveJobInt
             MethodInfo RimWorld_JoyGiver_SocialRelax_TryGiveJobInt = typeof( JoyGiver_SocialRelax ).GetMethod( "TryGiveJobInt", BindingFlags.Instance | BindingFlags.NonPublic );
@@ -180,17 +181,18 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_JobDriver_FoodFeedPatient_MakeNewToils, CCL_JobDriver_FoodFeedPatient_MakeNewToils ) )
                 return false;
 
-            // Detour RimWorld.JobDriver_Ingest.MakeNewToils
-            MethodInfo RimWorld_JobDriver_Ingest_MakeNewToils = typeof( JobDriver_Ingest ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );
-            MethodInfo CCL_JobDriver_Ingest_MakeNewToils = typeof( Detour._JobDriver_Ingest ).GetMethod( "_MakeNewToils", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_MakeNewToils, CCL_JobDriver_Ingest_MakeNewToils ) )
-                return false;
+            // A14 Ingest and food toils have had significant changes
+            //// Detour RimWorld.JobDriver_Ingest.MakeNewToils
+            //MethodInfo RimWorld_JobDriver_Ingest_MakeNewToils = typeof( JobDriver_Ingest ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );
+            //MethodInfo CCL_JobDriver_Ingest_MakeNewToils = typeof( Detour._JobDriver_Ingest ).GetMethod( "_MakeNewToils", BindingFlags.Static | BindingFlags.NonPublic );
+            //if( !Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_MakeNewToils, CCL_JobDriver_Ingest_MakeNewToils ) )
+            //    return false;
 
-            // Detour RimWorld.JobGiver_GetFood.TryGiveTerminalJob
-            MethodInfo RimWorld_JobGiver_GetFood_TryGiveTerminalJob = typeof( JobGiver_GetFood ).GetMethod( "TryGiveTerminalJob", BindingFlags.Instance | BindingFlags.NonPublic );
-            MethodInfo CCL_JobGiver_GetFood_TryGiveTerminalJob = typeof( Detour._JobGiver_GetFood ).GetMethod( "_TryGiveTerminalJob", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_JobGiver_GetFood_TryGiveTerminalJob, CCL_JobGiver_GetFood_TryGiveTerminalJob ) )
-                return false;
+            //// Detour RimWorld.JobGiver_GetFood.TryGiveTerminalJob
+            //MethodInfo RimWorld_JobGiver_GetFood_TryGiveTerminalJob = typeof( JobGiver_GetFood ).GetMethod( "TryGiveTerminalJob", BindingFlags.Instance | BindingFlags.NonPublic );
+            //MethodInfo CCL_JobGiver_GetFood_TryGiveTerminalJob = typeof( Detour._JobGiver_GetFood ).GetMethod( "_TryGiveTerminalJob", BindingFlags.Static | BindingFlags.NonPublic );
+            //if( !Detours.TryDetourFromTo( RimWorld_JobGiver_GetFood_TryGiveTerminalJob, CCL_JobGiver_GetFood_TryGiveTerminalJob ) )
+            //    return false;
 
             // Detour RimWorld.JobDriver_SocialRelax.MakeNewToils
             MethodInfo RimWorld_JobDriver_SocialRelax_MakeNewToils = typeof( JobDriver_SocialRelax ).GetMethod( "MakeNewToils", BindingFlags.Instance | BindingFlags.NonPublic );

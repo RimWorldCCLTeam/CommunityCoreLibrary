@@ -165,7 +165,7 @@ namespace CommunityCoreLibrary.Controller
             strReturn = string.Empty;
 
             // Everything is good, do some work
-            wasGodMode |= Game.GodMode;
+            wasGodMode |= DebugSettings.godMode;
 
             CheckAdvancedResearch();
             return true;
@@ -228,7 +228,7 @@ namespace CommunityCoreLibrary.Controller
         public void                         CheckAdvancedResearch()
         {
             if (
-                ( !Game.GodMode )&&
+                ( !DebugSettings.godMode )&&
                 ( wasGodMode )
             )
             {

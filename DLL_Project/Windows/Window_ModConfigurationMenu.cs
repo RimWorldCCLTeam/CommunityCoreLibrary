@@ -156,7 +156,7 @@ namespace CommunityCoreLibrary
 
         public override void DoWindowContents( Rect inRect )
 		{
-			if( Game.Mode == GameMode.Entry )
+			if( Current.ProgramState == ProgramState.Entry )
 			{
 				absorbInputAroundWindow = true;
 			}

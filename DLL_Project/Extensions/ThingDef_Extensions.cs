@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
 
             if(
                 ( !validateBills )||
-                ( Game.Mode != GameMode.MapPlaying )
+                ( Current.ProgramState != ProgramState.MapPlaying )
             )
             {
                 return;
@@ -71,17 +71,7 @@ namespace CommunityCoreLibrary
 
         public static bool                  IsIngestible( this ThingDef thingDef )
         {
-            if(
-                (
-                    ( thingDef.thingClass == typeof( Meal ) )||
-                    ( thingDef.thingClass.IsSubclassOf( typeof( Meal ) ) )
-                )&&
-                ( thingDef.ingestible != null )
-            )
-            {
-                return true;
-            }
-            return false;
+            return thingDef.ingestible != null;
         }
 
         public static bool                  IsAlcohol( this ThingDef thingDef )
@@ -175,14 +165,14 @@ namespace CommunityCoreLibrary
             )
             {
                 oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( thingDef.designationCategory );
-                oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
+                oldDesignator = (Designator_Build) oldCategory._resolvedDesignators().FirstOrDefault( d => (
                     ( d is Designator_Build )&&
                     ( ( d as Designator_Build ).PlacingDef == (BuildableDef) thingDef )
                 ) );
             }
             if( oldCategory != null )
             {
-                oldCategory.resolvedDesignators.Remove( oldDesignator );
+                oldCategory._resolvedDesignators().Remove( oldDesignator );
             }
             if( newCategoryDef != null )
             {
@@ -195,7 +185,7 @@ namespace CommunityCoreLibrary
                 {
                     newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) thingDef } );
                 }
-                newCategoryDef.resolvedDesignators.Add( newDesignator );
+                newCategoryDef._resolvedDesignators().Add( newDesignator );
             }
             thingDef.designationCategory = newCategory;
             return true;

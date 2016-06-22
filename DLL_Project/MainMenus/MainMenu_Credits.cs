@@ -10,12 +10,12 @@ namespace CommunityCoreLibrary
 
 		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
 		{
-			return ( Game.Mode == GameMode.Entry );
+			return ( Current.ProgramState == ProgramState.Entry );
 		}
 
 		public override void ClickAction()
 		{
-			Find.WindowStack.Add( (Window)new Page_Credits() );
+			Find.WindowStack.Add( new Screen_Credits() );
 		}
 
 	}

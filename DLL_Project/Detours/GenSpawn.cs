@@ -50,7 +50,7 @@ namespace CommunityCoreLibrary.Detour
 
             ThingDef newThingDef = newDef as ThingDef;
             ThingDef oldThingDef = oldDef;
-            BuildableDef buildableDef = GenSpawn.BuiltDefOf( oldDef );
+            BuildableDef buildableDef = GenConstruct.BuiltDefOf( oldDef );
             ThingDef resultThingDef = buildableDef as ThingDef;
 
             if(
