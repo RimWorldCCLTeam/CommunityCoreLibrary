@@ -542,8 +542,8 @@ namespace CommunityCoreLibrary.ColorPicker
             // allow explicit setting of window position
             if ( initialPosition != Vector2.zero )
             {
-                currentWindowRect.x = initialPosition.x;
-                currentWindowRect.y = initialPosition.y;
+                windowRect.x = initialPosition.x;
+                windowRect.y = initialPosition.y;
             }
 
             // set the windowsize
@@ -594,19 +594,19 @@ namespace CommunityCoreLibrary.ColorPicker
 
         public void SetWindowLocation( Vector2 location )
         {
-            currentWindowRect.xMin = location.x;
-            currentWindowRect.yMin = location.y;
+            windowRect.xMin = location.x;
+            windowRect.yMin = location.y;
         }
 
         public void SetWindowRcet( Rect rect )
         {
-            currentWindowRect = rect;
+            windowRect = rect;
         }
 
         public void SetWindowSize( Vector2 size )
         {
-            currentWindowRect.width = size.x;
-            currentWindowRect.height = size.y;
+            windowRect.width = size.x;
+            windowRect.height = size.y;
         }
 
         private Texture2D CreateAlphaBG( int width, int height )

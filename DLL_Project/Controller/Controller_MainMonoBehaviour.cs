@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary.Controller
         private static bool                 queueLoadAllPlayData = false;
 
         // A14 - PDL.loaded is now private, Loaded is get only.
-        FieldInfo PlayDataLoader_loaded = typeof( PlayDataLoader ).GetField( "loadedInt", BindingFlags.NonPublic | BindingFlags.Static );
+        private static FieldInfo PlayDataLoader_loaded = typeof( PlayDataLoader ).GetField( "loadedInt", BindingFlags.NonPublic | BindingFlags.Static );
 
         #endregion
 
@@ -294,10 +294,8 @@ namespace CommunityCoreLibrary.Controller
             ThingCategoryNodeDatabase.Clear();
             BackstoryDatabase.Clear();
             SolidBioDatabase.Clear();
-
-            // A14 - PlayDataLoader.loaded is now private, Loaded property is getter only
-            FieldInfo PDL_loaded_FI = typeof( PlayDataLoader ).GetField( "loadedInt", BindingFlags.NonPublic | BindingFlags.Static );
-            PDL_loaded_FI.SetValue( null, false );
+            
+            PlayDataLoader_loaded.SetValue( null, false );
         }
 
         internal static void QueueLoadAllPlayData( bool recovering = false )
@@ -371,7 +369,7 @@ namespace CommunityCoreLibrary.Controller
                     DeepProfiler.End();
                 }
                 // A14 - PlayDataLoader.loaded is now private, Loaded property is getter only
-                PDL_loaded_FI.SetValue( null, false );
+                PlayDataLoader_loaded.SetValue( null, false );
                 if ( !recovering )
                     return;
                 Log.Message( "Successfully recovered from errors and loaded play data." );
@@ -393,7 +391,7 @@ namespace CommunityCoreLibrary.Controller
             ticks++;
             if(
                 ( !gameValid )||
-                ( Game.Mode != GameMode.MapPlaying )||
+                ( Current.ProgramState != ProgramState.MapPlaying )||
                 ( Find.Map == null )||
                 ( Find.Map.components == null )
             )

@@ -1192,7 +1192,7 @@ namespace CommunityCoreLibrary
 
             #region Base Stats
             HelpDetailSection totalCost = new HelpDetailSection(null, 
-                                                                new [] { researchProjectDef.totalCost.ToString() },
+                                                                new [] { researchProjectDef.baseCost.ToString() },
                                                                 new [] { "AutoHelpTotalCost".Translate() },
                                                                 null );
             helpDef.HelpDetailSections.Add( totalCost );
