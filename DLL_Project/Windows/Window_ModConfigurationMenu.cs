@@ -195,7 +195,7 @@ namespace CommunityCoreLibrary
 			_filterString = Widgets.TextField( filterRect, _filterString );
 			if( _filterString != "" )
 			{
-				if( Widgets.ImageButton( clearRect, Widgets.CheckboxOffTex ) )
+				if( Widgets.ButtonImage( clearRect, Widgets.CheckboxOffTex ) )
 				{
 					ResetFilter();
 				}
@@ -265,7 +265,7 @@ namespace CommunityCoreLibrary
 			{
 				Widgets.DrawHighlightIfMouseover( buttonRect );
 			}
-			return Widgets.InvisibleButton( buttonRect );
+			return Widgets.ButtonInvisible( buttonRect );
 		}
 
 		#endregion

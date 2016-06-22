@@ -183,7 +183,7 @@ namespace CommunityCoreLibrary.UI
             CCL_Widgets.DrawBackground( previewRect, newValue );
 
             // open Colorpicker when preview is clicked
-            if ( Widgets.InvisibleButton( previewRect ) )
+            if ( Widgets.ButtonInvisible( previewRect ) )
                 Find.WindowStack.Add( new ColorPicker.Dialog_ColorPicker( _wrapper, () => newValue = _wrapper.Color, false, true ) { layer = WindowLayer.Super, closeOnClickedOutside = true } );
         }
 

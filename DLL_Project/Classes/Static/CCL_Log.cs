@@ -98,7 +98,7 @@ namespace CommunityCoreLibrary
             s.Append( "\n" );
         }
 
-        private static void                 AppendTrace( ref StringBuilder s, LoadedMod mod, Verbosity Severity, string content, string category = null )
+        private static void                 AppendTrace( ref StringBuilder s, ModContentPack mod, Verbosity Severity, string content, string category = null )
         {
 #if RELEASE
             if( Severity > Verbosity.Validation )
@@ -237,7 +237,7 @@ namespace CommunityCoreLibrary
             _Trace( modHelperDef, Severity, content, atFault, category );
         }
 
-        public static void                  TraceMod( LoadedMod mod, Verbosity Severity, string content, string category = null )
+        public static void                  TraceMod( ModContentPack mod, Verbosity Severity, string content, string category = null )
         {
             var modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
             _Trace( modHelperDef, Severity, content, null, category );

@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary.UI
             return String.Join( seperator, enmumerable.ToArray() );
         }
 
-        public static bool ImageButton( Rect canvas, Texture2D tex, string altString, string tip = "" )
+        public static bool ButtonImage( Rect canvas, Texture2D tex, string altString, string tip = "" )
         {
             if( !tip.NullOrEmpty() )
             {
@@ -114,7 +114,7 @@ namespace CommunityCoreLibrary.UI
             {
                 return Widgets.ButtonText( canvas, altString, false, true );
             }
-            return Widgets.ImageButton( canvas, tex );
+            return Widgets.ButtonImage( canvas, tex );
         }
 
     }

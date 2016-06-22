@@ -853,15 +853,14 @@ namespace CommunityCoreLibrary
             }
             var thing = ThingMaker.MakeThing( thingDef );
             thing.stackCount = recipe.products[0].count;
-            if(
-                ( thingDef.thingClass == typeof( Meal ) )||
-                ( thingDef.thingClass.IsSubclassOf( typeof( Meal ) ) )
-            )
+            // A14: Changed thingClass meal to CompIngredients
+            // - Fluffy.
+            var ingredients = thing.TryGetComp<CompIngredients>();
+            if ( ingredients != null )
             {
-                var meal = (Meal) thing;
                 foreach( var ingredient in chosen )
                 {
-                    meal.RegisterIngredient( ingredient.thing.def );
+                    ingredients.RegisterIngredient( ingredient.thing.def );
                 }
             }
             return thing;
