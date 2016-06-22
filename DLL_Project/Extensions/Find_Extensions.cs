@@ -56,13 +56,13 @@ namespace CommunityCoreLibrary
 
         // Get the def set of a specific type for a specific mod
         /*
-        public static ModDefSet<T>          DefSetOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
+        public static ModDefSet<T>          DefSetOfTypeForMod<T>( ModContentPack mod ) where T : Def, new()
         {
             if( mod == null )
             {
                 return null;
             }
-            var defSets = typeof( LoadedMod ).GetField( "defSets", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( mod ) as Dictionary<System.Type, ModDefSet>;
+            var defSets = typeof( ModContentPack ).GetField( "defSets", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( mod ) as Dictionary<System.Type, ModDefSet>;
             ModDefSet modDefSet = (ModDefSet) null;
             if( !defSets.TryGetValue( typeof (T), out modDefSet ) )
             {
@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary
         */
 
         // Get the def of a specific type for a specific mod
-        public static Def                   DefOfTypeForMod( LoadedMod mod, Def searchDef )
+        public static Def                   DefOfTypeForMod( ModContentPack mod, Def searchDef )
         {
             if( mod == null )
             {
@@ -86,7 +86,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get the def list of a specific type for a specific mod
-        public static List<T>               DefListOfTypeForMod<T>( LoadedMod mod ) where T : Def, new()
+        public static List<T>               DefListOfTypeForMod<T>( ModContentPack mod ) where T : Def, new()
         {
             if( mod == null )
             {
@@ -99,7 +99,7 @@ namespace CommunityCoreLibrary
         }
 
         // Search for mod by name
-        public static LoadedMod             ModByName( string name )
+        public static ModContentPack             ModByName( string name )
         {
             var allMods = Controller.Data.Mods;
             foreach( var mod in allMods )
@@ -113,7 +113,7 @@ namespace CommunityCoreLibrary
         }
 
         // Search for mod by def
-        public static LoadedMod             ModByDef<T>( T def, int InitialIndex = -1 ) where T : Def, new()
+        public static ModContentPack             ModByDef<T>( T def, int InitialIndex = -1 ) where T : Def, new()
         {
             var allMods = Controller.Data.Mods;
             int Start = InitialIndex;
@@ -159,7 +159,7 @@ namespace CommunityCoreLibrary
         // of a specific type.
         // Optional InitialIndex to be used to continue scanning to find
         // all instances of the same def in all mods.
-        public static LoadedMod             ModByDefOfType<T>( string defName, int InitialIndex = -1 ) where T : Def, new()
+        public static ModContentPack             ModByDefOfType<T>( string defName, int InitialIndex = -1 ) where T : Def, new()
         {
             if( defName.NullOrEmpty() )
             {
@@ -186,7 +186,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get a mods index in the load order by mod
-        public static int                   ModIndexByMod( LoadedMod mod )
+        public static int                   ModIndexByMod( ModContentPack mod )
         {
             if( mod == null )
             {
@@ -204,7 +204,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get a mod by index in the load order
-        public static LoadedMod             ModByModIndex( int Index )
+        public static ModContentPack             ModByModIndex( int Index )
         {
             var allMods = Controller.Data.Mods;
             if(
@@ -218,7 +218,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get the ModHelperDef for a mod
-        public static ModHelperDef          ModHelperDefForMod( LoadedMod mod )
+        public static ModHelperDef          ModHelperDefForMod( ModContentPack mod )
         {
             if( mod == null )
             {

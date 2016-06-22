@@ -38,31 +38,35 @@ namespace CommunityCoreLibrary.Detour
         internal static float FoodOptimalityByDef( ThingDef def, float dist )
         {
             float num = dist;
-            switch( def.ingestible.preferability )
+
+            switch ( def.ingestible.preferability )
             {
-            case FoodPreferability.NeverForNutrition:
-                return FoodOptimalityUnusable;
-            case FoodPreferability.DesperateOnly:
-                num += 250f;
-                break;
-            case FoodPreferability.Raw:
-                num += 80f;
-                break;
-            case FoodPreferability.Awful:
-                num += 40f;
-                break;
-            case FoodPreferability.Simple:
-                //num = num;
-                break;
-            case FoodPreferability.Fine:
-                num -= 25f;
-                break;
-            case FoodPreferability.Lavish:
-                num -= 40f;
-                break;
-            default:
-                Log.Error("Unknown food taste.");
-                break;
+                case FoodPreferability.NeverForNutrition:
+                    return FoodOptimalityUnusable;
+                case FoodPreferability.DesperateOnly:
+                    num += 250f;
+                    break;
+                case FoodPreferability.RawBad:
+                    num += 80f;
+                    break;
+                case FoodPreferability.RawTasty:
+                    // A14 - new category, check me!
+                    num += 60f;
+                    break;
+                case FoodPreferability.MealAwful:
+                    num += 40f;
+                    break;
+                case FoodPreferability.MealSimple:
+                    break;
+                case FoodPreferability.MealFine:
+                    num -= 25f;
+                    break;
+                case FoodPreferability.MealLavish:
+                    num -= 40f;
+                    break;
+                default:
+                    Log.Warning( "Food preferability for " + def.LabelCap + " not set." );
+                    return FoodOptimalityUnusable;
             }
             return -num;
         }
@@ -72,7 +76,7 @@ namespace CommunityCoreLibrary.Detour
             var dispenserValidator = new DispenserValidator();
             dispenserValidator.getter = getter;
             dispenserValidator.fullDispensersOnly = fullDispensersOnly;
-
+            
             Thing bestFoodSpawnedFor = FoodUtility.BestFoodSpawnedFor( getter, eater, getter == eater );
 
             if(

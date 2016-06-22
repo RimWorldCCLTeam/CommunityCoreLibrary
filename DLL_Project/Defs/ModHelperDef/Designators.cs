@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Verse;
 
@@ -10,6 +11,21 @@ namespace CommunityCoreLibrary
 
     public class MHD_Designators : IInjector
     {
+
+        // A14 - resolvedDesignators is now private - the public accessor filters by currently allowed.
+        FieldInfo _resolvedDesignatorsField = typeof( DesignationCategoryDef ).GetField( "resolvedDesignators", BindingFlags.NonPublic | BindingFlags.Instance );
+
+        private List<Designator> _resolvedDesignators ( DesignationCategoryDef category )
+        {
+            return _resolvedDesignatorsField.GetValue( category ) as List<Designator>;
+        }
+
+        private bool DesignatorExists( DesignatorData designatorData )
+        {
+            var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
+            List<Designator> designators = _resolvedDesignatorsField.GetValue( designationCategory ) as List<Designator>;
+            return designators.Exists( d => d.GetType() == designatorData.designatorClass );
+        }
 
 #if DEBUG
         public string                       InjectString
@@ -71,10 +87,8 @@ namespace CommunityCoreLibrary
 
             foreach( var designatorData in def.Designators )
             {
-                var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
-                if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == designatorData.designatorClass ) )
+                if (!DesignatorExists( designatorData ) )
                 {
-                    // designator hasn't been injected yet
                     return false;
                 }
             }
@@ -95,7 +109,7 @@ namespace CommunityCoreLibrary
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
 
                 // First instatiate and inject the designator into the list of resolved designators
-                if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == designatorData.designatorClass ) )
+                if ( !DesignatorExists( designatorData ) )
                 {
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( designatorData.designatorClass );
@@ -104,16 +118,16 @@ namespace CommunityCoreLibrary
                         CCL_Log.Message( string.Format( "Unable to create instance of '{0}'", designatorData.designatorClass ) );
                         return false;
                     }
-
+                          
                     if( designatorData.designatorNextTo == null )
                     {
                         // Inject the designator
-                        designationCategory.resolvedDesignators.Add( designatorObject );
+                        _resolvedDesignators( designationCategory ).Add( designatorObject );
                     }
                     else
                     {
                         // Prefers to be beside a specific designator
-                        var designatorIndex = designationCategory.resolvedDesignators.FindIndex( d => (
+                        var designatorIndex = _resolvedDesignators( designationCategory ).FindIndex( d => (
                             ( d.GetType() == designatorData.designatorNextTo )
                         ) );
 
@@ -121,12 +135,12 @@ namespace CommunityCoreLibrary
                         {
                             // Other designator doesn't exist (yet?)
                             // Inject the designator at the end
-                            designationCategory.resolvedDesignators.Add( designatorObject );
+                            _resolvedDesignators( designationCategory ).Add( designatorObject );
                         }
                         else
                         {
                             // Inject beside desired designator
-                            designationCategory.resolvedDesignators.Insert( designatorIndex + 1, designatorObject );
+                            _resolvedDesignators( designationCategory ).Insert( designatorIndex + 1, designatorObject );
                         }
                     }
                 }

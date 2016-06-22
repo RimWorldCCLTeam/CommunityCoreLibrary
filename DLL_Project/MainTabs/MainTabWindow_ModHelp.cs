@@ -85,7 +85,7 @@ namespace CommunityCoreLibrary
 
             if( Game.Mode == GameMode.Entry )
             {
-                this.currentWindowRect = new Rect(
+                this.windowRect = new Rect(
                     ( Screen.width - RequestedTabSize.x ) / 2,
                     ( Screen.height - RequestedTabSize.y ) / 2,
                     RequestedTabSize.x,
@@ -94,7 +94,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                this.currentWindowRect = new Rect(
+                this.windowRect = new Rect(
                     ( Screen.width - RequestedTabSize.x ),
                     ( Screen.height - RequestedTabSize.y - 35f ),
                     RequestedTabSize.x,
@@ -340,7 +340,7 @@ namespace CommunityCoreLibrary
             _filterString = Widgets.TextField( filterRect, _filterString );
             if( _filterString != "" )
             {
-                if( Widgets.ImageButton( clearRect, Widgets.CheckboxOffTex ) )
+                if( Widgets.ButtonImage( clearRect, Widgets.CheckboxOffTex ) )
                 {
                     _filterString = "";
                     Filter();
@@ -463,7 +463,7 @@ namespace CommunityCoreLibrary
             {
                 Widgets.DrawHighlightIfMouseover( buttonRect );
             }
-            return Widgets.InvisibleButton( buttonRect );
+            return Widgets.ButtonInvisible( buttonRect );
         }
 
         public void DrawModEntry( ref Vector2 cur, int nestLevel, Rect view, ModCategory mc )

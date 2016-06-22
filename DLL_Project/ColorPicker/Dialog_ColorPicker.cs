@@ -440,17 +440,17 @@ namespace CommunityCoreLibrary.ColorPicker
                 // buttons and text field
                 // for some reason scrolling sometimes changes text size
                 Text.Font = GameFont.Small;
-                if ( Widgets.TextButton( okRect, "OK" ) )
+                if ( Widgets.ButtonText( okRect, "OK" ) )
                 {
                     Apply();
                     this.Close();
                 }
-                if ( Widgets.TextButton( applyRect, "Apply" ) )
+                if ( Widgets.ButtonText( applyRect, "Apply" ) )
                 {
                     Apply();
                     SetColor();
                 }
-                if ( Widgets.TextButton( cancelRect, "Cancel" ) )
+                if ( Widgets.ButtonText( cancelRect, "Cancel" ) )
                 {
                     this.Close();
                 }

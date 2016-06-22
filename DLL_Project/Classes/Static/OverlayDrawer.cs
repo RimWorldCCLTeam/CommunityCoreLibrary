@@ -27,7 +27,8 @@ namespace CommunityCoreLibrary
             }
             var drawPos = thing.TrueCenter();
             drawPos.y = BaseAlt + 0.05f * (float) altInd;
-            var alpha = (float) ( 0.300000011920929 + ( Math.Sin( ( (double) Find.RealTime.timeUnpaused + 397.0 * (double) ( thing.thingIDNumber % 571 ) ) * 4.0 ) + 1.0 ) * 0.5 * 0.699999988079071 );
+            // A14 - Find.RealTime was removed?
+            var alpha = (float) ( 0.300000011920929 + ( Math.Sin( ( (double) Time.realtimeSinceStartup + 397.0 * (double) ( thing.thingIDNumber % 571 ) ) * 4.0 ) + 1.0 ) * 0.5 * 0.699999988079071 );
             var material = FadedMaterialPool.FadedVersionOf( mat, alpha );
             Graphics.DrawMesh( mesh, drawPos, Quaternion.identity, material, 0 );
         }

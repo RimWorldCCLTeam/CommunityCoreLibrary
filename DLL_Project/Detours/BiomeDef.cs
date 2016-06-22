@@ -99,7 +99,10 @@ namespace CommunityCoreLibrary.Detour
                         {
                             if (current.RaceProps.wildBiomes[index].biome.defName == _this.defName)
                             {
-                                cachedAnimalCommonalities.Add(current.RaceProps.wildBiomes[index].animal, current.RaceProps.wildBiomes[index].commonality);
+                                // A14 - AnimalBiomeRecord no longer has an animal field?!
+                                // TODO - Check this
+                                // - Fluffy
+                                cachedAnimalCommonalities.Add(current, current.RaceProps.wildBiomes[index].commonality);
                             }
                         }
                     }
@@ -130,7 +133,9 @@ namespace CommunityCoreLibrary.Detour
                         {
                             if (current.plant.wildBiomes[index].biome.defName == _this.defName)
                             {
-                                cachedPlantCommonalities.Add(current.plant.wildBiomes[index].plant, current.plant.wildBiomes[index].commonality);
+                                // A14 - PlantBiomeRecord no longer has a plant field?!
+                                // TODO: Check this!
+                                cachedPlantCommonalities.Add(current, current.plant.wildBiomes[index].commonality);
                             }
                         }
                     }

@@ -335,7 +335,7 @@ namespace CommunityCoreLibrary
                     }
                 }
                 if(
-                    Widgets.ImageButton(
+                    Widgets.ButtonImage(
                         rect,
                         LanguageDatabase.activeLanguage.icon )
                 )

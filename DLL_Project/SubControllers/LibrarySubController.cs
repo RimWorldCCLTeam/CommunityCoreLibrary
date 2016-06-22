@@ -35,14 +35,14 @@ namespace CommunityCoreLibrary.Controller
 
 			// Limit one ModHelperDef per mod
 			// Create the ordered list by inserting dummies for mods which don't have one
-			var allMods = LoadedModManager.LoadedMods.ToList();
+			var allMods = ModContentPackManager.ModContentPacks.ToList();
 
             // Find Core and CCL in the mod order
             coreModIndex = -1;
             cclModIndex = -1;
             for( int i = 0; i < allMods.Count; ++i )
             {
-                LoadedMod mod = allMods[ i ];
+                ModContentPack mod = allMods[ i ];
                 if( mod.name == "Core" )
                 {
                     coreModIndex = i;
@@ -152,7 +152,7 @@ namespace CommunityCoreLibrary.Controller
 #endif
     			if( rVal )
     			{
-                    LoadedMod CCL_Mod = Controller.Data.Mods[ cclModIndex ];
+                    ModContentPack CCL_Mod = Controller.Data.Mods[ cclModIndex ];
     				ModHelperDef CCL_HelperDef = Find_Extensions.ModHelperDefForMod( CCL_Mod );
 
     				// Validate xml version with assembly version
@@ -207,7 +207,7 @@ namespace CommunityCoreLibrary.Controller
 
         private static void CorrectLoadOrderBeforeRestart()
         {
-            var allMods = LoadedModManager.LoadedMods.ToList();
+            var allMods = ModContentPackManager.ModContentPacks.ToList();
             // Deactivate all mods
             foreach( var mod in allMods )
             {

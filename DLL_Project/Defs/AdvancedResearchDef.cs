@@ -109,8 +109,8 @@ namespace CommunityCoreLibrary
                 // Hopefully...
                 isValid = true;
 
-                var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
-                modHelperDef = Find_Extensions.ModHelperDefForMod( loadedMod );
+                var ModContentPack = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
+                modHelperDef = Find_Extensions.ModHelperDefForMod( ModContentPack );
 
                 if(
                     ( modHelperDef == null )||

@@ -112,7 +112,7 @@ namespace CommunityCoreLibrary.UI
             }
             if( tex == null )
             {
-                return Widgets.TextButton( canvas, altString, false, true );
+                return Widgets.ButtonText( canvas, altString, false, true );
             }
             return Widgets.ImageButton( canvas, tex );
         }

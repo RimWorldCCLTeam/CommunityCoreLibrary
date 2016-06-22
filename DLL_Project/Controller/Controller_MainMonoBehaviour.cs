@@ -28,6 +28,9 @@ namespace CommunityCoreLibrary.Controller
         private static bool                 queueRecovering = false;
         private static bool                 queueLoadAllPlayData = false;
 
+        // A14 - PDL.loaded is now private, Loaded is get only.
+        FieldInfo PlayDataLoader_loaded = typeof( PlayDataLoader ).GetField( "loadedInt", BindingFlags.NonPublic | BindingFlags.Static );
+
         #endregion
 
         #region Static Constructor
@@ -282,6 +285,7 @@ namespace CommunityCoreLibrary.Controller
         private static void ClearAllPlayData()
         {
             LanguageDatabase.Clear();
+            // A14 - ModContentPackManager was removed?
             LoadedModManager.ClearDestroy();
             foreach( Type genericParam in GenTypes.AllSubclasses( typeof( Def ) ) )
             {
@@ -290,7 +294,10 @@ namespace CommunityCoreLibrary.Controller
             ThingCategoryNodeDatabase.Clear();
             BackstoryDatabase.Clear();
             SolidBioDatabase.Clear();
-            PlayDataLoader.loaded = false;
+
+            // A14 - PlayDataLoader.loaded is now private, Loaded property is getter only
+            FieldInfo PDL_loaded_FI = typeof( PlayDataLoader ).GetField( "loadedInt", BindingFlags.NonPublic | BindingFlags.Static );
+            PDL_loaded_FI.SetValue( null, false );
         }
 
         internal static void QueueLoadAllPlayData( bool recovering = false )
@@ -310,7 +317,7 @@ namespace CommunityCoreLibrary.Controller
 
         internal static void LoadAllPlayData( bool recovering = false )
         {
-            if( PlayDataLoader.loaded )
+            if( PlayDataLoader.Loaded )
             {
                 Log.Error( "Loading play data when already loaded. Call ClearAllPlayData first." );
             }
@@ -335,8 +342,8 @@ namespace CommunityCoreLibrary.Controller
                     }
                     else
                     {
-                        IEnumerable<InstalledMod> activeMods = ModsConfig.ActiveMods;
-                        if( Enumerable.Count<InstalledMod>( activeMods ) == 1 && Enumerable.First<InstalledMod>( activeMods ).IsCoreMod )
+                        IEnumerable<ModMetaData> activeMods = ModsConfig.ActiveModsInLoadOrder;
+                        if( Enumerable.Count<ModMetaData>( activeMods ) == 1 && Enumerable.First<ModMetaData>( activeMods ).IsCoreMod )
                         {
                             throw;
                         }
@@ -363,8 +370,9 @@ namespace CommunityCoreLibrary.Controller
                 {
                     DeepProfiler.End();
                 }
-                PlayDataLoader.loaded = true;
-                if( !recovering )
+                // A14 - PlayDataLoader.loaded is now private, Loaded property is getter only
+                PDL_loaded_FI.SetValue( null, false );
+                if ( !recovering )
                     return;
                 Log.Message( "Successfully recovered from errors and loaded play data." );
                 DelayedErrorWindowRequest.Add( Translator.Translate( "RecoveredFromErrorsText" ), Translator.Translate( "RecoveredFromErrorsDialogTitle" ) );

@@ -42,9 +42,9 @@ namespace CommunityCoreLibrary
 		private bool _filtered;
         private List<MCMHost> filteredHosts;
 
-		#endregion
+        #endregion
 
-		public override Vector2 InitialWindowSize
+        public override Vector2 InitialSize
 		{
 			get
 			{
