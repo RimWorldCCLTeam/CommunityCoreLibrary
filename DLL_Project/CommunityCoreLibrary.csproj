@@ -148,23 +148,17 @@
     <Compile Include="MapComponents\HideItemManager.cs" />
     <Compile Include="Extensions\Find_Extensions.cs" />
     <Compile Include="Enumerations\Verbosity.cs" />
-    <Compile Include="Detours\GenSpawn.cs" />
     <Compile Include="Detours\RegionMaker.cs" />
     <Compile Include="Detours\TargetingParameters.cs" />
-    <Compile Include="Detours\GenPlant.cs" />
     <Compile Include="Detours\StatWorker.cs" />
     <Compile Include="Detours\SectionLayer_IndoorMask.cs" />
-    <Compile Include="Detours\Building_Door.cs" />
     <Compile Include="Detours\GhostDrawer.cs" />
-    <Compile Include="Detours\GenPlace.cs" />
     <Compile Include="Detours\JobGiver_Binge.cs" />
     <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
     <Compile Include="CompProperties\CompProperties_HideItem.cs" />
     <Compile Include="Detours\ThingSelectionUtility.cs" />
-    <Compile Include="Detours\DropCellFinder.cs" />
     <Compile Include="Detours\PassingShip.cs" />
     <Compile Include="Detours\FoodUtility.cs" />
-    <Compile Include="Detours\Building_NutrientPasteDispenser.cs" />
     <Compile Include="Detours\JobDriver_FoodDeliver.cs" />
     <Compile Include="Detours\JobDriver_FoodFeedPatient.cs" />
     <Compile Include="Extensions\JobDriver_Extensions.cs" />
@@ -274,7 +268,6 @@
     <Compile Include="Extensions\Listing_Extensions.cs" />
     <Compile Include="Extensions\Listing_Standard_Extensions.cs" />
     <Compile Include="Detours\PostLoadInitter.cs" />
-    <Compile Include="Detours\BiomeDef.cs" />
     <Compile Include="Classes\Static\XML_Helper.cs" />
     <Compile Include="Detours\SocialProperness.cs" />
     <Compile Include="Extensions\HediffSet_Extensions.cs" />
@@ -284,6 +277,7 @@
     <Compile Include="Extensions\Room_Extensions.cs" />
     <Compile Include="Extensions\TraitSet_Extensions.cs" />
     <Compile Include="Classes\Static\OverlayDrawer.cs" />
+    <Compile Include="Buildings\Building_AdvancedPasteDispenser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
