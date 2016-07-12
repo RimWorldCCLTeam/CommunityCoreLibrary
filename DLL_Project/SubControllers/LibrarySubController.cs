@@ -43,11 +43,11 @@ namespace CommunityCoreLibrary.Controller
             for( int i = 0; i < allMods.Count; ++i )
             {
                 ModContentPack mod = allMods[ i ];
-                if( mod.Name == "Core" )
+                if( mod.Identifier == ModContentPack.CoreModIdentifier )
                 {
                     coreModIndex = i;
                 }
-                if( mod.Name == Controller.Data.UnityObjectName )
+                if( mod.Identifier == Controller.Data.UnityObjectName )
                 {
                     cclModIndex = i;
                 }
@@ -55,29 +55,25 @@ namespace CommunityCoreLibrary.Controller
             if( coreModIndex == -1 )
             {
                 LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
-                stringBuilder.AppendLine( "\tUnable to find 'Core' in mod load order!" );
+                CCL_Log.Error( string.Format( "Unable to find '{0}' in mod load order!", ModContentPack.CoreModIdentifier ) );
                 //rVal = false; // Don't throw as an error, will be caught special
             }
             else if( coreModIndex != 0 )
             {
                 LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
-                stringBuilder.AppendLine( "\t'Core' must be first in mod load order!" );
+                CCL_Log.Error( string.Format( "'{0}' must be first in mod load order!", ModContentPack.CoreModIdentifier ) );
                 //rVal = false; // Don't throw as an error, will be caught special
             }
             if( cclModIndex == -1 )
             {
                 LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
-                stringBuilder.Append( "\tUnable to find '" );
-                stringBuilder.Append( Controller.Data.UnityObjectName );
-                stringBuilder.AppendLine( "' in mod load order!" );
+                CCL_Log.Error( string.Format( "Unable to find '{0}' in mod load order!", Controller.Data.UnityObjectName ) );
                 //rVal = false; // Don't throw as an error, will be caught special
             }
             else if( cclModIndex != 1 )
             {
                 LongEventHandler.ExecuteWhenFinished( ShowLoadOrderWindow );
-                stringBuilder.Append( "\t'" );
-                stringBuilder.Append( Controller.Data.UnityObjectName );
-                stringBuilder.AppendLine( "' must be second in mod load order, immediately after 'Core'! :: Current position is #" + ( cclModIndex + 1 ).ToString() );
+                CCL_Log.Error( string.Format( "'{0}' must be second in mod load order, immediately after '{1}'! :: Current position is #{2}", Controller.Data.UnityObjectName, ModContentPack.CoreModIdentifier, ( cclModIndex + 1 ).ToString() ) );
                 //rVal = false; // Don't throw as an error, will be caught special
             }
             if( rVal )
@@ -91,8 +87,7 @@ namespace CommunityCoreLibrary.Controller
     				{
     					if( modHelperDefs.Count > 1 )
     					{
-    						stringBuilder.Append( "\t" + mod.Name );
-    						CCL_Log.AppendSectionNewLine( ref stringBuilder, "Multiple ModHelperDefs detected" );
+                            CCL_Log.Error( string.Format( "'{0}' has multiple ModHelperDefs!", mod.Name ) );
     						rVal = false;
     					}
     					else
@@ -102,16 +97,13 @@ namespace CommunityCoreLibrary.Controller
     						if( !modHelperDef.IsValid )
     						{
     							// Don't do anything special with broken mods
-    							stringBuilder.Append( "\t" + mod.Name );
-    							CCL_Log.AppendSectionNewLine( ref stringBuilder, "ModHelperDef is invalid" );
+                                CCL_Log.Error( string.Format( "ModHelperDef for '{0}' is invalid!", mod.Identifier ) );
     							rVal = false;
     						}
     						else if( !modHelperDef.dummy )
     						{
     							// Don't show validation message for dummy defs
-    							stringBuilder.Append( "\t" + mod.Name );
-    							CCL_Log.AppendSection( ref stringBuilder, "ModHelperDef" );
-    							CCL_Log.AppendSectionNewLine( ref stringBuilder, "Passed validation, requesting v" + modHelperDef.minCCLVersion );
+                                CCL_Log.Message( string.Format( "{0} :: Passed validation, requesting v{1}", mod.Identifier, modHelperDef.minCCLVersion ), "ModHelperDef" );
     						}
     					}
     				}
@@ -146,7 +138,7 @@ namespace CommunityCoreLibrary.Controller
                 string dump = "Mod load order:\n";
                 for( int i = 0; i < Controller.Data.Mods.Count; i++ )
                 {
-                    dump += "\t[" + i + "] - " + Controller.Data.Mods[ i ].name + " - " + Controller.Data.ModHelperDefs[ i ].defName + ( Controller.Data.ModHelperDefs[ i ].dummy ? " - dummy" : "" ) + "\n";
+                    dump += string.Format( "\t[{0}] - {1} - {2}{3}\n", i, Controller.Data.Mods[ i ].Identifier, Controller.Data.ModHelperDefs[ i ].defName, ( Controller.Data.ModHelperDefs[ i ].dummy ? " - dummy" : "" ) );
                 }
                 CCL_Log.Write( dump );
 #endif
@@ -159,7 +151,7 @@ namespace CommunityCoreLibrary.Controller
     				var vc = Version.Compare( CCL_HelperDef.minCCLVersion );
     				if( vc != Version.VersionCompare.ExactMatch )
     				{
-    					stringBuilder.AppendLine( "\tModHelperDef version mismatch for Community Core Library!" );
+                        CCL_Log.Error( string.Format( "Version mismatch for {0}!", Controller.Data.UnityObjectName ), "ModHelperDef" );
     					rVal = false;
     				}
 
@@ -172,13 +164,12 @@ namespace CommunityCoreLibrary.Controller
             }
 
 			// Should be all good or up until the first error encountered
-			CCL_Log.CaptureEnd(
+            CCL_Log.CaptureEnd(
 				stringBuilder,
 				rVal ? "Validated" : "Errors during validation"
 			);
 			strReturn = stringBuilder.ToString();
-
-			// Return true if all mods OK, false if any failed validation
+            // Return true if all mods OK, false if any failed validation
 			State = rVal ? SubControllerState.Validated : SubControllerState.ValidationError;
 			return rVal;
 		}
@@ -214,7 +205,7 @@ namespace CommunityCoreLibrary.Controller
                 ModsConfig.SetActive( mod.Name, false );
             }
             // Activate core first
-            ModsConfig.SetActive( "Core", true );
+            ModsConfig.SetActive( ModContentPack.CoreModIdentifier, true );
             if( cclModIndex != -1 )
             { // Activate CCL second
                 ModsConfig.SetActive( Controller.Data.UnityObjectName, true );
@@ -223,7 +214,7 @@ namespace CommunityCoreLibrary.Controller
             foreach( var mod in allMods )
             {
                 if(
-                    ( mod.Name != "Core" )&&
+                    ( mod.Name != ModContentPack.CoreModIdentifier )&&
                     ( mod.Name != Controller.Data.UnityObjectName )
                 )
                 {

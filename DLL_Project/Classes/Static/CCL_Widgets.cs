@@ -11,18 +11,16 @@ using CommunityCoreLibrary;
 
 namespace CommunityCoreLibrary.UI
 {
+
+    [StaticConstructorOnStartup]
     public static class CCL_Widgets
     {
-        private static Texture2D _solidWhite;
 
-        public static Texture2D SolidWhite
+        public static Texture2D SolidWhite;
+
+        static CCL_Widgets()
         {
-            get
-            {
-                if ( _solidWhite == null )
-                    _solidWhite = SolidColorMaterials.NewSolidColorTexture( Color.white );
-                return _solidWhite;
-            }
+            SolidWhite = SolidColorMaterials.NewSolidColorTexture( Color.white );
         }
 
         public static void DrawBackground( Rect canvas, Color color, float opacity = -1f )

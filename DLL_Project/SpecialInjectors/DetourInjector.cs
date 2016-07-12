@@ -36,16 +36,10 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_GetFoodDef, CCL_FoodUtility_GetFoodDef ) )
                 return false;
 
-            // Detour RimWorld.FoodUtility.BestFoodSourceFor
-            MethodInfo RimWorld_FoodUtility_BestFoodSourceFor = typeof( FoodUtility ).GetMethod( "BestFoodSourceFor", BindingFlags.Static | BindingFlags.Public );
-            MethodInfo CCL_FoodUtility_BestFoodSourceFor = typeof( Detour._FoodUtility ).GetMethod( "_BestFoodSourceFor", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_BestFoodSourceFor, CCL_FoodUtility_BestFoodSourceFor ) )
-                return false;
-
-            // Detour RimWorld.FoodUtility.NutritionAvailableFromFor
-            MethodInfo RimWorld_FoodUtility_NutritionAvailableFromFor = typeof( FoodUtility ).GetMethod( "NutritionAvailableFromFor", BindingFlags.Static | BindingFlags.Public );
-            MethodInfo CCL_FoodUtility_NutritionAvailableFromFor = typeof( Detour._FoodUtility ).GetMethod( "_NutritionAvailableFromFor", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_NutritionAvailableFromFor, CCL_FoodUtility_NutritionAvailableFromFor ) )
+            // Detour RimWorld.FoodUtility.BestFoodSourceOnMap
+            MethodInfo RimWorld_FoodUtility_BestFoodSourceOnMap = typeof( FoodUtility ).GetMethod( "BestFoodSourceOnMap", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_FoodUtility_BestFoodSourceOnMap = typeof( Detour._FoodUtility ).GetMethod( "_BestFoodSourceOnMap", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_BestFoodSourceOnMap, CCL_FoodUtility_BestFoodSourceOnMap ) )
                 return false;
 
             // Detour RimWorld.JobDriver_FoodDeliver.MakeNewToils
@@ -61,9 +55,10 @@ namespace CommunityCoreLibrary
                 return false;
 
             // Detour RimWorld.JobDriver_Ingest.UsingNutrientPasteDispenser
-            MethodInfo RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser = typeof( JobDriver_Ingest ).GetMethod( "UsingNutrientPasteDispenser", BindingFlags.Instance | BindingFlags.NonPublic );
+            PropertyInfo RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser = typeof( JobDriver_Ingest ).GetProperty( "UsingNutrientPasteDispenser", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser_get = RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser.GetGetMethod( true );
             MethodInfo CCL_JobDriver_Ingest_UsingNutrientPasteDispenser = typeof( Detour._JobDriver_Ingest ).GetMethod( "_UsingNutrientPasteDispenser", BindingFlags.Static | BindingFlags.NonPublic );
-            if( !Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser, CCL_JobDriver_Ingest_UsingNutrientPasteDispenser ) )
+            if( !Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser_get, CCL_JobDriver_Ingest_UsingNutrientPasteDispenser ) )
                 return false;
 
             // Detour RimWorld.JobDriver_Ingest.PrepareToEatToils_Dispenser

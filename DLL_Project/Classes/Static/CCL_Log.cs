@@ -6,49 +6,72 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+
     internal static class CCL_Log
     {
 
 #if DEBUG
-        public const string                 logFileName = "ccl_log.txt";
-        private static FileStream           logFile;
 
-        public static FileStream            OpenStream( string filename = logFileName )
+        public class LogStream
         {
-            var stream = logFile = System.IO.File.Open( filename, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
-            if( filename == logFileName )
-            {
-                logFile = stream;
-            }
-            return logFile;
+            public string                   fileName;
+            public FileStream               stream;
+            public int                      indent;
         }
 
-        public static void                  CloseStream( FileStream stream )
+        public const string                 cclLogFileName = "ccl_log.txt";
+        private static LogStream            cclStream;
+
+        public static LogStream             OpenStream( string filename = cclLogFileName )
         {
+            var newStream = new LogStream();
+            newStream.fileName = filename;
+            newStream.indent = 0;
+            newStream.stream = System.IO.File.Open( filename, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+            if( filename == cclLogFileName )
+            {
+                cclStream = newStream;
+            }
+            return newStream;
+        }
+
+        public static void                  CloseStream( LogStream stream = null )
+        {
+            if( stream == null )
+            {
+                stream = cclStream;
+            }
             if( stream != null )
             {
-                stream.Close();
+                stream.stream.Close();
+                stream.stream = null;
                 stream = null;
             }
         }
 
-        private static int                  WriteIndentLevel = 0;
-        public static void                  WriteIndent( int amount = 1 )
+        public static void                  IndentStream( LogStream stream = null, int amount = 1 )
         {
-            WriteIndentLevel += amount;
-            if( WriteIndentLevel < 0 )
+            if( stream == null )
             {
-                WriteIndentLevel = 0;
+                stream = cclStream;
+            }
+            if( stream != null )
+            {
+                stream.indent += amount;
+                if( stream.indent < 0 )
+                {
+                    stream.indent = 0;
+                }
             }
         }
 
-        public static void                  Write( string s, FileStream stream = null )
+        public static void                  Write( string s, LogStream stream = null )
         {
             if(
                 ( s.NullOrEmpty() )||
                 (
                     ( stream == null )&&
-                    ( logFile == null )
+                    ( cclStream == null )
                 )
             )
             {
@@ -57,28 +80,28 @@ namespace CommunityCoreLibrary
 
             if( stream == null )
             {
-                stream = logFile;
+                stream = cclStream;
             }
 
             s += "\n";
             // Copy to a byte array with preceeding tabs for indentation
-            byte[] b = new byte[ WriteIndentLevel + s.Length ];
+            byte[] b = new byte[ stream.indent + s.Length ];
 
-            if( WriteIndentLevel > 0 )
+            if( stream.indent > 0 )
             {
-                for( int i = 0; i < WriteIndentLevel; ++i )
+                for( int i = 0; i < stream.indent; ++i )
                 {
-                    b[ i ] = Convert.ToByte( "\t" );
+                    b[ i ] = 9; // Tab
                 }
             }
 
             for( int i = 0; i < s.Length; ++i )
             {
-                b[ WriteIndentLevel + i ] = (byte) s[ i ];
+                b[ stream.indent + i ] = (byte) s[ i ];
             }
 
-            stream.Write( b, 0, s.Length );
-            stream.Flush();
+            stream.stream.Write( b, 0, stream.indent + s.Length );
+            stream.stream.Flush();
         }
 #endif
 

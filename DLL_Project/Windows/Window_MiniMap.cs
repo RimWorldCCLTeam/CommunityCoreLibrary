@@ -8,16 +8,17 @@ using Verse;
 
 namespace CommunityCoreLibrary.MiniMap
 {
-    
+
+    [StaticConstructorOnStartup]
     public class Window_MiniMap : Window
     {
         #region Fields
 
         public static Rect windowRect;
 
-        private static Texture2D _lockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/locked");
-        private static Texture2D _scaleIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/scale");
-        private static Texture2D _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
+        private static Texture2D _lockedIcon;
+        private static Texture2D _scaleIcon;
+        private static Texture2D _unlockedIcon;
         private bool _locked = true;
         private float iconMargin = 6f;
         private float iconSize = 24f;
@@ -29,6 +30,13 @@ namespace CommunityCoreLibrary.MiniMap
         #endregion Fields
 
         #region Constructors
+
+        static Window_MiniMap()
+        {
+            _lockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/locked");
+            _scaleIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/scale");
+            _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
+        }
 
         public Window_MiniMap()
         {

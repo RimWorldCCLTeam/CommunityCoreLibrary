@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <ModHelperDef>
+    <CommunityCoreLibrary.ModHelperDef>
         <defName>CommunityCoreLibraryVanillaTweaks</defName>
 
         <ModName>Community Core Library - Vanilla Tweaks</ModName>
@@ -179,6 +179,6 @@
 
         </ThingDefAvailability>
 
-    </ModHelperDef>
+    </CommunityCoreLibrary.ModHelperDef>
 
 </Defs>

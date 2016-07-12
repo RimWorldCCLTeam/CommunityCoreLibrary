@@ -17,6 +17,7 @@ namespace CommunityCoreLibrary.Controller
 
         #region Instance Data
 
+        private static bool                 initOk;
         private static bool                 gameValid;
 
         private static int                  ticks;
@@ -32,27 +33,17 @@ namespace CommunityCoreLibrary.Controller
 
         #endregion
 
-        #region Static Constructor
+        #region Destructor
 
 
-//        static                              MainMonoBehaviour()
-//        {
-//#if DEVELOPER
-//            // Open a log file for CCL specific output
-//            // https://www.youtube.com/watch?v=jyaLZHiJJnE
-//            CCL_Log.OpenStream();
-//#endif
-//            PreLoad();
-//        }
-//
-//#if DEVELOPER
-//        /* Should be a static but can't */  ~MainMonoBehaviour()
-//        {
-//            CCL_Log.CloseStream();
-//
-//        }
-//
-//#endif
+#if DEVELOPER
+        /* Should be a static but can't */  ~MainMonoBehaviour()
+        {
+            CCL_Log.CloseStream();
+
+        }
+
+#endif
 
         #endregion
 
@@ -63,6 +54,15 @@ namespace CommunityCoreLibrary.Controller
             // This is a pre-start sequence to hook some deeper level functions.
             // These functions can be hooked later but it would be after the sequence
             // of operations which call them is complete.
+
+#if DEVELOPER
+            // Open a log file for CCL specific output
+            // https://www.youtube.com/watch?v=jyaLZHiJJnE
+            if( CCL_Log.OpenStream() == null )
+            {
+                Log.Error( string.Format( "Unable to open file stream for {0}!", Controller.Data.UnityObjectName ) );
+            }
+#endif
 
             // Log CCL version
             Version.Log();
@@ -164,40 +164,7 @@ namespace CommunityCoreLibrary.Controller
 
             if( InjectionsOk )
             {
-                var gameObject = new GameObject( Controller.Data.UnityObjectName );
-                if( gameObject == null )
-                {
-                    InjectionsOk = false;
-                    CCL_Log.Error(
-                        "Unable to create GameObject",
-                        "PreLoader"
-                    );
-                }
-                else
-                {
-                    if( gameObject.AddComponent< Controller.MainMonoBehaviour >() == null )
-                    {
-                        InjectionsOk = false;
-                        CCL_Log.Error(
-                            "Unable to create MonoBehaviour",
-                            "PreLoader"
-                        );
-                    }
-                    else
-                    {
-                        UnityEngine.Object.DontDestroyOnLoad( gameObject );
-                        Controller.Data.UnityObject = gameObject;
-                    }
-                }
-            }
-
-            if( InjectionsOk )
-            {
-                CCL_Log.Message(
-                    "Queueing Library Initialization",
-                    "PreLoader"
-                );
-                LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
+                LongEventHandler.ExecuteWhenFinished( CreateMonoBehaviour );
             }
 
             /*
@@ -210,6 +177,7 @@ namespace CommunityCoreLibrary.Controller
                 stringBuilder.ToString(),
                 "PreLoader" );
             */
+            initOk = InjectionsOk;
         }
 
         #endregion
@@ -407,10 +375,43 @@ namespace CommunityCoreLibrary.Controller
 
         #region Long Event Handlers
 
+        public static void                         CreateMonoBehaviour()
+        {
+            var gameObject = new GameObject( Controller.Data.UnityObjectName );
+            if( gameObject == null )
+            {
+                CCL_Log.Error( "Unable to create GameObject" );
+                initOk = false;
+                return;
+            }
+            else
+            {
+                if( gameObject.AddComponent< Controller.MainMonoBehaviour >() == null )
+                {
+                    CCL_Log.Error( "Unable to create MonoBehaviour" );
+                    initOk = false;
+                    return;
+                }
+                else
+                {
+                    UnityEngine.Object.DontDestroyOnLoad( gameObject );
+                    Controller.Data.UnityObject = gameObject;
+                }
+            }
+
+            CCL_Log.Message( "Queueing Library Initialization" );
+            LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
+        }
+
         public static void                         Initialize()
         {
             //enabled = false;
             gameValid = false;
+
+            if( !initOk )
+            {
+                return;
+            }
 
             var subControllers = Controller.Data.SubControllers.ToList();
             if( subControllers.NullOrEmpty() )

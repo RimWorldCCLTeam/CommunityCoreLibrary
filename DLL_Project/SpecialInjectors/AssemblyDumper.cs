@@ -41,104 +41,125 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        private void                        DumpAssembly( FileStream stream, Assembly assembly )
+        private void                        DumpAssembly( CCL_Log.LogStream stream, Assembly assembly )
         {
-            CCL_Log.WriteIndent();
+            CCL_Log.IndentStream( stream );
             {
-                CCL_Log.Write( "Assembly: " + assembly.GetName() );
+                CCL_Log.Write( "Assembly: " + assembly.GetName(), stream );
 
-                CCL_Log.WriteIndent();
+                CCL_Log.IndentStream( stream );
                 {
                     foreach( var type in Controller.Data.Assembly_CSharp.GetTypes() )
                     {
-                        CCL_Log.Write( "Type: " + type.FullName );
-                        CCL_Log.WriteIndent();
+                        CCL_Log.Write( "Type: " + type.FullName, stream );
+                        CCL_Log.IndentStream( stream );
                         {
                             #region Fields
-                            CCL_Log.Write( "Fields:" );
-                            CCL_Log.WriteIndent();
+                            var fields = type.GetFields( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public );
+                            if( !fields.NullOrEmpty() )
                             {
-                                foreach( var entity in type.GetFields( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                                CCL_Log.Write( "Fields:", stream );
+                                CCL_Log.IndentStream( stream );
                                 {
-                                    var str = entity.Name;
-                                    if( entity.IsStatic )
-                                        str += " (Static)";
-                                    else
-                                        str += " (Instance)";
-                                    if( entity.IsPrivate ) str += " (NonPublic)";
-                                    if( entity.IsPublic ) str += " (Public)";
-                                    CCL_Log.Write( str );
+                                    foreach( var entity in fields )
+                                    {
+                                        var str = entity.Name;
+                                        if( entity.IsStatic )
+                                            str += " (Static)";
+                                        else
+                                            str += " (Instance)";
+                                        if( entity.IsPrivate ) str += " (NonPublic)";
+                                        if( entity.IsPublic ) str += " (Public)";
+                                        CCL_Log.Write( str, stream );
+                                    }
                                 }
+                                CCL_Log.IndentStream( stream, -1 );
                             }
-                            CCL_Log.WriteIndent( -1 );
                             #endregion
                             #region Properties
-                            CCL_Log.Write( "Properties:" );
-                            CCL_Log.WriteIndent();
+                            var properties = type.GetProperties( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public );
+                            if( !properties.NullOrEmpty() )
                             {
-                                foreach( var entity in type.GetProperties( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                                CCL_Log.Write( "Properties:", stream );
+                                CCL_Log.IndentStream( stream );
                                 {
-                                    var str = entity.Name;
-                                    var method = entity.GetGetMethod();
-                                    if( method != null )
+                                    foreach( var entity in properties )
                                     {
-                                        str += " (Public Get)";
+                                        var str = entity.Name;
+                                        var method = entity.GetGetMethod();
+                                        if( method != null )
+                                        {
+                                            str += " (Public Get)";
+                                        }
+                                        else
+                                        {
+                                            method = entity.GetGetMethod( true );
+                                            if( method != null ) str += " (NonPublic Get)";
+                                        }
+                                        method = entity.GetSetMethod();
+                                        if( method != null )
+                                        {
+                                            str += " (Public Set)";
+                                        }
+                                        else
+                                        {
+                                            method = entity.GetSetMethod( true );
+                                            if( method != null ) str += " (NonPublic Set)";
+                                        }
+                                        CCL_Log.Write( str, stream );
                                     }
-                                    else
-                                    {
-                                        method = entity.GetGetMethod( true );
-                                        if( method != null ) str += " (NonPublic Get)";
-                                    }
-                                    method = entity.GetSetMethod();
-                                    if( method != null )
-                                    {
-                                        str += " (Public Set)";
-                                    }
-                                    else
-                                    {
-                                        method = entity.GetSetMethod( true );
-                                        if( method != null ) str += " (NonPublic Set)";
-                                    }
-                                    CCL_Log.Write( str );
                                 }
+                                CCL_Log.IndentStream( stream, -1 );
                             }
-                            CCL_Log.WriteIndent( -1 );
                             #endregion
                             #region Methods
-                            CCL_Log.Write( "Methods:" );
-                            CCL_Log.WriteIndent();
+                            var methods = type.GetMethods( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public );
+                            if( !methods.NullOrEmpty() )
                             {
-                                foreach( var entity in type.GetMethods( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public ) )
+                                CCL_Log.Write( "Methods:", stream );
+                                CCL_Log.IndentStream( stream );
                                 {
-                                    var str = entity.Name;
-                                    if( entity.IsStatic )
-                                        str += " (Static)";
-                                    else
-                                        str += " (Instance)";
-                                    if( entity.IsPrivate ) str += " (NonPublic)";
-                                    if( entity.IsPublic ) str += " (Public)";
-                                    if( entity.GetParameters() != null )
+                                    foreach( var entity in methods )
                                     {
-                                        str += " Parameters:";
-                                        foreach( var pi in entity.GetParameters() )
+                                        var str = entity.Name;
+                                        if( entity.IsStatic )
+                                            str += " (Static)";
+                                        else
+                                            str += " (Instance)";
+                                        if( entity.IsPrivate ) str += " (NonPublic)";
+                                        if( entity.IsPublic ) str += " (Public)";
+                                        if( !entity.GetParameters().NullOrEmpty() )
                                         {
-                                            str += " " + pi.ParameterType.ToString();
-                                            if( pi.IsOut ) str += " (out)";
-                                            if( pi.IsRetval ) str += " (ret)";
+                                            var parameters = entity.GetParameters();
+                                            str += " Parameters: (";
+                                            for( int i = 0; i < parameters.Length; ++i )
+                                            {
+                                                var pi = parameters[ i ];
+                                                str += " " + pi.ParameterType.ToString();
+                                                str += " " + pi.Name;
+                                                if( pi.IsOut ) str += " (out)";
+                                                if( pi.IsRetval ) str += " (ret)";
+                                                if( i < parameters.Length - 1 )
+                                                {
+                                                    str += ",";
+                                                }
+                                            }
+                                            str += " )";
                                         }
+                                        CCL_Log.Write( str, stream );
                                     }
-                                    CCL_Log.Write( str );
                                 }
+                                CCL_Log.IndentStream( stream, -1 );
                             }
-                            CCL_Log.WriteIndent( -1 );
                             #endregion
                         }
-                        CCL_Log.WriteIndent( -1 );
+                        CCL_Log.IndentStream( stream, -1 );
+                        CCL_Log.Write( "\n", stream );
                     }
                 }
-                CCL_Log.WriteIndent( -1 );
+                CCL_Log.IndentStream( stream, -1 );
             }
-            CCL_Log.WriteIndent( -1 );
+            CCL_Log.IndentStream( stream, -1 );
             CCL_Log.Write( "\n", stream );
         }
 

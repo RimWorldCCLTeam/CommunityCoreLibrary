@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
 
         <defName>MakeArtilleryShellsSmithingTable</defName>
         <Priority>0</Priority>
@@ -19,9 +19,9 @@
             <li>FueledSmithy</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
 
         <defName>MakeArtilleryShellsMachiningTable</defName>
         <Priority>0</Priority>
@@ -38,6 +38,6 @@
             <li>TableMachining</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>
