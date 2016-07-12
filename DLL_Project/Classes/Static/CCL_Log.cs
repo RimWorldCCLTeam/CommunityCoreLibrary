@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+
 using System.Text;
 using Verse;
 
@@ -7,53 +9,76 @@ namespace CommunityCoreLibrary
     internal static class CCL_Log
     {
 
-#if DEVELOPER
-        private static System.IO.FileStream logFile;
+#if DEBUG
+        public const string                 logFileName = "ccl_log.txt";
+        private static FileStream           logFile;
 
-        static                              CCL_Log()
+        public static FileStream            OpenStream( string filename = logFileName )
         {
-            OpenStream();
+            var stream = logFile = System.IO.File.Open( filename, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+            if( filename == logFileName )
+            {
+                logFile = stream;
+            }
+            return logFile;
         }
 
-        private static void                 OpenStream()
+        public static void                  CloseStream( FileStream stream )
         {
-            if( logFile == null )
+            if( stream != null )
             {
-                logFile = System.IO.File.Open( "ccl_log.txt", System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+                stream.Close();
+                stream = null;
             }
         }
 
-        public static void                  CloseStream()
+        private static int                  WriteIndentLevel = 0;
+        public static void                  WriteIndent( int amount = 1 )
         {
-            if( logFile != null )
+            WriteIndentLevel += amount;
+            if( WriteIndentLevel < 0 )
             {
-                logFile.Close();
-                logFile = null;
+                WriteIndentLevel = 0;
             }
         }
 
-        public static void                  Write( string s )
+        public static void                  Write( string s, FileStream stream = null )
         {
             if(
                 ( s.NullOrEmpty() )||
-                ( logFile == null )
+                (
+                    ( stream == null )&&
+                    ( logFile == null )
+                )
             )
             {
                 return;
             }
 
+            if( stream == null )
+            {
+                stream = logFile;
+            }
+
             s += "\n";
-            // Have to copy to a byte array as dotNet doesn't allow getting the
-            // pointer to a string nor can it cast a string to a char array
-            byte[] b = new byte[ s.Length ];
+            // Copy to a byte array with preceeding tabs for indentation
+            byte[] b = new byte[ WriteIndentLevel + s.Length ];
+
+            if( WriteIndentLevel > 0 )
+            {
+                for( int i = 0; i < WriteIndentLevel; ++i )
+                {
+                    b[ i ] = Convert.ToByte( "\t" );
+                }
+            }
 
             for( int i = 0; i < s.Length; ++i )
             {
-                b[ i ] = (byte) s[ i ];
+                b[ WriteIndentLevel + i ] = (byte) s[ i ];
             }
 
-            logFile.Write( b, 0, s.Length );
-            logFile.Flush();
+            stream.Write( b, 0, s.Length );
+            stream.Flush();
         }
 #endif
 
@@ -183,7 +208,7 @@ namespace CommunityCoreLibrary
             {
                 s = BaseMessage( content, category );
                 Verse.Log.Message( s.ToString() );
-#if DEVELOPER
+#if DEBUG
                 Write( s.ToString() );
 #endif
             }
@@ -209,7 +234,7 @@ namespace CommunityCoreLibrary
             {
                 s = BaseMessage( content, category );
                 Verse.Log.Error( s.ToString() );
-#if DEVELOPER
+#if DEBUG
                 Write( s.ToString() );
 #endif
             }
@@ -274,7 +299,7 @@ namespace CommunityCoreLibrary
 
             if( captureTarget == null )
             {
-#if DEVELOPER
+#if DEBUG
                 Write( s.ToString() );
 #endif
                 if( Severity <= Verbosity.NonFatalErrors )

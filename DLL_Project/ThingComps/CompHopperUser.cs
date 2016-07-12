@@ -276,12 +276,12 @@ namespace CommunityCoreLibrary
                     if( iHopperUser != null )
                     {
                         // Copy a filter from a building implementing IHopperUser
-                        resourceSettings.filter.CopyFrom( iHopperUser.ResourceFilter );
+                        resourceSettings.filter.CopyAllowancesFrom( iHopperUser.ResourceFilter );
                     }
                     else
                     {
                         // Copy a filter from xml flag
-                        resourceSettings.filter.CopyFrom( Resources );
+                        resourceSettings.filter.CopyAllowancesFrom( Resources );
                     }
 
                     // Block default special filters

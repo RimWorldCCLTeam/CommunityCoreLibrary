@@ -37,13 +37,17 @@ namespace CommunityCoreLibrary.Controller
 
         static                              MainMonoBehaviour()
         {
+#if DEVELOPER
+            // Open a log file for CCL specific output
+            // https://www.youtube.com/watch?v=jyaLZHiJJnE
+            CCL_Log.OpenStream();
+#endif
             PreLoad();
         }
 
 #if DEVELOPER
         /* Should be a static but can't */  ~MainMonoBehaviour()
         {
-            // https://www.youtube.com/watch?v=jyaLZHiJJnE
             CCL_Log.CloseStream();
 
         }
@@ -146,29 +150,6 @@ namespace CommunityCoreLibrary.Controller
                 MethodInfo RimWorld_MainMenuDrawer_DoMainMenuButtons = typeof( MainMenuDrawer ).GetMethod( "DoMainMenuButtons", BindingFlags.Static | BindingFlags.Public );
                 MethodInfo CCL_MainMenuDrawer_DoMainMenuButtons = typeof( Detour._MainMenuDrawer ).GetMethod( "_DoMainMenuButtons", BindingFlags.Static | BindingFlags.NonPublic );
                 InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_DoMainMenuButtons, CCL_MainMenuDrawer_DoMainMenuButtons );
-            }
-
-            // Detour RimWorld.BiomeDef.CommonalityOfAnimal
-            if( InjectionsOk )
-            {
-                MethodInfo RimwWorld_BiomeDef_CommonalityOfAnimal = typeof( BiomeDef ).GetMethod( "CommonalityOfAnimal", BindingFlags.Instance | BindingFlags.Public );
-                MethodInfo CCL_BiomeDef_CommonalityOfAnimal = typeof( Detour._BiomeDef ).GetMethod( "_CommonalityOfAnimal", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( RimwWorld_BiomeDef_CommonalityOfAnimal, CCL_BiomeDef_CommonalityOfAnimal );
-            }
-
-            // Detour RimWorld.BiomeDef.CommonalityOfPlant
-            if( InjectionsOk )
-            {
-                MethodInfo RimwWorld_BiomeDef_CommonalityOfPlant = typeof( BiomeDef ).GetMethod( "CommonalityOfPlant", BindingFlags.Instance | BindingFlags.Public );
-                MethodInfo CCL_BiomeDef_CommonalityOfPlant = typeof( Detour._BiomeDef ).GetMethod( "_CommonalityOfPlant", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( RimwWorld_BiomeDef_CommonalityOfPlant, CCL_BiomeDef_CommonalityOfPlant );
-            }
-            // Detour RimWorld.BiomeDef.MTBDaysOfDisease
-            if( InjectionsOk )
-            {
-                MethodInfo RimWorld_BiomeDef_MTBDaysOfDisease = typeof( BiomeDef ).GetMethod( "MTBDaysOfDisease", BindingFlags.Instance | BindingFlags.Public );
-                MethodInfo CCL_BiomeDef_MTBDaysOfDisease = typeof( Detour._BiomeDef ).GetMethod( "_MTBDaysOfDisease", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( RimWorld_BiomeDef_MTBDaysOfDisease, CCL_BiomeDef_MTBDaysOfDisease );
             }
 
             // Detour Verse.PostLoadInitter.DoAllPostLoadInits

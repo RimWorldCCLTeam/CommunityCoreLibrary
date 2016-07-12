@@ -51,6 +51,35 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
+        internal static bool     _GetFoodDefAlcohol;
+        internal static ThingDef _GetFoodDef( Thing foodSource )
+        {
+            var lookForAlcohol = _GetFoodDefAlcohol;
+            _GetFoodDefAlcohol = false;
+
+            var nutrientPasteDispenser = foodSource as Building_NutrientPasteDispenser;
+            if( nutrientPasteDispenser != null )
+            {
+                return nutrientPasteDispenser.DispensableDef;
+            }
+            var factory = foodSource as Building_AutomatedFactory;
+            if( factory != null )
+            {
+                if( lookForAlcohol )
+                {
+                    return factory.BestProduct( FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol );
+                }
+                else
+                {
+                    return factory.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
+                }
+            }
+            Pawn pawn = foodSource as Pawn;
+            if (pawn != null)
+                return pawn.RaceProps.corpseDef;
+            return foodSource.def;
+        }
+
         internal static Thing _BestFoodSourceOnMap( Pawn getter, Pawn eater, bool desperate, FoodPreferability maxPref = FoodPreferability.MealLavish, bool allowPlant = true, bool allowLiquor = true, bool allowCorpse = true, bool allowDispenserFull = true, bool allowDispenserEmpty = true, bool allowForbidden = false )
         {
             Profiler.BeginSample( "BestFoodInWorldFor getter=" + getter.LabelCap + " eater=" + eater.LabelCap );
@@ -65,11 +94,11 @@ namespace CommunityCoreLibrary.Detour
             dispenserValidator.desperate = desperate;
             dispenserValidator.eater = eater;
             var getterCanManipulate = (
-                ( getter.RaceProps.ToolUser ) &&
+                ( getter.RaceProps.ToolUser )&&
                 ( getter.health.capacities.CapableOf( PawnCapacityDefOf.Manipulation ) )
             );
             if(
-                ( !getterCanManipulate ) &&
+                ( !getterCanManipulate )&&
                 ( getter != eater )
             )
             {
@@ -97,7 +126,7 @@ namespace CommunityCoreLibrary.Detour
 
             var thingRequest =
                 (
-                    ( ( eater.RaceProps.foodType & ( FoodTypeFlags.Plant | FoodTypeFlags.Tree ) ) == FoodTypeFlags.None ) ||
+                    ( ( eater.RaceProps.foodType & ( FoodTypeFlags.Plant | FoodTypeFlags.Tree ) ) == FoodTypeFlags.None )||
                     ( !allowPlant )
                 )
                 ? ThingRequest.ForGroup( ThingRequestGroup.FoodSourceNotPlantOrTree )
@@ -149,13 +178,13 @@ namespace CommunityCoreLibrary.Detour
                 Profiler.BeginSample( "foodValidator" );
                 if(
                     (
-                        ( !allowForbidden ) &&
+                        ( !allowForbidden )&&
                         ( t.IsForbidden( getter ) )
-                    ) ||
+                    )||
                     (
-                        ( t.Faction != getter.Faction ) &&
+                        ( t.Faction != getter.Faction )&&
                         ( t.Faction != getter.HostFaction )
-                    ) ||
+                    )||
                     ( !t.IsSociallyProper( getter ) )
                 )
                 {
@@ -166,15 +195,15 @@ namespace CommunityCoreLibrary.Detour
                 var nutrientPasteDispenser = t as Building_NutrientPasteDispenser;
                 var foodSynthesizer = t as Building_AutomatedFactory;
                 if(
-                    ( nutrientPasteDispenser != null ) ||
+                    ( nutrientPasteDispenser != null )||
                     ( foodSynthesizer != null )
                 )
                 {
                     // Common checks for all machines
                     if(
-                        ( !allowDispenserFull ) ||
-                        ( !getterCanManipulate ) ||
-                        ( !t.InteractionCell.Standable() ) ||
+                        ( !allowDispenserFull )||
+                        ( !getterCanManipulate )||
+                        ( !t.InteractionCell.Standable() )||
                         ( !getter.Position.CanReach( (TargetInfo)t.InteractionCell, PathEndMode.OnCell, TraverseParms.For( getter, Danger.Some, TraverseMode.ByPawn, false ) ) )
                     )
                     {
@@ -183,13 +212,13 @@ namespace CommunityCoreLibrary.Detour
                     }
                     // NPD checks
                     if(
-                        ( nutrientPasteDispenser != null ) &&
+                        ( nutrientPasteDispenser != null )&&
                         (
-                            ( ThingDefOf.MealNutrientPaste.ingestible.preferability < minPref ) ||
-                            ( ThingDefOf.MealNutrientPaste.ingestible.preferability > maxPref ) ||
-                            ( !nutrientPasteDispenser.powerComp.PowerOn ) ||
+                            ( ThingDefOf.MealNutrientPaste.ingestible.preferability < minPref )||
+                            ( ThingDefOf.MealNutrientPaste.ingestible.preferability > maxPref )||
+                            ( !nutrientPasteDispenser.powerComp.PowerOn )||
                             (
-                                ( !allowDispenserEmpty ) &&
+                                ( !allowDispenserEmpty )&&
                                 ( !nutrientPasteDispenser.HasEnoughFeedstockInHoppers() )
                             )
                         )
@@ -203,8 +232,8 @@ namespace CommunityCoreLibrary.Detour
                     {
                         var mealDef = foodSynthesizer.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                         if(
-                            ( mealDef == null ) ||
-                            ( mealDef.ingestible.preferability < minPref ) ||
+                            ( mealDef == null )||
+                            ( mealDef.ingestible.preferability < minPref )||
                             ( mealDef.ingestible.preferability > maxPref )
                         )
                         {
@@ -217,8 +246,8 @@ namespace CommunityCoreLibrary.Detour
                 {
                     // Non-machine checks
                     if(
-                        ( t.def.ingestible.preferability < minPref ) ||
-                        ( t.def.ingestible.preferability > maxPref ) ||
+                        ( t.def.ingestible.preferability < minPref )||
+                        ( t.def.ingestible.preferability > maxPref )||
                         ( !t.IngestibleNow )
                     )
                     {
@@ -256,8 +285,8 @@ namespace CommunityCoreLibrary.Detour
             internal bool Validate( Thing t )
             {
                 return (
-                    ( ValidateFast( t ) ) &&
-                    ( t.def.ingestible.preferability > FoodPreferability.DesperateOnly ) &&
+                    ( ValidateFast( t ) )&&
+                    ( t.def.ingestible.preferability > FoodPreferability.DesperateOnly )&&
                     ( !t.IsNotFresh() )
                 );
             }

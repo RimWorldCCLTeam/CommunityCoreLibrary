@@ -1495,18 +1495,14 @@ namespace CommunityCoreLibrary
 
             #region Diseases
 
-            // workaround through looping incidents doesn't appear to work - go through reflection
-            //FieldInfo diseasesFieldInfo = typeof (BiomeDef).GetField( "diseases",
-            //                                                          BindingFlags.NonPublic | BindingFlags.Instance );
-            //IList diseases = diseasesFieldInfo.GetValue( biomeDef ) as IList;
-
             var diseases = biomeDef.AllDiseases();
             if( !diseases.NullOrEmpty() )
             {
                 foreach( var disease in diseases )
                 {
+                    var diseaseCommonality = ( biomeDef.CommonalityOfDisease( disease ) / biomeDef.diseaseMtbDays ) * GenDate.DaysPerYear;
                     defs.Add( disease.diseaseIncident );
-                    chances.Add( ( biomeDef.MTBDaysOfDisease( disease ) / GenDate.DaysPerYear ).ToStringPercent() );
+                    chances.Add( diseaseCommonality.ToStringPercent() );
                 }
 
                 helpDef.HelpDetailSections.Add( new HelpDetailSection(

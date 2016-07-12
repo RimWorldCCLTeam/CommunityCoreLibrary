@@ -21,34 +21,11 @@ namespace CommunityCoreLibrary.Detour
         internal const TargetIndex ChairOrSpotInd = TargetIndex.B;
         internal const TargetIndex OptionalDrinkInd = TargetIndex.C;
 
-        internal static FieldInfo _GetPawnDrawTracker;
-
-        #region Reflected Fields
-
-        internal static Pawn_DrawTracker GetPawnDrawTracker( this Pawn pawn )
-        {
-            if( _GetPawnDrawTracker == null )
-            {
-                _GetPawnDrawTracker = typeof( Pawn ).GetField( "drawer", BindingFlags.Instance | BindingFlags.NonPublic );
-                if( _GetPawnDrawTracker == null )
-                {
-                    CCL_Log.Trace(
-                        Verbosity.FatalErrors,
-                        "Unable to get 'drawer' in class 'Pawn'",
-                        "CommunityCoreLibrary.Detour.JobDriver_SocialRelax");
-                    return null;
-                }
-            }
-            return (Pawn_DrawTracker)_GetPawnDrawTracker.GetValue( pawn );
-        }
-
-        #endregion
-
         #region Helper Methods
 
         internal static Thing GatherSpotParent( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( GatherSpotParentInd ).Thing;
+            return obj.TargetThing( GatherSpotParentInd );
         }
 
         internal static IntVec3 ClosestGatherSpotParentCell( this JobDriver_SocialRelax obj )
@@ -58,52 +35,52 @@ namespace CommunityCoreLibrary.Detour
 
         internal static bool HasChair( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( ChairOrSpotInd ).HasThing;
+            return obj.TargetThing( ChairOrSpotInd ) != null;
         }
 
         internal static IntVec3 OccupySpot( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( ChairOrSpotInd ).Cell;
+            return obj.TargetCell( ChairOrSpotInd );
         }
 
         internal static Thing OccupyThing( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( ChairOrSpotInd ).Thing;
+            return obj.TargetThing( ChairOrSpotInd );
         }
 
         internal static bool IsDrink( this JobDriver_SocialRelax obj )
         {
-            if( !obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).HasThing )
+            var thing = obj.TargetThing( OptionalDrinkInd );
+            if( thing == null )
             {
                 return false;
             }
-            var thing = obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).Thing;
             return thing.def.IsAlcohol();
         }
 
         internal static bool IsDispenser( this JobDriver_SocialRelax obj )
         {
-            if( !obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).HasThing )
+            var thing = obj.TargetThing( OptionalDrinkInd );
+            if( thing == null )
             {
                 return false;
             }
-            var thing = obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).Thing;
             return thing is Building_AutomatedFactory;
         }
 
         internal static bool HasDrinkOrDispenser( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).HasThing;
+            return obj.TargetThing( OptionalDrinkInd ) != null;
         }
 
         internal static Thing Alcohol( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).Thing;
+            return obj.TargetThing( OptionalDrinkInd );
         }
 
         internal static Building_AutomatedFactory Dispenser( this JobDriver_SocialRelax obj )
         {
-            return obj.pawn.CurJob.GetTarget( OptionalDrinkInd ).Thing as Building_AutomatedFactory;
+            return obj.TargetThing( OptionalDrinkInd ) as Building_AutomatedFactory;
         }
 
         #endregion
@@ -138,19 +115,20 @@ namespace CommunityCoreLibrary.Detour
 
             yield return Toils_Goto.GotoCell( ChairOrSpotInd, PathEndMode.OnCell );
 
-            var relax = new Toil();
-            relax.defaultCompleteMode = ToilCompleteMode.Delay;
-            relax.defaultDuration = obj.pawn.CurJob.def.joyDuration;
-            relax.tickAction = new Action( () =>
+            var relax = new Toil()
             {
-                var pawnDrawer = obj.pawn.GetPawnDrawTracker();
-                var pawnFaceTarget = obj.ClosestGatherSpotParentCell();
-                pawnDrawer.rotator.FaceCell( pawnFaceTarget );
-                obj.pawn.GainComfortFromCellIfPossible();
-                JoyUtility.JoyTickCheckEnd( obj.pawn, JoyTickFullJoyAction.GoToNextToil, 1f );
-            }
-            );
-            relax.AddFinishAction(() =>
+                defaultCompleteMode = ToilCompleteMode.Delay,
+                defaultDuration = obj.pawn.CurJob.def.joyDuration,
+                tickAction = () =>
+                {
+                    var pawnDrawer = obj.pawn.GetPawnDrawTracker();
+                    var pawnFaceTarget = obj.ClosestGatherSpotParentCell();
+                    pawnDrawer.rotator.FaceCell( pawnFaceTarget );
+                    obj.pawn.GainComfortFromCellIfPossible();
+                    JoyUtility.JoyTickCheckEnd( obj.pawn, JoyTickFullJoyAction.GoToNextToil, 1f );
+                }
+            };
+            relax.AddFinishAction( () =>
                JoyUtility.TryGainRecRoomThought( obj.pawn )
             );
             relax.socialMode = RandomSocialMode.SuperActive;

@@ -1,192 +1,182 @@
 ﻿// A14 - Signficant changes - needs a thorough check
 // - Fluffy.
 
-//using System;
-//using System.Linq;
-//using System.Collections.Generic;
-//using System.Reflection;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 
-//using RimWorld;
-//using Verse;
-//using Verse.AI;
-//using UnityEngine;
-//using CommunityCoreLibrary;
+using RimWorld;
+using Verse;
+using Verse.AI;
+using UnityEngine;
+using CommunityCoreLibrary;
 
-//namespace CommunityCoreLibrary.Detour
-//{
+namespace CommunityCoreLibrary.Detour
+{
 
-//    internal static class _JobGiver_GetFood
-//    {
+    internal static class _JobGiver_GetFood
+    {
         
-//        internal static Job IngestJob( this JobGiver_GetFood obj, Pawn pawn, Thing food )
-//        {
-//            var _IngestJob = typeof( JobGiver_GetFood ).GetMethod( "IngestJob", BindingFlags.Instance | BindingFlags.NonPublic );
-//            return (Job)_IngestJob.Invoke( obj, new System.Object[] { pawn, food } );
-//        }
+        internal static Job _TryGiveJob( this JobGiver_GetFood obj, Pawn pawn )
+        {
+            bool desperate = pawn.needs.food.CurCategory == HungerCategory.Starving;
+            Thing foodSource;
+            ThingDef foodDef;
 
-//        internal static Job _TryGiveTerminalJob( this JobGiver_GetFood obj, Pawn pawn )
-//        {
-//            Thing foodInInventory = null;
-//            if( pawn.RaceProps.ToolUser )
-//            {
-//                foodInInventory = FoodUtility.FoodInInventory( pawn, (Pawn) null, FoodPreferability.Awful, FoodPreferability.Lavish, 0.0f );
-//                if( foodInInventory != null )
-//                {
-//                    if( pawn.Faction != Faction.OfPlayer )
-//                    {
-//                        return obj.IngestJob( pawn, foodInInventory );
-//                    }
-//                    var comp = foodInInventory.TryGetComp<CompRottable>();
-//                    if(
-//                        ( comp != null )&&
-//                        ( comp.TicksUntilRotAtCurrentTemp < 30000 )
-//                    )
-//                    {
-//                        return obj.IngestJob( pawn, foodInInventory );
-//                    }
-//                }
-//            }
-//            ThingDef foodDef;
-//            var bestFoodSource = FoodUtility.BestFoodSourceFor( pawn, pawn, false, out foodDef );
-//            if(
-//                ( foodInInventory != null )&&
-//                (
-//                    ( bestFoodSource == null )||
-//                    ( !pawn.Position.InHorDistOf( bestFoodSource.Position, 50f ) ) )
-//            )
-//            {
-//                return obj.IngestJob( pawn, foodInInventory );
-//            }
-//            if( bestFoodSource == null )
-//            {
-//                return (Job) null;
-//            }
+            // Find an appropriate food source for the pawn
+            if( !FoodUtility.TryFindBestFoodSourceFor(
+                pawn,
+                pawn,
+                desperate,
+                out foodSource,
+                out foodDef,
+                true,
+                true,
+                false,
+                true )
+            )
+            {
+                return null;
+            }
 
-//            if( bestFoodSource is Building )
-//            {
-//                Building hopper = null;
-//                bool needsFilling = false;
-//                if(
-//                    ( bestFoodSource is Building_NutrientPasteDispenser )&&
-//                    ( !( (Building_NutrientPasteDispenser)bestFoodSource).HasEnoughFeedstockInHoppers() )
-//                )
-//                {
-//                    hopper = ( (Building_NutrientPasteDispenser)bestFoodSource).AdjacentReachableHopper( pawn );
-//                    needsFilling = true;
-//                }
-//                else if(
-//                    ( bestFoodSource is Building_AutomatedFactory )&&
-//                    ( ( (Building_AutomatedFactory)bestFoodSource ).BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal ) == null )
-//                )
-//                {
-//                    hopper = ( (Building_AutomatedFactory)bestFoodSource ).AdjacentReachableHopper( pawn );
-//                    needsFilling = true;
-//                }
-//                if( needsFilling )
-//                {
-//                    if( hopper == null )
-//                    {
-//                        bestFoodSource = FoodUtility.BestFoodSpawnedFor( pawn, pawn, true, FoodPreferability.Lavish, true );
-//                        if( bestFoodSource == null )
-//                        {
-//                            return (Job) null;
-//                        }
-//                    }
-//                    else
-//                    {
-//                        var hopperSgp = hopper as ISlotGroupParent;
-//                        var job = HopperFillFoodJob( pawn, hopperSgp, bestFoodSource );
-//                        if( job != null )
-//                        {
-//                            return job;
-//                        }
-//                        bestFoodSource = FoodUtility.BestFoodSpawnedFor( pawn, pawn, true, FoodPreferability.Lavish, true );
-//                        if( bestFoodSource == null )
-//                        {
-//                            return (Job) null;
-//                        }
-//                        foodDef = bestFoodSource.def;
-//                    }
-//                }
-//            }
-//            var prey = bestFoodSource as Pawn;
-//            if( prey != null )
-//            {
-//                var predatorHunt = new Job( JobDefOf.PredatorHunt, prey );
-//                predatorHunt.killIncappedTarget = true;
-//                return predatorHunt;
-//            }
-//            var ingestJob = new Job( JobDefOf.Ingest, bestFoodSource );
-//            ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
-//            return ingestJob;
-//        }
+            // Predator-Prey
+            var prey = foodSource as Pawn;
+            if( prey != null )
+            {
+                var hunterJob = new Job( JobDefOf.PredatorHunt, prey );
+                hunterJob.killIncappedTarget = true;
+                return hunterJob;
+            }
 
-//        internal static Job HopperFillFoodJob( Pawn pawn, ISlotGroupParent hopperSgp, Thing parent )
-//        {
-//            var building = hopperSgp as Building;
-//            if(
-//                ( !pawn.CanReserveAndReach(
-//                    ( TargetInfo )building.Position,
-//                    PathEndMode.Touch,
-//                    pawn.NormalMaxDanger(),
-//                    1 )
-//                )
-//            )
-//            {
-//                return (Job) null;
-//            }
-//            ThingDef resourceDef = null;
-//            var firstItem = building.Position.GetFirstItem();
-//            if( firstItem != null )
-//            {
-//                if(
-//                    (
-//                        ( parent is Building_NutrientPasteDispenser )&&
-//                        ( Building_NutrientPasteDispenser.IsAcceptableFeedstock( firstItem.def ) )
-//                    )||
-//                    (
-//                        ( parent is Building_AutomatedFactory )&&
-//                        ( ( (Building_AutomatedFactory)parent ).CompHopperUser.ResourceSettings.AllowedToAccept( firstItem ) )
-//                    )
-//                )
-//                {
-//                    resourceDef = firstItem.def;
-//                }
-//                else
-//                {
-//                    if( firstItem.IsForbidden( pawn ) )
-//                    {
-//                        return ( Job )null;
-//                    }
-//                    return HaulAIUtility.HaulAsideJobFor( pawn, firstItem );
-//                }
-//            }
-//            List<Thing> list =
-//                resourceDef != null
-//                ? Find.Map.listerThings.ThingsOfDef( resourceDef )
-//                : Find.Map.listerThings.ThingsInGroup( ThingRequestGroup.FoodNotPlantOrTree );
-//            for( int index = 0; index < list.Count; ++index )
-//            {
-//                Thing t = list[ index ];
-//                if(
-//                    ( t.def.ingestible.preferability == FoodPreferability.Raw )&&
-//                    ( HaulAIUtility.PawnCanAutomaticallyHaul( pawn, t ) )&&
-//                    (
-//                        ( Find.SlotGroupManager.SlotGroupAt( building.Position ).Settings.AllowedToAccept( t ) )&&
-//                        ( HaulAIUtility.StoragePriorityAtFor( t.Position, t ) < hopperSgp.GetSlotGroup().Settings.Priority )
-//                    )
-//                )
-//                {
-//                    Job job = HaulAIUtility.HaulMaxNumToCellJob( pawn, t, building.Position, true );
-//                    if( job != null )
-//                    {
-//                        return job;
-//                    }
-//                }
-//            }
-//            return (Job) null;
-//        }
+            // Nutrient Paste Dispensers and Food Synthesizers (Building_AutomatedFactory)
+            if( foodSource is Building )
+            {
+                var hopperNeedsFilling = false;
+                var hopper = (Building) null;
+                if( foodSource is Building_NutrientPasteDispenser )
+                {
+                    var NPD = foodSource as Building_NutrientPasteDispenser;
+                    if( !NPD.HasEnoughFeedstockInHoppers() )
+                    {
+                        hopperNeedsFilling = true;
+                        hopper = NPD.AdjacentReachableHopper( pawn );
+                    }
+                }
+                if( foodSource is Building_AutomatedFactory )
+                {
+                    var FS = foodSource as Building_AutomatedFactory;
+                    if( foodDef == null )
+                    {
+                        hopperNeedsFilling = true;
+                        hopper = FS.AdjacentReachableHopper( pawn );
+                    }
+                }
+                if( hopperNeedsFilling )
+                {
+                    if( hopper != null )
+                    {
+                        return HopperFillFoodJob( pawn, hopper, foodSource );
+                    }
+                    else
+                    {   // Find an alternate source that isn't an NPD or FS
+                        foodSource = FoodUtility.BestFoodSourceOnMap(
+                            pawn,
+                            pawn,
+                            desperate,
+                            FoodPreferability.MealLavish,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false );
+                        if( foodSource == null )
+                        {
+                            return null;
+                        }
+                        foodDef = foodSource.def;
+                    }
+                }
+            }
 
-//    }
+            // Ingest job for found food source
+            var ingestJob = new Job( JobDefOf.Ingest, foodSource );
+            ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
+            return ingestJob;
+        }
 
-//}
+
+        internal static Job HopperFillFoodJob( Pawn pawn, Building hopper, Thing parent )
+        {
+            var hopperSgp = hopper as ISlotGroupParent;
+            if(
+                ( !pawn.CanReserveAndReach(
+                    hopper.Position,
+                    PathEndMode.Touch,
+                    pawn.NormalMaxDanger(),
+                    1 )
+            )
+            )
+            {
+                return null;
+            }
+            ThingDef resourceDef = null;
+            var firstItem = hopper.Position.GetFirstItem();
+            if( firstItem != null )
+            {
+                if(
+                    (
+                        ( parent is Building_NutrientPasteDispenser )&&
+                        ( Building_NutrientPasteDispenser.IsAcceptableFeedstock( firstItem.def ) )
+                    )||
+                    (
+                        ( parent is Building_AutomatedFactory )&&
+                        ( ( (Building_AutomatedFactory)parent ).CompHopperUser.ResourceSettings.AllowedToAccept( firstItem ) )
+                    )
+                )
+                {
+                    resourceDef = firstItem.def;
+                }
+                else
+                {
+                    if( firstItem.IsForbidden( pawn ) )
+                    {
+                        return ( Job )null;
+                    }
+                    return HaulAIUtility.HaulAsideJobFor( pawn, firstItem );
+                }
+            }
+            List<Thing> list =
+                resourceDef != null
+                ? Find.Map.listerThings.ThingsOfDef( resourceDef )
+                : Find.Map.listerThings.ThingsInGroup( ThingRequestGroup.FoodSourceNotPlantOrTree );
+            for( int index = 0; index < list.Count; ++index )
+            {
+                Thing t = list[ index ];
+                if(
+                    ( t.def.IsNutritionGivingIngestible )&&
+                    (
+                        ( t.def.ingestible.preferability == FoodPreferability.RawBad )||
+                        ( t.def.ingestible.preferability == FoodPreferability.RawTasty )
+                    )&&
+                    ( HaulAIUtility.PawnCanAutomaticallyHaul( pawn, t ) )&&
+                    (
+                        ( Find.SlotGroupManager.SlotGroupAt( hopper.Position ).Settings.AllowedToAccept( t ) )&&
+                        ( HaulAIUtility.StoragePriorityAtFor( t.Position, t ) < hopperSgp.GetSlotGroup().Settings.Priority )
+                    )
+                )
+                {
+                    Job job = HaulAIUtility.HaulMaxNumToCellJob( pawn, t, hopper.Position, true );
+                    if( job != null )
+                    {
+                        return job;
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
+
+}

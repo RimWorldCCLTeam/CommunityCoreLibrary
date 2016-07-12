@@ -109,6 +109,18 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         OutputToPawnsDirectly
+        {
+            get
+            {
+                if( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.DirectToPawn )
+                {
+                    return false;
+                }
+                return CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.PawnInteractionOnly;
+            }
+        }
+
         #endregion
 
         #region Class Constructor

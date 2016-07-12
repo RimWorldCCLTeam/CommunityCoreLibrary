@@ -59,7 +59,6 @@
   <ItemGroup>
     <Compile Include="Classes\InputField.cs" />
     <Compile Include="Classes\Static\CCL_Widgets.cs" />
-    <Compile Include="Detours\MentalStateWorker_Binging.cs" />
     <Compile Include="Extensions\BiomeDef_Extensions.cs" />
     <Compile Include="Extensions\DesignationCategoryDef_Extensions.cs" />
     <Compile Include="Extensions\Designator_Extensions.cs" />
@@ -148,16 +147,9 @@
     <Compile Include="MapComponents\HideItemManager.cs" />
     <Compile Include="Extensions\Find_Extensions.cs" />
     <Compile Include="Enumerations\Verbosity.cs" />
-    <Compile Include="Detours\RegionMaker.cs" />
-    <Compile Include="Detours\TargetingParameters.cs" />
-    <Compile Include="Detours\StatWorker.cs" />
-    <Compile Include="Detours\SectionLayer_IndoorMask.cs" />
-    <Compile Include="Detours\GhostDrawer.cs" />
-    <Compile Include="Detours\JobGiver_Binge.cs" />
     <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
     <Compile Include="CompProperties\CompProperties_HideItem.cs" />
     <Compile Include="Detours\ThingSelectionUtility.cs" />
-    <Compile Include="Detours\PassingShip.cs" />
     <Compile Include="Detours\FoodUtility.cs" />
     <Compile Include="Detours\JobDriver_FoodDeliver.cs" />
     <Compile Include="Detours\JobDriver_FoodFeedPatient.cs" />
@@ -278,6 +270,13 @@
     <Compile Include="Extensions\TraitSet_Extensions.cs" />
     <Compile Include="Classes\Static\OverlayDrawer.cs" />
     <Compile Include="Buildings\Building_AdvancedPasteDispenser.cs" />
+    <Compile Include="Extensions\Pawn_Extensions.cs" />
+    <Compile Include="SpecialInjectors\AssemblyDumper.cs" />
+    <Compile Include="Extensions\ThinkNode_Extensions.cs" />
+    <Compile Include="Extensions\StatWorker_Extensions.cs" />
+    <Compile Include="Detours\MentalStateWorker_BingingAlcohol.cs" />
+    <Compile Include="Extensions\JoyGiver_SocialRelax_Extensions.cs" />
+    <Compile Include="Detours\JobGiver_BingeAlcohol.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
