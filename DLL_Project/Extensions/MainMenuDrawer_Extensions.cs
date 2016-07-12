@@ -47,7 +47,6 @@ namespace CommunityCoreLibrary
 
         private static MethodInfo   _CloseMainTab;
 
-        private static FieldInfo    _anyWorldFiles;
         private static FieldInfo    _anyMapFiles;
 
         private static FieldInfo    _PaneSize;
@@ -79,7 +78,6 @@ namespace CommunityCoreLibrary
 
             _CloseMainTab   = typeof( MainMenuDrawer ).GetMethod( "CloseMainTab", BindingFlags.Static | BindingFlags.NonPublic );
 
-            _anyWorldFiles  = typeof( MainMenuDrawer ).GetField( "anyWorldFiles", BindingFlags.Static | BindingFlags.NonPublic );
             _anyMapFiles    = typeof( MainMenuDrawer ).GetField( "anyMapFiles", BindingFlags.Static | BindingFlags.NonPublic );
 
             _PaneSize       = typeof( MainMenuDrawer ).GetField( "PaneSize", BindingFlags.Static | BindingFlags.NonPublic );
@@ -107,14 +105,6 @@ namespace CommunityCoreLibrary
             get
             {
                 return new Vector2( (float) Screen.width / 2f, (float) Screen.height / 2f );
-            }
-        }
-
-        public static bool          AnyWorldFiles
-        {
-            get
-            {
-                return (bool) _anyWorldFiles.GetValue( null );
             }
         }
 
@@ -249,7 +239,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public static List<MainMenuDef> CurrentMainMenuDefs( bool anyWorldFiles, bool anyMapFiles )
+        public static List<MainMenuDef> CurrentMainMenuDefs( bool anyMapFiles )
         {
             return ValidMainMenuDefs.Where( def => (
                 (
@@ -259,7 +249,7 @@ namespace CommunityCoreLibrary
                         ( def.showIfRestartRequired )
                     )
                 )&&
-                ( def.menuWorker.RenderNow( anyWorldFiles, anyMapFiles ) )
+                ( def.menuWorker.RenderNow( anyMapFiles ) )
             ) ).ToList();
         }
 

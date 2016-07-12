@@ -12,7 +12,6 @@ using Verse;
 namespace CommunityCoreLibrary.Controller
 {
 
-    [StaticConstructorOnStartup]
     public class MainMonoBehaviour : MonoBehaviour
     {
 
@@ -35,30 +34,31 @@ namespace CommunityCoreLibrary.Controller
 
         #region Static Constructor
 
-        static                              MainMonoBehaviour()
-        {
-#if DEVELOPER
-            // Open a log file for CCL specific output
-            // https://www.youtube.com/watch?v=jyaLZHiJJnE
-            CCL_Log.OpenStream();
-#endif
-            PreLoad();
-        }
 
-#if DEVELOPER
-        /* Should be a static but can't */  ~MainMonoBehaviour()
-        {
-            CCL_Log.CloseStream();
-
-        }
-
-#endif
+//        static                              MainMonoBehaviour()
+//        {
+//#if DEVELOPER
+//            // Open a log file for CCL specific output
+//            // https://www.youtube.com/watch?v=jyaLZHiJJnE
+//            CCL_Log.OpenStream();
+//#endif
+//            PreLoad();
+//        }
+//
+//#if DEVELOPER
+//        /* Should be a static but can't */  ~MainMonoBehaviour()
+//        {
+//            CCL_Log.CloseStream();
+//
+//        }
+//
+//#endif
 
         #endregion
 
         #region Preloader
 
-        private static void                 PreLoad()
+        internal static void                PreLoad()
         {
             // This is a pre-start sequence to hook some deeper level functions.
             // These functions can be hooked later but it would be after the sequence
@@ -68,8 +68,8 @@ namespace CommunityCoreLibrary.Controller
             Version.Log();
 
             bool InjectionsOk = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            CCL_Log.CaptureBegin( stringBuilder );
+            //var stringBuilder = new StringBuilder();
+            //CCL_Log.CaptureBegin( stringBuilder );
 
             // Find all sub-controllers
             var subControllerClasses = typeof( SubController ).AllSubclasses();
@@ -127,13 +127,13 @@ namespace CommunityCoreLibrary.Controller
                 InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_ClearAllPlayData, CCL_PlayDataLoader_ClearAllPlayData );
             }
 
-            // Detour Verse.UIRoot_Entry.ShouldShowMainMenuGUI_get
+            // Detour Verse.UIRoot_Entry.ShouldDoMainMenu_get
             if( InjectionsOk )
             {
-                PropertyInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI = typeof( UIRoot_Entry ).GetProperty( "ShouldShowMainMenuGUI", BindingFlags.Instance | BindingFlags.NonPublic );
-                MethodInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get = Verse_UIRoot_Entry_ShouldShowMainMenuGUI.GetGetMethod( true );
-                MethodInfo CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldShowMainMenuGUI_get", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get, CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get );
+                PropertyInfo Verse_UIRoot_Entry_ShouldDoMainMenu = typeof( UIRoot_Entry ).GetProperty( "ShouldDoMainMenu", BindingFlags.Instance | BindingFlags.NonPublic );
+                MethodInfo Verse_UIRoot_Entry_ShouldDoMainMenu_get = Verse_UIRoot_Entry_ShouldDoMainMenu.GetGetMethod( true );
+                MethodInfo CCL_UIRoot_Entry_ShouldDoMainMenu_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldDoMainMenu_get", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldDoMainMenu_get, CCL_UIRoot_Entry_ShouldDoMainMenu_get );
             }
 
             // Detour RimWorld.MainMenuDrawer.MainMenuOnGUI
@@ -200,6 +200,7 @@ namespace CommunityCoreLibrary.Controller
                 LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
             }
 
+            /*
             CCL_Log.CaptureEnd(
                 stringBuilder,
                 InjectionsOk ? "Initialized" : "Errors during injection"
@@ -208,6 +209,7 @@ namespace CommunityCoreLibrary.Controller
                 Verbosity.Injections,
                 stringBuilder.ToString(),
                 "PreLoader" );
+            */
         }
 
         #endregion

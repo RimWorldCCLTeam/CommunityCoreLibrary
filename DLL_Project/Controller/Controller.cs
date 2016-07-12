@@ -22,7 +22,7 @@ namespace CommunityCoreLibrary.Controller
 
         public static MainMonoBehaviour     cclMonoBehaviour;
 
-        public static ModContentPack             cclMod;
+        public static ModContentPack        cclMod;
         public static ModHelperDef          cclHelperDef;
 
         private static Dictionary< ModContentPack, ModHelperDef > dictModHelperDefs;

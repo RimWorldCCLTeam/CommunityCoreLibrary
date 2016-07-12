@@ -8,7 +8,7 @@ namespace CommunityCoreLibrary
 	public class MainMenu_Mods : MainMenu
 	{
 
-		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyMapFiles )
 		{
 			return ( Current.ProgramState == ProgramState.Entry );
 		}

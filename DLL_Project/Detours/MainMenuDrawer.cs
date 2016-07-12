@@ -62,7 +62,7 @@ namespace CommunityCoreLibrary.Detour
             #endregion
 
             #region Compute Main Buttons, Links and Language Rects
-            var currentMainMenuDefs = MainMenuDrawerExt.CurrentMainMenuDefs( MainMenuDrawerExt.AnyWorldFiles, MainMenuDrawerExt.AnyMapFiles );
+            var currentMainMenuDefs = MainMenuDrawerExt.CurrentMainMenuDefs( MainMenuDrawerExt.AnyMapFiles );
             var currentMainMenuButtonCount = currentMainMenuDefs.Count;
             var currentMainMenuButtonHeight = MainMenuDrawerExt.OptionButtonSpacingFor( currentMainMenuButtonCount );
 
@@ -145,15 +145,13 @@ namespace CommunityCoreLibrary.Detour
             
             MainMenuDrawer.DoMainMenuButtons(
                 menuOptionsRect,
-                // A14
-                // MainMenuDrawerExt.AnyWorldFiles,
                 MainMenuDrawerExt.AnyMapFiles );
             
             GUI.EndGroup();
             #endregion
         }
 
-        internal static void _DoMainMenuButtons( Rect rect, bool anyWorldFiles, bool anyMapFiles, Action backToGameButtonAction = null )
+        internal static void _DoMainMenuButtons( Rect rect, bool anyMapFiles )
         {
             #region Set Single Column Rect
             var optionColumnRect = new Rect( 0.0f, 0.0f, MainMenuDrawerExt.GameRectWidth, rect.height );
@@ -165,7 +163,7 @@ namespace CommunityCoreLibrary.Detour
             #region Get Defs and Make Buttons
 
             var mainOptions = new List<ListableOption>();
-            var currentMainMenuDefs = MainMenuDrawerExt.CurrentMainMenuDefs( anyWorldFiles, anyMapFiles );
+            var currentMainMenuDefs = MainMenuDrawerExt.CurrentMainMenuDefs( anyMapFiles );
 
             foreach( var menu in currentMainMenuDefs )
             {

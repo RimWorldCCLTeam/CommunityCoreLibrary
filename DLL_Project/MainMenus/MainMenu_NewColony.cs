@@ -16,18 +16,15 @@ namespace CommunityCoreLibrary
             }
         }
 
-		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyMapFiles )
 		{
-			return (
-				( Current.ProgramState == ProgramState.Entry ) &&
-				( anyWorldFiles )
-			);
+			return ( Current.ProgramState == ProgramState.Entry );
 		}
 
 		public override void ClickAction()
 		{
             // A14 ????
-			Current.Game.InitData.ResetWorldRelatedMapInitData();
+			// Current.Game.InitData.ResetWorldRelatedMapInitData();
 			Find.WindowStack.Add( (Window)new Page_SelectStoryteller() );
 		}
 

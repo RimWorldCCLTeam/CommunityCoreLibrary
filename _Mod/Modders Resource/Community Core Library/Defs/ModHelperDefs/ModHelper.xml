@@ -6,7 +6,7 @@
 
         <ModName>Community Core Library</ModName>
 
-        <minCCLVersion>0.13.4</minCCLVersion>
+        <minCCLVersion>0.14.0</minCCLVersion>
 
         <ModConfigurationMenus>
             <li>
@@ -22,6 +22,7 @@
 
         <SpecialInjectors>
             <li>CommunityCoreLibrary.DetourInjector</li>
+            <li>CommunityCoreLibrary.AssemblyDumper</li>
         </SpecialInjectors>
 
     </ModHelperDef>
