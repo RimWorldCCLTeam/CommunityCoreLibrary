@@ -6,7 +6,7 @@
 *.user
 *.userprefs
 *.sln.docstates
-DLL_Project/Source-DLLs/*.dll
+DLL_Project/bin/*.dll
 DLL_Project/*.bat
 
 # Build results
@@ -16,7 +16,6 @@ DLL_Project/*.bat
 x64/
 build/
 bld/
-[Bb]in/
 [Oo]bj/
 
 # Roslyn cache directories
