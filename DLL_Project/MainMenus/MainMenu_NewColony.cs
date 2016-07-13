@@ -25,7 +25,7 @@ namespace CommunityCoreLibrary
 		{
             // A14 ????
 			// Current.Game.InitData.ResetWorldRelatedMapInitData();
-			Find.WindowStack.Add( (Window)new Page_SelectStoryteller() );
+			Find.WindowStack.Add( (Window)new Page_SelectScenario() );
 		}
 
 	}
