@@ -44,7 +44,7 @@ namespace CommunityCoreLibrary
                         if( iMinimap != null )
                         {
                             #region Minimap IConfigurable
-                            var iMinimapRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
+                            var iMinimapRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth, 9999f );
                             GUI.BeginGroup( iMinimapRect );
                             var iMinimapHeight = iMinimap.DrawMCMRegion( iMinimapRect.AtZero() );
                             GUI.EndGroup();
@@ -67,7 +67,7 @@ namespace CommunityCoreLibrary
                                 #endregion
 
                                 #region Overlay IConfigurable
-                                var iOverlayRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
+                                var iOverlayRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth, 9999f );
                                 GUI.BeginGroup( iOverlayRect );
                                 var iOverlayHeight = iOverlay.DrawMCMRegion( iOverlayRect.AtZero() );
                                 GUI.EndGroup();

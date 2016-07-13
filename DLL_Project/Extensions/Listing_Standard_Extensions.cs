@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
             }
             var curX = (float)_curX.GetValue( listing );
             var newX = curX + distance;
-            var curW = listing.ColumnWidth();
+            var curW = listing.ColumnWidth;
             var newW = curW - distance;
             _curX.SetValue( listing, newX );
             // A14 - OverrideColumnWidth => ColumnWidth?
