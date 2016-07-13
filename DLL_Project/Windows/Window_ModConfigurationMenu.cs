@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary
 
 		public const float MinListWidth = 200f;
 
-		public const float Margin = 6f; // 15 is way too much.
+		public const float WindowMargin = 6f; // 15 is way too much.
 		public const float EntryHeight = 30f;
 
 		#endregion
@@ -171,8 +171,8 @@ namespace CommunityCoreLibrary
 
 			SelectionRect = new Rect( 0f, 0f, MinListWidth, inRect.height );
 			DisplayRect = new Rect(
-				SelectionRect.width + Margin, 0f,
-				inRect.width - SelectionRect.width - Margin, inRect.height
+				SelectionRect.width + WindowMargin, 0f,
+				inRect.width - SelectionRect.width - WindowMargin, inRect.height
 			);
 
 			DrawSelectionArea( SelectionRect );
@@ -190,8 +190,8 @@ namespace CommunityCoreLibrary
 			Widgets.DrawMenuSection( rect );
 
 			_filterUpdate();
-			var filterRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, rect.width - 3 * Margin - 30f, 30f );
-			var clearRect = new Rect( filterRect.xMax + Margin + 3f, rect.yMin + Margin + 3f, 24f, 24f );
+			var filterRect = new Rect( rect.xMin + WindowMargin, rect.yMin + WindowMargin, rect.width - 3 * WindowMargin - 30f, 30f );
+			var clearRect = new Rect( filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f );
 			_filterString = Widgets.TextField( filterRect, _filterString );
 			if( _filterString != "" )
 			{
@@ -232,7 +232,7 @@ namespace CommunityCoreLibrary
 
         private bool DrawHost( ref Vector2 cur, Rect view, MCMHost host )
 		{
-			float width = view.width - cur.x - Margin;
+			float width = view.width - cur.x - WindowMargin;
 			float height = EntryHeight;
 			string label = host.Label;
 
@@ -244,7 +244,7 @@ namespace CommunityCoreLibrary
 			}
 
 			Text.Anchor = TextAnchor.MiddleLeft;
-			Rect labelRect = new Rect( cur.x + Margin, cur.y, width - Margin, height );
+			Rect labelRect = new Rect( cur.x + WindowMargin, cur.y, width - WindowMargin, height );
 			Widgets.Label( labelRect, label );
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.Font = GameFont.Small;
@@ -304,7 +304,7 @@ namespace CommunityCoreLibrary
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.WordWrap = true;
 
-			Rect outRect = rect.ContractedBy( Margin );
+			Rect outRect = rect.ContractedBy( WindowMargin );
 			outRect.yMin += 60f;
 			Rect viewRect = outRect;
 			viewRect.width -= 16f;
