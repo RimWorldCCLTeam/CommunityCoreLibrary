@@ -48,7 +48,7 @@ namespace CommunityCoreLibrary
 
                 CCL_Log.IndentStream( stream );
                 {
-                    foreach( var type in Controller.Data.Assembly_CSharp.GetTypes() )
+                    foreach( var type in assembly.GetTypes() )
                     {
                         CCL_Log.Write( "Type: " + type.FullName, stream );
                         CCL_Log.IndentStream( stream );
@@ -136,11 +136,50 @@ namespace CommunityCoreLibrary
                                             str += " Parameters: (";
                                             for( int i = 0; i < parameters.Length; ++i )
                                             {
+                                                var optional = false;
                                                 var pi = parameters[ i ];
-                                                str += " " + pi.ParameterType.ToString();
-                                                str += " " + pi.Name;
                                                 if( pi.IsOut ) str += " (out)";
                                                 if( pi.IsRetval ) str += " (ret)";
+                                                if( !pi.GetCustomAttributes( true ).NullOrEmpty() )
+                                                {
+                                                    foreach( var attribute in pi.GetCustomAttributes( true ) )
+                                                    {
+                                                        optional |= attribute.GetType().Name == "OptionalAttribute";
+                                                        str += " " + attribute.GetType().Name;
+                                                    }
+                                                }
+                                                if( !pi.GetRequiredCustomModifiers().NullOrEmpty() )
+                                                {
+                                                    foreach( var modifier in pi.GetRequiredCustomModifiers() )
+                                                    {
+                                                        str += " " + modifier.Name;
+                                                    }
+                                                }
+                                                if( !pi.GetOptionalCustomModifiers().NullOrEmpty() )
+                                                {
+                                                    foreach( var modifier in pi.GetOptionalCustomModifiers() )
+                                                    {
+                                                        str += " " + modifier.Name;
+                                                    }
+                                                }
+                                                str += " " + pi.ParameterType.ToString();
+                                                str += " " + pi.Name;
+                                                if(
+                                                    ( optional )&&
+                                                    ( pi.DefaultValue != null )
+                                                )
+                                                {
+                                                    str += " = ";
+                                                    if( pi.DefaultValue is string )
+                                                    {
+                                                        str += "\"";
+                                                    }
+                                                    str += pi.DefaultValue.ToString();
+                                                    if( pi.DefaultValue is string )
+                                                    {
+                                                        str += "\"";
+                                                    }
+                                                }
                                                 if( i < parameters.Length - 1 )
                                                 {
                                                     str += ",";
