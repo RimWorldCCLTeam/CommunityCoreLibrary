@@ -24,7 +24,7 @@ namespace CommunityCoreLibrary
 
                 #region Main Toggle
                 var toggleLabel = "MiniMap.MCMToggleMain".Translate();
-                listing.CheckboxLabeled( toggleLabel, ref MiniMap.MiniMapController.defaultVisible );
+                listing.CheckboxLabeled( toggleLabel, ref MiniMap.MiniMapController.visible );
                 listing.Gap();
                 #endregion
 
@@ -118,7 +118,7 @@ namespace CommunityCoreLibrary
         public override void                ExposeData()
         {
 
-            Scribe_Values.LookValue( ref MiniMap.MiniMapController.defaultVisible, "visible" );
+            Scribe_Values.LookValue( ref MiniMap.MiniMapController.visible, "visible" );
 
             #region Handle all MiniMaps and Overlays
 

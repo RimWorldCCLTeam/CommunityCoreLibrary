@@ -18,13 +18,12 @@ namespace CommunityCoreLibrary.MiniMap
 
         public const float              MINWINDOWSIZE = 40f;
         public const float              DEFAULTWINDOWSIZE = 250f;
-
-        public static bool              defaultVisible = false;
+        
         public static Rect              defaultWindowRect;
 
         public static bool              dirty = true;
         public static bool              initialized = false;
-        public static bool              visible;
+        public static bool              visible = false;
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
 
         #endregion Fields
@@ -39,7 +38,6 @@ namespace CommunityCoreLibrary.MiniMap
         public                          MiniMapController()
         {
             Window_MiniMap.minimapRect = defaultWindowRect;
-            visible = defaultVisible;
         }
 
         #endregion
