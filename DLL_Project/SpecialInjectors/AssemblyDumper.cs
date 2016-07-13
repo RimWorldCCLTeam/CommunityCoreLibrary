@@ -62,7 +62,8 @@ namespace CommunityCoreLibrary
                                 {
                                     foreach( var entity in fields )
                                     {
-                                        var str = entity.Name;
+                                        var str = entity.FieldType.Name;
+                                        str += " " + entity.Name;
                                         if( entity.IsStatic )
                                             str += " (Static)";
                                         else
@@ -84,7 +85,8 @@ namespace CommunityCoreLibrary
                                 {
                                     foreach( var entity in properties )
                                     {
-                                        var str = entity.Name;
+                                        var str = entity.PropertyType.Name;
+                                        str += " " + entity.Name;
                                         var method = entity.GetGetMethod();
                                         if( method != null )
                                         {
@@ -120,7 +122,8 @@ namespace CommunityCoreLibrary
                                 {
                                     foreach( var entity in methods )
                                     {
-                                        var str = entity.Name;
+                                        var str = entity.ReturnType.Name;
+                                        str += " " + entity.Name;
                                         if( entity.IsStatic )
                                             str += " (Static)";
                                         else
