@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
 
         <defName>AdvancedAutomatedStonecutter</defName>
         <Priority>-1</Priority>
@@ -20,6 +20,6 @@
             <li>AutomatedStonecutter</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>

@@ -6,7 +6,7 @@
         <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
         <selectable>true</selectable>
         <drawerType>MapMeshAndRealTime</drawerType>
-        <altitudeLayer>Waist</altitudeLayer>
+        <AltitudeLayer>Building</AltitudeLayer>
         <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
         <repairEffect>Repair</repairEffect>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -22,7 +22,7 @@
             <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(3,2)</drawSize>
         </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
+        <AltitudeLayer>Building</AltitudeLayer>
         <passability>PassThroughOnly</passability>
         <fillPercent>0.4</fillPercent>
         <castEdgeShadows>true</castEdgeShadows>
@@ -87,7 +87,6 @@
         <staticSunShadowHeight>0.5</staticSunShadowHeight>
         <surfaceType>Item</surfaceType>
         <tickerType>Normal</tickerType>
-        <designationHotKey/>
     </ThingDef>
 
 </Defs>

@@ -21,7 +21,7 @@
         <altitudeLayer>Item</altitudeLayer>
         <alwaysHaulable>True</alwaysHaulable>
         <tickerType>Never</tickerType>
-        <techLevel>Midworld</techLevel>
+        <techLevel>Spacer</techLevel>
         <thingCategories>
             <li>WeaponsRanged</li>
         </thingCategories>
@@ -38,10 +38,10 @@
             <li>
                 <compClass>CompQuality</compClass>
             </li>
-            <li>
+            <li Class="CompProperties_Art">
                 <compClass>CompArt</compClass>
-                <nameMaker>NamerGun</nameMaker>
-                <descriptionMaker>ArtWeaponGun</descriptionMaker>
+                <nameMaker>ArtName_Weapon</nameMaker>
+                <descriptionMaker>ArtDescription_WeaponGun</descriptionMaker>
                 <minQualityForArtistic>Excellent</minQualityForArtistic>
             </li>
         </comps>

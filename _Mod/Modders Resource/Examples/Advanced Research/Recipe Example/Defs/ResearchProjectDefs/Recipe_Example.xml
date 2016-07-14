@@ -5,18 +5,20 @@
         <defName>TechLevelOne</defName>
         <label>Tech Level 1</label>
         <description>This unlocks the first recipe on our table.</description>
-        <totalCost>1</totalCost>
+        <baseCost>1</baseCost>
         <prerequisites/>
+        <techLevel>Industrial</techLevel>
     </ResearchProjectDef>
 
     <ResearchProjectDef>
         <defName>TechLevelTwo</defName>
         <label>Tech Level 2</label>
         <description>This unlocks the second recipe on our table and locks the first.</description>
-        <totalCost>1</totalCost>
+        <baseCost>1</baseCost>
         <prerequisites>
             <li>TechLevelOne</li>
         </prerequisites>
+        <techLevel>Industrial</techLevel>
     </ResearchProjectDef>
 
 </Defs>

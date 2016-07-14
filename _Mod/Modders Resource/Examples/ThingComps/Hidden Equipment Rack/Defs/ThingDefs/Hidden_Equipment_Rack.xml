@@ -32,7 +32,7 @@
             <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(3,2)</drawSize>
         </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
+        <altitudeLayer>Building</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <fillPercent>0.4</fillPercent>
         <castEdgeShadows>true</castEdgeShadows>
@@ -80,7 +80,6 @@
         <inspectorTabs>
             <li>ITab_Storage</li>
         </inspectorTabs>
-        <designationHotKey/>
         <staticSunShadowHeight>0.5</staticSunShadowHeight>
         <surfaceType>Item</surfaceType>
     </ThingDef>

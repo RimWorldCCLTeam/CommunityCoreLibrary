@@ -38,7 +38,7 @@
             <li>Metallic</li>
             <li>Woody</li>
         </stuffCategories>
-        <AltitudeLayer>Waist</AltitudeLayer>
+        <AltitudeLayer>Building</AltitudeLayer>
         <fillPercent>0.5</fillPercent>
         <useHitPoints>True</useHitPoints>
         <statBases>
