@@ -5,36 +5,40 @@
         <defName>ExclusiveTechOne</defName>
         <label>Exclusive Tree One Level 1</label>
         <description>Researching this will prevent access to Exclusive Tree Two.</description>
-        <totalCost>1</totalCost>
+        <baseCost>1</baseCost>
         <prerequisites/>
+        <techLevel>Industrial</techLevel>
     </ResearchProjectDef>
 
     <ResearchProjectDef>
         <defName>ExclusiveTechOneTwo</defName>
         <label>Exclusive Tree One Level 2</label>
         <description>Exclusive Tree Two is now inaccessible.  Research this to enable the inclusive tech.</description>
-        <totalCost>1</totalCost>
+        <baseCost>1</baseCost>
         <prerequisites>
             <li>ExclusiveTechOne</li>
         </prerequisites>
+        <techLevel>Industrial</techLevel>
     </ResearchProjectDef>
 
     <ResearchProjectDef>
         <defName>ExclusiveTechTwo</defName>
         <label>Exclusive Tree Two Level 1</label>
         <description>Researching this will prevent access to Exclusive Tree One.</description>
-        <totalCost>1</totalCost>
+        <baseCost>1</baseCost>
         <prerequisites/>
+        <techLevel>Industrial</techLevel>
     </ResearchProjectDef>
 
     <ResearchProjectDef>
         <defName>ExclusiveTechTwoTwo</defName>
         <label>Exclusive Tree Two Level 2</label>
         <description>Exclusive Tree One is now inaccessible.  Research this to enable the inclusive tech.</description>
-        <totalCost>1</totalCost>
+        <baseCost>1</baseCost>
         <prerequisites>
             <li>ExclusiveTechTwo</li>
         </prerequisites>
+        <techLevel>Industrial</techLevel>
     </ResearchProjectDef>
 
 </Defs>

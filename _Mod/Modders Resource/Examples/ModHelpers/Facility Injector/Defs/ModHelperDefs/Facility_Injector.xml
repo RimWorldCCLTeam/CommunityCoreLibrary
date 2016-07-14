@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <ModHelperDef>
+    <CommunityCoreLibrary.ModHelperDef>
         <defName>FacilityInjector</defName>
         
         <ModName>Facility Injector</ModName>
         
-        <minCCLVersion>0.13.0</minCCLVersion>
+        <minCCLVersion>0.14.0</minCCLVersion>
         
         <Facilities>
             <li>
@@ -19,6 +19,6 @@
             </li>
         </Facilities>
         
-    </ModHelperDef>
+    </CommunityCoreLibrary.ModHelperDef>
 
 </Defs>

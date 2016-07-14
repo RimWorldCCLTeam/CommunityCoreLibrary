@@ -6,13 +6,13 @@
 
     <url>n/a</url>
 
-    <targetVersion>Community Core Library v0.13.0</targetVersion>
+    <targetVersion>0.14.1234</targetVersion>
 
     <description>This is an example of a milkable boomalope.
 
 Demonstrates:
 	CompMilkableRenameable
-	ModHelperDef ThingComp Injection
+	CommunityCoreLibrary.ModHelperDef ThingComp Injection
     </description>
 
 </ModMetaData>

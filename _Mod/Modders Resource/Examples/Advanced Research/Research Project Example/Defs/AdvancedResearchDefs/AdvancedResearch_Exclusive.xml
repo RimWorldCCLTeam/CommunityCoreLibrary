@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def will hide the other exclusive tree
         -->
@@ -19,9 +19,9 @@
             <li>ExclusiveTechTwo</li>
         </effectedResearchDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def will hide the other exclusive tree
         -->
@@ -39,6 +39,6 @@
             <li>ExclusiveTechOne</li>
         </effectedResearchDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>
