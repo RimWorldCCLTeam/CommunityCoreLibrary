@@ -211,12 +211,7 @@ namespace CommunityCoreLibrary.MiniMap
                 return true;
             }
 
-            window = new Window_MiniMap( Window_MiniMap.minimapRect );
-            if( window == null )
-            {
-                CCL_Log.Error( "Unable to create Window_MiniMap", "MiniMap" );
-                return false;
-            }
+            window = new Window_MiniMap();
             Find.WindowStack.Add( window );
             return true;
         }

@@ -38,6 +38,13 @@ namespace CommunityCoreLibrary.MiniMap
             _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
         }
 
+        /// <summary>
+        /// Remove vanilla behaviour of centering the window on screen and resizing it. 
+        /// 
+        /// NOTE: Vanilla additionally does some checking to cancel ongoing box selections, but those are largely irrelevant here.
+        /// </summary>
+        public override void PreOpen() {}
+
         public Window_MiniMap()
         {
             layer = WindowLayer.GameUI;
@@ -46,21 +53,16 @@ namespace CommunityCoreLibrary.MiniMap
             closeOnEscapeKey = false;
             windowRect = minimapRect;
             preventCameraMotion = false;
-        }
-
-        public Window_MiniMap( Rect canvas ) : this()
-        {
-            windowRect = canvas;
 
 #if DEBUG
-            CCL_Log.Message( "window created at: " + windowRect, "MiniMap");
+            CCL_Log.Message( "window created at: " + windowRect + ", " + minimapRect, "MiniMap" );
 #endif
         }
 
         #endregion Constructors
 
         #region Properties
-
+        
         public bool Locked
         {
             get { return _locked; }
@@ -95,6 +97,8 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override void DoWindowContents( Rect inRect )
         {
+            Log.Message( "Window now at: " + windowRect + ", " + minimapRect );
+
             // draw all minimaps
             foreach( var minimap in MiniMapController.visibleMiniMaps )
             {
