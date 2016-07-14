@@ -139,11 +139,11 @@ namespace CommunityCoreLibrary
 
         #region Base Class Overrides
 
+#if DEBUG
         public override void                SpawnSetup()
         {
             //Log.Message( string.Format( "{0}.SpawnSetup()", this.ThingID ) );
             base.SpawnSetup();
-#if DEBUG
             if( CompAutomatedFactory == null )
             {
                 CCL_Log.TraceMod(
@@ -176,8 +176,8 @@ namespace CommunityCoreLibrary
                     "CompAutomatedFactory.productionMode is invalid" );
                 return;
             }
-#endif
         }
+#endif
 
         public override void                ExposeData()
         {
@@ -554,7 +554,7 @@ namespace CommunityCoreLibrary
             dropCell = IntVec3.Invalid;
             switch( CompAutomatedFactory.Properties.outputVector )
             {
-                case FactoryOutputVector.Ground:
+            case FactoryOutputVector.Ground:
                 var usableCells = new List<IntVec3>();
                 var preferedCells = new List<IntVec3>();
                 foreach( var cell in AdjacentNeighbouringCells )
@@ -650,7 +650,7 @@ namespace CommunityCoreLibrary
                 }
                 break;
 
-                case FactoryOutputVector.InteractionCell:
+            case FactoryOutputVector.InteractionCell:
                 dropCell = this.InteractionCell;
                 foreach( var cellThing in dropCell.GetThingList() )
                 {
