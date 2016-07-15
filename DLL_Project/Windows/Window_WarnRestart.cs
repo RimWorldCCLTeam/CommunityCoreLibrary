@@ -21,7 +21,7 @@ namespace CommunityCoreLibrary
 
 		#endregion
 
-		public override Vector2 InitialWindowSize
+		public override Vector2 InitialSize
 		{
 			get
 			{
@@ -123,10 +123,10 @@ namespace CommunityCoreLibrary
             {
                 var restartLaterButtonRect = new Rect( 0, localRect.height - 45f, 100f, 45f );
                 GUI.color = Color.red;
-                closeWindow = Widgets.TextButton( restartLaterButtonRect, "RestartLater".Translate() );
+                closeWindow = Widgets.ButtonText( restartLaterButtonRect, "RestartLater".Translate() );
                 var restartNowButtonRect = new Rect( localRect.width - 100f, localRect.height - 45f, 100f, 45f );
                 GUI.color = Color.green;
-                if( Widgets.TextButton( restartNowButtonRect, "RestartNow".Translate() ) )
+                if( Widgets.ButtonText( restartNowButtonRect, "RestartNow".Translate() ) )
                 {
                     RestartRimWorld();
                 }
@@ -148,7 +148,7 @@ namespace CommunityCoreLibrary
                     consequencesSize.x += 24f;
                     var okButtonRect = new Rect( localRect.width - consequencesSize.x, localRect.height - 45f, consequencesSize.x, 45f );
                     GUI.color = Color.red;
-                    closeWindow = Widgets.TextButton( okButtonRect, consequencesLabel );
+                    closeWindow = Widgets.ButtonText( okButtonRect, consequencesLabel );
                     GUI.color = Color.white;
 #if RELEASE
                 }

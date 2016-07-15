@@ -8,16 +8,17 @@ using Verse;
 
 namespace CommunityCoreLibrary.MiniMap
 {
-    // TODO:  Handle right-click on minimap icon for float menu options (MiniMap.GetFloatMenuOptions())
 
+    [StaticConstructorOnStartup]
     public class Window_MiniMap : Window
     {
         #region Fields
 
-        public static Rect windowRect;
-        private static Texture2D _lockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/locked");
-        private static Texture2D _scaleIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/scale");
-        private static Texture2D _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
+        public static Rect minimapRect;
+
+        private static Texture2D _lockedIcon;
+        private static Texture2D _scaleIcon;
+        private static Texture2D _unlockedIcon;
         private bool _locked = true;
         private float iconMargin = 6f;
         private float iconSize = 24f;
@@ -30,23 +31,34 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region Constructors
 
+        static Window_MiniMap()
+        {
+            _lockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/locked");
+            _scaleIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/scale");
+            _unlockedIcon = ContentFinder<Texture2D>.Get("UI/Icons/MiniMap/unlocked");
+        }
+
+        /// <summary>
+        /// Remove vanilla behaviour of centering the window on screen and resizing it. 
+        /// 
+        /// NOTE: Vanilla additionally does some checking to cancel ongoing box selections, but those are largely irrelevant here.
+        /// </summary>
+        public override void PreOpen() {}
+
         public Window_MiniMap()
         {
             layer = WindowLayer.GameUI;
             absorbInputAroundWindow = false;
             closeOnClickedOutside = false;
             closeOnEscapeKey = false;
-        }
-
-        public Window_MiniMap( Rect canvas ) : this()
-        {
-            currentWindowRect = canvas;
+            windowRect = minimapRect;
+            preventCameraMotion = false;
         }
 
         #endregion Constructors
 
         #region Properties
-
+        
         public bool Locked
         {
             get { return _locked; }
@@ -67,7 +79,7 @@ namespace CommunityCoreLibrary.MiniMap
         }
 
         // remove window padding so the minimap fills the entire available space
-        protected override float WindowPadding
+        protected override float Margin
         {
             get
             {
@@ -82,9 +94,9 @@ namespace CommunityCoreLibrary.MiniMap
         public override void DoWindowContents( Rect inRect )
         {
             // draw all minimaps
-            foreach ( var overlay in MiniMapController.visibleMiniMaps )
+            foreach( var minimap in MiniMapController.visibleMiniMaps )
             {
-                overlay.DrawOverlays( inRect );
+                minimap.DrawOverlays( inRect );
             }
 
             // handle minimap click & drag
@@ -104,7 +116,7 @@ namespace CommunityCoreLibrary.MiniMap
                 var scale = new Vector2( Find.Map.Size.x / inRect.width, Find.Map.Size.z / inRect.height );
 
                 // jump map
-                Find.CameraMap.JumpTo( new Vector3( position.x * scale.x, 0f, position.y * scale.y ) );
+                Find.CameraDriver.JumpTo( new Vector3( position.x * scale.x, 0f, position.y * scale.y ) );
             }
         }
 
@@ -112,7 +124,7 @@ namespace CommunityCoreLibrary.MiniMap
         {
             // make sure window is square if shift is held
             if ( !Locked && Event.current.shift )
-                currentWindowRect.width = currentWindowRect.height;
+                windowRect.width = windowRect.height;
 
             // make sure window is on screen
             if ( !Locked )
@@ -127,76 +139,87 @@ namespace CommunityCoreLibrary.MiniMap
 
         private void ClampWindowToScreen()
         {
-            if ( currentWindowRect.xMax > Screen.width )
-                currentWindowRect.x -= currentWindowRect.xMax - Screen.width;
-            if ( currentWindowRect.xMin < 0 )
-                currentWindowRect.x -= currentWindowRect.xMin;
-            if ( currentWindowRect.yMax > Screen.height )
-                currentWindowRect.y -= currentWindowRect.yMax - Screen.height;
-            if ( currentWindowRect.yMin < 0 )
-                currentWindowRect.y -= currentWindowRect.yMin;
+            if( windowRect.width < MiniMapController.MINWINDOWSIZE )
+            {
+                windowRect.width = MiniMapController.MINWINDOWSIZE;
+            }
+            if( windowRect.height < MiniMapController.MINWINDOWSIZE )
+            {
+                windowRect.height = MiniMapController.MINWINDOWSIZE;
+            }
+            if ( windowRect.xMax > Screen.width )
+                windowRect.x -= windowRect.xMax - Screen.width;
+            if ( windowRect.xMin < 0 )
+                windowRect.x -= windowRect.xMin;
+            if ( windowRect.yMax > Screen.height )
+                windowRect.y -= windowRect.yMax - Screen.height;
+            if ( windowRect.yMin < 0 )
+                windowRect.y -= windowRect.yMin;
+
+            // Update the master rect
+            minimapRect = windowRect;
         }
 
         private void DrawMiniMapButtons()
         {
-            // button left/right of map depending on current position of windowRect
+            // button left/right of map depending on current position of minimapRect
             Rect iconRect;
-            if ( currentWindowRect.center.x > Screen.width / 2f )
-                iconRect = new Rect( currentWindowRect.xMin - iconMargin - iconSize, currentWindowRect.yMin + iconMargin, iconSize, iconSize );
+            if ( windowRect.center.x > Screen.width / 2f )
+                iconRect = new Rect( windowRect.xMin - iconMargin - iconSize, windowRect.yMin + iconMargin, iconSize, iconSize );
             else
-                iconRect = new Rect( currentWindowRect.xMax + iconMargin, currentWindowRect.yMin + iconMargin, iconSize, iconSize );
+                iconRect = new Rect( windowRect.xMax + iconMargin, windowRect.yMin + iconMargin, iconSize, iconSize );
 
             // lock icon
             TooltipHandler.TipRegion( iconRect, Locked ? "MiniMap.Unlock".Translate() : "MiniMap.Lock".Translate() );
-            if ( Widgets.ImageButton( iconRect, Locked ? _lockedIcon : _unlockedIcon ) )
+            if ( Widgets.ButtonImage( iconRect, Locked ? _lockedIcon : _unlockedIcon ) )
                 Locked = !Locked;
             iconRect.y += iconSize + iconMargin;
 
             // scale icon
-            bool scaled = currentWindowRect.width == Find.Map.Size.x && currentWindowRect.height == Find.Map.Size.z;
+            bool scaled = Mathf.Approximately( windowRect.width, Find.Map.Size.x ) && Mathf.Approximately( windowRect.height, Find.Map.Size.z );
             TooltipHandler.TipRegion( iconRect, scaled ? "MiniMap.DefaultSize".Translate() : "MiniMap.OneToOneScale".Translate() );
-            if ( Widgets.ImageButton( iconRect, _scaleIcon ) )
+            if ( Widgets.ButtonImage( iconRect, _scaleIcon ) )
             {
                 // anchor and position based on quadrant of minimap
                 TextAnchor anchor = TextAnchor.MiddleCenter;
                 Vector2 position = Vector2.zero;
 
-                var center = currentWindowRect.center;
+                var center = windowRect.center;
                 var screen = new Vector2( Screen.width, Screen.height ) / 2f;
 
                 if (center.x > screen.x && center.y < screen.y )
                 {
                     anchor = TextAnchor.UpperRight;
-                    position = new Vector2( currentWindowRect.xMax, currentWindowRect.yMin );
+                    position = new Vector2( windowRect.xMax, windowRect.yMin );
                 }
                 if ( center.x > screen.x && center.y > screen.y )
                 {
                     anchor = TextAnchor.LowerRight;
-                    position = new Vector2( currentWindowRect.xMax, currentWindowRect.yMax );
+                    position = new Vector2( windowRect.xMax, windowRect.yMax );
                 }
                 if ( center.x < screen.x && center.y > screen.y )
                 {
                     anchor = TextAnchor.LowerLeft;
-                    position = new Vector2( currentWindowRect.xMin, currentWindowRect.yMax );
+                    position = new Vector2( windowRect.xMin, windowRect.yMax );
                 }
                 if ( center.x < screen.x && center.y < screen.y )
                 {
                     // lower right
                     anchor = TextAnchor.UpperLeft;
-                    position = new Vector2( currentWindowRect.xMin, currentWindowRect.yMin );
+                    position = new Vector2( windowRect.xMin, windowRect.yMin );
                 }
 
 
                 if ( scaled )
                 {
-                    currentWindowRect.width = MiniMapController.windowSize.x;
-                    currentWindowRect.height = MiniMapController.windowSize.y;
+                    windowRect.width = MiniMapController.DEFAULTWINDOWSIZE;
+                    windowRect.height = MiniMapController.DEFAULTWINDOWSIZE;
                     ClampWindowToScreen();
                 }
                 else
                 {
-                    currentWindowRect.width = Find.Map.Size.x;
-                    currentWindowRect.height = Find.Map.Size.z;
+                    windowRect.width = Find.Map.Size.x;
+                    windowRect.height = Find.Map.Size.z;
                     ClampWindowToScreen();
                 }
 
@@ -204,20 +227,20 @@ namespace CommunityCoreLibrary.MiniMap
                 switch ( anchor )
                 {
                     case TextAnchor.UpperLeft:
-                        currentWindowRect.x = position.x;
-                        currentWindowRect.y = position.y;
+                        windowRect.x = position.x;
+                        windowRect.y = position.y;
                         break;
                     case TextAnchor.UpperRight:
-                        currentWindowRect.x = position.x - currentWindowRect.width;
-                        currentWindowRect.y = position.y;
+                        windowRect.x = position.x - windowRect.width;
+                        windowRect.y = position.y;
                         break;
                     case TextAnchor.LowerLeft:
-                        currentWindowRect.x = position.x;
-                        currentWindowRect.y = position.y - currentWindowRect.height;
+                        windowRect.x = position.x;
+                        windowRect.y = position.y - windowRect.height;
                         break;
                     case TextAnchor.LowerRight:
-                        currentWindowRect.x = position.x - currentWindowRect.width;
-                        currentWindowRect.y = position.y - currentWindowRect.height;
+                        windowRect.x = position.x - windowRect.width;
+                        windowRect.y = position.y - windowRect.height;
                         break;
                     default:
                         break;
@@ -232,11 +255,11 @@ namespace CommunityCoreLibrary.MiniMap
 
             // how many overlays can we draw on a single line?
             // note that we don't want to draw in the complete outer edge, because that will trigger map movement, which is annoying as fuck.
-            float width = currentWindowRect.xMin - Mathf.Min( currentWindowRect.xMax, Screen.width - screenEdgeDollyWidth );
+            float width = windowRect.xMin - Mathf.Min( windowRect.xMax, Screen.width - screenEdgeDollyWidth );
             int iconsPerRow = Mathf.FloorToInt( width / ( iconSize + iconMargin ) );
 
             // should we draw icons below the minimap, or above?
-            bool drawBelow = currentWindowRect.center.y < Screen.height / 2f;
+            bool drawBelow = windowRect.center.y < Screen.height / 2f;
 
             // draw a button for each minimap
             for ( int i = 0; i < minimaps.Count(); i++ )
@@ -251,13 +274,13 @@ namespace CommunityCoreLibrary.MiniMap
 
                 if ( drawBelow )
                     iconRect = new Rect(
-                    currentWindowRect.xMax - screenEdgeDollyWidth - iconSize - x * ( iconMargin + iconSize ),
-                    currentWindowRect.yMax + iconMargin + y * ( iconMargin + iconSize ),
+                    windowRect.xMax - screenEdgeDollyWidth - iconSize - x * ( iconMargin + iconSize ),
+                    windowRect.yMax + iconMargin + y * ( iconMargin + iconSize ),
                     iconSize, iconSize );
                 else
                     iconRect = new Rect(
-                    currentWindowRect.xMax - screenEdgeDollyWidth - iconSize - x * ( iconMargin + iconSize ),
-                    currentWindowRect.yMin - iconMargin - ( y + 1 ) * ( iconMargin + iconSize ),
+                    windowRect.xMax - screenEdgeDollyWidth - iconSize - x * ( iconMargin + iconSize ),
+                    windowRect.yMin - iconMargin - ( y + 1 ) * ( iconMargin + iconSize ),
                     iconSize, iconSize );
 
                 // Draw tooltip
@@ -267,7 +290,7 @@ namespace CommunityCoreLibrary.MiniMap
                 GUI.color = minimap.Hidden ? Color.grey : Color.white;
 
                 // handle mouse clicks
-                if ( Widgets.ImageButton( iconRect, minimap.Icon ) )
+                if ( Widgets.ButtonImage( iconRect, minimap.Icon ) )
                 {
                     // toggle on LMB
                     if ( Event.current.button == 0 )

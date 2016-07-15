@@ -14,78 +14,18 @@ namespace CommunityCoreLibrary.Detour
     internal static class _JoyGiver_SocialRelax
     {
 
-        internal const float _GatherRadius = 3.9f;
-        internal static FieldInfo _workingSpots;
-        internal static FieldInfo _NumRadiusCells;
-        internal static FieldInfo _RadialPatternMiddleOutward;
-
-        #region Reflected Methods
-
-        internal static List<CompGatherSpot> workingSpots()
-        {
-            if( _workingSpots == null )
-            {
-                _workingSpots = typeof( JoyGiver_SocialRelax ).GetField( "workingSpots", BindingFlags.Static | BindingFlags.NonPublic );
-                if( _workingSpots == null )
-                {
-                    CCL_Log.Trace(
-                        Verbosity.FatalErrors,
-                        "Unable to get field 'workingSpots' in 'JoyGiver_SocialRelax'",
-                        "Internal Detours" );
-                }
-            }
-            return (List<CompGatherSpot>) _workingSpots.GetValue( null );
-        }
-
-        internal static int NumRadiusCells()
-        {
-            if( _NumRadiusCells == null )
-            {
-                _NumRadiusCells = typeof( JoyGiver_SocialRelax ).GetField( "NumRadiusCells", BindingFlags.Static | BindingFlags.NonPublic );
-                if( _NumRadiusCells == null )
-                {
-                    CCL_Log.Trace(
-                        Verbosity.FatalErrors,
-                        "Unable to get field 'NumRadiusCells' in 'JoyGiver_SocialRelax'",
-                        "Internal Detours" );
-                }
-            }
-            return (int) _NumRadiusCells.GetValue( null );
-        }
-
-        internal static List<IntVec3> RadialPatternMiddleOutward()
-        {
-            if( _RadialPatternMiddleOutward == null )
-            {
-                _RadialPatternMiddleOutward = typeof( JoyGiver_SocialRelax ).GetField( "RadialPatternMiddleOutward", BindingFlags.Static | BindingFlags.NonPublic );
-                if( _RadialPatternMiddleOutward == null )
-                {
-                    CCL_Log.Trace(
-                        Verbosity.FatalErrors,
-                        "Unable to get field 'RadialPatternMiddleOutwards' in 'JoyGiver_SocialRelax'",
-                        "Internal Detours" );
-                }
-            }
-            return (List<IntVec3>) _RadialPatternMiddleOutward.GetValue( null );
-        }
-
-        #endregion
-
         #region Detoured Methods
 
         internal static Job _TryGiveJobInt( this JoyGiver_SocialRelax obj, Pawn pawn, Predicate<CompGatherSpot> gatherSpotValidator )
         {
-            var JoyGiver_SocialRelax_TryUseThing = new _JoyGiver_SocialRelax._TryUseThing();
-            JoyGiver_SocialRelax_TryUseThing.pawn = pawn;
-
             if( GatherSpotLister.activeSpots.NullOrEmpty() )
             {
-                return (Job) null;
+                return (Job)null;
             }
 
-            var workingSpots = _JoyGiver_SocialRelax.workingSpots();
-            var NumRadiusCells = _JoyGiver_SocialRelax.NumRadiusCells();
-            var RadialPatternMiddleOutward = _JoyGiver_SocialRelax.RadialPatternMiddleOutward();
+            var workingSpots = JoyGiver_SocialRelax_Extensions.WorkingSpots();
+            var NumRadiusCells = JoyGiver_SocialRelax_Extensions.NumRadiusCells();
+            var RadialPatternMiddleOutward = JoyGiver_SocialRelax_Extensions.RadialPatternMiddleOutward();
 
             workingSpots.Clear();
             for( int index = 0; index < GatherSpotLister.activeSpots.Count; ++index )
@@ -111,7 +51,7 @@ namespace CommunityCoreLibrary.Detour
                     )
                 )
                 {
-                    Job job = (Job) null;
+                    var job = (Job)null;
                     if( compGatherSpot.parent.def.surfaceType == SurfaceType.Eat )
                     {
                         for( int index = 0; index < 30; ++index )
@@ -121,20 +61,20 @@ namespace CommunityCoreLibrary.Detour
                                 ( sittableThing != null )&&
                                 ( sittableThing.def.building.isSittable )&&
                                 ( pawn.CanReserve(
-                                    (TargetInfo) ((Thing) sittableThing ),
+                                    (TargetInfo)( (Thing)sittableThing ),
                                     1 ) )
                             )
                             {
                                 job = new Job(
                                     JobDefOf.SocialRelax,
-                                    (TargetInfo) ((Thing) compGatherSpot.parent),
-                                    (TargetInfo) ((Thing) sittableThing) );
+                                    (TargetInfo)( (Thing)compGatherSpot.parent ),
+                                    (TargetInfo)( (Thing)sittableThing ) );
                             }
                         }
                     }
                     else
                     {
-                        for( int index = 0; index < RadialPatternMiddleOutward.Count; ++index)
+                        for( int index = 0; index < RadialPatternMiddleOutward.Count; ++index )
                         {
                             Building sittableThing = ( compGatherSpot.parent.Position + RadialPatternMiddleOutward[ index ] ).GetEdifice();
                             if(
@@ -142,7 +82,7 @@ namespace CommunityCoreLibrary.Detour
                                 ( sittableThing.def.building.isSittable )&&
                                 (
                                     ( pawn.CanReserve(
-                                        (TargetInfo) ((Thing) sittableThing ),
+                                        (TargetInfo)( (Thing)sittableThing ),
                                         1 ) )&&
                                     ( !sittableThing.IsForbidden( pawn ) )&&
                                     ( GenSight.LineOfSight(
@@ -154,8 +94,8 @@ namespace CommunityCoreLibrary.Detour
                             {
                                 job = new Job(
                                     JobDefOf.SocialRelax,
-                                    (TargetInfo) ((Thing) compGatherSpot.parent),
-                                    (TargetInfo) ((Thing) sittableThing ) );
+                                    (TargetInfo)( (Thing)compGatherSpot.parent ),
+                                    (TargetInfo)( (Thing)sittableThing ) );
                                 break;
                             }
                         }
@@ -179,18 +119,17 @@ namespace CommunityCoreLibrary.Detour
                                 {
                                     job = new Job(
                                         JobDefOf.SocialRelax,
-                                        (TargetInfo) ((Thing) compGatherSpot.parent ),
-                                        (TargetInfo) occupySpot );
+                                        (TargetInfo)( (Thing)compGatherSpot.parent ),
+                                        (TargetInfo)occupySpot );
                                 }
                             }
                         }
                     }
                     if( job == null )
                     {
-                        return (Job) null;
+                        return (Job)null;
                     }
                     if(
-                        ( pawn.RaceProps.ToolUser )&&
                         ( pawn.health.capacities.CapableOf( PawnCapacityDefOf.Manipulation ) )&&
                         (
                             ( pawn.story == null )||
@@ -204,19 +143,38 @@ namespace CommunityCoreLibrary.Detour
                         ) ).ToList();
                         if( list.Count > 0 )
                         {
-                            Predicate<Thing> validator = new Predicate<Thing>( JoyGiver_SocialRelax_TryUseThing.CanUseThing );
                             Thing thing = GenClosest.ClosestThing_Global_Reachable(
                                 compGatherSpot.parent.Position,
                                 list,
                                 PathEndMode.OnCell,
                                 TraverseParms.For(
-                                    JoyGiver_SocialRelax_TryUseThing.pawn,
-                                    JoyGiver_SocialRelax_TryUseThing.pawn.NormalMaxDanger() ),
+                                    pawn,
+                                    pawn.NormalMaxDanger() ),
                                 40f,
-                                validator );
+                                ( t ) =>
+                            {
+                                if( t.IsForbidden( pawn ) )
+                                {
+                                    return false;
+                                }
+
+                                if( t is Building_AutomatedFactory )
+                                {
+                                    var FS = t as Building_AutomatedFactory;
+                                    if(
+                                        ( !FS.InteractionCell.Standable() )||
+                                        ( !FS.CompPowerTrader.PowerOn )||
+                                        ( FS.BestProduct( FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol ) == null )
+                                    )
+                                    {
+                                        return false;
+                                    }
+                                }
+                                return pawn.CanReserve( t, 1 );
+                            } );
                             if( thing != null )
                             {
-                                job.targetC = (TargetInfo) thing;
+                                job.targetC = (TargetInfo)thing;
                                 job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
                             }
                         }
@@ -224,38 +182,7 @@ namespace CommunityCoreLibrary.Detour
                     return job;
                 }
             }
-            return (Job) null;
-        }
-
-        internal sealed class _TryUseThing
-        {
-            internal Pawn pawn;
-
-            public _TryUseThing()
-            {
-            }
-
-            internal bool CanUseThing( Thing t )
-            {
-                if( ForbidUtility.IsForbidden( t, this.pawn ) )
-                {
-                    return false;
-                }
-
-                if( t is Building_AutomatedFactory )
-                {
-                    var FS = t as Building_AutomatedFactory;
-                    if(
-                        ( !FS.InteractionCell.Standable() )||
-                        ( !FS.CompPowerTrader.PowerOn )||
-                        ( FS.BestProduct( FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol ) == null )
-                    )
-                    {
-                        return false;
-                    }
-                }
-                return this.pawn.CanReserve( t, 1 );
-            }
+            return (Job)null;
         }
 
         #endregion

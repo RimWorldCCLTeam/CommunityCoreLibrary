@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary
             }
             float height = Mathf.Max( minHeight, Text.CalcHeight( label, width ) );
             GUI.color = menuDef.menuWorker.Color;
-            if( Widgets.TextButton( new Rect( pos.x, pos.y, width, height ), label, true, true ) )
+            if( Widgets.ButtonText( new Rect( pos.x, pos.y, width, height ), label, true, true ) )
             {
                 GUI.color = Color.white;
                 if( menuDef.closeMainTab )

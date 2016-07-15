@@ -96,7 +96,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override Color GetColor( Pawn pawn )
         {
-            if ( pawn.HostileTo( Faction.OfColony ) )
+            if ( pawn.HostileTo( Faction.OfPlayer ) )
                 return enemyColor;
 
             if ( pawn.trader != null )
@@ -107,12 +107,12 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override IEnumerable<Pawn> GetPawns()
         {
-            return Find.MapPawns.AllPawnsSpawned.Where( pawn => !pawn.RaceProps.Animal && pawn.Faction != Faction.OfColony );
+            return Find.MapPawns.AllPawnsSpawned.Where( pawn => !pawn.RaceProps.Animal && pawn.Faction != Faction.OfPlayer );
         }
 
         public override float GetRadius( Pawn pawn )
         {
-            if ( pawn.HostileTo( Faction.OfColony ) )
+            if ( pawn.HostileTo( Faction.OfPlayer ) )
                 return enemyRadius;
 
             if ( pawn.trader != null )

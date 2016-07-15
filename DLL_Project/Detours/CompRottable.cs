@@ -97,8 +97,8 @@ namespace CommunityCoreLibrary.Detour
             {
                 return;
             }
-            float num = obj.rotProgress;
-            obj.rotProgress += (float) Mathf.RoundToInt( 1f * GenTemperature.RotRateAtTemperature( GenTemperature.GetTemperatureForCell( obj.parent.PositionHeld ) ) * 250f );
+            float num = obj.RotProgress;
+            obj.RotProgress += (float) Mathf.RoundToInt( 1f * GenTemperature.RotRateAtTemperature( GenTemperature.GetTemperatureForCell( obj.parent.PositionHeld ) ) * 250f );
             if(
                 ( obj.Stage == RotStage.Rotting )&&
                 ( obj.PropsRot().rotDestroys )
@@ -108,7 +108,7 @@ namespace CommunityCoreLibrary.Detour
             }
             else
             {
-                if( Mathf.FloorToInt( num / 60000f ) == Mathf.FloorToInt( obj.rotProgress / 60000f ) )
+                if( Mathf.FloorToInt( num / 60000f ) == Mathf.FloorToInt( obj.RotProgress / 60000f ) )
                 {
                     return;
                 }
@@ -153,7 +153,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 stringBuilder.AppendLine( "RefrigeratedStorage".Translate() );
             }
-            else if( ( obj.PropsRot().TicksToRotStart - obj.rotProgress ) > 0.0f )
+            else if( ( obj.PropsRot().TicksToRotStart - obj.RotProgress ) > 0.0f )
             {
                 float num = GenTemperature.RotRateAtTemperature( Mathf.RoundToInt( GenTemperature.GetTemperatureForCell( obj.parent.Position ) ) );
                 int rotAtCurrentTemp = obj.TicksUntilRotAtCurrentTemp;
@@ -163,11 +163,11 @@ namespace CommunityCoreLibrary.Detour
                 }
                 else if( num < 0.999000012874603f )
                 {
-                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.TickstoDaysString() ) );
+                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.ToStringTicksToDays() ) );
                 }
                 else
                 {
-                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.TickstoDaysString() ) );
+                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.ToStringTicksToDays() ) );
                 }
             }
             return stringBuilder.ToString();

@@ -3,7 +3,7 @@
 
     <!--
 
-    <MiniMapDef>
+    <CommunityCoreLibrary.MiniMapDef>
 
         <defName>string</defName>       [required] Some unique identifier in class
 
@@ -36,7 +36,7 @@
             <li>MiniMapOverlayDef</li>
         </overlays>
 
-    </MiniMapDef>
+    </CommunityCoreLibrary.MiniMapDef>
 
     -->
 

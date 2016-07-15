@@ -125,6 +125,10 @@ namespace CommunityCoreLibrary
             {
                 return false;
             }
+            if( item == hiderBuilding )
+            {   // Don't prevent the building from being selected
+                return false;
+            }
             var comp = hiderBuilding.TryGetComp<CompHideItem>();
             if( comp == null )
             {

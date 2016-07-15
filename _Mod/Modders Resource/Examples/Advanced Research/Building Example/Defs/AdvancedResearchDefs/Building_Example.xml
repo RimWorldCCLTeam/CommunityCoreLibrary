@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def disables the normal crypto sleep
         -->
@@ -24,9 +24,9 @@
             <li>CryptosleepCasket</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def enables the ancient crypto sleep
         -->
@@ -43,6 +43,6 @@
             <li>AncientCryptosleepCasket</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>

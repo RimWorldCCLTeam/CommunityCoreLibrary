@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def will enable the other inclusive tree
         -->
@@ -17,9 +17,9 @@
             <li>InclusiveTech</li>
         </effectedResearchDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def will enable the other inclusive tree
         -->
@@ -35,6 +35,6 @@
             <li>InclusiveTech</li>
         </effectedResearchDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>

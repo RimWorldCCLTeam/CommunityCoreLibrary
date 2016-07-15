@@ -3,12 +3,12 @@
     <name>Research Project Example</name>
     <author>RimWorld CCL Team</author>
     <url>n/a</url>
-    <targetVersion>Community Core Library v0.13.0</targetVersion>
+    <targetVersion>0.14.1234</targetVersion>
     <description>
 This is an example of how to lock and unlock research projects as new research is complete.
 
 Demonstrates:
-	Minimum ModHelperDef requirement
-	AdvancedResearchDef to allow mutual exclusion and alternate path inclusion of research projects
+	Minimum CommunityCoreLibrary.ModHelperDef requirement
+	CommunityCoreLibrary.AdvancedResearchDef to allow mutual exclusion and alternate path inclusion of research projects
     </description>
 </ModMetaData>

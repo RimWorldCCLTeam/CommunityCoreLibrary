@@ -16,9 +16,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-		public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+		public override bool RenderNow( bool anyMapFiles )
 		{
-			return ( Game.Mode == GameMode.Entry );
+			return ( Current.ProgramState == ProgramState.Entry );
 		}
 
 		public override void ClickAction()

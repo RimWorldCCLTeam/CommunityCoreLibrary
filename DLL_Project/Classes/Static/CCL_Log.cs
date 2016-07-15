@@ -1,59 +1,107 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+
 using System.Text;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
+
     internal static class CCL_Log
     {
 
-#if DEVELOPER
-        private static System.IO.FileStream logFile;
+#if DEBUG
 
-        static                              CCL_Log()
+        public class LogStream
         {
-            OpenStream();
+            public string                   fileName;
+            public FileStream               stream;
+            public int                      indent;
         }
 
-        private static void                 OpenStream()
+        public const string                 cclLogFileName = "ccl_log.txt";
+        private static LogStream            cclStream;
+
+        public static LogStream             OpenStream( string filename = cclLogFileName )
         {
-            if( logFile == null )
+            var newStream = new LogStream();
+            newStream.fileName = filename;
+            newStream.indent = 0;
+            newStream.stream = System.IO.File.Open( filename, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+            if( filename == cclLogFileName )
             {
-                logFile = System.IO.File.Open( "ccl_log.txt", System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read );
+                cclStream = newStream;
+            }
+            return newStream;
+        }
+
+        public static void                  CloseStream( LogStream stream = null )
+        {
+            if( stream == null )
+            {
+                stream = cclStream;
+            }
+            if( stream != null )
+            {
+                stream.stream.Close();
+                stream.stream = null;
+                stream = null;
             }
         }
 
-        public static void                  CloseStream()
+        public static void                  IndentStream( LogStream stream = null, int amount = 1 )
         {
-            if( logFile != null )
+            if( stream == null )
             {
-                logFile.Close();
-                logFile = null;
+                stream = cclStream;
+            }
+            if( stream != null )
+            {
+                stream.indent += amount;
+                if( stream.indent < 0 )
+                {
+                    stream.indent = 0;
+                }
             }
         }
 
-        public static void                  Write( string s )
+        public static void                  Write( string s, LogStream stream = null )
         {
             if(
                 ( s.NullOrEmpty() )||
-                ( logFile == null )
+                (
+                    ( stream == null )&&
+                    ( cclStream == null )
+                )
             )
             {
                 return;
             }
 
+            if( stream == null )
+            {
+                stream = cclStream;
+            }
+
             s += "\n";
-            // Have to copy to a byte array as dotNet doesn't allow getting the
-            // pointer to a string nor can it cast a string to a char array
-            byte[] b = new byte[ s.Length ];
+            // Copy to a byte array with preceeding tabs for indentation
+            byte[] b = new byte[ stream.indent + s.Length ];
+
+            if( stream.indent > 0 )
+            {
+                for( int i = 0; i < stream.indent; ++i )
+                {
+                    b[ i ] = 9; // Tab
+                }
+            }
 
             for( int i = 0; i < s.Length; ++i )
             {
-                b[ i ] = (byte) s[ i ];
+                b[ stream.indent + i ] = (byte) s[ i ];
             }
 
-            logFile.Write( b, 0, s.Length );
-            logFile.Flush();
+            stream.stream.Write( b, 0, stream.indent + s.Length );
+            stream.stream.Flush();
         }
 #endif
 
@@ -98,7 +146,7 @@ namespace CommunityCoreLibrary
             s.Append( "\n" );
         }
 
-        private static void                 AppendTrace( ref StringBuilder s, LoadedMod mod, Verbosity Severity, string content, string category = null )
+        private static void                 AppendTrace( ref StringBuilder s, ModContentPack mod, Verbosity Severity, string content, string category = null )
         {
 #if RELEASE
             if( Severity > Verbosity.Validation )
@@ -183,7 +231,7 @@ namespace CommunityCoreLibrary
             {
                 s = BaseMessage( content, category );
                 Verse.Log.Message( s.ToString() );
-#if DEVELOPER
+#if DEBUG
                 Write( s.ToString() );
 #endif
             }
@@ -209,7 +257,7 @@ namespace CommunityCoreLibrary
             {
                 s = BaseMessage( content, category );
                 Verse.Log.Error( s.ToString() );
-#if DEVELOPER
+#if DEBUG
                 Write( s.ToString() );
 #endif
             }
@@ -237,7 +285,7 @@ namespace CommunityCoreLibrary
             _Trace( modHelperDef, Severity, content, atFault, category );
         }
 
-        public static void                  TraceMod( LoadedMod mod, Verbosity Severity, string content, string category = null )
+        public static void                  TraceMod( ModContentPack mod, Verbosity Severity, string content, string category = null )
         {
             var modHelperDef = Find_Extensions.ModHelperDefForMod( mod );
             _Trace( modHelperDef, Severity, content, null, category );
@@ -274,7 +322,7 @@ namespace CommunityCoreLibrary
 
             if( captureTarget == null )
             {
-#if DEVELOPER
+#if DEBUG
                 Write( s.ToString() );
 #endif
                 if( Severity <= Verbosity.NonFatalErrors )

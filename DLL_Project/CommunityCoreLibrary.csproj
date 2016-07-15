@@ -10,7 +10,7 @@
     <RootNamespace>CommunityCoreLibrary</RootNamespace>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.12.7</ReleaseVersion>
+    <ReleaseVersion>0.14.0</ReleaseVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AssemblyName>Community Core Library</AssemblyName>
   </PropertyGroup>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,7 +26,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin</OutputPath>
     <DefineConstants>RELEASE;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,33 +34,34 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Developer|AnyCPU' ">
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>bin</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;DEBUG;DEVELOPER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Source-DLLs\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>bin\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>Source-DLLs\UnityEngine.dll</HintPath>
+      <HintPath>bin\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\InputField.cs" />
     <Compile Include="Classes\Static\CCL_Widgets.cs" />
-    <Compile Include="Detours\MentalStateWorker_Binging.cs" />
     <Compile Include="Extensions\BiomeDef_Extensions.cs" />
+    <Compile Include="Extensions\DesignationCategoryDef_Extensions.cs" />
+    <Compile Include="Extensions\Designator_Extensions.cs" />
     <Compile Include="Extensions\Texture2D_Extensions.cs" />
     <Compile Include="Extensions\Vector3_Extensions.cs" />
     <Compile Include="Extensions\Def_Extensions.cs" />
@@ -146,23 +147,10 @@
     <Compile Include="MapComponents\HideItemManager.cs" />
     <Compile Include="Extensions\Find_Extensions.cs" />
     <Compile Include="Enumerations\Verbosity.cs" />
-    <Compile Include="Detours\GenSpawn.cs" />
-    <Compile Include="Detours\RegionMaker.cs" />
-    <Compile Include="Detours\TargetingParameters.cs" />
-    <Compile Include="Detours\GenPlant.cs" />
-    <Compile Include="Detours\StatWorker.cs" />
-    <Compile Include="Detours\SectionLayer_IndoorMask.cs" />
-    <Compile Include="Detours\Building_Door.cs" />
-    <Compile Include="Detours\GhostDrawer.cs" />
-    <Compile Include="Detours\GenPlace.cs" />
-    <Compile Include="Detours\JobGiver_Binge.cs" />
     <Compile Include="Detours\JoyGiver_SocialRelax.cs" />
     <Compile Include="CompProperties\CompProperties_HideItem.cs" />
     <Compile Include="Detours\ThingSelectionUtility.cs" />
-    <Compile Include="Detours\DropCellFinder.cs" />
-    <Compile Include="Detours\PassingShip.cs" />
     <Compile Include="Detours\FoodUtility.cs" />
-    <Compile Include="Detours\Building_NutrientPasteDispenser.cs" />
     <Compile Include="Detours\JobDriver_FoodDeliver.cs" />
     <Compile Include="Detours\JobDriver_FoodFeedPatient.cs" />
     <Compile Include="Extensions\JobDriver_Extensions.cs" />
@@ -198,7 +186,6 @@
     <Compile Include="Windows\Window_ModConfigurationMenu.cs" />
     <Compile Include="Extensions\GenTemperature_Extensions.cs" />
     <Compile Include="Defs\MainMenuDef.cs" />
-    <Compile Include="MainMenus\MainMenu_CreateWorld.cs" />
     <Compile Include="MainMenus\MainMenu_NewColony.cs" />
     <Compile Include="MainMenus\MainMenu_LoadGame.cs" />
     <Compile Include="MainMenus\MainMenu_SaveGame.cs" />
@@ -269,12 +256,27 @@
     <Compile Include="Interfaces\IConfigurable.cs" />
     <Compile Include="SubControllers\MiniMapSubController.cs" />
     <Compile Include="SubControllers\SubController.cs" />
-    <Compile Include="Extensions\Listing_Extensions.cs" />
     <Compile Include="Extensions\Listing_Standard_Extensions.cs" />
     <Compile Include="Detours\PostLoadInitter.cs" />
-    <Compile Include="Detours\BiomeDef.cs" />
     <Compile Include="Classes\Static\XML_Helper.cs" />
     <Compile Include="Detours\SocialProperness.cs" />
+    <Compile Include="Extensions\HediffSet_Extensions.cs" />
+    <Compile Include="Extensions\Pawn_ApparelTracker_Extensions.cs" />
+    <Compile Include="Extensions\Pawn_NeedsTracker_Extensions.cs" />
+    <Compile Include="Extensions\Pawn_WorkSettings_Extensions.cs" />
+    <Compile Include="Extensions\Room_Extensions.cs" />
+    <Compile Include="Extensions\TraitSet_Extensions.cs" />
+    <Compile Include="Classes\Static\OverlayDrawer.cs" />
+    <Compile Include="Buildings\Building_AdvancedPasteDispenser.cs" />
+    <Compile Include="Extensions\Pawn_Extensions.cs" />
+    <Compile Include="SpecialInjectors\AssemblyDumper.cs" />
+    <Compile Include="Extensions\ThinkNode_Extensions.cs" />
+    <Compile Include="Extensions\StatWorker_Extensions.cs" />
+    <Compile Include="Detours\MentalStateWorker_BingingAlcohol.cs" />
+    <Compile Include="Extensions\JoyGiver_SocialRelax_Extensions.cs" />
+    <Compile Include="Detours\JobGiver_BingeAlcohol.cs" />
+    <Compile Include="Detours\ThingListGroupHelper.cs" />
+    <Compile Include="Detours\GenConstruct.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

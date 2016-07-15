@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def will add the level 1 recipe to the bulb
         -->
@@ -21,9 +21,9 @@
             <li>ReplaceRecipeTest</li>
         </thingDefs>
         
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             This def will remove the level 1 recipe to the bulb after level 2 is researched
         -->
@@ -45,9 +45,9 @@
             <li>ReplaceRecipeTest</li>
         </thingDefs>
         
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
         <!--
             And now, add the level 2 recipe to the table
         -->
@@ -67,6 +67,6 @@
             <li>ReplaceRecipeTest</li>
         </thingDefs>
         
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>

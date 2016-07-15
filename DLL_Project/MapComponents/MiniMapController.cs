@@ -15,14 +15,32 @@ namespace CommunityCoreLibrary.MiniMap
     {
 
         #region Fields
+
+        public const float              MINWINDOWSIZE = 40f;
+        public const float              DEFAULTWINDOWSIZE = 250f;
         
+        public static Rect              defaultWindowRect;
+
         public static bool              dirty = true;
         public static bool              initialized = false;
         public static bool              visible = false;
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
-        public static Vector2           windowSize = new Vector2( 250f, 250f );
 
         #endregion Fields
+
+        #region Constructors
+
+        static                          MiniMapController()
+        {
+            defaultWindowRect = new Rect( Screen.width - DEFAULTWINDOWSIZE, 0f, DEFAULTWINDOWSIZE, DEFAULTWINDOWSIZE );
+        }
+
+        public                          MiniMapController()
+        {
+            Window_MiniMap.minimapRect = defaultWindowRect;
+        }
+
+        #endregion
 
         #region Properties
 
@@ -79,6 +97,22 @@ namespace CommunityCoreLibrary.MiniMap
         public override void            ExposeData()
         {
             base.ExposeData();
+
+            Scribe_Values.LookValue( ref visible, "visible" );
+            if( Scribe.mode == LoadSaveMode.Saving )
+            {   // Scribing directly as a rect causing extra formatting '(x:#, y:#, width:#, height:#)' which throws errors on load
+                var rectStr = "(" +
+                    Window_MiniMap.minimapRect.x + "," +
+                    Window_MiniMap.minimapRect.y + "," +
+                    Window_MiniMap.minimapRect.width + "," +
+                    Window_MiniMap.minimapRect.height + ")";
+                Scribe_Values.LookValue( ref rectStr, "minimapRect" );
+            }
+            else if( Scribe.mode == LoadSaveMode.LoadingVars )
+            {
+                Scribe_Values.LookValue( ref Window_MiniMap.minimapRect, "minimapRect" );
+            }
+
             if( Scribe.mode == LoadSaveMode.Saving )
             {
                 ExposeDataSave();
@@ -177,13 +211,7 @@ namespace CommunityCoreLibrary.MiniMap
                 return true;
             }
 
-            Window_MiniMap.windowRect = new Rect( Screen.width - windowSize.x, 0f, windowSize.y, windowSize.x );
-            window = new Window_MiniMap( Window_MiniMap.windowRect );
-            if( window == null )
-            {
-                CCL_Log.Error( "Unable to create Window_MiniMap", "MiniMap" );
-                return false;
-            }
+            window = new Window_MiniMap();
             Find.WindowStack.Add( window );
             return true;
         }

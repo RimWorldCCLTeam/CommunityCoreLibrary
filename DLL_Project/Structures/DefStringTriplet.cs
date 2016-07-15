@@ -108,7 +108,7 @@ namespace CommunityCoreLibrary
             )
             {
                 TooltipHandler.TipRegion( labelRect, Def.description + (Def.description.NullOrEmpty() ? "" : "\n\n" ) + "JumpToTopic".Translate() );
-                if ( Widgets.InvisibleButton( labelRect ) )
+                if ( Widgets.ButtonInvisible( labelRect ) )
                 {
                     if ( window.Accept( helpDef ) )
                     {

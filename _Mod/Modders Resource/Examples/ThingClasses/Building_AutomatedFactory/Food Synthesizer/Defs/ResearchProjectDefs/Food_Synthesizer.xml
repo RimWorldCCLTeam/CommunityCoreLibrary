@@ -5,7 +5,7 @@
         <defName>MealSynthesis</defName>
         <label>meal synthesis</label>
         <description>Food synthesizers can be built which can create actual meals instead of just disgusting paste.</description>
-        <totalCost>1000</totalCost>
+        <baseCost>1000</baseCost>
         <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
     </ResearchProjectDef>
 
@@ -13,7 +13,7 @@
         <defName>FineMealSynthesis</defName>
         <label>fine meal synthesis</label>
         <description>Fine meals can be synthesized at food synthesizers.</description>
-        <totalCost>2000</totalCost>
+        <baseCost>2000</baseCost>
         <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
         <prerequisites>
             <li>MealSynthesis</li>
@@ -24,7 +24,7 @@
         <defName>LavishMealSynthesis</defName>
         <label>lavish meal synthesis</label>
         <description>Lavish meals can be synthesized at food synthesizers.</description>
-        <totalCost>4000</totalCost>
+        <baseCost>4000</baseCost>
         <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
         <requiredResearchFacilities>
             <li>MultiAnalyzer</li>

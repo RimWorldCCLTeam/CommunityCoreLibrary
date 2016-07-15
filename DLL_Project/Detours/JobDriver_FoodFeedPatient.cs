@@ -16,41 +16,56 @@ namespace CommunityCoreLibrary.Detour
     internal static class _JobDriver_FoodFeedPatient
     {
 
+        internal const TargetIndex FoodInd = TargetIndex.A;
+        internal const TargetIndex DelivereeInd = TargetIndex.B;
+        internal const float FeedDurationMultiplier = 1.5f;
+
         internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodFeedPatient obj )
         {
-            Pawn deliveree = (Pawn) obj.pawn.CurJob.targetB.Thing;
-            obj.FailOnDespawnedNullOrForbidden( TargetIndex.B );
+            var foodThing = obj.TargetThing( FoodInd );
+            var deliveree = (Pawn) obj.TargetThing( DelivereeInd );
+
+            obj.FailOnDespawnedNullOrForbidden( DelivereeInd );
             obj.FailOn( () =>
             {
                 return !FoodUtility.ShouldBeFedBySomeone( deliveree );
             } );
 
-            yield return Toils_Reserve.Reserve( TargetIndex.B, 1 );
+            yield return Toils_Reserve.Reserve( DelivereeInd, 1 );
 
-            var targetThingA = obj.TargetThingA();
-
-            if( targetThingA is Building )
+            if( foodThing is Building )
             {
-                yield return Toils_Goto.GotoThing( TargetIndex.A, PathEndMode.InteractionCell ).FailOnForbidden( TargetIndex.A );
-                if( targetThingA is Building_NutrientPasteDispenser )
+                yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.InteractionCell ).FailOnForbidden( FoodInd );
+                if( foodThing is Building_NutrientPasteDispenser )
                 {
-                    yield return Toils_Ingest.TakeMealFromDispenser( TargetIndex.A, obj.pawn );
+                    yield return Toils_Ingest.TakeMealFromDispenser( FoodInd, obj.pawn );
                 }
-                if( targetThingA is Building_AutomatedFactory )
+                else if( foodThing is Building_AutomatedFactory )
                 {
-                    yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( TargetIndex.A, obj.pawn );
+                    yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodInd, obj.pawn );
                 }
+                else // Unknown building
+                {
+                    throw new Exception( "Food target for JobDriver_FoodDeliver is a building but not Building_NutrientPasteDispenser or Building_AutomatedFactory!" );
+                }
+            }
+            else if(
+                ( obj.pawn.inventory != null )&&
+                ( obj.pawn.inventory.Contains( foodThing ) )
+            )
+            {
+                yield return Toils_Misc.TakeItemFromInventoryToCarrier( obj.pawn, FoodInd );
             }
             else
             {
-                yield return Toils_Reserve.Reserve( TargetIndex.A, 1 );
-                yield return Toils_Goto.GotoThing( TargetIndex.A, PathEndMode.ClosestTouch ).FailOnForbidden( TargetIndex.A );
-                yield return Toils_Ingest.PickupIngestible( TargetIndex.A, deliveree );
+                yield return Toils_Reserve.Reserve( FoodInd, 1 );
+                yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.ClosestTouch ).FailOnForbidden( FoodInd );
+                yield return Toils_Ingest.PickupIngestible( FoodInd, deliveree );
             }
 
-            yield return Toils_Goto.GotoThing( TargetIndex.B, PathEndMode.Touch );
-            yield return Toils_Ingest.ChewIngestible( deliveree, 1.5f, TargetIndex.A );
-            yield return Toils_Ingest.FinalizeIngest( deliveree, TargetIndex.A );
+            yield return Toils_Goto.GotoThing( DelivereeInd, PathEndMode.Touch );
+            yield return Toils_Ingest.ChewIngestible( deliveree, FeedDurationMultiplier, FoodInd );
+            yield return Toils_Ingest.FinalizeIngest( deliveree, FoodInd );
         }
 
     }

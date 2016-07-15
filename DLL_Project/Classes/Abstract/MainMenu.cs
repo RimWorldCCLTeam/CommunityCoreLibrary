@@ -14,7 +14,7 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public virtual bool                 RenderNow( bool anyWorldFiles, bool anyMapFiles )
+        public virtual bool                 RenderNow( bool anyMapFiles )
         {
             return true;
         }

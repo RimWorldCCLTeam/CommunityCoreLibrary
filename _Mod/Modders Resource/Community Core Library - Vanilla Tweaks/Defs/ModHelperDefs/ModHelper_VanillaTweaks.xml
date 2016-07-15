@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <ModHelperDef>
+    <CommunityCoreLibrary.ModHelperDef>
         <defName>CommunityCoreLibraryVanillaTweaks</defName>
 
         <ModName>Community Core Library - Vanilla Tweaks</ModName>
 
-        <minCCLVersion>0.13.3</minCCLVersion>
+        <minCCLVersion>0.14.0</minCCLVersion>
 
         <ThingComps>
 
@@ -179,6 +179,6 @@
 
         </ThingDefAvailability>
 
-    </ModHelperDef>
+    </CommunityCoreLibrary.ModHelperDef>
 
 </Defs>

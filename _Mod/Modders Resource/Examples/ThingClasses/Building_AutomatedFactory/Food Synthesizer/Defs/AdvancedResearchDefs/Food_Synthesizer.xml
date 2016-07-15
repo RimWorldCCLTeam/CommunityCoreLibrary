@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
 
         <defName>AdvancedFineMealSynthesis</defName>
         <Priority>0</Priority>
@@ -18,9 +18,9 @@
             <li>FoodSynthesizer</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
 
         <defName>AdvancedLavishMealSynthesis</defName>
         <Priority>0</Priority>
@@ -37,6 +37,6 @@
             <li>FoodSynthesizer</li>
         </thingDefs>
 
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
 </Defs>

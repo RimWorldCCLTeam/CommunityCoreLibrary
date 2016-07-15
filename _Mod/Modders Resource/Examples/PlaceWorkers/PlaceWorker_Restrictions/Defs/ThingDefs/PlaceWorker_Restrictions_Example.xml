@@ -17,7 +17,7 @@
         <thingClass>Building</thingClass>
         <category>Building</category>
         <minifiedDef>MinifiedFurniture</minifiedDef>
-        <altitudeLayer>Waist</altitudeLayer>
+        <AltitudeLayer>Building</AltitudeLayer>
         <passability>PassThroughOnly</passability>
         <selectable>true</selectable>
         <fillPercent>0.20</fillPercent>
@@ -80,7 +80,6 @@
         <defName>NotOnTerrainTest</defName>
         <label>not on terrain test</label>
         <description>Restrictions:\nSoil\nSoilRich</description>
-        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
                 <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
@@ -100,7 +99,6 @@
         <defName>OnlyOnTerrainTest</defName>
         <label>only on terrain test</label>
         <description>Allowance:\nSand\nWaterShallow</description>
-        <terrainAffordanceNeeded>Any</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
                 <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
@@ -119,13 +117,11 @@
     <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>NotOnThingTest</defName>
         <label>not on thing test</label>
-        <description>Restrictions:\nSteam Geyser\nrock chunks\nslag</description>
-        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <description>Restrictions:\nrock chunks\nslag</description>
         <comps>
             <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
                 <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <thingDefs>
-                    <li>SteamGeyser</li>
                     <li>ChunkGranite</li>
                     <li>ChunkSandstone</li>
                     <li>ChunkLimestone</li>
@@ -145,7 +141,6 @@
         <defName>OnlyOnThingTest</defName>
         <label>only on thing test</label>
         <description>Allowance:\nSteam Geyser\nrock chunks\nslag</description>
-        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <comps>
             <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
                 <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>

@@ -17,7 +17,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        internal static bool        _ShouldShowMainMenuGUI_get( this UIRoot_Entry entry )
+        internal static bool        _ShouldDoMainMenu_get( this UIRoot_Entry entry )
         {
             if( 
                 ( Controller.Data.RestartWarningIsOpen )||

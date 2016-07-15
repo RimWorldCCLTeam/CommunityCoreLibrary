@@ -25,7 +25,7 @@
                 <offset>(0,0,-0.1)</offset>
             </shadowData>
         </graphicData>
-        <altitudeLayer>Waist</altitudeLayer>
+        <AltitudeLayer>Building</AltitudeLayer>
         <passability>PassThroughOnly</passability>
         <statBases>
             <MaxHitPoints>50</MaxHitPoints>
@@ -50,7 +50,6 @@
         </building>
         <designationCategory>Production</designationCategory>
         <rotatable>false</rotatable>
-        <designationHotKey/>
     </ThingDef>
 
 </Defs>

@@ -86,7 +86,7 @@ namespace CommunityCoreLibrary.MiniMap
         {
             get
             {
-                return overlayWorkers.Where( worker => !worker.Hidden ).OrderByDescending( worker => worker.overlayDef.drawOffset ).ToList();
+                return overlayWorkers.Where( worker => !worker.Hidden ).OrderBy( worker => worker.overlayDef.drawOffset ).ToList();
             }
         }
 
@@ -143,7 +143,7 @@ namespace CommunityCoreLibrary.MiniMap
                 }
                 if( _iconTexture.NullOrBad() )
                 {
-                    return TexUI.UnknownThing;
+                    return BaseContent.BadTex;
                 }
                 return _iconTexture;
             }

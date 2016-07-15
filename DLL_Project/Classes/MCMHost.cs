@@ -39,7 +39,14 @@ namespace CommunityCoreLibrary
             {
                 if( string.IsNullOrEmpty( _key ) )
                 {
-                    _key = Label.Replace( " ", "_" );
+                    if( string.IsNullOrEmpty( worker.InjectionSet.saveKey ) )
+                    {
+                        _key = Label.Replace( " ", "_" );
+                    }
+                    else
+                    {
+                        _key = worker.InjectionSet.saveKey;
+                    }
                 }
                 return _key;
             }
@@ -152,7 +159,10 @@ namespace CommunityCoreLibrary
         private static string HostFilePath( MCMHost host )
         {
             // Generate the config file name
-            string filePath = Path.Combine( GenFilePaths.ConfigFolderPath, ConfigFilePrefix );
+            // A14 - ConfigFolderPath became private - take a step back from the public ConfigFilePath
+            // - Fluffy
+            string configFolder = Path.GetDirectoryName( GenFilePaths.ConfigFilePath );
+            string filePath = Path.Combine( configFolder, ConfigFilePrefix );
             filePath += host.key;
             filePath += ConfigFileSuffix;
             return filePath;

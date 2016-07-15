@@ -47,32 +47,39 @@ namespace CommunityCoreLibrary.Detour
             var toggleableComp      = obj as CompGlowerToggleable;
             if(
                 ( toggleableComp != null )&&
-                ( toggleableComp.Lit == false )
+                ( !toggleableComp.Lit )
             )
             {
                 return false;
             }
             var powerComp           = obj.powerComp();
-            var lowPowerComp        = obj.lowPowerComp();
-            var flickableComp       = obj.flickableComp();
+            if(
+                ( powerComp != null )&&
+                ( !powerComp.PowerOn )
+            )
+            {
+                return false;
+            }
             var refuelableComp      = obj.refuelableComp();
+            if(
+                ( refuelableComp != null )&&
+                ( !refuelableComp.HasFuel )
+            )
+            {
+                return false;
+            }
+            var lowPowerComp        = obj.lowPowerComp();
+            if(
+                ( lowPowerComp != null )&&
+                ( lowPowerComp.LowPowerMode )
+            )
+            {
+                return false;
+            }
+            var flickableComp       = obj.flickableComp();
             return(
-                (
-                    ( powerComp == null )||
-                    ( powerComp.PowerOn )
-                )&&
-                (
-                    ( lowPowerComp == null )||
-                    ( !lowPowerComp.LowPowerMode )
-                )&&
-                (
-                    ( flickableComp == null )||
-                    ( flickableComp.SwitchIsOn )
-                )&&
-                (
-                    ( refuelableComp == null )||
-                    ( refuelableComp.HasFuel )
-                )
+                ( flickableComp == null )||
+                ( flickableComp.SwitchIsOn )
             );
         }
 

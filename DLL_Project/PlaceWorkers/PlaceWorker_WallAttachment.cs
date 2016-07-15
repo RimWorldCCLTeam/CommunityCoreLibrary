@@ -16,9 +16,17 @@ namespace CommunityCoreLibrary
                 return (AcceptanceReport)( "MessagePlacementAgainstSupport".Translate() );
             }
 
+            if(
+                ( support.def == null )||
+                ( support.def.graphicData == null )
+            )
+            {
+                return (AcceptanceReport)( "MessagePlacementAgainstSupport".Translate() );
+            }
+
             return ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) != 0
                 ? AcceptanceReport.WasAccepted
-                    : ( AcceptanceReport )( "MessagePlacementAgainstSupport".Translate() );
+                    : (AcceptanceReport)( "MessagePlacementAgainstSupport".Translate() );
         }
 
     }

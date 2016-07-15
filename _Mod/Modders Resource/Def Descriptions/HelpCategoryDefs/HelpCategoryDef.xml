@@ -3,7 +3,7 @@
 
     <!--
 
-    <HelpCategoryDef>
+    <CommunityCoreLibrary.HelpCategoryDef>
 
         <defName>string</defName>       [required] Some unique identifier in class
 
@@ -11,7 +11,7 @@
 
         <label>string</label>           [required] Title of help section within mod
 
-    </HelpCategoryDef>
+    </CommunityCoreLibrary.HelpCategoryDef>
 
     -->
 

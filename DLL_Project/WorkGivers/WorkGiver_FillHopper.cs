@@ -117,7 +117,7 @@ namespace CommunityCoreLibrary
             }
 
             // Sort by distance (closest first)
-            resources.Sort( ( Thing x, Thing y ) => ( Gen.ManhattanDistanceFlat( x.Position, building.Position ) < Gen.ManhattanDistanceFlat( y.Position, building.Position ) ) ? -1 : 1 );
+            resources.Sort( ( Thing x, Thing y ) => ( IntVec3Utility.ManhattanDistanceFlat( x.Position, building.Position ) < IntVec3Utility.ManhattanDistanceFlat( y.Position, building.Position ) ) ? -1 : 1 );
 
             var grabResource = resources.First();
             if( grabResource != null )
