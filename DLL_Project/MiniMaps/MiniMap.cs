@@ -143,7 +143,7 @@ namespace CommunityCoreLibrary.MiniMap
                 }
                 if( _iconTexture.NullOrBad() )
                 {
-                    return TexUI.UnknownThing;
+                    return BaseContent.BadTex;
                 }
                 return _iconTexture;
             }

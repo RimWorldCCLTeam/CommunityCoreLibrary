@@ -276,12 +276,12 @@ namespace CommunityCoreLibrary
                     if( iHopperUser != null )
                     {
                         // Copy a filter from a building implementing IHopperUser
-                        resourceSettings.filter.CopyFrom( iHopperUser.ResourceFilter );
+                        resourceSettings.filter.CopyAllowancesFrom( iHopperUser.ResourceFilter );
                     }
                     else
                     {
                         // Copy a filter from xml flag
-                        resourceSettings.filter.CopyFrom( Resources );
+                        resourceSettings.filter.CopyAllowancesFrom( Resources );
                     }
 
                     // Block default special filters
@@ -889,7 +889,7 @@ namespace CommunityCoreLibrary
             {
                 var hopper = thingList.FirstOrDefault( (thing) =>
                 {
-                    var thingDef = GenSpawn.BuiltDefOf( thing.def ) as ThingDef;
+                    var thingDef = GenConstruct.BuiltDefOf( thing.def ) as ThingDef;
                     return ( thingDef != null )&&( thingDef.IsHopper() );
                 } );
                 if( hopper != null )

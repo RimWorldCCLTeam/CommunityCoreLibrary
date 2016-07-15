@@ -109,6 +109,18 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public bool                         OutputToPawnsDirectly
+        {
+            get
+            {
+                if( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.DirectToPawn )
+                {
+                    return false;
+                }
+                return CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.PawnInteractionOnly;
+            }
+        }
+
         #endregion
 
         #region Class Constructor
@@ -127,17 +139,19 @@ namespace CommunityCoreLibrary
 
         #region Base Class Overrides
 
+#if DEBUG
         public override void                SpawnSetup()
         {
             //Log.Message( string.Format( "{0}.SpawnSetup()", this.ThingID ) );
             base.SpawnSetup();
-#if DEBUG
             if( CompAutomatedFactory == null )
             {
                 CCL_Log.TraceMod(
                     this.def,
                     Verbosity.FatalErrors,
-                    "Building_AutomatedFactory requires CompAutomatedFactory" );
+                    "Requires CompAutomatedFactory",
+                    "Building_AutomatedFactory"
+                );
                 return;
             }
             if( CompAutomatedFactory.Properties == null )
@@ -145,7 +159,9 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     this.def,
                     Verbosity.FatalErrors,
-                    "CompAutomatedFactory requires CompProperties_AutomatedFactory" );
+                    "Requires CompProperties_AutomatedFactory",
+                    "CompAutomatedFactory"
+                );
                 return;
             }
             if( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.Invalid )
@@ -153,7 +169,9 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     this.def,
                     Verbosity.FatalErrors,
-                    "CompAutomatedFactory.outputVector is invalid" );
+                    "outputVector is Invalid",
+                    "CompAutomatedFactory"
+                );
                 return;
             }
             if( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.None )
@@ -161,11 +179,42 @@ namespace CommunityCoreLibrary
                 CCL_Log.TraceMod(
                     this.def,
                     Verbosity.FatalErrors,
-                    "CompAutomatedFactory.productionMode is invalid" );
+                    "productionMode is None",
+                    "CompAutomatedFactory"
+                );
                 return;
             }
-#endif
+            if(
+                ( CompAutomatedFactory.Properties.productionMode != FactoryProductionMode.PawnInteractionOnly )&&
+                ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )
+            )
+            {
+                CCL_Log.TraceMod(
+                    this.def,
+                    Verbosity.FatalErrors,
+                    "productionMode is PawnInteractionOnly but outputVector is not DirectToPawn",
+                    "CompAutomatedFactory"
+                );
+                return;
+            }
+            if(
+                ( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.Automatic )&&
+                (
+                    ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.Ground )&&
+                    ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.InteractionCell )
+                )
+            )
+            {
+                CCL_Log.TraceMod(
+                    this.def,
+                    Verbosity.FatalErrors,
+                    "productionMode is Automatic but outputVector is not Ground or InteractionCell",
+                    "CompAutomatedFactory"
+                );
+                return;
+            }
         }
+#endif
 
         public override void                ExposeData()
         {
@@ -256,10 +305,7 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            if(
-                ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.Invalid )||
-                ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )
-            )
+            if( CompAutomatedFactory.Properties.productionMode != FactoryProductionMode.Automatic )
             {
                 return;
             }
@@ -268,6 +314,8 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
+            // Set to 30 for now, if something actually starts production
+            // then this will be changed to match the recipe
             currentProductionTick = 30;
 
             // Find something to produce
@@ -300,12 +348,24 @@ namespace CommunityCoreLibrary
                     return;
                 }
             }
-            if( currentThing.stackCount > 0 )
+            if(
+                ( currentThing.stackCount < 1 )||
+                ( currentThing.Destroyed )
+            )
+            {
+                currentThing = null;
+                currentProductionTick = 0;
+                return;
+            }
+            if(
+                ( useCell != IntVec3.Invalid )&&
+                ( currentThing.stackCount > 0 )
+            )
             {
                 GenSpawn.Spawn( currentThing, useCell );
+                currentThing = null;
+                currentProductionTick = 0;
             }
-            currentThing = null;
-            currentProductionTick = 0;
         }
 
         private void                        RescanTick()
@@ -540,11 +600,12 @@ namespace CommunityCoreLibrary
             //Log.Message( string.Format( "{0}.OutputThingTo()", this.ThingID ) );
             stackWith = null;
             dropCell = IntVec3.Invalid;
-            switch( CompAutomatedFactory.Properties.outputVector )
+
+            if( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.Ground )
             {
-                case FactoryOutputVector.Ground:
                 var usableCells = new List<IntVec3>();
                 var preferedCells = new List<IntVec3>();
+
                 foreach( var cell in AdjacentNeighbouringCells )
                 {
                     bool addToUsable = true;
@@ -560,23 +621,21 @@ namespace CommunityCoreLibrary
                                 addToPrefered = true;
                             }
                         }
-                        else if(
+                        if(
                             ( cellThing.CanStackWith( currentThing ) )&&
                             ( cellThing.stackCount < cellThing.def.stackLimit )
                         )
                         {
-                            addToPrefered = true;
-                            if( stackWith == null )
-                            {
-                                stackWith = cellThing;
-                            }
+                            stackWith = cellThing;
+                            return true;
                         }
-                        else if(
+                        if(
                             ( cellThing.def.EverHaulable )||
                             ( cellThing.def.IsEdifice() )||
                             ( cellThing.def.passability == Traversability.Impassable )
                         )
                         {
+                            addToPrefered = false;
                             addToUsable = false;
                         }
                     }
@@ -588,15 +647,6 @@ namespace CommunityCoreLibrary
                     {
                         preferedCells.Add( cell );
                     }
-                }
-                if(
-                    ( preferedCells.NullOrEmpty() )&&
-                    ( usableCells.NullOrEmpty() )&&
-                    ( stackWith == null )
-                )
-                {
-                    // No place to put new thing
-                    return false;
                 }
                 if( !preferedCells.NullOrEmpty() )
                 {
@@ -612,40 +662,27 @@ namespace CommunityCoreLibrary
                             )
                             {
                                 stackWith = cellThing;
-                            }
-                            else if( cellThing.def.EverHaulable )
-                            {
-                                preferedCells.Remove( cell );
-                                break;
+                                return true;
                             }
                         }
                     }
-                    if(
-                        ( preferedCells.NullOrEmpty() )&&
-                        ( stackWith == null )
-                    )
-                    {
-                        return false;
-                    }
-                    if( !preferedCells.NullOrEmpty() )
-                    {
-                        dropCell = preferedCells.RandomElement();
-                    }
+                    dropCell = preferedCells.RandomElement();
+                    return true;
                 }
-                else if( !usableCells.NullOrEmpty() )
+                if( !usableCells.NullOrEmpty() )
                 {
                     dropCell = usableCells.RandomElement();
+                    return true;
                 }
-                break;
 
-                case FactoryOutputVector.InteractionCell:
-                dropCell = this.InteractionCell;
-                foreach( var cellThing in dropCell.GetThingList() )
+                // No place to put new thing
+                return false;
+            }
+
+            if( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.InteractionCell )
+            {
+                foreach( var cellThing in this.InteractionCell.GetThingList() )
                 {
-                    if( cellThing.def.passability == Traversability.Impassable )
-                    {
-                        return false;
-                    }
                     if(
                         ( cellThing.CanStackWith( currentThing ) )&&
                         ( cellThing.stackCount < cellThing.def.stackLimit )
@@ -653,11 +690,7 @@ namespace CommunityCoreLibrary
                     {
                         stackWith = cellThing;
                     }
-                    else if( cellThing.def.EverHaulable )
-                    {
-                        return false;
-                    }
-                    if( cellThing is IStoreSettingsParent )
+                    else if( cellThing is IStoreSettingsParent )
                     {
                         var settings = cellThing as IStoreSettingsParent;
                         if( !settings.GetStoreSettings().AllowedToAccept( currentThing ) )
@@ -665,17 +698,21 @@ namespace CommunityCoreLibrary
                             return false;
                         }
                     }
+                    else if(
+                        ( cellThing.def.EverHaulable )||
+                        ( cellThing.def.IsEdifice() )||
+                        ( cellThing.def.passability == Traversability.Impassable )
+                    )
+                    {
+                        // Interaction cell is blocked
+                        return false;
+                    }
                 }
-                break;
-            }
-            if(
-                ( dropCell != IntVec3.Invalid )||
-                ( stackWith != null )
-            )
-            {
-                // Found some place for it
+
+                dropCell = this.InteractionCell;
                 return true;
             }
+
             // All output cells are blocked
             return false;
         }
@@ -853,15 +890,14 @@ namespace CommunityCoreLibrary
             }
             var thing = ThingMaker.MakeThing( thingDef );
             thing.stackCount = recipe.products[0].count;
-            if(
-                ( thingDef.thingClass == typeof( Meal ) )||
-                ( thingDef.thingClass.IsSubclassOf( typeof( Meal ) ) )
-            )
+            // A14: Changed thingClass meal to CompIngredients
+            // - Fluffy.
+            var ingredients = thing.TryGetComp<CompIngredients>();
+            if ( ingredients != null )
             {
-                var meal = (Meal) thing;
                 foreach( var ingredient in chosen )
                 {
-                    meal.RegisterIngredient( ingredient.thing.def );
+                    ingredients.RegisterIngredient( ingredient.thing.def );
                 }
             }
             return thing;

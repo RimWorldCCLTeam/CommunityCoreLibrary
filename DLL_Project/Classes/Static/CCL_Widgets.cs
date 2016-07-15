@@ -11,18 +11,16 @@ using CommunityCoreLibrary;
 
 namespace CommunityCoreLibrary.UI
 {
+
+    [StaticConstructorOnStartup]
     public static class CCL_Widgets
     {
-        private static Texture2D _solidWhite;
 
-        public static Texture2D SolidWhite
+        public static Texture2D SolidWhite;
+
+        static CCL_Widgets()
         {
-            get
-            {
-                if ( _solidWhite == null )
-                    _solidWhite = SolidColorMaterials.NewSolidColorTexture( Color.white );
-                return _solidWhite;
-            }
+            SolidWhite = SolidColorMaterials.NewSolidColorTexture( Color.white );
         }
 
         public static void DrawBackground( Rect canvas, Color color, float opacity = -1f )
@@ -104,7 +102,7 @@ namespace CommunityCoreLibrary.UI
             return String.Join( seperator, enmumerable.ToArray() );
         }
 
-        public static bool ImageButton( Rect canvas, Texture2D tex, string altString, string tip = "" )
+        public static bool ButtonImage( Rect canvas, Texture2D tex, string altString, string tip = "" )
         {
             if( !tip.NullOrEmpty() )
             {
@@ -112,9 +110,9 @@ namespace CommunityCoreLibrary.UI
             }
             if( tex == null )
             {
-                return Widgets.TextButton( canvas, altString, false, true );
+                return Widgets.ButtonText( canvas, altString, false, true );
             }
-            return Widgets.ImageButton( canvas, tex );
+            return Widgets.ButtonImage( canvas, tex );
         }
 
     }

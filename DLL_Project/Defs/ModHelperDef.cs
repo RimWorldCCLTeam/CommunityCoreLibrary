@@ -56,7 +56,7 @@ namespace CommunityCoreLibrary
         public bool                         dummy = false;
 
         // Used to link directly to the mod which this def controls
-        public LoadedMod                    mod;
+        public ModContentPack                    mod;
 
         #endregion
 

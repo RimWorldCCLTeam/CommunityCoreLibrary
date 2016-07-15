@@ -9,6 +9,8 @@ namespace CommunityCoreLibrary.Detour
     internal static class _SocialProperness
     {
 
+        // Fixes social properness for prison cells by checking that the thing/interaction
+        // cells location is a prison cell instead of the same room
         internal static bool _IsSociallyProper( this Thing t, Pawn p, bool forPrisoner, bool animalsCare = false )
         {
             if(
@@ -19,8 +21,8 @@ namespace CommunityCoreLibrary.Detour
             {
                 return true;
             }
-            var intVec3 = !t.def.hasInteractionCell ? t.Position : t.InteractionCell;
-            return( forPrisoner == intVec3.IsInPrisonCell() );
+            var thingPos = !t.def.hasInteractionCell ? t.Position : t.InteractionCell;
+            return( forPrisoner == thingPos.IsInPrisonCell() );
         }
 
     }

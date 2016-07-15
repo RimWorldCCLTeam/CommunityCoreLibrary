@@ -16,12 +16,12 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override bool RenderNow( bool anyWorldFiles, bool anyMapFiles )
+        public override bool RenderNow( bool anyMapFiles )
         {
             return(
-                ( Game.Mode == GameMode.Entry )||
+                ( Current.ProgramState == ProgramState.Entry )||
                 (
-                    ( !Find.Map.info.permadeathMode )||
+                    ( !Current.Game.Info.permadeathMode )||
                     ( Controller.Data.RequireRestart )
                 )
             );
@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary
 
 		public override void ClickAction()
 		{
-			if( Game.Mode == GameMode.MapPlaying )
+			if( Current.ProgramState == ProgramState.MapPlaying )
 			{
 				Find.WindowStack.Add( (Window)new Dialog_Confirm(
 					"ConfirmQuit".Translate(),

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <ModHelperDef>
+    <CommunityCoreLibrary.ModHelperDef>
         <defName>MilkableBoomalope</defName>
 
         <ModName>Milkable Boomalope</ModName>
 
-        <minCCLVersion>0.13.0</minCCLVersion>
+        <minCCLVersion>0.14.0</minCCLVersion>
 
         <ThingComps>
 
@@ -31,6 +31,6 @@
 
         </ThingComps>
 
-    </ModHelperDef>
+    </CommunityCoreLibrary.ModHelperDef>
 
 </Defs>

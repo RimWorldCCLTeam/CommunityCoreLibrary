@@ -115,7 +115,10 @@ namespace CommunityCoreLibrary
                     ( t.thingClass == typeof( ThingWithComps ) )&&
                     (
                         ( !t.thingCategories.NullOrEmpty() )&&
-                        ( t.thingCategories.Contains( ThingCategoryDefOf.BodyPartsAndImplants ) )
+                        // A14 - BodyPartsAndImplants => BodyParts + BodyPartsArtifical? (Artificial has no DefOf entry?
+                        // TODO!
+                        // - Fluffy
+                        ( t.thingCategories.Contains( ThingCategoryDefOf.BodyParts ) )
                     )
                 ) ).ToList();
 
@@ -138,10 +141,10 @@ namespace CommunityCoreLibrary
         {
             // Get list of things
             var thingDefs =
-                DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
-                    ( t.thingClass == typeof( Meal ) )&&
-                    ( t.ingestible.isPleasureDrug )
-                ) ).ToList();
+                DefDatabase< ThingDef >.AllDefsListForReading.Where( t => 
+                    t.IsIngestible() &&
+                    t.ingestible.isPleasureDrug 
+                ).ToList();
 
             if( thingDefs.NullOrEmpty() )
             {
@@ -163,8 +166,8 @@ namespace CommunityCoreLibrary
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
-                    ( t.thingClass == typeof( Meal ) )&&
-                    ( !t.ingestible.isPleasureDrug )
+                    t.IsNutritionGivingIngestible &&
+                    !t.ingestible.isPleasureDrug
                 ) ).ToList();
 
             if( thingDefs.NullOrEmpty() )
@@ -675,7 +678,7 @@ namespace CommunityCoreLibrary
 
                 #region Ingestible Stats
                 // Look at base stats
-                if( thingDef.IsNutritionSource )
+                if( thingDef.IsIngestible() )
                 {
                     // only show Joy if it's non-zero
                     List<Def> needDefs = new List<Def>();
@@ -708,7 +711,8 @@ namespace CommunityCoreLibrary
                 #region Body Part Stats
 
                 if( ( !thingDef.thingCategories.NullOrEmpty() ) &&
-                    ( thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyPartsAndImplants ) ) &&
+                    // A14 - BodyPartsAndImplants => BodyParts + BodyPartsArtificial?
+                    ( thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyParts ) ) &&
                     ( thingDef.IsImplant() ) )
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
@@ -883,7 +887,8 @@ namespace CommunityCoreLibrary
                     }
                     else if( compPowerTrader.basePowerConsumption < 0 )
                     {
-                        if( thingDef.thingClass == typeof( Building_PowerPlantSolar ) )
+                        // A14 - check this!
+                        if( thingDef.HasComp( typeof( CompPowerPlantWind ) ) )
                         {
                             powerSectionList.Add( new StringDescTriplet( "AutoHelpGenerates".Translate(), null, "1700" ) );
                         }
@@ -1187,7 +1192,7 @@ namespace CommunityCoreLibrary
 
             #region Base Stats
             HelpDetailSection totalCost = new HelpDetailSection(null, 
-                                                                new [] { researchProjectDef.totalCost.ToString() },
+                                                                new [] { researchProjectDef.baseCost.ToString() },
                                                                 new [] { "AutoHelpTotalCost".Translate() },
                                                                 null );
             helpDef.HelpDetailSections.Add( totalCost );
@@ -1490,18 +1495,14 @@ namespace CommunityCoreLibrary
 
             #region Diseases
 
-            // workaround through looping incidents doesn't appear to work - go through reflection
-            //FieldInfo diseasesFieldInfo = typeof (BiomeDef).GetField( "diseases",
-            //                                                          BindingFlags.NonPublic | BindingFlags.Instance );
-            //IList diseases = diseasesFieldInfo.GetValue( biomeDef ) as IList;
-
             var diseases = biomeDef.AllDiseases();
             if( !diseases.NullOrEmpty() )
             {
                 foreach( var disease in diseases )
                 {
+                    var diseaseCommonality = ( biomeDef.CommonalityOfDisease( disease ) / biomeDef.diseaseMtbDays ) * GenDate.DaysPerYear;
                     defs.Add( disease.diseaseIncident );
-                    chances.Add( ( biomeDef.MTBDaysOfDisease( disease ) / GenDate.DaysPerYear ).ToStringPercent() );
+                    chances.Add( diseaseCommonality.ToStringPercent() );
                 }
 
                 helpDef.HelpDetailSections.Add( new HelpDetailSection(

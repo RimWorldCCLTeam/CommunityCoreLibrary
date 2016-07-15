@@ -16,6 +16,10 @@ echo Build Target: %2
 echo Solution Path: %3
 echo CCL Install Path: %InstalledCCLAssemblies%
 
+del "%3DLL_Project\bin\Community Core Library.pdb"
+
+%3DLL_Project\bin\InjectModuleInitializer.exe /m:CommunityCoreLibrary.Controller.MainMonoBehaviour::PreLoad "Community Core Library.dll"
+
 echo Copy to RimWorld
 copy %2 %InstalledCCLAssemblies%
 

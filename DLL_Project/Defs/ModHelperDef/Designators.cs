@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Verse;
 
@@ -71,10 +72,8 @@ namespace CommunityCoreLibrary
 
             foreach( var designatorData in def.Designators )
             {
-                var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
-                if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == designatorData.designatorClass ) )
+                if (!designatorData.DesignatorExists() )
                 {
-                    // designator hasn't been injected yet
                     return false;
                 }
             }
@@ -95,7 +94,7 @@ namespace CommunityCoreLibrary
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
 
                 // First instatiate and inject the designator into the list of resolved designators
-                if( !designationCategory.resolvedDesignators.Exists( d => d.GetType() == designatorData.designatorClass ) )
+                if ( !designatorData.DesignatorExists() )
                 {
                     // Create the new designator
                     var designatorObject = (Designator) Activator.CreateInstance( designatorData.designatorClass );
@@ -104,16 +103,16 @@ namespace CommunityCoreLibrary
                         CCL_Log.Message( string.Format( "Unable to create instance of '{0}'", designatorData.designatorClass ) );
                         return false;
                     }
-
+                          
                     if( designatorData.designatorNextTo == null )
                     {
                         // Inject the designator
-                        designationCategory.resolvedDesignators.Add( designatorObject );
+                        designationCategory._resolvedDesignators().Add( designatorObject );
                     }
                     else
                     {
                         // Prefers to be beside a specific designator
-                        var designatorIndex = designationCategory.resolvedDesignators.FindIndex( d => (
+                        var designatorIndex = designationCategory._resolvedDesignators().FindIndex( d => (
                             ( d.GetType() == designatorData.designatorNextTo )
                         ) );
 
@@ -121,12 +120,12 @@ namespace CommunityCoreLibrary
                         {
                             // Other designator doesn't exist (yet?)
                             // Inject the designator at the end
-                            designationCategory.resolvedDesignators.Add( designatorObject );
+                            designationCategory._resolvedDesignators().Add( designatorObject );
                         }
                         else
                         {
                             // Inject beside desired designator
-                            designationCategory.resolvedDesignators.Insert( designatorIndex + 1, designatorObject );
+                            designationCategory._resolvedDesignators().Insert( designatorIndex + 1, designatorObject );
                         }
                     }
                 }

@@ -8,8 +8,8 @@ namespace CommunityCoreLibrary
 
         #region Instance Data
 
-        private static System.Version       versionMin = new System.Version( "0.13.0" );
-        private const string                versionCurrentInt = "0.13.4";
+        private static System.Version       versionMin = new System.Version( "0.14.0" );
+        private const string                versionCurrentInt = "0.14.0";
 
         private static System.Version       versionCurrent;
 

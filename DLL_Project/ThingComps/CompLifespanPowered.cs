@@ -94,7 +94,7 @@ namespace CommunityCoreLibrary
             {
                 int num = CompLifeSpan.Props.lifespanTicks - CompLifeSpan.age;
                 return "LifespanExpiry".Translate() + " " +
-                    num.TicksToPeriodString(true) + "\n" +
+                    num.ToStringTicksToPeriod(true) + "\n" +
                     base.CompInspectStringExtra();
             }
             return base.CompInspectStringExtra();

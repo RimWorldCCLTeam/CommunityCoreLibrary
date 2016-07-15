@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 
-    <name>Community Core Library v0.13.4</name>
+    <name>Community Core Library</name>
 
     <author>RimWorld CCL Team</author>
 
     <url>https://ludeon.com/forums/index.php?topic=16599.0</url>
 
-    <targetVersion>RimWorld Alpha 13</targetVersion>
+    <targetVersion>0.14.1230</targetVersion>
 
-    <description>Provides a common core set of library functions for modders as well as making required core changes.\n\nThis must be loaded immediately after "Core".</description>
+    <description>v0.14.0\n\nProvides a common core set of library functions for modders as well as making required core changes.\n\nThis must be loaded immediately after "Core".</description>
 
 </ModMetaData>

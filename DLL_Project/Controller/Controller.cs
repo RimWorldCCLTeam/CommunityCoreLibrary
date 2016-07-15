@@ -22,11 +22,11 @@ namespace CommunityCoreLibrary.Controller
 
         public static MainMonoBehaviour     cclMonoBehaviour;
 
-        public static LoadedMod             cclMod;
+        public static ModContentPack        cclMod;
         public static ModHelperDef          cclHelperDef;
 
-        private static Dictionary< LoadedMod, ModHelperDef > dictModHelperDefs;
-        private static List< LoadedMod >    mods;
+        private static Dictionary< ModContentPack, ModHelperDef > dictModHelperDefs;
+        private static List< ModContentPack >    mods;
         private static List< ModHelperDef > modHelperDefs;
         private static List< AdvancedResearchDef > advancedResearchDefs;
 
@@ -86,14 +86,14 @@ namespace CommunityCoreLibrary.Controller
         // factors.  The DefDatabase should only be used as a list of all potential
         // defs where as these lists are the working set used by CCL.
 
-        public static List< LoadedMod >  Mods
+        public static List< ModContentPack >  Mods
         {
             get
             {
                 if( mods == null )
                 {
                     // Get the initial raw set of mods
-                    mods = new List<LoadedMod>();
+                    mods = new List<ModContentPack>();
                 }
                 return mods;
             }
@@ -112,14 +112,14 @@ namespace CommunityCoreLibrary.Controller
             }
         }
 
-        public static Dictionary< LoadedMod, ModHelperDef > DictModHelperDefs
+        public static Dictionary< ModContentPack, ModHelperDef > DictModHelperDefs
         {
             get
             {
                 if( dictModHelperDefs == null )
                 {
                     // Get the initial raw set of mods
-                    dictModHelperDefs = new Dictionary<LoadedMod, ModHelperDef>();
+                    dictModHelperDefs = new Dictionary<ModContentPack, ModHelperDef>();
                 }
                 return dictModHelperDefs;
             }

@@ -20,12 +20,12 @@ namespace CommunityCoreLibrary
         {
             var listing = new Listing_Standard( rect );
             {
-                listing.OverrideColumnWidth = rect.width - 4f;
+                listing.ColumnWidth = rect.width - 4f;
 
                 #region Main Toggle
                 var toggleLabel = "MiniMap.MCMToggleMain".Translate();
-                listing.DoLabelCheckbox( toggleLabel, ref MiniMap.MiniMapController.defaultVisible );
-                listing.DoGap();
+                listing.CheckboxLabeled( toggleLabel, ref MiniMap.MiniMapController.visible );
+                listing.Gap();
                 #endregion
 
                 #region Handle all MiniMaps and Overlays
@@ -44,11 +44,11 @@ namespace CommunityCoreLibrary
                         if( iMinimap != null )
                         {
                             #region Minimap IConfigurable
-                            var iMinimapRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
+                            var iMinimapRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth, 9999f );
                             GUI.BeginGroup( iMinimapRect );
                             var iMinimapHeight = iMinimap.DrawMCMRegion( iMinimapRect.AtZero() );
                             GUI.EndGroup();
-                            listing.DoGap( iMinimapHeight + 6f );
+                            listing.Gap( iMinimapHeight + 6f );
                             #endregion
                         }
                         #endregion
@@ -67,11 +67,11 @@ namespace CommunityCoreLibrary
                                 #endregion
 
                                 #region Overlay IConfigurable
-                                var iOverlayRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth(), 9999f );
+                                var iOverlayRect = new Rect( listing.Indentation(), listing.CurHeight, listing.ColumnWidth, 9999f );
                                 GUI.BeginGroup( iOverlayRect );
                                 var iOverlayHeight = iOverlay.DrawMCMRegion( iOverlayRect.AtZero() );
                                 GUI.EndGroup();
-                                listing.DoGap( iOverlayHeight + 6f );
+                                listing.Gap( iOverlayHeight + 6f );
                                 listing.Undent();
                                 #endregion
 
@@ -81,7 +81,7 @@ namespace CommunityCoreLibrary
                         #endregion
 
                         #region Final Undentation
-                        listing.DoGap();
+                        listing.Gap();
                         listing.Undent();
                         #endregion
                     }
@@ -97,16 +97,16 @@ namespace CommunityCoreLibrary
         private void MinimapHeader( Listing_Standard listing, MiniMap.MiniMap minimap )
         {
             var str = minimap.LabelCap;
-            listing.DoLabel( str );
-            listing.DoGap( 6 );
+            listing.Label( str );
+            listing.Gap( 6 );
             listing.Indent();
         }
 
         private void OverlayHeader( Listing_Standard listing, MiniMap.MiniMapOverlay overlay )
         {
             var str = overlay.LabelCap;
-            listing.DoLabel( str );
-            listing.DoGap( 6 );
+            listing.Label( str );
+            listing.Gap( 6 );
             listing.Indent();
         }
 
@@ -118,7 +118,7 @@ namespace CommunityCoreLibrary
         public override void                ExposeData()
         {
 
-            Scribe_Values.LookValue( ref MiniMap.MiniMapController.defaultVisible, "visible" );
+            Scribe_Values.LookValue( ref MiniMap.MiniMapController.visible, "visible" );
 
             #region Handle all MiniMaps and Overlays
 

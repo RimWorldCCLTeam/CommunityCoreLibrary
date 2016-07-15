@@ -11,40 +11,59 @@ namespace CommunityCoreLibrary
     public static class JobDriver_Extensions
     {
 
-        #region Target Things
+        #region General Targets by Index
 
-        public static Thing TargetThingA( this JobDriver obj )
+        public static TargetInfo Target( this JobDriver obj, TargetIndex Ind )
         {
-            return obj.pawn.jobs.curJob.targetA.Thing;
+            return obj.pawn.CurJob.GetTarget( Ind );
         }
 
-        public static Thing TargetThingB( this JobDriver obj )
+        public static Thing TargetThing( this JobDriver obj, TargetIndex Ind )
         {
-            return obj.pawn.jobs.curJob.targetB.Thing;
+            return obj.Target( Ind ).Thing;
         }
 
-        public static Thing TargetThingC( this JobDriver obj )
+        public static IntVec3 TargetCell( this JobDriver obj, TargetIndex Ind )
         {
-            return obj.pawn.jobs.curJob.targetC.Thing;
+            return obj.Target( Ind ).Cell;
         }
 
         #endregion
 
-        #region Target Locations
+        #region Indexed Target Things
 
-        public static IntVec3 TargetLocA( this JobDriver obj )
+        public static Thing TargetThingA( this JobDriver obj )
         {
-            return obj.pawn.jobs.curJob.targetA.Cell;
+            return obj.TargetThing( TargetIndex.A );
         }
 
-        public static IntVec3 TargetLocB( this JobDriver obj )
+        public static Thing TargetThingB( this JobDriver obj )
         {
-            return obj.pawn.jobs.curJob.targetB.Cell;
+            return obj.TargetThing( TargetIndex.B );
+        }
+
+        public static Thing TargetThingC( this JobDriver obj )
+        {
+            return obj.TargetThing( TargetIndex.C );
+        }
+
+        #endregion
+
+        #region Indexed Target Cells
+
+        public static IntVec3 TargetCellA( this JobDriver obj )
+        {
+            return obj.TargetCell( TargetIndex.A );
+        }
+
+        public static IntVec3 TargetCellB( this JobDriver obj )
+        {
+            return obj.TargetCell( TargetIndex.B );
         }
 
         public static IntVec3 TargetCellC( this JobDriver obj )
         {
-            return obj.pawn.jobs.curJob.targetC.Cell;
+            return obj.TargetCell( TargetIndex.C );
         }
 
         #endregion

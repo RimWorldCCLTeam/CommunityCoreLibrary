@@ -121,7 +121,7 @@ namespace CommunityCoreLibrary.MiniMap
         public override Color GetColor( Pawn pawn )
         {
             // tame
-            if ( pawn.Faction == Faction.OfColony )
+            if ( pawn.Faction == Faction.OfPlayer )
                 return tameColor;
 
             // predator
@@ -129,7 +129,7 @@ namespace CommunityCoreLibrary.MiniMap
                 return hostileColor;
             
             // hostile
-            if ( pawn.HostileTo( Faction.OfColony ) )
+            if ( pawn.HostileTo( Faction.OfPlayer ) )
                 return hostileColor;
 
             var designation = Find.DesignationManager.DesignationOn( pawn )?.def;
@@ -153,11 +153,11 @@ namespace CommunityCoreLibrary.MiniMap
         public override float GetRadius( Pawn pawn )
         {
             // tame
-            if ( pawn.Faction == Faction.OfColony )
+            if ( pawn.Faction == Faction.OfPlayer )
                 return tameRadius;
 
             // hostile
-            if ( pawn.HostileTo( Faction.OfColony ) )
+            if ( pawn.HostileTo( Faction.OfPlayer ) )
                 return hostileRadius;
 
             // hunted

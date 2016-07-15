@@ -3,7 +3,7 @@
 
     <!--
 
-    <AdvancedResearchDef>
+    <CommunityCoreLibrary.AdvancedResearchDef>
     
         <defName>string</defName>       [required] Some unique identifier in class
         
@@ -15,7 +15,7 @@
         
         <HideDefs>bool</HideDefs>       [optional: false] Set to true to disable (hide) or false to enable
         
-        <helpCategoryDef>HelpCategoryDef</helpCategoryDef>
+        <CommunityCoreLibrary.HelpCategoryDef>HelpCategoryDef</CommunityCoreLibrary.HelpCategoryDef>
                                         [optional: null] If set, this def will generate a help menu entry in the specified category
         
         <ConsolidateHelp>bool</ConsolidateHelp>
@@ -67,7 +67,7 @@
             <li>Action( bool disable = true )</li>       then list order after everything else is processed
         </researchMods>
         
-    </AdvancedResearchDef>
+    </CommunityCoreLibrary.AdvancedResearchDef>
 
     NOTE:  AdvancedResearchDefs will automagically lock and unlock the things they unlock and lock respectively if the conditions to lock
     or unlock them have not been met (researchDefs are not complete).  This frees you from having to specifically handle their initial state.

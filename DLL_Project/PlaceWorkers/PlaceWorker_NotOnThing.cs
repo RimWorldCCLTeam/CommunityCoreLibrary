@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary
 
             foreach( Thing t in loc.GetThingList() )
             {
-                if( Restrictions.RestrictedThing.Find( r => r == t.def ) != null )
+                if( Restrictions.RestrictedThing.Contains( t.def ) )
                 {
                     return "MessagePlacementNotOn".Translate( t.def.label );
                 }

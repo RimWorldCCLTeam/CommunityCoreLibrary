@@ -19,7 +19,7 @@ namespace CommunityCoreLibrary
             return
                 ( door == null )&&
                 ( room != null )&&
-                ( ( !MustBeRoofed )||( ( MustBeRoofed )&&( !room.HasOpenRoofSection ) ) )&&
+                ( !MustBeRoofed || ( MustBeRoofed && room.OpenRoofCount > 0 ) ) &&
                 ( !room.TouchesMapEdge );
         }
 

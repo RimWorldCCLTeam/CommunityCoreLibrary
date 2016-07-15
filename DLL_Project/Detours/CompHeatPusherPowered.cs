@@ -46,31 +46,41 @@ namespace CommunityCoreLibrary.Detour
         internal static bool _ShouldPushHeatNow( this CompHeatPusherPowered obj )
         {
             var powerComp           = obj.powerComp();
+            if(
+                ( powerComp != null )&&
+                ( !powerComp.PowerOn )
+            )
+            {
+                return false;
+            }
             var lowPowerComp        = obj.lowPowerComp();
-            var flickableComp       = obj.flickableComp();
+            if(
+                ( lowPowerComp != null )&&
+                ( lowPowerComp.LowPowerMode )
+            )
+            {
+                return false;
+            }
             var refuelableComp      = obj.refuelableComp();
+            if(
+                ( refuelableComp != null )&&
+                ( !refuelableComp.HasFuel )
+            )
+            {
+                return false;
+            }
             var breakdownableComp   = obj.breakdownableComp();
+            if(
+                ( breakdownableComp != null )&&
+                ( breakdownableComp.BrokenDown )
+            )
+            {
+                return false;
+            }
+            var flickableComp       = obj.flickableComp();
             return(
-                (
-                    ( powerComp == null )||
-                    ( powerComp.PowerOn )
-                )&&
-                (
-                    ( lowPowerComp == null )||
-                    ( !lowPowerComp.LowPowerMode )
-                )&&
-                (
-                    ( flickableComp == null )||
-                    ( flickableComp.SwitchIsOn )
-                )&&
-                (
-                    ( refuelableComp == null )||
-                    ( refuelableComp.HasFuel )
-                )&&
-                (
-                    ( breakdownableComp == null )||
-                    ( !breakdownableComp.BrokenDown )
-                )
+                ( flickableComp == null )||
+                ( flickableComp.SwitchIsOn )
             );
         }
 

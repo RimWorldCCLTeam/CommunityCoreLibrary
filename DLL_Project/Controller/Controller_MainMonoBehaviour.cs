@@ -12,12 +12,12 @@ using Verse;
 namespace CommunityCoreLibrary.Controller
 {
 
-    [StaticConstructorOnStartup]
     public class MainMonoBehaviour : MonoBehaviour
     {
 
         #region Instance Data
 
+        private static bool                 initOk;
         private static bool                 gameValid;
 
         private static int                  ticks;
@@ -28,19 +28,17 @@ namespace CommunityCoreLibrary.Controller
         private static bool                 queueRecovering = false;
         private static bool                 queueLoadAllPlayData = false;
 
+        // A14 - PDL.loaded is now private, Loaded is get only.
+        private static FieldInfo PlayDataLoader_loaded = typeof( PlayDataLoader ).GetField( "loadedInt", BindingFlags.NonPublic | BindingFlags.Static );
+
         #endregion
 
-        #region Static Constructor
+        #region Destructor
 
-        static                              MainMonoBehaviour()
-        {
-            PreLoad();
-        }
 
 #if DEVELOPER
         /* Should be a static but can't */  ~MainMonoBehaviour()
         {
-            // https://www.youtube.com/watch?v=jyaLZHiJJnE
             CCL_Log.CloseStream();
 
         }
@@ -51,18 +49,27 @@ namespace CommunityCoreLibrary.Controller
 
         #region Preloader
 
-        private static void                 PreLoad()
+        internal static void                PreLoad()
         {
             // This is a pre-start sequence to hook some deeper level functions.
             // These functions can be hooked later but it would be after the sequence
             // of operations which call them is complete.
 
+#if DEVELOPER
+            // Open a log file for CCL specific output
+            // https://www.youtube.com/watch?v=jyaLZHiJJnE
+            if( CCL_Log.OpenStream() == null )
+            {
+                Log.Error( string.Format( "Unable to open file stream for {0}!", Controller.Data.UnityObjectName ) );
+            }
+#endif
+
             // Log CCL version
             Version.Log();
 
             bool InjectionsOk = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            CCL_Log.CaptureBegin( stringBuilder );
+            //var stringBuilder = new StringBuilder();
+            //CCL_Log.CaptureBegin( stringBuilder );
 
             // Find all sub-controllers
             var subControllerClasses = typeof( SubController ).AllSubclasses();
@@ -120,13 +127,13 @@ namespace CommunityCoreLibrary.Controller
                 InjectionsOk &= Detours.TryDetourFromTo( Verse_PlayDataLoader_ClearAllPlayData, CCL_PlayDataLoader_ClearAllPlayData );
             }
 
-            // Detour Verse.UIRoot_Entry.ShouldShowMainMenuGUI_get
+            // Detour Verse.UIRoot_Entry.ShouldDoMainMenu_get
             if( InjectionsOk )
             {
-                PropertyInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI = typeof( UIRoot_Entry ).GetProperty( "ShouldShowMainMenuGUI", BindingFlags.Instance | BindingFlags.NonPublic );
-                MethodInfo Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get = Verse_UIRoot_Entry_ShouldShowMainMenuGUI.GetGetMethod( true );
-                MethodInfo CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldShowMainMenuGUI_get", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldShowMainMenuGUI_get, CCL_UIRoot_Entry_ShouldShowMainMenuGUI_get );
+                PropertyInfo Verse_UIRoot_Entry_ShouldDoMainMenu = typeof( UIRoot_Entry ).GetProperty( "ShouldDoMainMenu", BindingFlags.Instance | BindingFlags.NonPublic );
+                MethodInfo Verse_UIRoot_Entry_ShouldDoMainMenu_get = Verse_UIRoot_Entry_ShouldDoMainMenu.GetGetMethod( true );
+                MethodInfo CCL_UIRoot_Entry_ShouldDoMainMenu_get= typeof( Detour._UIRoot_Entry ).GetMethod( "_ShouldDoMainMenu_get", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( Verse_UIRoot_Entry_ShouldDoMainMenu_get, CCL_UIRoot_Entry_ShouldDoMainMenu_get );
             }
 
             // Detour RimWorld.MainMenuDrawer.MainMenuOnGUI
@@ -145,29 +152,6 @@ namespace CommunityCoreLibrary.Controller
                 InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_DoMainMenuButtons, CCL_MainMenuDrawer_DoMainMenuButtons );
             }
 
-            // Detour RimWorld.BiomeDef.CommonalityOfAnimal
-            if( InjectionsOk )
-            {
-                MethodInfo RimwWorld_BiomeDef_CommonalityOfAnimal = typeof( BiomeDef ).GetMethod( "CommonalityOfAnimal", BindingFlags.Instance | BindingFlags.Public );
-                MethodInfo CCL_BiomeDef_CommonalityOfAnimal = typeof( Detour._BiomeDef ).GetMethod( "_CommonalityOfAnimal", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( RimwWorld_BiomeDef_CommonalityOfAnimal, CCL_BiomeDef_CommonalityOfAnimal );
-            }
-
-            // Detour RimWorld.BiomeDef.CommonalityOfPlant
-            if( InjectionsOk )
-            {
-                MethodInfo RimwWorld_BiomeDef_CommonalityOfPlant = typeof( BiomeDef ).GetMethod( "CommonalityOfPlant", BindingFlags.Instance | BindingFlags.Public );
-                MethodInfo CCL_BiomeDef_CommonalityOfPlant = typeof( Detour._BiomeDef ).GetMethod( "_CommonalityOfPlant", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( RimwWorld_BiomeDef_CommonalityOfPlant, CCL_BiomeDef_CommonalityOfPlant );
-            }
-            // Detour RimWorld.BiomeDef.MTBDaysOfDisease
-            if( InjectionsOk )
-            {
-                MethodInfo RimWorld_BiomeDef_MTBDaysOfDisease = typeof( BiomeDef ).GetMethod( "MTBDaysOfDisease", BindingFlags.Instance | BindingFlags.Public );
-                MethodInfo CCL_BiomeDef_MTBDaysOfDisease = typeof( Detour._BiomeDef ).GetMethod( "_MTBDaysOfDisease", BindingFlags.Static | BindingFlags.NonPublic );
-                InjectionsOk &= Detours.TryDetourFromTo( RimWorld_BiomeDef_MTBDaysOfDisease, CCL_BiomeDef_MTBDaysOfDisease );
-            }
-
             // Detour Verse.PostLoadInitter.DoAllPostLoadInits
             /*
             if( InjectionsOk )
@@ -180,42 +164,10 @@ namespace CommunityCoreLibrary.Controller
 
             if( InjectionsOk )
             {
-                var gameObject = new GameObject( Controller.Data.UnityObjectName );
-                if( gameObject == null )
-                {
-                    InjectionsOk = false;
-                    CCL_Log.Error(
-                        "Unable to create GameObject",
-                        "PreLoader"
-                    );
-                }
-                else
-                {
-                    if( gameObject.AddComponent< Controller.MainMonoBehaviour >() == null )
-                    {
-                        InjectionsOk = false;
-                        CCL_Log.Error(
-                            "Unable to create MonoBehaviour",
-                            "PreLoader"
-                        );
-                    }
-                    else
-                    {
-                        UnityEngine.Object.DontDestroyOnLoad( gameObject );
-                        Controller.Data.UnityObject = gameObject;
-                    }
-                }
+                LongEventHandler.ExecuteWhenFinished( CreateMonoBehaviour );
             }
 
-            if( InjectionsOk )
-            {
-                CCL_Log.Message(
-                    "Queueing Library Initialization",
-                    "PreLoader"
-                );
-                LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
-            }
-
+            /*
             CCL_Log.CaptureEnd(
                 stringBuilder,
                 InjectionsOk ? "Initialized" : "Errors during injection"
@@ -224,6 +176,8 @@ namespace CommunityCoreLibrary.Controller
                 Verbosity.Injections,
                 stringBuilder.ToString(),
                 "PreLoader" );
+            */
+            initOk = InjectionsOk;
         }
 
         #endregion
@@ -282,6 +236,7 @@ namespace CommunityCoreLibrary.Controller
         private static void ClearAllPlayData()
         {
             LanguageDatabase.Clear();
+            // A14 - ModContentPackManager was removed?
             LoadedModManager.ClearDestroy();
             foreach( Type genericParam in GenTypes.AllSubclasses( typeof( Def ) ) )
             {
@@ -290,7 +245,8 @@ namespace CommunityCoreLibrary.Controller
             ThingCategoryNodeDatabase.Clear();
             BackstoryDatabase.Clear();
             SolidBioDatabase.Clear();
-            PlayDataLoader.loaded = false;
+            
+            PlayDataLoader_loaded.SetValue( null, false );
         }
 
         internal static void QueueLoadAllPlayData( bool recovering = false )
@@ -310,7 +266,7 @@ namespace CommunityCoreLibrary.Controller
 
         internal static void LoadAllPlayData( bool recovering = false )
         {
-            if( PlayDataLoader.loaded )
+            if( PlayDataLoader.Loaded )
             {
                 Log.Error( "Loading play data when already loaded. Call ClearAllPlayData first." );
             }
@@ -335,8 +291,8 @@ namespace CommunityCoreLibrary.Controller
                     }
                     else
                     {
-                        IEnumerable<InstalledMod> activeMods = ModsConfig.ActiveMods;
-                        if( Enumerable.Count<InstalledMod>( activeMods ) == 1 && Enumerable.First<InstalledMod>( activeMods ).IsCoreMod )
+                        IEnumerable<ModMetaData> activeMods = ModsConfig.ActiveModsInLoadOrder;
+                        if( Enumerable.Count<ModMetaData>( activeMods ) == 1 && Enumerable.First<ModMetaData>( activeMods ).IsCoreMod )
                         {
                             throw;
                         }
@@ -363,8 +319,9 @@ namespace CommunityCoreLibrary.Controller
                 {
                     DeepProfiler.End();
                 }
-                PlayDataLoader.loaded = true;
-                if( !recovering )
+                // A14 - PlayDataLoader.loaded is now private, Loaded property is getter only
+                PlayDataLoader_loaded.SetValue( null, false );
+                if ( !recovering )
                     return;
                 Log.Message( "Successfully recovered from errors and loaded play data." );
                 DelayedErrorWindowRequest.Add( Translator.Translate( "RecoveredFromErrorsText" ), Translator.Translate( "RecoveredFromErrorsDialogTitle" ) );
@@ -385,7 +342,7 @@ namespace CommunityCoreLibrary.Controller
             ticks++;
             if(
                 ( !gameValid )||
-                ( Game.Mode != GameMode.MapPlaying )||
+                ( Current.ProgramState != ProgramState.MapPlaying )||
                 ( Find.Map == null )||
                 ( Find.Map.components == null )
             )
@@ -418,10 +375,43 @@ namespace CommunityCoreLibrary.Controller
 
         #region Long Event Handlers
 
+        public static void                         CreateMonoBehaviour()
+        {
+            var gameObject = new GameObject( Controller.Data.UnityObjectName );
+            if( gameObject == null )
+            {
+                CCL_Log.Error( "Unable to create GameObject" );
+                initOk = false;
+                return;
+            }
+            else
+            {
+                if( gameObject.AddComponent< Controller.MainMonoBehaviour >() == null )
+                {
+                    CCL_Log.Error( "Unable to create MonoBehaviour" );
+                    initOk = false;
+                    return;
+                }
+                else
+                {
+                    UnityEngine.Object.DontDestroyOnLoad( gameObject );
+                    Controller.Data.UnityObject = gameObject;
+                }
+            }
+
+            CCL_Log.Message( "Queueing Library Initialization" );
+            LongEventHandler.QueueLongEvent( Initialize, "LibraryStartup", true, null );
+        }
+
         public static void                         Initialize()
         {
             //enabled = false;
             gameValid = false;
+
+            if( !initOk )
+            {
+                return;
+            }
 
             var subControllers = Controller.Data.SubControllers.ToList();
             if( subControllers.NullOrEmpty() )

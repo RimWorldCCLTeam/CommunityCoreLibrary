@@ -3,7 +3,7 @@
 
     <!--
 
-    <ModHelperDef>
+    <CommunityCoreLibrary.ModHelperDef>
 
         <defName>string</defName>       [required] This must uniquely identify your def
 
@@ -134,7 +134,7 @@
             </li>
         </Designators>
 
-    </ModHelperDef>
+    </CommunityCoreLibrary.ModHelperDef>
 
     The order which the tags are listed in this file are the order in which they are processed.  Even if you move your tag
     blocks around in the file (ie, Designators appears first, it will still be processed last).

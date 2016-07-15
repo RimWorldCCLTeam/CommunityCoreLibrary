@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
 
             if(
                 ( !validateBills )||
-                ( Game.Mode != GameMode.MapPlaying )
+                ( Current.ProgramState != ProgramState.MapPlaying )
             )
             {
                 return;
@@ -69,27 +69,29 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
-        public static bool                  IsIngestible( this ThingDef thingDef )
+        public static bool                  IsFoodMachine( this ThingDef thingDef )
         {
             if(
-                (
-                    ( thingDef.thingClass == typeof( Meal ) )||
-                    ( thingDef.thingClass.IsSubclassOf( typeof( Meal ) ) )
-                )&&
-                ( thingDef.ingestible != null )
+                ( typeof( Building_NutrientPasteDispenser ).IsAssignableFrom( thingDef.thingClass ) )||
+                ( typeof( Building_AutomatedFactory ).IsAssignableFrom( thingDef.thingClass ) )
             )
             {
-                return true;
+                return thingDef.building.isMealSource;
             }
             return false;
+        }
+
+        public static bool                  IsIngestible( this ThingDef thingDef )
+        {
+            return thingDef.ingestible != null;
         }
 
         public static bool                  IsAlcohol( this ThingDef thingDef )
         {
             if(
                 ( thingDef.IsIngestible() )&&
-                ( !thingDef.ingestible.hediffGivers.NullOrEmpty() )&&
-                ( thingDef.ingestible.hediffGivers.Exists( d => d.hediffDef == HediffDefOf.Alcohol ) )
+                ( thingDef.ingestible.hediffGivers != null )&&
+                ( thingDef.ingestible.hediffGivers.Exists( hediff => hediff.hediffDef == HediffDefOf.Alcohol ) )
             )
             {
                 return true;
@@ -175,14 +177,14 @@ namespace CommunityCoreLibrary
             )
             {
                 oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( thingDef.designationCategory );
-                oldDesignator = (Designator_Build) oldCategory.resolvedDesignators.FirstOrDefault( d => (
+                oldDesignator = (Designator_Build) oldCategory._resolvedDesignators().FirstOrDefault( d => (
                     ( d is Designator_Build )&&
                     ( ( d as Designator_Build ).PlacingDef == (BuildableDef) thingDef )
                 ) );
             }
             if( oldCategory != null )
             {
-                oldCategory.resolvedDesignators.Remove( oldDesignator );
+                oldCategory._resolvedDesignators().Remove( oldDesignator );
             }
             if( newCategoryDef != null )
             {
@@ -195,7 +197,7 @@ namespace CommunityCoreLibrary
                 {
                     newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) thingDef } );
                 }
-                newCategoryDef.resolvedDesignators.Add( newDesignator );
+                newCategoryDef._resolvedDesignators().Add( newDesignator );
             }
             thingDef.designationCategory = newCategory;
             return true;

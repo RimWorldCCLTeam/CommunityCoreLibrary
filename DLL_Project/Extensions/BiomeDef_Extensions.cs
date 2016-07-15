@@ -41,8 +41,8 @@ namespace CommunityCoreLibrary
             {
                 foreach( var incident in incidents )
                 {
-                    var mtb = biome.MTBDaysOfDisease( incident );
-                    if( mtb < 99999f )
+                    var commonality = biome.CommonalityOfDisease( incident );
+                    if( commonality > 0.0f )
                     {
                         list.Add( incident );
                     }

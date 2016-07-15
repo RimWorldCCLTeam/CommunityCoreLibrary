@@ -15,7 +15,7 @@ namespace CommunityCoreLibrary
         protected static List<ModCategory>  CachedHelpCategories;
         public HelpDef                      SelectedHelpDef;
 
-        public const float                  Margin                  = 6f; // 15 is way too much.
+        public const float                  WindowMargin            = 6f; // 15 is way too much.
         public const float                  EntryHeight             = 30f;
         public const float                  EntryIndent             = 15f;
         public const float                  ParagraphMargin         = 8f;
@@ -83,9 +83,9 @@ namespace CommunityCoreLibrary
         {
             base.PostOpen();
 
-            if( Game.Mode == GameMode.Entry )
+            if( Current.ProgramState == ProgramState.Entry )
             {
-                this.currentWindowRect = new Rect(
+                this.windowRect = new Rect(
                     ( Screen.width - RequestedTabSize.x ) / 2,
                     ( Screen.height - RequestedTabSize.y ) / 2,
                     RequestedTabSize.x,
@@ -94,7 +94,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                this.currentWindowRect = new Rect(
+                this.windowRect = new Rect(
                     ( Screen.width - RequestedTabSize.x ),
                     ( Screen.height - RequestedTabSize.y - 35f ),
                     RequestedTabSize.x,
@@ -266,8 +266,8 @@ namespace CommunityCoreLibrary
             float selectionWidth = TabDef != null ? ( TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth ) : MinListWidth;
             SelectionRect = new Rect( 0f, 0f, selectionWidth, rect.height );
             DisplayRect = new Rect(
-                SelectionRect.width + Margin, 0f,
-                rect.width - SelectionRect.width - Margin, rect.height
+                SelectionRect.width + WindowMargin, 0f,
+                rect.width - SelectionRect.width - WindowMargin, rect.height
             );
 
             DrawSelectionArea( SelectionRect );
@@ -288,13 +288,13 @@ namespace CommunityCoreLibrary
             Text.Font = GameFont.Medium;
             Text.WordWrap = false;
             float titleWidth = Text.CalcSize( SelectedHelpDef.LabelCap ).x;
-            var titleRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, titleWidth, 60f );
+            var titleRect = new Rect( rect.xMin + WindowMargin, rect.yMin + WindowMargin, titleWidth, 60f );
             if(
                 ( SelectedHelpDef.keyDef != null )&&
                 ( SelectedHelpDef.keyDef.IconTexture() != null )
             )
             {
-                var iconRect = new Rect( titleRect.xMin + Margin, rect.yMin + Margin, 60f - 2 * Margin, 60f - 2 * Margin );
+                var iconRect = new Rect( titleRect.xMin + WindowMargin, rect.yMin + WindowMargin, 60f - 2 * WindowMargin, 60f - 2 * WindowMargin );
                 titleRect.x += 60f;
                 SelectedHelpDef.keyDef.DrawColouredIcon( iconRect );
             }
@@ -304,7 +304,7 @@ namespace CommunityCoreLibrary
             Text.Anchor = TextAnchor.UpperLeft;
             Text.WordWrap = true;
 
-            Rect outRect = rect.ContractedBy(Margin);
+            Rect outRect = rect.ContractedBy(WindowMargin);
             outRect.yMin += 60f;
             Rect viewRect = outRect;
             viewRect.width -= 16f;
@@ -335,12 +335,12 @@ namespace CommunityCoreLibrary
             Widgets.DrawMenuSection( rect );
 
             _filterUpdate();
-            Rect filterRect = new Rect( rect.xMin + Margin, rect.yMin + Margin, rect.width - 3 * Margin - 30f, 30f );
-            Rect clearRect = new Rect( filterRect.xMax + Margin + 3f, rect.yMin + Margin + 3f, 24f, 24f );
+            Rect filterRect = new Rect( rect.xMin + WindowMargin, rect.yMin + WindowMargin, rect.width - 3 * WindowMargin - 30f, 30f );
+            Rect clearRect = new Rect( filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f );
             _filterString = Widgets.TextField( filterRect, _filterString );
             if( _filterString != "" )
             {
-                if( Widgets.ImageButton( clearRect, Widgets.CheckboxOffTex ) )
+                if( Widgets.ButtonImage( clearRect, Widgets.CheckboxOffTex ) )
                 {
                     _filterString = "";
                     Filter();
@@ -424,8 +424,8 @@ namespace CommunityCoreLibrary
         public bool DrawEntry( ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false )
         {
                     cur.x       = nestLevel * EntryIndent;
-            float   iconOffset  = ArrowImageSize.x + 2 * Margin;
-            float   width       = view.width - cur.x - iconOffset - Margin;
+            float   iconOffset  = ArrowImageSize.x + 2 * WindowMargin;
+            float   width       = view.width - cur.x - iconOffset - WindowMargin;
             float   height      = EntryHeight;
 
             if( Text.CalcHeight( label, width ) > EntryHeight )
@@ -437,7 +437,7 @@ namespace CommunityCoreLibrary
 
             if( state != State.Leaf )
             {
-                Rect iconRect = new Rect(cur.x + Margin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y);
+                Rect iconRect = new Rect(cur.x + WindowMargin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y);
                 GUI.DrawTexture( iconRect, state == State.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight );
             }
 
@@ -463,7 +463,7 @@ namespace CommunityCoreLibrary
             {
                 Widgets.DrawHighlightIfMouseover( buttonRect );
             }
-            return Widgets.InvisibleButton( buttonRect );
+            return Widgets.ButtonInvisible( buttonRect );
         }
 
         public void DrawModEntry( ref Vector2 cur, int nestLevel, Rect view, ModCategory mc )

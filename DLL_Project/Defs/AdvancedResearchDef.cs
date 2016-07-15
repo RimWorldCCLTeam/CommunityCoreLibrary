@@ -109,8 +109,8 @@ namespace CommunityCoreLibrary
                 // Hopefully...
                 isValid = true;
 
-                var loadedMod = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
-                modHelperDef = Find_Extensions.ModHelperDefForMod( loadedMod );
+                var ModContentPack = Find_Extensions.ModByDefOfType<AdvancedResearchDef>( defName );
+                modHelperDef = Find_Extensions.ModHelperDefForMod( ModContentPack );
 
                 if(
                     ( modHelperDef == null )||
@@ -305,7 +305,7 @@ namespace CommunityCoreLibrary
                 }
 
                 // God mode, allow it anyway
-                if( Game.GodMode )
+                if( DebugSettings.godMode )
                 {
                     return ResearchEnableMode.GodMode;
                 }
@@ -418,7 +418,7 @@ namespace CommunityCoreLibrary
             {
                 if( totalCost < 0 )
                 {
-                    totalCost = researchDefs.Sum( rd => rd.totalCost );
+                    totalCost = researchDefs.Sum( rd => rd.baseCost );
                 }
                 return totalCost;
             }
