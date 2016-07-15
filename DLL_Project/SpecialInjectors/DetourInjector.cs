@@ -185,6 +185,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( Verse_ThingListGroupHelper_Includes, CCL_ThingListGroupHelper_Includes ) )
                 return false;
 
+            // Detour RimWorld.GenConstruct.CanBuildOnTerrain
+            MethodInfo RimWorld_GenConstruct_CanBuildOnTerrain = typeof( GenConstruct ).GetMethod( "CanBuildOnTerrain", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_GenConstruct_CanBuildOnTerrain = typeof( Detour._GenConstruct ).GetMethod( "_CanBuildOnTerrain", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_GenConstruct_CanBuildOnTerrain, CCL_GenConstruct_CanBuildOnTerrain ) )
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );

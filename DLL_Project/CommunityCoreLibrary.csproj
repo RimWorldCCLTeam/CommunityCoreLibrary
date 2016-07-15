@@ -276,6 +276,7 @@
     <Compile Include="Extensions\JoyGiver_SocialRelax_Extensions.cs" />
     <Compile Include="Detours\JobGiver_BingeAlcohol.cs" />
     <Compile Include="Detours\ThingListGroupHelper.cs" />
+    <Compile Include="Detours\GenConstruct.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
