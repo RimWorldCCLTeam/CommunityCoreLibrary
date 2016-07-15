@@ -100,6 +100,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_JobDriver_SocialRelax_MakeNewToils, CCL_JobDriver_SocialRelax_MakeNewToils ) )
                 return false;
 
+            // Detour Verse.MentalStateWorker_BingingAlcohol.StateCanOccur
+            MethodInfo Verse_MentalStateWorker_BingingAlcohol_StateCanOccur = typeof( MentalStateWorker_BingingAlcohol ).GetMethod( "StateCanOccur", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_MentalStateWorker_BingingAlcohol_StateCanOccur = typeof( Detour._MentalStateWorker_BingingAlcohol ).GetMethod( "_StateCanOccur", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_MentalStateWorker_BingingAlcohol_StateCanOccur, CCL_MentalStateWorker_BingingAlcohol_StateCanOccur ) )
+                return false;
+
             // Detour RimWorld.CompRottable.CompTickRare
             MethodInfo RimWorld_CompRottable_CompTickRare = typeof( CompRottable ).GetMethod( "CompTickRare", BindingFlags.Instance | BindingFlags.Public );
             MethodInfo CCL_CompRottable_CompTickRare = typeof( Detour._CompRottable ).GetMethod( "_CompTickRare", BindingFlags.Static | BindingFlags.NonPublic );
