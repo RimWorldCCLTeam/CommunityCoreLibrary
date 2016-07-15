@@ -17,13 +17,10 @@ namespace CommunityCoreLibrary
             }
 #endif
 
-            TerrainDef terrainDef = loc.GetTerrain();
-            for( int i = 0; i < Restrictions.RestrictedTerrain.Count; i++ )
+            var terrainDef = loc.GetTerrain();
+            if( Restrictions.RestrictedTerrain.Contains( terrainDef ) )
             {
-                if( Restrictions.RestrictedTerrain[ i ] == terrainDef )
-                {
-                    return "MessagePlacementNotOn".Translate( terrainDef.label );
-                }
+                return "MessagePlacementNotOn".Translate( terrainDef.label );
             }
 
             return AcceptanceReport.WasAccepted;

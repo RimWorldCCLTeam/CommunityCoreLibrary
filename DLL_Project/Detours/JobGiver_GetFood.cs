@@ -24,6 +24,8 @@ namespace CommunityCoreLibrary.Detour
             Thing foodSource;
             ThingDef foodDef;
 
+            //CCL_Log.Message( "JobGiver_GetFood for " + pawn.LabelShort );
+
             // Find an appropriate food source for the pawn
             if( !FoodUtility.TryFindBestFoodSourceFor(
                 pawn,
@@ -39,6 +41,8 @@ namespace CommunityCoreLibrary.Detour
             {
                 return null;
             }
+
+            //CCL_Log.Message( string.Format( "Found {0} ({1}) for {2}", foodSource.ThingID, foodDef.defName, pawn.LabelShort ) );
 
             // Predator-Prey
             var prey = foodSource as Pawn;
@@ -59,6 +63,7 @@ namespace CommunityCoreLibrary.Detour
                     var NPD = foodSource as Building_NutrientPasteDispenser;
                     if( !NPD.HasEnoughFeedstockInHoppers() )
                     {
+                        //CCL_Log.Message( string.Format( "Hopper for {0} needs filling", foodSource.ThingID ) );
                         hopperNeedsFilling = true;
                         hopper = NPD.AdjacentReachableHopper( pawn );
                     }
@@ -68,6 +73,7 @@ namespace CommunityCoreLibrary.Detour
                     var FS = foodSource as Building_AutomatedFactory;
                     if( foodDef == null )
                     {
+                        //CCL_Log.Message( string.Format( "Hopper for {0} needs filling", foodSource.ThingID ) );
                         hopperNeedsFilling = true;
                         hopper = FS.AdjacentReachableHopper( pawn );
                     }
@@ -76,10 +82,12 @@ namespace CommunityCoreLibrary.Detour
                 {
                     if( hopper != null )
                     {
+                        //CCL_Log.Message( string.Format( "Found hopper {0} for {1} that needs filling", hopper.ThingID, foodSource.ThingID ) );
                         return HopperFillFoodJob( pawn, hopper, foodSource );
                     }
                     else
                     {   // Find an alternate source that isn't an NPD or FS
+                        //CCL_Log.Message( "Searching for non-machine food for " + pawn.LabelShort );
                         foodSource = FoodUtility.BestFoodSourceOnMap(
                             pawn,
                             pawn,
@@ -95,11 +103,12 @@ namespace CommunityCoreLibrary.Detour
                         {
                             return null;
                         }
-                        foodDef = foodSource.def;
+                        foodDef = FoodUtility.GetFoodDef( foodSource );
                     }
                 }
             }
 
+            //CCL_Log.Message( string.Format( "Giving JobDriver_Ingest to {0} using {1}", pawn.LabelShort, foodSource.ThingID ) );
             // Ingest job for found food source
             var ingestJob = new Job( JobDefOf.Ingest, foodSource );
             ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
