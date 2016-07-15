@@ -4,6 +4,8 @@ CCL detours many core methods to allow greater flexibility and functionality for
 
 These detours are done automatically by CCL and require nothing other than having CCL installed.  This section is simply for reference if you choose to detour methods and want to know what CCL is already detouring.
 
+[i][color=red]This information is currently outdated. A number of detours have been obsoleted in A14, and have been removed.[/color][/i]
+
 [list]
 [li][color=orange]RimWorld.Alert_PasteDispenserNeedsHopper.Report[/color] - Allows custom nutrient paste dispensers[sup][size=8pt]5.2[/size][/sup] to use generic hoppers.[/li]
 [li][color=orange]RimWorld.BiomeDef.CommonalityOfAnimal[/color] - Fixes adding animals to biomes from PawnKindDef.[/li]
