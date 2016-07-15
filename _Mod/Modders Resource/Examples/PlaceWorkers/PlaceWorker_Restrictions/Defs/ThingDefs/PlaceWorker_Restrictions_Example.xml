@@ -117,12 +117,11 @@
     <ThingDef ParentName="PlaceWorkerTestBase">
         <defName>NotOnThingTest</defName>
         <label>not on thing test</label>
-        <description>Restrictions:\nSteam Geyser\nrock chunks\nslag</description>
+        <description>Restrictions:\nrock chunks\nslag</description>
         <comps>
             <li Class="CommunityCoreLibrary.CompProperties_RestrictedPlacement">
                 <compClass>CommunityCoreLibrary.CompRestrictedPlacement</compClass>
                 <thingDefs>
-                    <li>SteamGeyser</li>
                     <li>ChunkGranite</li>
                     <li>ChunkSandstone</li>
                     <li>ChunkLimestone</li>
