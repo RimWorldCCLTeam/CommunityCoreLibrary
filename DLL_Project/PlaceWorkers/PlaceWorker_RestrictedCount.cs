@@ -18,7 +18,8 @@ namespace CommunityCoreLibrary
 
             var thingDef = checkingDef as ThingDef;
 #if DEBUG
-            if( thingDef == null ){
+            if( thingDef == null )
+            {
                 CCL_Log.Error( "PlaceWorker_RestrictedCount unable to get cast BuildableDef to ThingDef!", checkingDef.defName );
                 return AcceptanceReport.WasRejected;
             }
