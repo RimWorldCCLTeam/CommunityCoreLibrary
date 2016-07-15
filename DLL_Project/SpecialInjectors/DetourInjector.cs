@@ -18,6 +18,9 @@ namespace CommunityCoreLibrary
             // Change CompGlower into CompGlowerToggleable
             FixGlowers();
 
+            // Change Building_NutrientPasteDispenser into Building_AdvancedPasteDispenser
+            UpgradeNutrientPasteDispensers();
+
             // Detour RimWorld.JoyGiver_SocialRelax.TryGiveJobInt
             MethodInfo RimWorld_JoyGiver_SocialRelax_TryGiveJobInt = typeof( JoyGiver_SocialRelax ).GetMethod( "TryGiveJobInt", BindingFlags.Instance | BindingFlags.NonPublic );
             MethodInfo CCL_JoyGiver_SocialRelax_TryGiveJobInt = typeof( Detour._JoyGiver_SocialRelax ).GetMethod( "_TryGiveJobInt", BindingFlags.Static | BindingFlags.NonPublic );
@@ -34,6 +37,18 @@ namespace CommunityCoreLibrary
             MethodInfo RimWorld_FoodUtility_GetFoodDef = typeof( FoodUtility ).GetMethod( "GetFoodDef", BindingFlags.Static | BindingFlags.Public );
             MethodInfo CCL_FoodUtility_GetFoodDef = typeof( Detour._FoodUtility ).GetMethod( "_GetFoodDef", BindingFlags.Static | BindingFlags.NonPublic );
             if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_GetFoodDef, CCL_FoodUtility_GetFoodDef ) )
+                return false;
+
+            // Detour RimWorld.FoodUtility.FoodSourceOptimality
+            MethodInfo RimWorld_FoodUtility_FoodSourceOptimality = typeof( FoodUtility ).GetMethod( "FoodSourceOptimality", BindingFlags.Static | BindingFlags.NonPublic );
+            MethodInfo CCL_FoodUtility_FoodSourceOptimality = typeof( Detour._FoodUtility ).GetMethod( "_FoodSourceOptimality", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_FoodSourceOptimality, CCL_FoodUtility_FoodSourceOptimality ) )
+                return false;
+
+            // Detour RimWorld.FoodUtility.ThoughtsFromIngesting
+            MethodInfo RimWorld_FoodUtility_ThoughtsFromIngesting = typeof( FoodUtility ).GetMethod( "ThoughtsFromIngesting", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_FoodUtility_ThoughtsFromIngesting = typeof( Detour._FoodUtility ).GetMethod( "_ThoughtsFromIngesting", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_FoodUtility_ThoughtsFromIngesting, CCL_FoodUtility_ThoughtsFromIngesting ) )
                 return false;
 
             // Detour RimWorld.FoodUtility.BestFoodSourceOnMap
@@ -59,6 +74,12 @@ namespace CommunityCoreLibrary
             MethodInfo RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser_get = RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser.GetGetMethod( true );
             MethodInfo CCL_JobDriver_Ingest_UsingNutrientPasteDispenser = typeof( Detour._JobDriver_Ingest ).GetMethod( "_UsingNutrientPasteDispenser", BindingFlags.Static | BindingFlags.NonPublic );
             if( !Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_UsingNutrientPasteDispenser_get, CCL_JobDriver_Ingest_UsingNutrientPasteDispenser ) )
+                return false;
+
+            // Detour RimWorld.JobDriver_Ingest.GetReport
+            MethodInfo RimWorld_JobDriver_Ingest_GetReport = typeof( JobDriver_Ingest ).GetMethod( "GetReport", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_JobDriver_Ingest_GetReport = typeof( Detour._JobDriver_Ingest ).GetMethod( "_GetReport", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_JobDriver_Ingest_GetReport, CCL_JobDriver_Ingest_GetReport ) )
                 return false;
 
             // Detour RimWorld.JobDriver_Ingest.PrepareToEatToils_Dispenser
@@ -158,6 +179,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_SocialProperness_IsSociallyProper, CCL_SocialProperness_IsSociallyProper ) )
                 return false;
 
+            // Detour Verse.ThingListGroupHelper.Includes
+            MethodInfo Verse_ThingListGroupHelper_Includes = typeof( ThingListGroupHelper ).GetMethod( "Includes", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_ThingListGroupHelper_Includes = typeof( Detour._ThingListGroupHelper ).GetMethod( "_Includes", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_ThingListGroupHelper_Includes, CCL_ThingListGroupHelper_Includes ) )
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
@@ -180,6 +207,14 @@ namespace CommunityCoreLibrary
             {
                 var compGlower = def.GetCompProperties<CompProperties_Glower>();
                 compGlower.compClass = typeof( CompGlowerToggleable );
+            }
+        }
+
+        private void                        UpgradeNutrientPasteDispensers()
+        {
+            foreach( var def in DefDatabase<ThingDef>.AllDefs.Where( def => def.thingClass == typeof( Building_NutrientPasteDispenser ) ) )
+            {
+                def.thingClass = typeof( Building_AdvancedPasteDispenser );
             }
         }
 

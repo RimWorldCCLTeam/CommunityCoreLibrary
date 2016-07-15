@@ -69,6 +69,18 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
+        public static bool                  IsFoodMachine( this ThingDef thingDef )
+        {
+            if(
+                ( typeof( Building_NutrientPasteDispenser ).IsAssignableFrom( thingDef.thingClass ) )||
+                ( typeof( Building_AutomatedFactory ).IsAssignableFrom( thingDef.thingClass ) )
+            )
+            {
+                return thingDef.building.isMealSource;
+            }
+            return false;
+        }
+
         public static bool                  IsIngestible( this ThingDef thingDef )
         {
             return thingDef.ingestible != null;
@@ -78,7 +90,7 @@ namespace CommunityCoreLibrary
         {
             if(
                 ( thingDef.IsIngestible() )&&
-                ( thingDef.ingestible?.hediffGivers != null )&&
+                ( thingDef.ingestible.hediffGivers != null )&&
                 ( thingDef.ingestible.hediffGivers.Exists( hediff => hediff.hediffDef == HediffDefOf.Alcohol ) )
             )
             {

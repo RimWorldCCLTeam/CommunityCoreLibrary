@@ -245,13 +245,13 @@ namespace CommunityCoreLibrary
 #endif
             var researchDefs = new List<Def>();
 
-            Log.Message( "Normal" );
+            //Log.Message( "Normal" );
             researchDefs.AddRangeUnique( DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where( rd =>
                                                                                                         ( !rd.prerequisites.NullOrEmpty() )&&
                                                                                                         ( rd.prerequisites.Contains( researchProjectDef ) )
                                                                                                     ).ToList().ConvertAll<Def>( def => (Def)def ) );
 
-            Log.Message( "Advanced" );
+            //Log.Message( "Advanced" );
             // same as prerequisites, but with effectedResearchDefs and researchDefs switched.
             var advancedResearchDefs = Controller.Data.AdvancedResearchDefs.Where( a => (
                  ( a.IsResearchToggle ) &&
