@@ -3,7 +3,7 @@
 
     <!--
 
-    <HelpDef>
+    <CommunityCoreLibrary.HelpDef>
 
         <defName>string</defName>       [required] Some unique identifier in class
 
@@ -13,7 +13,7 @@
 
         <description>string</description> [required] Information to tell the player
 
-    </HelpDef>
+    </CommunityCoreLibrary.HelpDef>
 
     -->
 
