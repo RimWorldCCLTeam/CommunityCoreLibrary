@@ -22,6 +22,7 @@ namespace CommunityCoreLibrary.Controller
 
         public static MainMonoBehaviour     cclMonoBehaviour;
 
+        public static string                cclModIdentifier = string.Empty;
         public static ModContentPack        cclMod;
         public static ModHelperDef          cclHelperDef;
 
