@@ -50,6 +50,7 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
+#if DEVELOPER
         internal static void                DumpThingsRequestedForGroup( ThingRequest thingRequest, List<Thing> thingsRequested )
         {
             var str = string.Format( "ListerThings.ThingsMatching( {0} ) ::\n", thingRequest );
@@ -59,6 +60,7 @@ namespace CommunityCoreLibrary.Detour
             }
             CCL_Log.Message( str );
         }
+#endif
 
         internal static bool                _GetFoodDefAlcohol;
         internal static ThingDef            _GetFoodDef( Thing foodSource )
@@ -277,14 +279,12 @@ namespace CommunityCoreLibrary.Detour
                 desperate
                 ? FoodPreferability.DesperateOnly
                 :
-                    ( !eater.RaceProps.Humanlike
-                      ? FoodPreferability.NeverForNutrition
-                      :
-                        ( eater.needs.food.CurCategory <= HungerCategory.UrgentlyHungry
-                          ? FoodPreferability.RawBad
-                          : FoodPreferability.MealAwful
-                        )
-                    );
+                    !eater.RaceProps.Humanlike
+                    ? FoodPreferability.NeverForNutrition
+                    :
+                        eater.needs.food.CurCategory <= HungerCategory.UrgentlyHungry
+                        ? FoodPreferability.RawBad
+                        : FoodPreferability.MealAwful;
 
             var thingRequest =
                 (
@@ -389,12 +389,13 @@ namespace CommunityCoreLibrary.Detour
                     return false;
                 }
                 if(
+                    ( t.Faction != null )&&
                     ( t.Faction != getter.Faction )&&
                     ( t.Faction != getter.HostFaction )
                 )
                 {
                     Profiler.EndSample();
-                    //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is the wrong faction", getter.LabelShort, t.ThingID ) );
+                    //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is the wrong faction - Faction for {1} is {2} - Faction for {0} is {3}, host is {4}", getter.LabelShort, t.ThingID, t.Faction?.Name, getter.Faction?.Name, getter.HostFaction?.Name ) );
                     return false;
                 }
                 if( !t.IsSociallyProper( getter ) )
