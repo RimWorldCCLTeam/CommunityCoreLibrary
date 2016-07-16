@@ -54,6 +54,7 @@ namespace CommunityCoreLibrary
                     foreach ( var p in researchProjectDef.prerequisites )
                     {
                         if (
+                            ( p.defName == researchProjectDef.defName )||
                             ( p.defName == initialDef.defName )||
                             ( p._IsLockedOut( initialDef ) )
                         )
