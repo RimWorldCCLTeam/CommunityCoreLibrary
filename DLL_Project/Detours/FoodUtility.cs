@@ -282,7 +282,7 @@ namespace CommunityCoreLibrary.Detour
                     !eater.RaceProps.Humanlike
                     ? FoodPreferability.NeverForNutrition
                     :
-                        eater.needs.food.CurCategory > HungerCategory.UrgentlyHungry
+                        eater.needs.food.CurCategory >= HungerCategory.UrgentlyHungry
                         ? FoodPreferability.RawBad
                         : FoodPreferability.MealAwful;
 
