@@ -14,6 +14,9 @@ namespace CommunityCoreLibrary
 
         internal static FieldInfo           _cachedCellCount;
         internal static FieldInfo           _cachedOpenRoofCount;
+        internal static FieldInfo           _statsAndRoleDirty;
+
+        #region Cached Cell Count
 
         public static int                   CachedCellCountGet( this Room room )
         {
@@ -23,6 +26,7 @@ namespace CommunityCoreLibrary
             }
             return (int)_cachedCellCount.GetValue( room );
         }
+
         public static void                  CachedCellCountSet( this Room room, int value )
         {
             if( _cachedCellCount == null )
@@ -31,6 +35,10 @@ namespace CommunityCoreLibrary
             }
             _cachedCellCount.SetValue( room, value );
         }
+
+        #endregion
+
+        #region Cached Open Roof Count
 
         public static int                   CachedOpenRoofCountGet( this Room room )
         {
@@ -50,6 +58,32 @@ namespace CommunityCoreLibrary
             _cachedOpenRoofCount.SetValue( room, value );
         }
 
+        #endregion
+
+        #region Stats and Role Dirty Flag
+
+        public static bool                  StatsAndRoleDirtyGet( this Room room )
+        {
+            if( _statsAndRoleDirty == null )
+            {
+                _statsAndRoleDirty = typeof( Room ).GetField( "statsAndRoleDirty", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            return (bool)_statsAndRoleDirty.GetValue( room );
+        }
+
+        public static void                  StatsAndRoleDirtySet( this Room room, bool value )
+        {
+            if( _statsAndRoleDirty == null )
+            {
+                _statsAndRoleDirty = typeof( Room ).GetField( "statsAndRoleDirty", BindingFlags.Instance | BindingFlags.NonPublic );
+            }
+            _statsAndRoleDirty.SetValue( room, value );
+        }
+
+        #endregion
+
+        #region Portal Enumeration
+
         public static List<Building_Door>   Portals( this Room room )
         {
             var portals = new List<Building_Door>();
@@ -62,6 +96,8 @@ namespace CommunityCoreLibrary
             }
             return portals;
         }
+
+        #endregion
 
     }
 
