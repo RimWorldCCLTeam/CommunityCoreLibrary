@@ -3,6 +3,8 @@ REM This is a local file copy after build.  Get it once and your .gitnore
 REM should handle it after that.  Make all your local copies at the end.
 
 REM Set this to your local RimWorld install path and CCL Assemblies directory
+REM Example:
+REM Set InstalledCCLAssemblies="C:\Games\Steam\steamapps\common\RimWorld\Mods\Community Core Library\Assemblies"
 Set InstalledCCLAssemblies="/badkarma/"
 
 if NOT EXIST %InstalledCCLAssemblies% (
