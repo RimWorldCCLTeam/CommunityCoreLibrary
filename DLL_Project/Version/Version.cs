@@ -9,7 +9,7 @@ namespace CommunityCoreLibrary
         #region Instance Data
 
         private static System.Version       versionMin = new System.Version( "0.14.0" );
-        private const string                versionCurrentInt = "0.14.0";
+        private const string                versionCurrentInt = "0.14.0.1";
 
         private static System.Version       versionCurrent;
 
@@ -68,15 +68,28 @@ namespace CommunityCoreLibrary
 
         public static VersionCompare        Compare( System.Version v )
         {
-            if( v < Version.Minimum )
+            // Compare versions ignoring revision number (hotfixes)
+            if(
+                ( v.Major < Version.Minimum.Major )||
+                ( v.Minor < Version.Minimum.Minor )||
+                ( v.Build < Version.Minimum.Build )
+            )
             {
                 return VersionCompare.LessThanMin;
             }
-            else if( v > Version.Current )
+            else if(
+                ( v.Major > Version.Current.Major )||
+                ( v.Minor > Version.Current.Minor )||
+                ( v.Build > Version.Current.Build )
+            )
             {
                 return VersionCompare.GreaterThanMax;
             }
-            else if( v == Version.Current )
+            else if(
+                ( v.Major == Version.Current.Major )&&
+                ( v.Minor == Version.Current.Minor )&&
+                ( v.Build == Version.Current.Build )
+            )
             {
                 return VersionCompare.ExactMatch;
             }

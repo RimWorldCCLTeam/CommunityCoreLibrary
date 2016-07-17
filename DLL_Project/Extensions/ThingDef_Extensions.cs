@@ -71,12 +71,23 @@ namespace CommunityCoreLibrary
 
         public static bool                  IsFoodMachine( this ThingDef thingDef )
         {
-            if(
-                ( typeof( Building_NutrientPasteDispenser ).IsAssignableFrom( thingDef.thingClass ) )||
-                ( typeof( Building_AutomatedFactory ).IsAssignableFrom( thingDef.thingClass ) )
-            )
+            if( typeof( Building_NutrientPasteDispenser ).IsAssignableFrom( thingDef.thingClass ) )
             {
-                return thingDef.building.isMealSource;
+                return true;
+            }
+            if( typeof( Building_AutomatedFactory ).IsAssignableFrom( thingDef.thingClass ) )
+            {   // Make sure we are only return factories which are configured as food synthesizers
+                var propsFactory = thingDef.GetCompProperty<CompProperties_AutomatedFactory>();
+                if( propsFactory != null )
+                {
+                    if(
+                        ( propsFactory.outputVector == FactoryOutputVector.DirectToPawn )&&
+                        ( propsFactory.productionMode == FactoryProductionMode.PawnInteractionOnly )
+                    )
+                    {
+                        return true;
+                    }
+                }
             }
             return false;
         }

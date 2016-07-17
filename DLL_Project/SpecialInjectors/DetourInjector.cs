@@ -197,6 +197,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_GenConstruct_CanBuildOnTerrain, CCL_GenConstruct_CanBuildOnTerrain ) )
                 return false;
 
+            // Detour RimWorld.WorkGiver_Warden_DeliverFood.FoodAvailableInRoomTo
+            MethodInfo RimWorld_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo = typeof( WorkGiver_Warden_DeliverFood ).GetMethod( "FoodAvailableInRoomTo", BindingFlags.Static | BindingFlags.NonPublic );
+            MethodInfo CCL_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo = typeof( Detour._WorkGiver_Warden_DeliverFood ).GetMethod( "_FoodAvailableInRoomTo", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo, CCL_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo ) )
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
