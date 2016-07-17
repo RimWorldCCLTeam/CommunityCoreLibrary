@@ -339,7 +339,7 @@ namespace CommunityCoreLibrary.Detour
                     false );
                 if( potentialFoodSource == null )
                 {
-                    Log.Message( "Non-humanlike closest reachable desperate..." );
+                    //CCL_Log.Message( "Non-humanlike closest reachable desperate..." );
                     validator.desperate = true;
                     potentialFoodSource = GenClosest.ClosestThingReachable(
                         getter.Position,
