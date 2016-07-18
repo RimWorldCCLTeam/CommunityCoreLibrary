@@ -5,30 +5,15 @@ namespace CommunityCoreLibrary
 {
     public class NameDef : Def
     {
-        public string first;
-        public string nick = "";
-        public string last;
-        public GenderPossibility genderPossibility = GenderPossibility.Either;
 
-        public override void PostLoad()
-        {
-            base.PostLoad();
+        #region XML Data
 
-            if (first.NullOrEmpty())
-            {
-                Log.Error("Custom name with defName: " + defName + " has no defined first name. It will not be added.");
-                return;
-            }
-            if (last.NullOrEmpty())
-            {
-                Log.Error("Custom name with defName: " + defName + " has no defined last name. It will not be added.");
-                return;
-            }
+        public string                       first;
+        public string                       nick                = "";
+        public string                       last;
+        public GenderPossibility            genderPossibility   = GenderPossibility.Either;
 
-            PawnNameDatabaseSolid.AddPlayerContentName(Name, this.genderPossibility);
-
-            //Log.Message(name.ToString());
-        }
+        #endregion
 
         public NameTriple Name
         {
@@ -37,5 +22,25 @@ namespace CommunityCoreLibrary
                 return new NameTriple(first, nick, last);
             }
         }
+
+        public override void PostLoad()
+        {
+            base.PostLoad();
+
+            if (first.NullOrEmpty())
+            {
+                CCL_Log.Error("Custom name with defName: " + defName + " has no defined first name. It will not be added.", "Backstories");
+                return;
+            }
+            if (last.NullOrEmpty())
+            {
+                CCL_Log.Error("Custom name with defName: " + defName + " has no defined last name. It will not be added.", "Backstories");
+                return;
+            }
+
+            PawnNameDatabaseSolid.AddPlayerContentName(Name, genderPossibility);
+
+        }
+
     }
 }

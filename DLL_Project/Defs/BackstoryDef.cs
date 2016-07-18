@@ -1,27 +1,32 @@
 ﻿using RimWorld;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
     public class BackstoryDef : Def
     {
-        public string baseDescription;
-        public BodyType bodyTypeGlobal = BodyType.Undefined;
-        public BodyType bodyTypeMale = BodyType.Male;
-        public BodyType bodyTypeFemale = BodyType.Female;
-        public string title;
-        public string titleShort;
-        public BackstorySlot slot = BackstorySlot.Adulthood;
-        public bool shuffleable = true;
-        public bool addToDatabase = true;
-        public List<WorkTags> workAllows = new List<WorkTags>();
-        public List<WorkTags> workDisables = new List<WorkTags>();
-        public List<BackstoryDefSkillListItem> skillGains = new List<BackstoryDefSkillListItem>();
-        public List<string> spawnCategories = new List<string>();
-        public string saveKeyIdentifier;
+
+        #region XML Data
+
+        public string                               baseDescription;
+        public BodyType                             bodyTypeGlobal      = BodyType.Undefined;
+        public BodyType                             bodyTypeMale        = BodyType.Male;
+        public BodyType                             bodyTypeFemale      = BodyType.Female;
+        public string                               title;
+        public string                               titleShort;
+        public BackstorySlot                        slot                = BackstorySlot.Adulthood;
+        public bool                                 shuffleable         = true;
+        public bool                                 addToDatabase       = true;
+        public List<WorkTags>                       workAllows          = new List<WorkTags>();
+        public List<WorkTags>                       workDisables        = new List<WorkTags>();
+        public List<BackstoryDefSkillListItem>      skillGains          = new List<BackstoryDefSkillListItem>();
+        public List<string>                         spawnCategories     = new List<string>();
+        public string                               saveKeyIdentifier;
+
+        #endregion
 
         public static BackstoryDef Named(string defName)
         {
@@ -40,50 +45,50 @@ namespace CommunityCoreLibrary
                 b.title = this.title;
             else
             {
-                Log.Error(this.defName + " backstory has empty title. Skipping...");
+                CCL_Log.Error(defName + " backstory has empty title. Skipping...", "Backstories");
                 return;
             }
-            if (!this.titleShort.NullOrEmpty())
-                b.titleShort = this.titleShort;
+            if (!titleShort.NullOrEmpty())
+                b.titleShort = titleShort;
             else
                 b.titleShort = b.title;
 
             if (!baseDescription.NullOrEmpty())
-                b.baseDesc = this.baseDescription;
+                b.baseDesc = baseDescription;
             else
             {
-                Log.Warning(defName + " backstory has empty description.");
+                CCL_Log.Message(defName + " backstory has empty description.", "Backstories");
                 b.baseDesc = "Empty.";
             }
 
-            b.bodyTypeGlobal = this.bodyTypeGlobal;
-            b.bodyTypeMale = this.bodyTypeMale;
-            b.bodyTypeFemale = this.bodyTypeFemale;
+            b.bodyTypeGlobal        = bodyTypeGlobal;
+            b.bodyTypeMale          = bodyTypeMale;
+            b.bodyTypeFemale        = bodyTypeFemale;
 
-            b.slot = this.slot;
+            b.slot = slot;
 
-            b.shuffleable = this.shuffleable;
+            b.shuffleable = shuffleable;
             if (spawnCategories.NullOrEmpty())
             {
-                Log.Error(defName + " backstory doesn't have any spawn categories defined. Skipping...");
+                CCL_Log.Error(defName + " backstory doesn't have any spawn categories defined. Skipping...", "Backstories");
                 return;
             }
             else
-                b.spawnCategories = this.spawnCategories;
+                b.spawnCategories = spawnCategories;
 
-            if (this.workAllows.Count > 0)
+            if (workAllows.Count > 0)
             {
                 foreach (WorkTags current in Enum.GetValues(typeof(WorkTags)))
                 {
-                    if (!this.workAllows.Contains(current))
+                    if (!workAllows.Contains(current))
                     {
                         b.workDisables |= current;
                     }
                 }
             }
-            else if (this.workDisables.Count > 0)
+            else if (workDisables.Count > 0)
             {
-                foreach (var tag in this.workDisables)
+                foreach (var tag in workDisables)
                 {
                     b.workDisables |= tag;
                 }
@@ -92,24 +97,26 @@ namespace CommunityCoreLibrary
             {
                 b.workDisables = WorkTags.None;
             }
-            b.skillGains = this.skillGains.ToDictionary(i => i.defName, i => i.amount);
+            b.skillGains = skillGains.ToDictionary(i => i.defName, i => i.amount);
+
             b.ResolveReferences();
             b.PostLoad();
             b.uniqueSaveKey = this.UniqueSaveKey();
+
             bool flag = false;
             foreach (var s in b.ConfigErrors(false))
             {
                 if (!flag)
                 {
                     flag = true;
-                    Log.Error("Errors in custom backstory with defName: " + this.defName + ", backstory will be skipped.");
+                    CCL_Log.Error("Errors in custom backstory with defName: " + defName + ", backstory will be skipped.", "Backstories");
                 }
-                Log.Error(this.defName + " error: " + s);
+                CCL_Log.Error(defName + " error: " + s, "Backstories");
             }
             if (!flag)
             {
                 BackstoryDatabase.AddBackstory(b);
-                //Log.Message("Added " + this.UniqueSaveKeyFor() + " backstory");
+                //CCL_Log.Message("Added " + this.UniqueSaveKey() + " backstory", "Backstories");
             }
 
         }

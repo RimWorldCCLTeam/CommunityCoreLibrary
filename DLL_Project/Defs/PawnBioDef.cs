@@ -5,12 +5,17 @@ namespace CommunityCoreLibrary
 {
     public class PawnBioDef : Def
     {
-        public BackstoryDef childhoodDef;
-        public BackstoryDef adulthoodDef;
-        public string firstName;
-        public string nickName = "";
-        public string lastName;
-        public GenderPossibility gender;
+
+        #region XML Data
+
+        public BackstoryDef             childhoodDef;
+        public BackstoryDef             adulthoodDef;
+        public string                   firstName;
+        public string                   nickName = "";
+        public string                   lastName;
+        public GenderPossibility        gender;
+
+        #endregion
 
         public override void ResolveReferences()
         {
@@ -25,7 +30,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                Log.Error("PawnBio with defName: " + defName + " has empty first or last name. It will not be added.");
+                CCL_Log.Error("PawnBio with defName: " + defName + " has empty first or last name. It will not be added.", "Backstories");
                 return;
             }
 
@@ -38,7 +43,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                Log.Error("PawnBio with defName: " + defName + " has null childhood. It will not be added.");
+                CCL_Log.Error("PawnBio with defName: " + defName + " has null childhood. It will not be added.", "Backstories");
                 return;
             }
 
@@ -51,12 +56,11 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                Log.Error("PawnBio with defName: " + defName + " has null adulthood. It will not be added.");
+                CCL_Log.Error("PawnBio with defName: " + defName + " has null adulthood. It will not be added.", "Backstories");
                 return;
             }
 
             bio.name.ResolveMissingPieces();
-            //bio.PostLoad();
 
             bool flag = false;
             foreach (var error in bio.ConfigErrors())
@@ -64,9 +68,9 @@ namespace CommunityCoreLibrary
                 if (!flag)
                 {
                     flag = true;
-                    Log.Error("Config error(s) in PawnBioDef " + this.defName + ". Skipping...");
+                    CCL_Log.Error("Config error(s) in PawnBioDef " + this.defName + ". Skipping...", "Backstories");
                 }
-                Log.Error(error);
+                CCL_Log.Error(error, "Backstories");
             }
             if (flag)
             {
