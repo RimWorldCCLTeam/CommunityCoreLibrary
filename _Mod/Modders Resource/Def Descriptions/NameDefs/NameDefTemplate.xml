@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+<!--Gender possibilities:
+Either
+Male
+Female
+-->
+  <CommunityCoreLibrary.NameDef>
+    <defName>Name</defName>
+    <first></first> <!-- This is the first name, it must be assigned.-->
+    <nick></nick><!-- This is the nickname, it can be blank if you wish.-->
+    <last></last><!-- This is the last name, it must be assigned.-->
+    <genderPossibility></genderPossibility><!-- This sets whether the name can be given to men, women or both. It must be set.-->
+  </CommunityCoreLibrary.NameDef>
+  
+
+</Defs>
