@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <CommunityCoreLibrary.BackstoryDef>
+    <defName>CCLBackstoryExample</defName>
+    <title>Tester</title>
+    <baseDescription>NAME has always been interested in testing things. Ever since HE was young, HE has been fiddling with and testing things.</baseDescription>
+    <bodytypeMale>Hulk</bodytypeMale>
+    <bodyTypeFemale>Hulk</bodyTypeFemale>
+    <slot>Childhood</slot>
+    <workDisables>
+      <li>Artistic</li>
+    </workDisables>
+    <skillGains>
+      <li>
+        <defName>Research</defName>
+        <amount>8</amount>
+      </li>
+    </skillGains>
+    <spawnCategories>
+      <li>Civil</li>
+      <li>Tribal</li>
+    </spawnCategories>
+    <saveKeyIdentifier>CCL</saveKeyIdentifier>
+  </CommunityCoreLibrary.BackstoryDef>
+
+  <CommunityCoreLibrary.BackstoryDef>
+    <defName>CCLBackstoryExample2</defName>
+    <title>Tinkerer</title>
+    <baseDescription>NAME never lost HIS love for tinkering and testing. HECAP used HIS childhood skills to further a promising career as a tinkerer.</baseDescription>
+    <bodytypeMale>Hulk</bodytypeMale>
+    <bodyTypeFemale>Hulk</bodyTypeFemale>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Crafting</defName>
+        <amount>8</amount>
+      </li>
+    </skillGains>
+    <spawnCategories>
+      <li>Civil</li>
+      <li>Tribal</li>
+    </spawnCategories>
+    <saveKeyIdentifier>CCL</saveKeyIdentifier>
+  </CommunityCoreLibrary.BackstoryDef>
+  
+</Defs>

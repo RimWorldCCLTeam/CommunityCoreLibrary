@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+<!--
+  <CommunityCoreLibrary.NameDef>
+
+    <defName>string</defName>   [required] Give the definition a unique identifier.
+
+    <first>string</first>       [required] This is the first name, it must be assigned.
+    
+    <nick>string</nick>         [optional] This is the nickname. If you do not want a nickname, remove this tag.
+    
+    <last>string</last>         [required] This is the last name, it must be assigned.
+    
+    <genderPossibility></genderPossibility> [required] This sets whether the name can be given to men, women or both. It must be set. See bottom of file for options.
+    
+  </CommunityCoreLibrary.NameDef>
+-->
+
+<!--
+  Gender possibilities:
+    Either
+    Male
+    Female
+-->
+
+</Defs>

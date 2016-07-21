@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
         public string                   firstName;
         public string                   nickName = "";
         public string                   lastName;
-        public GenderPossibility        gender;
+        public GenderPossibility        gender = GenderPossibility.Either;
 
         #endregion
 

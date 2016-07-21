@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!--
+
+  <CommunityCoreLibrary.PawnBioDef>
+  
+    <defName>string</defName>           [required] This is the defName of bio def
+    
+    <childhoodDef>string</childhoodDef> [required] This is the defName of the backstory to be used in the childhood slot. The backstory used will become unavailable to be randomly assigned to pawns.
+
+    <adulthoodDef>string</adulthoodDef> [required] This is the defName of the backstory to be used in the adulthood slot. The backstory used will become unavailable to be randomly assigned to pawns.
+
+    <gender>Male</gender>               [optional] This is the gender that the bio can be assigned to. See bottom of file for options.
+
+    <firstName>string</firstName>       [required] This is the pawns first name.
+
+    <nickName>string</nickName>         [optional] The pawn's nick name. Delete this entry if you do not wish to have a nickname.
+
+    <lastName>string</lastName>         [required] The pawn's last name.
+
+  </CommunityCoreLibrary.PawnBioDef>
+
+  -->
+  
+  <!--
+
+  Gender:
+    Male
+    Female
+    Either
+
+  -->
+  
+</Defs>
