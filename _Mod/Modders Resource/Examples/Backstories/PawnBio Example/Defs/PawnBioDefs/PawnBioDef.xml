@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <CommunityCoreLibrary.PawnBioDef>
+    <defName>CCLPawnBioExample</defName>
+    <childhoodDef>CCLBackstoryExample</childhoodDef>
+    <adulthoodDef>CCLBackstoryExample2</adulthoodDef>
+    <gender>Male</gender>
+    <firstName>Gerald</firstName>
+    <nickName>Tinkerer</nickName>
+    <lastName>Butler</lastName>
+  </CommunityCoreLibrary.PawnBioDef>
+
+</Defs>
