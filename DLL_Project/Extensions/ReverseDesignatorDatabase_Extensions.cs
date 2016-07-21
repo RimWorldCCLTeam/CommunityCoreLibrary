@@ -11,52 +11,38 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
+    // Note:  Core now supports outside access to the list of designators
+    // This change makes these extensions redundant
+    // TODO:  Remove this for A15
     public static class ReverseDesignatorDatabase_Extensions
     {
 
-        private static List<Designator>     desList = null;
-        private static List<Designator>     DesList
-        {
-            get
-            {
-                if( desList == null )
-                {
-                    desList = typeof( ReverseDesignatorDatabase ).GetField( "desList", BindingFlags.Static | BindingFlags.NonPublic ).GetValue( null ) as List<Designator>;
-                    if( desList == null )
-                    {
-                        CCL_Log.Error( "Reflection unable to get field 'desList'", "ReverseDesignatorDatabase" );
-                    }
-                }
-                return desList;
-            }
-        }
-
         public static void                  Add( Designator designator )
         {
-            if( DesList == null )
+            if( ReverseDesignatorDatabase.AllDesignators == null )
             {
                 return;
             }
-            DesList.Add( designator );
+            ReverseDesignatorDatabase.AllDesignators.Add( designator );
         }
 
         public static Designator            Find( Type designator )
         {
-            return DesList == null
+            return ReverseDesignatorDatabase.AllDesignators == null
                 ? null
-                    : DesList.FirstOrDefault( d => ( d.GetType() == designator ) );
+                : ReverseDesignatorDatabase.AllDesignators.FirstOrDefault( d => ( d.GetType() == designator ) );
         }
 
         public static void                  Remove( Type designator )
         {
-            if( DesList == null )
+            if( ReverseDesignatorDatabase.AllDesignators == null )
             {
                 return;
             }
             var des = Find( designator );
             if( des != null )
             {
-                DesList.Remove( des );
+                ReverseDesignatorDatabase.AllDesignators.Remove( des );
             }
         }
 
