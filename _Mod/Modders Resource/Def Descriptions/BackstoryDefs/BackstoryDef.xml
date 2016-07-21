@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <!--
+  <CommunityCoreLibrary.BackstoryDef>
+
+    <defName>string</defName>                 [required] Assign the backstory a defName. Make sure this is unique! A good way of making sure it is unique is by adding a prefix, such as the first three letters of your username.
+
+    <title>string</title>                     [required] This is the long version of the title. Make sure to only capitalise the first word and no others, otherwise you will get an error.
+
+    <titleShort>string</titleShort>           [optional] This is the short version of the title. If you have a long title, then add a short version here, otherwise you can have it the same as the title. Capitalisation rules apply here as well. Delete this tag to have it the same as the title.
+
+    <baseDescription>string</baseDescription> [required] This is the description of the backstory. Write something interesting and cool :) To make reference to the pawn who has this backstory, then use the character references listed at the top of this file.
+
+    <bodytypeMale>BodyType</bodytypeMale>     [optional] This is the body type that male characters will have if they have this backstory. Keep in mind that this won't assign a body type if the backstory is a childhood backstory. Default is 'Male'.
+
+    <bodyTypeFemale>BodyType</bodyTypeFemale> [optional] This is the body type that female characters will have. Default is 'Female'.
+
+    <slot></slot>                             [optional] This is the slot the backstory can be used in. Adulthood or Childhood. Default is Adulthood.
+
+    <workDisables>                            [optional] This sets which work types are disabled. Check the bottom of the file for an explanation of how this works. If you do not want to disable any work types, then remove this entry.
+      <li></li>
+    </workDisables>
+    
+    <workAllows>                              [optional] This sets which work types are enabled, disables all others. Works opposite to workDisables. ONLY USE ONE OF THESE; EITHER workDisables OR workAllows. NOT BOTH.
+      <li></li>
+    </workAllows>
+    
+    <skillGains>                              [optional] This sets the bonus or malus to the character's skills. Check the bottom of this file for an explanation of how this works. It you do not want to affect any skills, then remove this entry.
+      <li>
+        <defName>string</defName>
+        <amount>number</amount>
+      </li>
+    </skillGains>
+    
+    <spawnCategories>                         [required] This sets which people can be assigned this backstory when they spawn. Check the bottom of this file for an explanation on how it works. You must add at least one, otherwise you won't ever see your backstory in the game.
+      <li>string</li>
+    </spawnCategories>
+    
+    <saveKeyIdentifier>string</saveKeyIdentifier> [required] This is the unique key used when storing the back story. Doesn't have to be long.
+    
+  </CommunityCoreLibrary.BackstoryDef>
+  -->
+
+  <!--Body types:
+  Undefined
+  Thin
+  Hulk
+  Fat
+  Male
+  Female
+  -->
+  
+  <!--Character references:
+  NAME = character name
+  HE = will place he/she depending on character's gender
+  HIS = will place his/her depending on character's gender
+  HECAP = will place capitalised he/she depending on character's gender
+  HISCAP = will place capitalised his/her depending on character's gender
+  -->
+  
+  <!--Spawn Categories:
+  Civil
+  Raider
+  Slave
+  Tribal
+
+These are used when a pawn is spawned. Civil is for visitors/crashing drop pods/normal people. Raider is for raiders/pirates and the likes.
+Slave is for people who are bought from slave traders. Add these tags to decide which people can be assigned the backstory.
+  -->
+  
+  <!--
+WorkDisables:
+		None
+		Intellectual
+		ManualDumb
+		ManualSkilled
+		Violent
+		Caring
+		Social
+		Scary
+    Animals
+		Artistic
+		Crafting
+		Cooking
+		Firefighting
+		Cleaning
+		Hauling
+		PlantWork
+		Mining
+    
+    WorkDisables are tags that all worktypes have. By adding tags to this list, you will disable the pawn who has this backstory from being able
+    to do that type of work. For example, if I add the 'Intellectual' tag to the list, the pawn won't be able to do Research, as the Research
+    work type requires the Intellectual tag. Some work types have two or more work tags associated with them, such as Cleaning. Cleaning requires the 
+    Cleaning and ManualDumb tags. If the workDisables list has one or more of the tags associated with a work type, then that work type will be 
+    disabled for the pawn. For example, if I add the Cleaning tag to the list, then the pawn won't be able to do Cleaning. If I add ManualDumb to 
+    the list, then any work type which has the ManualDumb tag will be disabled. To see which work types have which tags, open the WorkTypes.xml file
+    loacted at:
+    Core/Defs/WorkTypeDefs/WorkTypes.xml
+    in the core mod folder. Search for the work type you are looking for, and check its workTags list.
+  -->
+  
+  <!--
+  Slot:
+Adulthood
+Childhood
+
+This sets whether the backstory is an Adulthood or Childhood backstory.
+  -->
+  
+  <!--
+Skillgains:
+The amount is the number to be added or subtracted from that skill. The range for this number is -20 to 20, do not go outside this range.
+defNames:
+Construction
+Growing
+Research
+Mining
+Shooting
+Melee
+Social
+Cooking
+Medicine
+Artistic
+Crafting
+Animals
+
+These are the skills that all colonists have. When adding one to the skillGains list, you must get the name extactly right, with capital letters and
+all.
+  -->
+
+</Defs>

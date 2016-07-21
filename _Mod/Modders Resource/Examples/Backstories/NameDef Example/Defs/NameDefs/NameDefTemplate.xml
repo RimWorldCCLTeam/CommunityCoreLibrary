@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <CommunityCoreLibrary.NameDef>
+    <defName>CCLTestName</defName>
+    <first>John</first>
+    <nick>Mighty</nick>
+    <last>Smith</last>
+    <genderPossibility>Male</genderPossibility>   
+  </CommunityCoreLibrary.NameDef>
+
+  <CommunityCoreLibrary.NameDef>
+    <defName>CCLTestName2</defName>
+    <first>Mary</first>
+    <nick>MJ</nick>
+    <last>Jane</last>
+    <genderPossibility>Female</genderPossibility>
+  </CommunityCoreLibrary.NameDef>
+
+</Defs>
