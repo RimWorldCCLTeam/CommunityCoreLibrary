@@ -17,6 +17,7 @@
         <ModConfigurationMenus>         [optional] List of Mod Configuration Menus (MCM) for mod
             <li>
                 <label>string</label>   [required] Name** to be displayed in the Mod Options menu
+                <saveKey>string</saveKey> [optiona, recommended] xml node key** for saving MCM data under
                 <mcmClass>ModConfigurationMenu</mcmClass>
                                         [required] Class name of Mod Configuration Menu
                 <preload>bool</preload> [optional] If set to true, this MCM will be loaded before the injection sequence starts (before SpecialInjectors are injected).  Normal behaviour is that MCMs are loaded after the injection sequence (after all injectors are complete).
@@ -161,7 +162,8 @@
 
     ** The label for the MCM is also used as the save key for the mod data.  Mod data is stored in the same directory as the
     core games configuration files.  It will be called "MCM_Data_[keyName].xml" where keyName is the label with spaces replaced
-    with underscores.
+    with underscores.  If an actual saveKey is provided, this will be used instead.  This is useful if your label contains
+    invalid characters for an xml key (such as ampersand).
 
     NOTE:  Only create one ModHelperDef for your mod, if more than one is found then an error will be thrown and any advanced
     functionality requiring information contained within the ModHelperDef (such as injections, AdvancedResearchDefs, etc) will be

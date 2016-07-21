@@ -101,16 +101,26 @@ namespace CommunityCoreLibrary.MiniMap
             Scribe_Values.LookValue( ref visible, "visible" );
             if( Scribe.mode == LoadSaveMode.Saving )
             {   // Scribing directly as a rect causing extra formatting '(x:#, y:#, width:#, height:#)' which throws errors on load
-                var rectStr = "(" +
-                    Window_MiniMap.minimapRect.x + "," +
-                    Window_MiniMap.minimapRect.y + "," +
-                    Window_MiniMap.minimapRect.width + "," +
-                    Window_MiniMap.minimapRect.height + ")";
+                var rectStr = string.Format(
+                    "({0},{1},{2},{3})",
+                    Window_MiniMap.minimapRect.x,
+                    Window_MiniMap.minimapRect.y,
+                    Window_MiniMap.minimapRect.width,
+                    Window_MiniMap.minimapRect.height
+                );
                 Scribe_Values.LookValue( ref rectStr, "minimapRect" );
             }
             else if( Scribe.mode == LoadSaveMode.LoadingVars )
             {
                 Scribe_Values.LookValue( ref Window_MiniMap.minimapRect, "minimapRect" );
+                var window = GetWindow;
+                if(
+                    ( visible )&&
+                    ( window != null )
+                )
+                {
+                    window.windowRect = Window_MiniMap.minimapRect;
+                }
             }
 
             if( Scribe.mode == LoadSaveMode.Saving )
@@ -322,7 +332,7 @@ namespace CommunityCoreLibrary.MiniMap
                 #endregion
 
                 hidden = minimap.Hidden;
-                Scribe_Values.LookValue( ref hidden, "hidden" );
+                Scribe_Values.LookValue( ref hidden, "hidden", minimap.miniMapDef.hiddenByDefault, true );
 
                 #region Handle all MiniMap Overlays
 
@@ -335,7 +345,7 @@ namespace CommunityCoreLibrary.MiniMap
                     #endregion
 
                     hidden = overlay.Hidden;
-                    Scribe_Values.LookValue( ref hidden, "hidden" );
+                    Scribe_Values.LookValue( ref hidden, "hidden", overlay.overlayDef.hiddenByDefault, true );
 
                     #region Finalize Overlay
 
@@ -373,7 +383,7 @@ namespace CommunityCoreLibrary.MiniMap
 
                 #endregion
 
-                Scribe_Values.LookValue( ref hidden, "hidden" );
+                Scribe_Values.LookValue( ref hidden, "hidden", minimap.miniMapDef.hiddenByDefault, true );
                 minimap.Hidden = hidden;
 
                 #region Handle all MiniMap Overlays
@@ -392,7 +402,7 @@ namespace CommunityCoreLibrary.MiniMap
 
                     #endregion
 
-                    Scribe_Values.LookValue( ref hidden, "hidden" );
+                    Scribe_Values.LookValue( ref hidden, "hidden", overlay.overlayDef.hiddenByDefault, true );
                     overlay.Hidden = hidden;
 
                     #region Finalize Overlay
