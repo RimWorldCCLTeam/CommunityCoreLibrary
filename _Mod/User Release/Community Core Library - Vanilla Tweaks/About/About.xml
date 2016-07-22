@@ -7,8 +7,18 @@
 
     <url>https://ludeon.com/forums/index.php?topic=14172.0</url>
 
-    <targetVersion>0.14.1230</targetVersion>
+    <targetVersion>0.14.1220</targetVersion>
 
-    <description>v0.14.0\n\nRequires Community Core Library v0.14.0\n\nMakes optional changes to the core game objects.\n\nThis mod is optional but recommended (by the CCL modding team, but we're biased).</description>
+    <description>v0.14.1
+
+Requires Community Core Library v0.14.1
+
+Compatible with RimWorld builds:
+1220, 1230, 1232, 1234, 1238, 1241
+
+Makes optional changes to the core game objects.
+
+This mod is optional but recommended (by the CCL modding team, but we're biased).
+</description>
 
 </ModMetaData>

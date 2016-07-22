@@ -10,7 +10,7 @@
         <ModName>string</ModName>       [required] Name of your mod
 
         <minCCLVersion>version</minCCLVersion>
-                                        [required] Minimum version of CCL required
+                                        [required] Minimum version of CCL required.  Format is Major.Minor.Revision.BugFix  Only specify the major, minor and revision, the bugfix number is ignored when CCL does version checks (ie, 0.14.0.1 is treated as 0.14.0).  New alpha releases will increment the minor version, new CCL features will increment the revision in an alpha, and CCL bugfixes will increment the bugfix component in a CCL revision.  The major component will not change until RimWorld itself released at 1.0.
 
         <Verbosity>enum*</Verbosity>    [optional] Sets the level of logging output CCL will perform when performing tasks specific to your mod
 
