@@ -217,6 +217,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_PageUtility_InitGameStart, CCL_PageUtility_InitGameStart ) )
                 return false;
 
+            // Detour Verse.ModLister.InstalledModsListHash
+            MethodInfo Verse_ModLister_InstalledModsListHash = typeof( ModLister ).GetMethod( "InstalledModsListHash", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_ModLister_InstalledModsListHash = typeof( Detour._ModLister ).GetMethod( "_InstalledModsListHash", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_ModLister_InstalledModsListHash, CCL_ModLister_InstalledModsListHash ) )
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
