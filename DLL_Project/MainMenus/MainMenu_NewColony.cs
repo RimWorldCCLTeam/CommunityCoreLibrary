@@ -23,8 +23,6 @@ namespace CommunityCoreLibrary
 
 		public override void ClickAction()
 		{
-            // A14 ????
-			// Current.Game.InitData.ResetWorldRelatedMapInitData();
 			Find.WindowStack.Add( (Window)new Page_SelectScenario() );
 		}
 

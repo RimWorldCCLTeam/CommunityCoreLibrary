@@ -283,6 +283,9 @@
     <Compile Include="Detours\ThingListGroupHelper.cs" />
     <Compile Include="Detours\GenConstruct.cs" />
     <Compile Include="Detours\WorkGiver_Warden_DeliverFood.cs" />
+    <Compile Include="Detours\PreLoadUtility.cs" />
+    <Compile Include="Detours\PageUtility.cs" />
+    <Compile Include="SpecialInjectors\PostLoadInjectorTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

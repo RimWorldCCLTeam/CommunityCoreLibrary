@@ -205,6 +205,18 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( RimWorld_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo, CCL_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo ) )
                 return false;
 
+            // Detour Verse.PreLoadUtility.CheckVersionAndLoad
+            MethodInfo Verse_PreLoadUtility_CheckVersionAndLoad = typeof( PreLoadUtility ).GetMethod( "CheckVersionAndLoad", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_PreLoadUtility_CheckVersionAndLoad = typeof( Detour._PreLoadUtility ).GetMethod( "_CheckVersionAndLoad", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_PreLoadUtility_CheckVersionAndLoad, CCL_PreLoadUtility_CheckVersionAndLoad ) )
+                return false;
+
+            // Detour RimWorld.PageUtility.InitGameStart
+            MethodInfo RimWorld_PageUtility_InitGameStart = typeof( PageUtility ).GetMethod( "InitGameStart", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_PageUtility_InitGameStart = typeof( Detour._PageUtility ).GetMethod( "_InitGameStart", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_PageUtility_InitGameStart, CCL_PageUtility_InitGameStart ) )
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
