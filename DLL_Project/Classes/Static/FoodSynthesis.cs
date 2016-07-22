@@ -30,7 +30,7 @@ namespace CommunityCoreLibrary
         }
 
         private static Func<ThingDef,ThingDef,int>  _SortMeal;
-        internal static Func<ThingDef,ThingDef,int> SortMeal
+        public static Func<ThingDef,ThingDef,int> SortMeal
         {
             get
             {

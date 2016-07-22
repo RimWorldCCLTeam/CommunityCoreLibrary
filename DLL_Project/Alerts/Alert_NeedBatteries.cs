@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using RimWorld;
 using Verse;
@@ -29,6 +31,29 @@ namespace CommunityCoreLibrary
         {
             get
             {
+                if( Find.ListerBuildings.ColonistsHaveBuilding( (thing) =>
+                {
+                    if(
+                        ( thing is Building_Battery )&&
+                        ( thing.def.HasComp( typeof( CompPowerBattery ) ) )
+                    )
+                    {   // Building is a battery
+                        return true;
+                    }
+                    if(
+                        ( thing.def.HasComp( typeof( CompPowerPlant ) ) )||
+                        ( thing.def.HasComp( typeof( CompPowerPlantWind ) ) )||
+                        ( thing.def.HasComp( typeof( CompPowerPlantSolar ) ) )||
+                        ( thing.def.HasComp( typeof( CompPowerPlantSteam) ) )
+                    )
+                    {   // Building is a power plant
+                        return true;
+                    }
+                    return false;
+                } ) )
+                {
+                    return AlertReport.Inactive;
+                }
                 // Check for individual power trader which is low
                 var powerTraders = Find.ListerBuildings.allBuildingsColonist.FindAll( CheckThing );
                 if( ( powerTraders != null )&&

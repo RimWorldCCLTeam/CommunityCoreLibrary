@@ -160,6 +160,8 @@ namespace CommunityCoreLibrary
                 RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__45E";
                 break;
             case 1234:
+            case 1238:
+            case 1241:
                 RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__45F";
                 break;
             default:
@@ -201,6 +203,24 @@ namespace CommunityCoreLibrary
             MethodInfo RimWorld_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo = typeof( WorkGiver_Warden_DeliverFood ).GetMethod( "FoodAvailableInRoomTo", BindingFlags.Static | BindingFlags.NonPublic );
             MethodInfo CCL_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo = typeof( Detour._WorkGiver_Warden_DeliverFood ).GetMethod( "_FoodAvailableInRoomTo", BindingFlags.Static | BindingFlags.NonPublic );
             if( !Detours.TryDetourFromTo( RimWorld_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo, CCL_WorkGiver_Warden_DeliverFood_FoodAvailableInRoomTo ) )
+                return false;
+
+            // Detour Verse.PreLoadUtility.CheckVersionAndLoad
+            MethodInfo Verse_PreLoadUtility_CheckVersionAndLoad = typeof( PreLoadUtility ).GetMethod( "CheckVersionAndLoad", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_PreLoadUtility_CheckVersionAndLoad = typeof( Detour._PreLoadUtility ).GetMethod( "_CheckVersionAndLoad", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_PreLoadUtility_CheckVersionAndLoad, CCL_PreLoadUtility_CheckVersionAndLoad ) )
+                return false;
+
+            // Detour RimWorld.PageUtility.InitGameStart
+            MethodInfo RimWorld_PageUtility_InitGameStart = typeof( PageUtility ).GetMethod( "InitGameStart", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_PageUtility_InitGameStart = typeof( Detour._PageUtility ).GetMethod( "_InitGameStart", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( RimWorld_PageUtility_InitGameStart, CCL_PageUtility_InitGameStart ) )
+                return false;
+
+            // Detour Verse.ModLister.InstalledModsListHash
+            MethodInfo Verse_ModLister_InstalledModsListHash = typeof( ModLister ).GetMethod( "InstalledModsListHash", BindingFlags.Static | BindingFlags.Public );
+            MethodInfo CCL_ModLister_InstalledModsListHash = typeof( Detour._ModLister ).GetMethod( "_InstalledModsListHash", BindingFlags.Static | BindingFlags.NonPublic );
+            if( !Detours.TryDetourFromTo( Verse_ModLister_InstalledModsListHash, CCL_ModLister_InstalledModsListHash ) )
                 return false;
 
             /*

@@ -2,7 +2,9 @@
 
 For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/??]commit log[/url].  This section is just for convenience sake.
 
-[code]v0.14.0 - Alpha 14 update.
+[code]v0.14.1 - Adds BackstoriesCore, fixes small bugs.
+v0.14.0.1 - Bug fixes fixes for FoodUtility and ResearchProjectDef_Extensions as well as fixing a core bug regarding eating raw food over meals.
+v0.14.0 - Alpha 14 update.
 v0.13.4 - More API extensions, small MCM bug fixed for labels with special characters (adds saveKey)
 v0.13.3 - API Additions & Bugs Bashed
 v0.13.2.1 - Fixes load/save issue with minimaps.

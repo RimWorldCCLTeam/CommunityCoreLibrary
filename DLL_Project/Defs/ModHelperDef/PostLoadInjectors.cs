@@ -102,6 +102,11 @@ namespace CommunityCoreLibrary
             return true;
         }
 
+        public static void                  Reset()
+        {
+            dictInjected.Clear();
+        }
+
     }
 
 }

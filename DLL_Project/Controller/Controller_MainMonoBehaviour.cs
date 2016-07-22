@@ -68,8 +68,8 @@ namespace CommunityCoreLibrary.Controller
             Version.Log();
 
             bool InjectionsOk = true;
-            //var stringBuilder = new StringBuilder();
-            //CCL_Log.CaptureBegin( stringBuilder );
+            var stringBuilder = new StringBuilder();
+            CCL_Log.CaptureBegin( stringBuilder );
 
             // Find all sub-controllers
             var subControllerClasses = typeof( SubController ).AllSubclasses();
@@ -167,7 +167,6 @@ namespace CommunityCoreLibrary.Controller
                 LongEventHandler.ExecuteWhenFinished( CreateMonoBehaviour );
             }
 
-            /*
             CCL_Log.CaptureEnd(
                 stringBuilder,
                 InjectionsOk ? "Initialized" : "Errors during injection"
@@ -176,7 +175,7 @@ namespace CommunityCoreLibrary.Controller
                 Verbosity.Injections,
                 stringBuilder.ToString(),
                 "PreLoader" );
-            */
+            
             initOk = InjectionsOk;
         }
 
