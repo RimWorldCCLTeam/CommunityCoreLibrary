@@ -2,22 +2,6 @@
 <Defs>
 
   <CommunityCoreLibrary.OutfitDef>
-    <defName>TrueNudist</defName>
-    <label>True Nudist</label>
-    <filter>
-      <disallowedSpecialFilters>
-        <li>AllowCorpsesColonist</li>
-        <li>AllowCorpsesStranger</li>
-        <li>AllowRotten</li>
-        <li>AllowNonSmeltableWeapons</li>
-      </disallowedSpecialFilters>
-      <allowedDefs />
-      <allowedHitPointsPercents>0~1</allowedHitPointsPercents>
-      <allowedQualities>Awful~Legendary</allowedQualities>
-    </filter>
-  </CommunityCoreLibrary.OutfitDef>
-
-  <CommunityCoreLibrary.OutfitDef>
     <defName>Cowboy</defName>
     <label>Cowboy</label>
     <filter>
