@@ -223,6 +223,12 @@ namespace CommunityCoreLibrary
             if( !Detours.TryDetourFromTo( Verse_ModLister_InstalledModsListHash, CCL_ModLister_InstalledModsListHash ) )
                 return false;
 
+            // Detour RimWorld.OutfitDatabase.GenerateStartingOutfits
+            MethodInfo RimWorld_OutfitDatabase_GenerateStartingOutfits = typeof(OutfitDatabase).GetMethod("GenerateStartingOutfits", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo CCL_OutfitDatabase_GenerateStartingOutfits = typeof(Detour._OutfitDatabase).GetMethod("_GenerateStartingOutfits", BindingFlags.Static | BindingFlags.NonPublic);
+            if (!Detours.TryDetourFromTo(RimWorld_OutfitDatabase_GenerateStartingOutfits, CCL_OutfitDatabase_GenerateStartingOutfits))
+                return false;
+
             /*
             // Detour 
             MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", BindingFlags.Static | BindingFlags.NonPublic );
