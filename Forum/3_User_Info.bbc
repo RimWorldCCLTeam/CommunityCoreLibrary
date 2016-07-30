@@ -7,6 +7,9 @@ The list of auto-generated help includes virtually every in-game object and more
 
 If you decide you don't want the auto-generated help, you can use the command-line switch "-nohelp" to disable it.  This will only disable the auto-generated help, you will still get explicitly defined help.  If you use the "-quicktest" command-line switch, auto-generated help will similarily be disabled.
 
+[color=orange]"Nothing" and "Nudist" Outfits[/color]
+v0.14.2 adds OutfitDef and two new outfits for pawns, especially those for those nudists who actually want to wear nothing!
+
 [color=orange]Minimap[/color]
 v0.13.2 adds a resizable, draggable, moddable minimap framework.  It comes with a basic set of minimaps and overlays including showing colonists, non-colonists, wildlife and the power grid.  By default the minimap is disabled and needs to be turned on in the Mod Configuration Menu.
 

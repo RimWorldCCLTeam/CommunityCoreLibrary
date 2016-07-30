@@ -13,6 +13,7 @@
 [li][color=orange]Mini Map Overlay[/color] - This is the work-horse of the mini map framework.  These do the actual drawing of the mini map itself.  Each one has it's own unique texture to draw to and the final results of all visible overlays from all mini maps are composited to the mini map window.[/li]
 [li][color=orange]Mod Helper[/color][sup][size=8pt]4.1[/size][/sup] - Define mod friendly injectors and minimum CCL version dependency.[/li]
 [li][color=orange]Name[/color] - Def to add new first, last and nicknames for pawns.[/li]
+[li][color=orange]Outfit[/color] - Add new outfits with a simple def instead of having to write C# code to inject them.[/li]
 [li][color=orange]Pawn Bio[/color] - Def to add new pawn biographies.[/li]
 [/list]
 
