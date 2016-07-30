@@ -8,7 +8,6 @@ namespace CommunityCoreLibrary
     {
         #region XML Data
 
-        public string                               label               = "";
         public ThingFilter                          filter              = new ThingFilter();
 
         #endregion
