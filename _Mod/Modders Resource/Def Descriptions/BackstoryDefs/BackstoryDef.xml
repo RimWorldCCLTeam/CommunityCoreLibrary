@@ -12,7 +12,7 @@
 
     <baseDescription>string</baseDescription> [required] This is the description of the backstory. Write something interesting and cool :) To make reference to the pawn who has this backstory, then use the character references listed at the top of this file.
 
-    <bodytypeMale>BodyType</bodytypeMale>     [optional] This is the body type that male characters will have if they have this backstory. Keep in mind that this won't assign a body type if the backstory is a childhood backstory. Default is 'Male'.
+    <bodyTypeMale>BodyType</bodyTypeMale>     [optional] This is the body type that male characters will have if they have this backstory. Keep in mind that this won't assign a body type if the backstory is a childhood backstory. Default is 'Male'.
 
     <bodyTypeFemale>BodyType</bodyTypeFemale> [optional] This is the body type that female characters will have. Default is 'Female'.
 

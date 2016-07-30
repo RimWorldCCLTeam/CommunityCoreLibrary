@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!--
+  <CommunityCoreLibrary.OutfitDef>
+
+    <defName>string</defName>                 [required] Assign the outfit a defName. Make sure this is unique! A good way of making sure it is unique is by adding a prefix, such as the first three letters of your username.
+
+    <label>string</label>                     [required] This is the long version of the title. Make sure to only capitalise the first word and no others, otherwise you will get an error.
+
+    <filter>                                  [required] This is the actual filter for what this outfit allows/disallows
+
+      <disallowedSpecialFilters>              [optional] Things to disallow such as corpses and rotten stuff
+        <li></li>
+      </disallowedSpecialFilters>
+
+      <allowedDefs>                           [optional] This is the items you want to allow for the outfit.
+        <li></li>
+      </allowedDefs>
+
+      <allowedHitPointsPercents>numeric range</allowedHitPointsPercents> [required] Hit point range to allow. For default outfits '0~1' is used.
+      <allowedQualityLevels>quality range</allowedQualityLevels> [required] Quality level range to allow. For default outfits 'Awful~Legendary' is used.
+    </filter>
+
+  </CommunityCoreLibrary.OutfitDef>
+  -->
+
+  <!-- disallowed special filters:
+  AllowCorpsesColonist
+  AllowCorpsesStranger
+  AllowRotten
+  AllowNonSmeltableWeapons
+  -->
+
+  <!-- allowed:
+  values for this can vary based on installed mods, refer a save file with the outfit you want for specific values
+  -->
+
+  <!-- allowed hit point percentages:
+  this is a range with ~ between the numbers ('0~1' is the default to allow all)
+  -->
+
+  <!-- allowed quality levels:
+  this is a range of quality levels range can be between any of the following (first is lowest, last is highest, 'Awful~Legendary' is default to allow all)
+  Awful
+  Shoddy
+  Poor
+  Normal
+  Good
+  Superior
+  Excellent
+  Masterwork
+  Legendary
+  -->
+</Defs>
