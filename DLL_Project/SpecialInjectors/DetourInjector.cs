@@ -162,6 +162,7 @@ namespace CommunityCoreLibrary
             case 1234:
             case 1238:
             case 1241:
+            case 1249:
                 RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__45F";
                 break;
             default:
