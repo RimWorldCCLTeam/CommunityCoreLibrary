@@ -491,6 +491,114 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        public static bool PawnHasJobUsing( this Thing thing, Pawn pawn )
+        {
+            if(
+                ( pawn == null ) ||
+                ( pawn.CurJob == null )
+            )
+            {
+                return false;
+            }
+            if(
+                ( pawn.CurJob.targetA != null ) &&
+                ( pawn.CurJob.targetA.Thing == thing )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null ) &&
+                ( pawn.CurJob.targetB.Thing == thing )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null ) &&
+                ( pawn.CurJob.targetB.Thing == thing )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool PawnHasJobOn( this Thing thing, Pawn pawn )
+        {
+            if(
+                ( pawn == null ) ||
+                ( pawn.CurJob == null )
+            )
+            {
+                return false;
+            }
+            if(
+                ( pawn.CurJob.targetA != null ) &&
+                ( pawn.CurJob.targetA.Thing == thing )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null ) &&
+                ( pawn.CurJob.targetB.Thing == thing )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null ) &&
+                ( pawn.CurJob.targetB.Thing == thing )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static Pawn GetPawnUsing( this Thing thing )
+        {
+            if( !thing.def.hasInteractionCell )
+            {
+                return null;
+            }
+            var pawnThings = thing.InteractionCell.GetThingList().Where( t => t is Pawn ).ToList();
+            if( pawnThings.NullOrEmpty() )
+            {
+                return null;
+            }
+            foreach( var pawnThing in pawnThings )
+            {
+                if( thing.PawnHasJobOn( (Pawn)pawnThing ) )
+                {
+                    return (Pawn)pawnThing;
+                }
+            }
+            return null;
+        }
+
+        public static List<Pawn> GetOccupyingPawnsUsing( this Thing thing )
+        {
+            var pawnsUsing = new List<Pawn>();
+            var occupiedRect = thing.OccupiedRect();
+            foreach( var cell in occupiedRect )
+            {
+                var pawnThings = cell.GetThingList().Where( t => t is Pawn ).ToList();
+                if( !pawnThings.NullOrEmpty() )
+                {
+                    foreach( var pawnThing in pawnThings )
+                    {
+                        if( thing.PawnHasJobOn( (Pawn)pawnThing ) )
+                        {
+                            pawnsUsing.AddUnique( (Pawn)pawnThing );
+                        }
+                    }
+                }
+            }
+            return pawnsUsing;
+        }
+
     }
 
 }
