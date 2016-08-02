@@ -17,7 +17,12 @@ namespace CommunityCoreLibrary
         // Returns true if there is another thing in the cell with the same def
         public static bool                  IsSameThingDefInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return false;
+            }
+            return thingsInCell
                 .Any( t =>
                     ( t != thing )&&
                     ( t.def == thing.def )
@@ -27,19 +32,28 @@ namespace CommunityCoreLibrary
         // Returns true if there is another thing in the cell with the same graphic linker
         public static bool                  IsSameGraphicLinkerInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return false;
+            }
+            return thingsInCell
                 .Any( t =>
                     ( t != thing )&&
-                    ( t.def.graphic != null )&&
-                    ( t.def.graphic.data != null )&&
-                    ( t.def.graphic.data.linkFlags == thing.def.graphic.data.linkFlags )
+                    ( t.def.graphicData != null )&&
+                    ( t.def.graphicData.linkFlags == thing.def.graphicData.linkFlags )
                 );
         }
 
         // Returns true if there is another thing in the cell with the same thing comp
         public static bool                  IsSameThingCompInCell( this Thing thing, IntVec3 cell, Type MatchingComp )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return false;
+            }
+            return thingsInCell
                 .Any( t =>
                     ( t != thing )&&
                     ( ( t as ThingWithComps ) != null )&&
@@ -57,7 +71,12 @@ namespace CommunityCoreLibrary
         // Returns a list of things in the cell with the same def
         public static List< Thing >         ListSameThingDefInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return null;
+            }
+            return thingsInCell
                 .Where( t =>
                     ( t != thing )&&
                     ( t.def == thing.def )
@@ -67,19 +86,28 @@ namespace CommunityCoreLibrary
         // Returns a list of things in the cell with the same graphic linker
         public static List< Thing >         ListSameGraphicLinkerInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return null;
+            }
+            return thingsInCell
                 .Where( t =>
                     ( t != thing )&&
-                    ( t.def.graphic != null )&&
-                    ( t.def.graphic.data != null )&&
-                    ( t.def.graphic.data.linkFlags == thing.def.graphic.data.linkFlags )
+                    ( t.def.graphicData != null )&&
+                    ( t.def.graphicData.linkFlags == thing.def.graphicData.linkFlags )
                 ).ToList< Thing >();
         }
 
         // Returns a list of things in the cell with the same thing comp
         public static List< Thing >         ListSameThingCompInCell( this Thing thing, IntVec3 cell, Type MatchingComp )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return null;
+            }
+            return thingsInCell
                 .Where( t =>
                     ( t != thing )&&
                     ( ( t as ThingWithComps ) != null )&&
