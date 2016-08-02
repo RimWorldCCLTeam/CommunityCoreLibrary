@@ -1,5 +1,5 @@
 REM Copy this file to "PostBuild.bat"
-REM This is a local file copy after build.  Get it once and your .gitnore
+REM This is a local file copy after build.  Get it once and your .gitignore
 REM should handle it after that.  Make all your local copies at the end.
 
 REM Set this to your local RimWorld install path and CCL Assemblies directory
