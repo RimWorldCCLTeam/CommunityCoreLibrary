@@ -524,39 +524,6 @@ namespace CommunityCoreLibrary
             return false;
         }
 
-        public static bool PawnHasJobOn( this Thing thing, Pawn pawn )
-        {
-            if(
-                ( pawn == null ) ||
-                ( pawn.CurJob == null )
-            )
-            {
-                return false;
-            }
-            if(
-                ( pawn.CurJob.targetA != null ) &&
-                ( pawn.CurJob.targetA.Thing == thing )
-            )
-            {
-                return true;
-            }
-            if(
-                ( pawn.CurJob.targetB != null ) &&
-                ( pawn.CurJob.targetB.Thing == thing )
-            )
-            {
-                return true;
-            }
-            if(
-                ( pawn.CurJob.targetB != null ) &&
-                ( pawn.CurJob.targetB.Thing == thing )
-            )
-            {
-                return true;
-            }
-            return false;
-        }
-
         public static Pawn GetPawnUsing( this Thing thing )
         {
             if( !thing.def.hasInteractionCell )
@@ -570,7 +537,7 @@ namespace CommunityCoreLibrary
             }
             foreach( var pawnThing in pawnThings )
             {
-                if( thing.PawnHasJobOn( (Pawn)pawnThing ) )
+                if( thing.PawnHasJobUsing( (Pawn)pawnThing ) )
                 {
                     return (Pawn)pawnThing;
                 }
@@ -589,7 +556,7 @@ namespace CommunityCoreLibrary
                 {
                     foreach( var pawnThing in pawnThings )
                     {
-                        if( thing.PawnHasJobOn( (Pawn)pawnThing ) )
+                        if( thing.PawnHasJobUsing( (Pawn)pawnThing ) )
                         {
                             pawnsUsing.AddUnique( (Pawn)pawnThing );
                         }

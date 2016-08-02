@@ -347,7 +347,7 @@ namespace CommunityCoreLibrary
     						// Look for a new user...
                             var pUser = Find.ThingGrid.ThingsAt( scanPosition[0 ] ).FirstOrDefault( t => (
                                ( t is Pawn )&&
-                               ( parent.PawnHasJobOn( (Pawn)t ) )
+                               ( parent.PawnHasJobUsing( (Pawn)t ) )
                                ) ) as Pawn;
     						if( pUser != null )
     						{
@@ -394,7 +394,7 @@ namespace CommunityCoreLibrary
 					{
 						if(
 							( !isJoyJob )||
-                            ( parent.PawnHasJobOn( pawn ) )
+                            ( parent.PawnHasJobUsing( pawn ) )
 						)
 						{
 							// Found a pawn, turn it on and early out
