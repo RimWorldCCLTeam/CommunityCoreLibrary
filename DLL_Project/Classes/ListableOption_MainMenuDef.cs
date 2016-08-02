@@ -24,11 +24,7 @@ namespace CommunityCoreLibrary
 
         public override float DrawOption( Vector2 pos, float width )
         {
-            label = menuDef.label;
-            if( !string.IsNullOrEmpty( menuDef.labelKey ) )
-            {
-                label = menuDef.labelKey.Translate();
-            }
+            label = menuDef.Label;
             float height = Mathf.Max( minHeight, Text.CalcHeight( label, width ) );
             GUI.color = menuDef.menuWorker.Color;
             if( Widgets.ButtonText( new Rect( pos.x, pos.y, width, height ), label, true, true ) )

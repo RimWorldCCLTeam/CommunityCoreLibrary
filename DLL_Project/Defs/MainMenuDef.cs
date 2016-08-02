@@ -31,7 +31,19 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public override void PostLoad()
+        public virtual string       Label
+        {
+            get
+            {
+                if( string.IsNullOrEmpty( labelKey ) )
+                {
+                    return label;
+                }
+                return labelKey.Translate();
+            }
+        }
+
+        public override void        PostLoad()
         {
             base.PostLoad();
 
