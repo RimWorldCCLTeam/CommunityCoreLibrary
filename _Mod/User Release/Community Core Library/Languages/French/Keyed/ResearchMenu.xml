@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- Research Tab -->
+    <RI.none>aucun</RI.none>
+    <RI.All>Tout</RI.All>
+    <RI.Available>Disponible</RI.Available>
+    <RI.PreReqLocked>Bloqué</RI.PreReqLocked>
+
+    <RI.filterTooltip>Tapez quelques lettres pour filtrer par nom.</RI.filterTooltip>
+    <RI.deleteFilterTooltip>Cliquer pour supprimer le filtre actuel.</RI.deleteFilterTooltip>
+    <RI.sortByNameTooltip>Cliquer pour trier par nom.</RI.sortByNameTooltip>
+    <RI.sortByCostTooltip>Cliquer pour trier par coût de recherche.</RI.sortByCostTooltip>
+
+</LanguageData>
