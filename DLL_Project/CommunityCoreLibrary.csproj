@@ -290,6 +290,7 @@
     <Compile Include="SpecialInjectors\PostLoadInjectorTest.cs" />
     <Compile Include="Detours\ModLister.cs" />
     <Compile Include="MainMenus\MainMenu_ReviewScenario.cs" />
+    <Compile Include="ThinkNodes\ThinkNode_PrioritySorter_SubtreesByTag.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -307,4 +308,7 @@
     <None Include="SubControllers\SubControllerOrderingReference.txt" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ThinkNodes\" />
+  </ItemGroup>
 </Project>
