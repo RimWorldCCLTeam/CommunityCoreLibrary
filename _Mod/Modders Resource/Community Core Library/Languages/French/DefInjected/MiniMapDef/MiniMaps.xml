@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+        <MiniMap_ViewPort.label>vue actuelle</MiniMap_ViewPort.label>
+        <MiniMap_ViewPort.description>Montre la vue actuelle.</MiniMap_ViewPort.description>
+        
+        <MiniMap_Fog.label>brouillard</MiniMap_Fog.label>
+        <MiniMap_Fog.description>Montre le brouillard.</MiniMap_Fog.description>
+
+        <MiniMap_Pawns.label>personnages</MiniMap_Pawns.label>
+        <MiniMap_Pawns.description>Montre les personnages.</MiniMap_Pawns.description>
+        
+        <MiniMap_Utilities.label>constructions</MiniMap_Utilities.label>
+        <MiniMap_Utilities.description>Montre les constructions.</MiniMap_Utilities.description>
+
+
+        <MiniMap_Areas.label>zones</MiniMap_Areas.label>
+        <MiniMap_Areas.description>Montre les différentes zones.</MiniMap_Areas.description>
+       
+
+        <MiniMap_Terrain.label>terrain</MiniMap_Terrain.label>
+        <MiniMap_Terrain.description>Montre les détails du terrain.</MiniMap_Terrain.description>
+
+
+</LanguageData>

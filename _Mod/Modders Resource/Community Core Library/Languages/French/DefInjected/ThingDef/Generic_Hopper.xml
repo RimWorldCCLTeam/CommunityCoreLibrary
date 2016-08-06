@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+        <GenericHopper.label>réservoir générique</GenericHopper.label>
+        <GenericHopper.description>Contient des ressources qui peuvent être utilisées par des machines.</GenericHopper.description>
+        
+        <RefrigeratedHopper.label>réservoir réfrigéré</RefrigeratedHopper.label>
+        <RefrigeratedHopper.description>Contient des ressources qui peuvent être utilisées par des machines. Ce réservoir est réfrigéré, les ressources à l'intérieur ne pourriront pas tant qu'il est alimenté.</RefrigeratedHopper.description>
+        
+
+</LanguageData>

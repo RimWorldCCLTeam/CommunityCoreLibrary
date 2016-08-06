@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<LanguageData>
+
+    <Fluffy.ResearchTree.AllowsBuildingX>Permet la construction {0}.</Fluffy.ResearchTree.AllowsBuildingX>
+    <Fluffy.ResearchTree.AllowsCraftingX>Permet la recette {0}.</Fluffy.ResearchTree.AllowsCraftingX>
+    <Fluffy.ResearchTree.AllowsSowingXinY>Permet le semis de {0} dans {1}.</Fluffy.ResearchTree.AllowsSowingXinY>
+
+    <Fluffy.ResearchTree.LClickReplaceQueue>Clique-Gauche pour remplacer de la file d'attente</Fluffy.ResearchTree.LClickReplaceQueue>
+    <Fluffy.ResearchTree.LClickRemoveFromQueue>Clique-Gauche pour retirer de la file d'attente</Fluffy.ResearchTree.LClickRemoveFromQueue>
+    <Fluffy.ResearchTree.SLClickAddToQueue>Shift-Clique-Gauche pour ajouter à la file d'attente</Fluffy.ResearchTree.SLClickAddToQueue>
+    <Fluffy.ResearchTree.RClickForDetails>Clique-Droit pour plus de détails</Fluffy.ResearchTree.RClickForDetails>
+
+    <Fluffy.ResearchTree.Requires>Nécessite</Fluffy.ResearchTree.Requires>
+    <Fluffy.ResearchTree.LeadsTo>Mène à</Fluffy.ResearchTree.LeadsTo>
+
+    <Fluffy.ResearchTree.CannotQueueXLocksY>Impossible de mettre en file d'attente, {0} bloque {1}.</Fluffy.ResearchTree.CannotQueueXLocksY>
+    <Fluffy.ResearchTree.CannotQueueOneByOne>Met les recherches bloquées en file d'attente une à une.</Fluffy.ResearchTree.CannotQueueOneByOne>
+    <Fluffy.ResearchTree.CannotQueueDequeue>Enlève les recherches bloquées de la file d'attente.</Fluffy.ResearchTree.CannotQueueDequeue>
+    <Fluffy.ResearchTree.QueuedNode>Déjà dans la file d'attente</Fluffy.ResearchTree.QueuedNode>
+    <Fluffy.ResearchTree.LockedOut>Débloqué</Fluffy.ResearchTree.LockedOut>
+    <Fluffy.ResearchTree.WillBeLockedOut>Sera débloqué!</Fluffy.ResearchTree.WillBeLockedOut>
+
+</LanguageData>
