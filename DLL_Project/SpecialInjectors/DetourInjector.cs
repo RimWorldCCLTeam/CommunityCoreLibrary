@@ -231,13 +231,13 @@ namespace CommunityCoreLibrary
                 return false;
 
             // Detour RimWorld.Pawn_RelationsTracker.CompatibilityWith
-            MethodInfo RimWorld_Pawn_RelationsTracker_CompatibilityWith = typeof( Pawn_RelationsTracker ).GetMethod( "CompatibilityWith", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo RimWorld_Pawn_RelationsTracker_CompatibilityWith = typeof( Pawn_RelationsTracker ).GetMethod( "CompatibilityWith", BindingFlags.Instance | BindingFlags.Public );
             MethodInfo CCL_Pawn_RelationsTracker_CompatibilityWith = typeof( Detour._Pawn_RelationsTracker ).GetMethod( "_CompatibilityWith", BindingFlags.Static | BindingFlags.NonPublic );
             if (!Detours.TryDetourFromTo( RimWorld_Pawn_RelationsTracker_CompatibilityWith, CCL_Pawn_RelationsTracker_CompatibilityWith ) ) 
                 return false;
 
             // Detour RimWorld.Pawn_RelationsTracker.AttractionTo
-            MethodInfo RimWorld_Pawn_RelationsTracker_AttractionTo = typeof( Pawn_RelationsTracker ).GetMethod( "AttractionTo", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo RimWorld_Pawn_RelationsTracker_AttractionTo = typeof( Pawn_RelationsTracker ).GetMethod( "AttractionTo", BindingFlags.Instance | BindingFlags.Public );
             MethodInfo CCL_Pawn_RelationsTracker_AttractionTo = typeof( Detour._Pawn_RelationsTracker ).GetMethod( "_AttractionTo", BindingFlags.Static | BindingFlags.NonPublic );
             if (!Detours.TryDetourFromTo( RimWorld_Pawn_RelationsTracker_AttractionTo, CCL_Pawn_RelationsTracker_AttractionTo ) ) 
                 return false;
