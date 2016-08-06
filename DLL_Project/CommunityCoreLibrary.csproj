@@ -291,6 +291,7 @@
     <Compile Include="Detours\ModLister.cs" />
     <Compile Include="MainMenus\MainMenu_ReviewScenario.cs" />
     <Compile Include="ThinkNodes\ThinkNode_PrioritySorter_SubtreesByTag.cs" />
+    <Compile Include="Detours\Pawn_RelationsTracker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
