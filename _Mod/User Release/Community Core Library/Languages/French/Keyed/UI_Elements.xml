@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- UI Elements -->
+
+    <CompColorLightInspect>Couleur: </CompColorLightInspect>
+
+    <CommandChangeColorLabel>Changer la couleur</CommandChangeColorLabel>
+    <CommandChangeColorDesc>LClick - {0};\nRClick - {1}</CommandChangeColorDesc>
+
+    <CommandChangeRoommateColorLabel>Synchroniser les lumières colorées de la pièce</CommandChangeRoommateColorLabel>
+    <CommandChangeRoommateColorLClick>LClick - Uniquement {0}</CommandChangeRoommateColorLClick>
+    <CommandChangeRoommateColorRClick>RClick - Toutes les lumières</CommandChangeRoommateColorRClick>
+
+    <CommandChangeTouchingPlantLabel>Synchroniser toutes les productions des plantes</CommandChangeTouchingPlantLabel>
+    <CommandChangeRoommatePlantLabel>Synchroniser les productions des plantes dans la pièce</CommandChangeRoommatePlantLabel>
+    <CommandChangeRoommatePlantLClick>LClick - Uniquement {0}</CommandChangeRoommatePlantLClick>
+    <CommandChangeRoommatePlantRClick>RClick - Toutes les plantes</CommandChangeRoommatePlantRClick>
+
+    <CommandGroupOfThingsLClick>LClick - Dans la pièce</CommandGroupOfThingsLClick>
+    <CommandGroupOfThingsRClick>RClick - Sur la map</CommandGroupOfThingsRClick>
+
+    <CommandGroupOfThingsByDefLabel>Synchroniser tous les contrôleurs {0}</CommandGroupOfThingsByDefLabel>
+    <CommandGroupOfThingsByLinkerLabel>Synchroniser tous les liens {0}</CommandGroupOfThingsByLinkerLabel>
+
+    <CommandGroupOfThingsByDefInRoomLabel>Synchroniser tous les {0} dans la pièce</CommandGroupOfThingsByDefInRoomLabel>
+    <CommandGroupOfThingsByLinkerInRoomLabel>Synchroniser tous les liens de {0} dans la pièce</CommandGroupOfThingsByLinkerInRoomLabel>
+
+    <HelpOTabTitle>Aide du Mod</HelpOTabTitle>
+    <NoHelpDefs>Pas d'aides trouvées</NoHelpDefs>
+    <JumpToTopic>Cliquez pour aller au sujet</JumpToTopic>
+
+    <RefrigeratedStorage>Dans le stockage réfrigéré</RefrigeratedStorage>
+
+    <ModConfigurationOptions>Options du Mod</ModConfigurationOptions>
+    <ModConfigurationSaved>Saved {0} mod configuration</ModConfigurationSaved>
+
+    <BadLoadOrder>Un mauvais ordre de chargement a été détecté.\n\nCommunity Core Library n'est pas le second mod chargé. Cliquez sur'Redémarrer Maintenant' à partir de ce menu pour corriger cette erreur et redémarrer RimWorld.</BadLoadOrder>
+    <WarnAboutRestart>Un changement majeur s'est produit aux données du jeu, tel que le chargement de mods ou de language.\n\nN'importe quel changement majeur necessite le redémarrage de RimWorld.\n\nJouer au jeu sans le redémarrer pourrait donner de petites erreurs imperceptibles... ou une invasion d'aliens sans fin.</WarnAboutRestart>
+    <ReallyWarnAboutRestart>Vous aimez vraiment jouer avec le feu.\n\nVous devriez arrêter maintenant avant qu'il ne soit trop tard.</ReallyWarnAboutRestart>
+    <WarnAboutRestartDebug>Vous devriez redémarrer le jeu après n'importe quel changements majeur de données du jeu.\n\nEn tant que modder, vous devez déjà le savoir, n'est-ce pas?</WarnAboutRestartDebug>
+    <ContinueWithoutRestart>Jouer sans redémarrer</ContinueWithoutRestart>
+    <RestartLater>Plus tard</RestartLater>
+    <RestartNow>Redémarrer Maintenant</RestartNow>
+    <AcceptTheConsequences>J'en accepte les conséquences</AcceptTheConsequences>
+
+    <!-- Validation error messages used in CCL.UI.LabeledInput and it's child classes -->
+    <CCL.UI.InputField.DefaultValidationError>Validation error; {0} is not a valid input</CCL.UI.InputField.DefaultValidationError>
+    <CCL.UI.InputField_Float.ValidationError>Validation error; {0} is not a valid number</CCL.UI.InputField_Float.ValidationError>
+    <CCL.UI.InputField_Int.ValidationError>Validation error; {0} is not a valid whole number</CCL.UI.InputField_Int.ValidationError>
+
+</LanguageData>

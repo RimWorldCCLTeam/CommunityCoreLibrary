@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <Alert_HopperNeedsBuilding_Label>Un réservoir n'est pas relié</Alert_HopperNeedsBuilding_Label>
+    <Alert_BuildingNeedsHopper_Label>La machine a besoin qu'un réservoir soit relié</Alert_BuildingNeedsHopper_Label>
+
+    <Alert_HopperNeedsBuilding_Description>Vous avez un {0} sans machine qui y soit reliée.\n\nPour fonctionner, un {0} a besoin d'une machine consommant une certaine ressource.\n\nConstruisez une machine nécessitant un {0}.</Alert_HopperNeedsBuilding_Description>
+    <Alert_BuildingNeedsHopper_Description>Vous avez un {0} sans réservoir qui y soit relié.\n\nPour fonctionner, un {0} doit consommer une certaine ressource depuis un réservoir préalablement rempli.\n\nConstruisez un réservoir et reliez le à {0}.</Alert_BuildingNeedsHopper_Description>
+
+</LanguageData>
