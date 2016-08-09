@@ -12,16 +12,16 @@
     <CommandChangeRoommateColorLClick>LClick - Uniquement {0}</CommandChangeRoommateColorLClick>
     <CommandChangeRoommateColorRClick>RClick - Toutes les lumières</CommandChangeRoommateColorRClick>
 
-    <CommandChangeTouchingPlantLabel>Synchroniser toutes les productions des plantes</CommandChangeTouchingPlantLabel>
-    <CommandChangeRoommatePlantLabel>Synchroniser les productions des plantes dans la pièce</CommandChangeRoommatePlantLabel>
+    <CommandChangeTouchingPlantLabel>Synchroniser les plantes accolées</CommandChangeTouchingPlantLabel>
+    <CommandChangeRoommatePlantLabel>Synchroniser les plantes dans la salle</CommandChangeRoommatePlantLabel>
     <CommandChangeRoommatePlantLClick>LClick - Uniquement {0}</CommandChangeRoommatePlantLClick>
     <CommandChangeRoommatePlantRClick>RClick - Toutes les plantes</CommandChangeRoommatePlantRClick>
 
     <CommandGroupOfThingsLClick>LClick - Dans la pièce</CommandGroupOfThingsLClick>
     <CommandGroupOfThingsRClick>RClick - Sur la map</CommandGroupOfThingsRClick>
 
-    <CommandGroupOfThingsByDefLabel>Synchroniser tous les contrôleurs {0}</CommandGroupOfThingsByDefLabel>
-    <CommandGroupOfThingsByLinkerLabel>Synchroniser tous les liens {0}</CommandGroupOfThingsByLinkerLabel>
+    <CommandGroupOfThingsByDefLabel>Synchroniser tous {0} accolés</CommandGroupOfThingsByDefLabel>
+    <CommandGroupOfThingsByLinkerLabel>Synchroniser tous {0} reliés </CommandGroupOfThingsByLinkerLabel>
 
     <CommandGroupOfThingsByDefInRoomLabel>Synchroniser tous les {0} dans la pièce</CommandGroupOfThingsByDefInRoomLabel>
     <CommandGroupOfThingsByLinkerInRoomLabel>Synchroniser tous les liens de {0} dans la pièce</CommandGroupOfThingsByLinkerInRoomLabel>
@@ -35,8 +35,8 @@
     <ModConfigurationOptions>Options du Mod</ModConfigurationOptions>
     <ModConfigurationSaved>Saved {0} mod configuration</ModConfigurationSaved>
 
-    <BadLoadOrder>Un mauvais ordre de chargement a été détecté.\n\nCommunity Core Library n'est pas le second mod chargé. Cliquez sur'Redémarrer Maintenant' à partir de ce menu pour corriger cette erreur et redémarrer RimWorld.</BadLoadOrder>
-    <WarnAboutRestart>Un changement majeur s'est produit aux données du jeu, tel que le chargement de mods ou de language.\n\nN'importe quel changement majeur necessite le redémarrage de RimWorld.\n\nJouer au jeu sans le redémarrer pourrait donner de petites erreurs imperceptibles... ou une invasion d'aliens sans fin.</WarnAboutRestart>
+    <BadLoadOrder>Un mauvais ordre de chargement a été détecté.\n\nCommunity Core Library n'est pas le second mod chargé. Cliquez sur 'Redémarrer Maintenant' à partir de ce menu pour corriger cette erreur et redémarrer RimWorld.</BadLoadOrder>
+    <WarnAboutRestart>Un changement majeur s'est produit aux données du jeu, tel que le chargement de mods ou de language.\n\nN'importe quel changement majeur nécessite le redémarrage de RimWorld.\n\nJouer au jeu sans le redémarrer pourrait donner de petites erreurs imperceptibles... ou une invasion d'aliens sans fin.</WarnAboutRestart>
     <ReallyWarnAboutRestart>Vous aimez vraiment jouer avec le feu.\n\nVous devriez arrêter maintenant avant qu'il ne soit trop tard.</ReallyWarnAboutRestart>
     <WarnAboutRestartDebug>Vous devriez redémarrer le jeu après n'importe quel changements majeur de données du jeu.\n\nEn tant que modder, vous devez déjà le savoir, n'est-ce pas?</WarnAboutRestartDebug>
     <ContinueWithoutRestart>Jouer sans redémarrer</ContinueWithoutRestart>
