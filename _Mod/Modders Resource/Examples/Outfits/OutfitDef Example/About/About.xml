@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>OutfitDef Example</name>
+    <author>RimWorld CCL Team</author>
+    <url>n/a</url>
+    <targetVersion>0.14.1238</targetVersion>
+    <description>
+This is an example of how to add your own default outfits.
+
+Demonstrates:
+	CommunityCoreLibrary.OutfitDef Facilities
+    </description>
+</ModMetaData>

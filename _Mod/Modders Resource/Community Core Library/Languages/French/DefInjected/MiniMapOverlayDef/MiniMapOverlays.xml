@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+        <MiniMapOverlay_Colonists.label>colons</MiniMapOverlay_Colonists.label>
+
+        <MiniMapOverlay_NonColonistPawns.label>non-colons</MiniMapOverlay_NonColonistPawns.label>
+
+
+        <MiniMapOverlay_Wildlife.label>faune</MiniMapOverlay_Wildlife.label>
+
+        <MiniMapOverlay_PowerGrid.label>réseau électrique</MiniMapOverlay_PowerGrid.label>
+
+</LanguageData>

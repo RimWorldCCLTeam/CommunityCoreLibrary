@@ -152,6 +152,14 @@ namespace CommunityCoreLibrary.Controller
                 InjectionsOk &= Detours.TryDetourFromTo( RimWorld_MainMenuDrawer_DoMainMenuButtons, CCL_MainMenuDrawer_DoMainMenuButtons );
             }
 
+            // Detour RimWorld.VersionControl.DrawInfoInCorner
+            if( InjectionsOk )
+            {
+                MethodInfo RimWorld_VersionControl_DrawInfoInCorner = typeof( VersionControl ).GetMethod( "DrawInfoInCorner", BindingFlags.Static | BindingFlags.Public );
+                MethodInfo CCL_VersionControl_DrawInfoInCorner = typeof( Detour._VersionControl ).GetMethod( "_DrawInfoInCorner", BindingFlags.Static | BindingFlags.NonPublic );
+                InjectionsOk &= Detours.TryDetourFromTo( RimWorld_VersionControl_DrawInfoInCorner, CCL_VersionControl_DrawInfoInCorner );
+            }
+
             // Detour Verse.PostLoadInitter.DoAllPostLoadInits
             /*
             if( InjectionsOk )

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using RimWorld;
 using Verse;
@@ -264,38 +265,6 @@ namespace CommunityCoreLibrary
 			}
 		}
 
-		private static bool HasJobOnTarget( Pawn pawn, Thing target )
-		{
-			if(
-				( pawn == null ) ||
-				( pawn.CurJob == null )
-			)
-			{
-				return false;
-			}
-			if(
-				( pawn.CurJob.targetA != null ) &&
-				( pawn.CurJob.targetA.Thing == target )
-			)
-			{
-				return true;
-			}
-			if(
-				( pawn.CurJob.targetB != null ) &&
-				( pawn.CurJob.targetB.Thing == target )
-			)
-			{
-				return true;
-			}
-			if(
-				( pawn.CurJob.targetB != null ) &&
-				( pawn.CurJob.targetB.Thing == target )
-			)
-			{
-				return true;
-			}
-			return false;
-		}
 
 		void PowerLevelToggle( int thisTickCount )
 		{
@@ -330,34 +299,20 @@ namespace CommunityCoreLibrary
                             if( linked.def.hasInteractionCell )
                             {
                                 // Look for a user at interaction cell...
-                                Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( linked.InteractionCell );
+                                Pawn pUser = linked.GetPawnUsing();
                                 if( pUser != null )
                                 {
-                                    // ...A pawn is here!...
-                                    if( HasJobOnTarget( pUser, linked ) )
-                                    {
-                                        // ..Using linked building!
-                                        turnItOn = true;
-                                    }
+                                    // ...A pawn is here using linked building!
+                                    turnItOn = true;
                                 }
                             }
                             else
                             {
                                 // look for a user at any occupied cell
-                                var occupiedRect = linked.OccupiedRect();
-                                foreach( var cell in occupiedRect )
+                                if( !linked.GetOccupyingPawnsUsing().NullOrEmpty() )
                                 {
-                                    Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( cell );
-                                    if( pUser != null )
-                                    {
-                                        // ...A pawn is here!...
-                                        if( HasJobOnTarget( pUser, linked ) )
-                                        {
-                                            // ..Using linked building!
-                                            turnItOn = true;
-                                            break;
-                                        }
-                                    }
+                                    // A pawn is here using linked building!
+                                    turnItOn = true;
                                 }
                             }
                             if( turnItOn )
@@ -390,19 +345,18 @@ namespace CommunityCoreLibrary
     						}
 
     						// Look for a new user...
-    						Pawn pUser = Find.ThingGrid.ThingAt<Pawn>( scanPosition[ 0 ] );
+                            var pUser = Find.ThingGrid.ThingsAt( scanPosition[0 ] ).FirstOrDefault( t => (
+                               ( t is Pawn )&&
+                               ( parent.PawnHasJobUsing( (Pawn)t ) )
+                               ) ) as Pawn;
     						if( pUser != null )
     						{
-    							// ...A pawn is here!...
-    							if( HasJobOnTarget( pUser, parent ) )
-    							{
-    								// ..Using this building!...
-    								curUser = pUser;
-    								curJob = pUser.CurJob;
-                                    turnItOn = true;
-    							}
-    						}
-
+    							// A pawn is here using this building!
+								curUser = pUser;
+								curJob = pUser.CurJob;
+                                turnItOn = true;
+							}
+    						
     						// Exit loop
     						break;
     					}
@@ -439,8 +393,8 @@ namespace CommunityCoreLibrary
 					if( pawn != null )
 					{
 						if(
-							( !isJoyJob ) ||
-							( HasJobOnTarget( pawn, parent ) )
+							( !isJoyJob )||
+                            ( parent.PawnHasJobUsing( pawn ) )
 						)
 						{
 							// Found a pawn, turn it on and early out

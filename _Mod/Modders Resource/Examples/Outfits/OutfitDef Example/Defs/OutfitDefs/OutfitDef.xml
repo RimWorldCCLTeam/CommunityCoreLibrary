@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <CommunityCoreLibrary.OutfitDef>
+    <defName>Cowboy</defName>
+    <label>Cowboy</label>
+    <filter>
+      <disallowedSpecialFilters>
+        <li>AllowCorpsesColonist</li>
+        <li>AllowCorpsesStranger</li>
+        <li>AllowRotten</li>
+        <li>AllowNonSmeltableWeapons</li>
+      </disallowedSpecialFilters>
+      <allowedDefs>
+        <li>Apparel_BasicShirt</li>
+        <li>Apparel_CowboyHat</li>
+        <li>Apparel_Duster</li>
+        <li>Apparel_Pants</li>
+      </allowedDefs>
+      <allowedHitPointsPercents>0~1</allowedHitPointsPercents>
+      <allowedQualities>Awful~Legendary</allowedQualities>
+    </filter>
+  </CommunityCoreLibrary.OutfitDef>
+
+</Defs>

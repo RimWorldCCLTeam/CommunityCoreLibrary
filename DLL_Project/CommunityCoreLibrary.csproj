@@ -59,9 +59,11 @@
   <ItemGroup>
     <Compile Include="Classes\InputField.cs" />
     <Compile Include="Classes\Static\CCL_Widgets.cs" />
+    <Compile Include="Defs\OutfitDef.cs" />
     <Compile Include="Defs\BackstoryDef.cs" />
     <Compile Include="Defs\NameDef.cs" />
     <Compile Include="Defs\PawnBioDef.cs" />
+    <Compile Include="Detours\OutfitDatabase.cs" />
     <Compile Include="Extensions\BackstoryDefExt.cs" />
     <Compile Include="Extensions\BiomeDef_Extensions.cs" />
     <Compile Include="Extensions\DesignationCategoryDef_Extensions.cs" />
@@ -287,6 +289,10 @@
     <Compile Include="Detours\PageUtility.cs" />
     <Compile Include="SpecialInjectors\PostLoadInjectorTest.cs" />
     <Compile Include="Detours\ModLister.cs" />
+    <Compile Include="MainMenus\MainMenu_ReviewScenario.cs" />
+    <Compile Include="ThinkNodes\ThinkNode_PrioritySorter_SubtreesByTag.cs" />
+    <Compile Include="Detours\Pawn_RelationsTracker.cs" />
+    <Compile Include="Detours\VersionControl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -304,4 +310,7 @@
     <None Include="SubControllers\SubControllerOrderingReference.txt" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ThinkNodes\" />
+  </ItemGroup>
 </Project>

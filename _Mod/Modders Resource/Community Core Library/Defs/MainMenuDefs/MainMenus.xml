@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <!-- TODO:  This needs to be replaced with the Scenario menu buttons
-    <CommunityCoreLibrary.MainMenuDef>
-        <defName>CreateWorld</defName>
-        <labelKey>CreateWorld</labelKey>
-        <order>800</order>
-        <menuClass>CommunityCoreLibrary.MainMenu_CreateWorld</menuClass>
-    </CommunityCoreLibrary.MainMenuDef>
-    -->
-    
     <CommunityCoreLibrary.MainMenuDef>
         <defName>NewColony</defName>
         <labelKey>NewColony</labelKey>
@@ -27,12 +18,20 @@
 
     <CommunityCoreLibrary.MainMenuDef>
         <defName>LoadGame</defName>
-        <labelKey>Load</labelKey>
+        <labelKey>LoadGame</labelKey>
         <order>500</order>
         <menuClass>CommunityCoreLibrary.MainMenu_LoadGame</menuClass>
         <closeMainTab>true</closeMainTab>
     </CommunityCoreLibrary.MainMenuDef>
 
+    <CommunityCoreLibrary.MainMenuDef>
+        <defName>ReviewScenario</defName>
+        <labelKey>ReviewScenario</labelKey>
+        <order>450</order>
+        <menuClass>CommunityCoreLibrary.MainMenu_ReviewScenario</menuClass>
+        <closeMainTab>true</closeMainTab>
+    </CommunityCoreLibrary.MainMenuDef>
+    
     <CommunityCoreLibrary.MainMenuDef>
         <defName>MainOptions</defName>
         <labelKey>Options</labelKey>

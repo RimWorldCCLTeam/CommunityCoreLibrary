@@ -162,6 +162,7 @@ namespace CommunityCoreLibrary
             case 1234:
             case 1238:
             case 1241:
+            case 1249:
                 RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__45F";
                 break;
             default:
@@ -221,6 +222,24 @@ namespace CommunityCoreLibrary
             MethodInfo Verse_ModLister_InstalledModsListHash = typeof( ModLister ).GetMethod( "InstalledModsListHash", BindingFlags.Static | BindingFlags.Public );
             MethodInfo CCL_ModLister_InstalledModsListHash = typeof( Detour._ModLister ).GetMethod( "_InstalledModsListHash", BindingFlags.Static | BindingFlags.NonPublic );
             if( !Detours.TryDetourFromTo( Verse_ModLister_InstalledModsListHash, CCL_ModLister_InstalledModsListHash ) )
+                return false;
+
+            // Detour RimWorld.OutfitDatabase.GenerateStartingOutfits
+            MethodInfo RimWorld_OutfitDatabase_GenerateStartingOutfits = typeof( OutfitDatabase ).GetMethod( "GenerateStartingOutfits", BindingFlags.Instance | BindingFlags.NonPublic );
+            MethodInfo CCL_OutfitDatabase_GenerateStartingOutfits = typeof( Detour._OutfitDatabase ).GetMethod( "_GenerateStartingOutfits", BindingFlags.Static | BindingFlags.NonPublic );
+            if (!Detours.TryDetourFromTo( RimWorld_OutfitDatabase_GenerateStartingOutfits, CCL_OutfitDatabase_GenerateStartingOutfits ) )
+                return false;
+
+            // Detour RimWorld.Pawn_RelationsTracker.CompatibilityWith
+            MethodInfo RimWorld_Pawn_RelationsTracker_CompatibilityWith = typeof( Pawn_RelationsTracker ).GetMethod( "CompatibilityWith", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_Pawn_RelationsTracker_CompatibilityWith = typeof( Detour._Pawn_RelationsTracker ).GetMethod( "_CompatibilityWith", BindingFlags.Static | BindingFlags.NonPublic );
+            if (!Detours.TryDetourFromTo( RimWorld_Pawn_RelationsTracker_CompatibilityWith, CCL_Pawn_RelationsTracker_CompatibilityWith ) ) 
+                return false;
+
+            // Detour RimWorld.Pawn_RelationsTracker.AttractionTo
+            MethodInfo RimWorld_Pawn_RelationsTracker_AttractionTo = typeof( Pawn_RelationsTracker ).GetMethod( "AttractionTo", BindingFlags.Instance | BindingFlags.Public );
+            MethodInfo CCL_Pawn_RelationsTracker_AttractionTo = typeof( Detour._Pawn_RelationsTracker ).GetMethod( "_AttractionTo", BindingFlags.Static | BindingFlags.NonPublic );
+            if (!Detours.TryDetourFromTo( RimWorld_Pawn_RelationsTracker_AttractionTo, CCL_Pawn_RelationsTracker_AttractionTo ) ) 
                 return false;
 
             /*

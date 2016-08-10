@@ -17,7 +17,12 @@ namespace CommunityCoreLibrary
         // Returns true if there is another thing in the cell with the same def
         public static bool                  IsSameThingDefInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return false;
+            }
+            return thingsInCell
                 .Any( t =>
                     ( t != thing )&&
                     ( t.def == thing.def )
@@ -27,19 +32,28 @@ namespace CommunityCoreLibrary
         // Returns true if there is another thing in the cell with the same graphic linker
         public static bool                  IsSameGraphicLinkerInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return false;
+            }
+            return thingsInCell
                 .Any( t =>
                     ( t != thing )&&
-                    ( t.def.graphic != null )&&
-                    ( t.def.graphic.data != null )&&
-                    ( t.def.graphic.data.linkFlags == thing.def.graphic.data.linkFlags )
+                    ( t.def.graphicData != null )&&
+                    ( t.def.graphicData.linkFlags == thing.def.graphicData.linkFlags )
                 );
         }
 
         // Returns true if there is another thing in the cell with the same thing comp
         public static bool                  IsSameThingCompInCell( this Thing thing, IntVec3 cell, Type MatchingComp )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return false;
+            }
+            return thingsInCell
                 .Any( t =>
                     ( t != thing )&&
                     ( ( t as ThingWithComps ) != null )&&
@@ -57,7 +71,12 @@ namespace CommunityCoreLibrary
         // Returns a list of things in the cell with the same def
         public static List< Thing >         ListSameThingDefInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return null;
+            }
+            return thingsInCell
                 .Where( t =>
                     ( t != thing )&&
                     ( t.def == thing.def )
@@ -67,19 +86,28 @@ namespace CommunityCoreLibrary
         // Returns a list of things in the cell with the same graphic linker
         public static List< Thing >         ListSameGraphicLinkerInCell( this Thing thing, IntVec3 cell )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return null;
+            }
+            return thingsInCell
                 .Where( t =>
                     ( t != thing )&&
-                    ( t.def.graphic != null )&&
-                    ( t.def.graphic.data != null )&&
-                    ( t.def.graphic.data.linkFlags == thing.def.graphic.data.linkFlags )
+                    ( t.def.graphicData != null )&&
+                    ( t.def.graphicData.linkFlags == thing.def.graphicData.linkFlags )
                 ).ToList< Thing >();
         }
 
         // Returns a list of things in the cell with the same thing comp
         public static List< Thing >         ListSameThingCompInCell( this Thing thing, IntVec3 cell, Type MatchingComp )
         {
-            return Find.ThingGrid.ThingsAt( cell )
+            var thingsInCell = cell.GetThingList();
+            if( thingsInCell.NullOrEmpty() )
+            {
+                return null;
+            }
+            return thingsInCell
                 .Where( t =>
                     ( t != thing )&&
                     ( ( t as ThingWithComps ) != null )&&
@@ -462,6 +490,81 @@ namespace CommunityCoreLibrary
         }
 
         #endregion
+
+        public static bool PawnHasJobUsing( this Thing thing, Pawn pawn )
+        {
+            if(
+                ( pawn == null ) ||
+                ( pawn.CurJob == null )
+            )
+            {
+                return false;
+            }
+            if(
+                ( pawn.CurJob.targetA != null ) &&
+                ( pawn.CurJob.targetA.Thing == thing )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null ) &&
+                ( pawn.CurJob.targetB.Thing == thing )
+            )
+            {
+                return true;
+            }
+            if(
+                ( pawn.CurJob.targetB != null ) &&
+                ( pawn.CurJob.targetB.Thing == thing )
+            )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static Pawn GetPawnUsing( this Thing thing )
+        {
+            if( !thing.def.hasInteractionCell )
+            {
+                return null;
+            }
+            var pawnThings = thing.InteractionCell.GetThingList().Where( t => t is Pawn ).ToList();
+            if( pawnThings.NullOrEmpty() )
+            {
+                return null;
+            }
+            foreach( var pawnThing in pawnThings )
+            {
+                if( thing.PawnHasJobUsing( (Pawn)pawnThing ) )
+                {
+                    return (Pawn)pawnThing;
+                }
+            }
+            return null;
+        }
+
+        public static List<Pawn> GetOccupyingPawnsUsing( this Thing thing )
+        {
+            var pawnsUsing = new List<Pawn>();
+            var occupiedRect = thing.OccupiedRect();
+            foreach( var cell in occupiedRect )
+            {
+                var pawnThings = cell.GetThingList().Where( t => t is Pawn ).ToList();
+                if( !pawnThings.NullOrEmpty() )
+                {
+                    foreach( var pawnThing in pawnThings )
+                    {
+                        if( thing.PawnHasJobUsing( (Pawn)pawnThing ) )
+                        {
+                            pawnsUsing.AddUnique( (Pawn)pawnThing );
+                        }
+                    }
+                }
+            }
+            return pawnsUsing;
+        }
 
     }
 

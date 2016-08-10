@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <MiniMap.OverlayIconTip>L'affichage '{0}' est actuellement '{1}'.</MiniMap.OverlayIconTip>
+    <MiniMap.Toggle>Cliquer pour afficher.</MiniMap.Toggle>
+    <MiniMap.ShowMCMOption>Ouvrir le menu pour {0}</MiniMap.ShowMCMOption>
+    <MiniMap.ToggleX>{0} - Afficher {1}</MiniMap.ToggleX>
+    <MiniMap.MCMToggleMain>Activer la minimap</MiniMap.MCMToggleMain>
+    <MiniMap.Unlock>Débloquer - permet de déplacer et redimensionner.\nMaintenir shift tout en redimensionnant pour conserver une taille proportionnée.</MiniMap.Unlock>
+    <MiniMap.OneToOneScale>Echelonne la mini-carte à la taille de la carte.</MiniMap.OneToOneScale>
+    <MiniMap.DefaultSize>Taille de la mini-carte par défaut.</MiniMap.DefaultSize>
+    <MiniMap.Lock>Verouille la taille et l'emplacement de la mini-carte.</MiniMap.Lock>
+
+
+    <!-- MCM keys for Minimaps shipped with CCL -->
+    <MiniMap.ViewPort.Color>Couleur</MiniMap.ViewPort.Color>
+    <MiniMap.ViewPort.ColorTip>La couleur du rectangle montrant la zone de la caméra.</MiniMap.ViewPort.ColorTip>
+    <MiniMap.CP.Radius>Taille</MiniMap.CP.Radius>
+    <MiniMap.CP.RadiusTip>Taille du 'radar blip' pour les colons.</MiniMap.CP.RadiusTip>
+    <MiniMap.CP.Color>Couleur</MiniMap.CP.Color>
+    <MiniMap.CP.ColorTip>Couleur du 'radar blip' pour les colons.</MiniMap.CP.ColorTip>
+    <MiniMap.NCP.EnemyColor>Couleur ennemie</MiniMap.NCP.EnemyColor>
+    <MiniMap.NCP.EnemyColorTip>Couleur du 'radar blip' pour les ennemis.</MiniMap.NCP.EnemyColorTip>
+    <MiniMap.NCP.TraderColor>Couleur du marchand</MiniMap.NCP.TraderColor>
+    <MiniMap.NCP.TraderColorTip>Couleur du 'radar blip' pour les marchands.</MiniMap.NCP.TraderColorTip>
+    <MiniMap.NCP.VisitorColor>Couleur des visiteurs</MiniMap.NCP.VisitorColor>
+    <MiniMap.NCP.VisitorColorTip>Couleur du 'radar blip' pour les visiteurs.</MiniMap.NCP.VisitorColorTip>
+    <MiniMap.NCP.EnemyRadius>Taille de l'ennemi</MiniMap.NCP.EnemyRadius>
+    <MiniMap.NCP.EnemyRadiusTip>Taille du 'radar blip' pour les ennemis.</MiniMap.NCP.EnemyRadiusTip>
+    <MiniMap.NCP.VisitorRadius>Taille des visiteurs</MiniMap.NCP.VisitorRadius>
+    <MiniMap.NCP.VisitorRadiusTip>Taille du 'radar blip' pour les visiteurs.</MiniMap.NCP.VisitorRadiusTip>
+    <MiniMap.NCP.TraderRadius>Taille des marchands</MiniMap.NCP.TraderRadius>
+    <MiniMap.NCP.TraderRadiusTip>Taille du 'radar blip' pour les marchands.</MiniMap.NCP.TraderRadiusTip>
+    <MiniMap.WL.WildColor>Couleur des animaux sauvages</MiniMap.WL.WildColor>
+    <MiniMap.WL.WildColorTip>Couleur du 'radar blip' pour les animaux sauvages.</MiniMap.WL.WildColorTip>
+    <MiniMap.WL.TameColor>Couleur des animaux domestiques</MiniMap.WL.TameColor>
+    <MiniMap.WL.TameColorTip>Couleur du 'radar blip' pour les animaux domestiques</MiniMap.WL.TameColorTip>
+    <MiniMap.WL.HostileColor>Coulor des animaux hostiles</MiniMap.WL.HostileColor>
+    <MiniMap.WL.HostileColorTip>Couleur du 'radar blip' pour les animaux hostiles</MiniMap.WL.HostileColorTip>
+    <MiniMap.WL.HuntingColor>Couleur des animaux chassés</MiniMap.WL.HuntingColor>
+    <MiniMap.WL.HuntingColorTip>Couleur du 'radar blip' pour les animaux désignés comme chassés</MiniMap.WL.HuntingColorTip>
+    <MiniMap.WL.TamingColor>Couleur des animaux en cours d'apprivoisement</MiniMap.WL.TamingColor>
+    <MiniMap.WL.TamingColorTip>Couleur du 'radar blip' pour les animaux désignés à l'apprivoisement</MiniMap.WL.TamingColorTip>
+    <MiniMap.WL.WildRadius>Taille des animaux sauvages</MiniMap.WL.WildRadius>
+    <MiniMap.WL.WildRadiusTip>Taille du 'radar blip' pour les animaux sauvages</MiniMap.WL.WildRadiusTip>
+    <MiniMap.WL.TameRadius>Taille des animaux domestiques</MiniMap.WL.TameRadius>
+    <MiniMap.WL.TameRadiusTip>Taille du 'radar blip' pour les animaux domestiques</MiniMap.WL.TameRadiusTip>
+    <MiniMap.WL.HostileRadius>Taille des animaux hostiles</MiniMap.WL.HostileRadius>
+    <MiniMap.WL.HostileRadiusTip>Taille du 'radar blip' pour les animaux hostiles</MiniMap.WL.HostileRadiusTip>
+    <MiniMap.WL.HuntingRadius>Taille des animaux chassés</MiniMap.WL.HuntingRadius>
+    <MiniMap.WL.HuntingRadiusTip>Taille du 'radar blip' pour les animaux désignés comme chassés</MiniMap.WL.HuntingRadiusTip>
+    <MiniMap.WL.TamingRadius>Taille des animaux en cours d'apprivoisement</MiniMap.WL.TamingRadius>
+    <MiniMap.WL.TamingRadiusTip>Taille du 'radar blip' pour les animaux désignés à l'apprivoisement</MiniMap.WL.TamingRadiusTip>
+    <MiniMap.Power.poweredColor>Couleur des alimentations</MiniMap.Power.poweredColor>
+    <MiniMap.Power.poweredColorTip>Couleur des lignes electriques et bâtiments alimentés, ainsi que des batteries entièrement chargées.</MiniMap.Power.poweredColorTip>
+    <MiniMap.Power.batteryColor>Couleur des batteries</MiniMap.Power.batteryColor>
+    <MiniMap.Power.batteryColorTip>Couleur des lignes electriques et bâtiments fonctionnant avec une batterie, ainsi que les batteries partiellement chargées.</MiniMap.Power.batteryColorTip>
+    <MiniMap.Power.notPoweredColor>Couleur des coupures electriques</MiniMap.Power.notPoweredColor>
+    <MiniMap.Power.notPoweredColorTip>Couleur des lignes electriques et bâtiments non alimentés, des lignes electriques non connectées et des batteries totalement vides.</MiniMap.Power.notPoweredColorTip>
+    <MiniMap.Power.offColor>Couleur des bâtiments OFF</MiniMap.Power.offColor>
+    <MiniMap.Power.offColorTip>Couleur des bâtiments qui sont désactivés.</MiniMap.Power.offColorTip>
+
+</LanguageData>

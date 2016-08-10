@@ -13,6 +13,7 @@
 [li][color=orange]Mini Map Overlay[/color] - This is the work-horse of the mini map framework.  These do the actual drawing of the mini map itself.  Each one has it's own unique texture to draw to and the final results of all visible overlays from all mini maps are composited to the mini map window.[/li]
 [li][color=orange]Mod Helper[/color][sup][size=8pt]4.1[/size][/sup] - Define mod friendly injectors and minimum CCL version dependency.[/li]
 [li][color=orange]Name[/color] - Def to add new first, last and nicknames for pawns.[/li]
+[li][color=orange]Outfit[/color] - Add new outfits with a simple def instead of having to write C# code to inject them.[/li]
 [li][color=orange]Pawn Bio[/color] - Def to add new pawn biographies.[/li]
 [/list]
 
@@ -82,4 +83,3 @@
 [li][color=orange]Restricted Count[/color][sup][size=8pt]4.5[/size][/sup] - Restrict the amount of buildings of a given type in the world.[/li]
 [li][color=orange]Wall Attachment[/color][sup][size=8pt]4.5, 4.7[/size][/sup] - Requires a supporting wall (natural or man-made) to build against.  If you want to build something in the same cell as a wall, use OnlyOnThing instead.[/li]
 [/list]
-[i]Note that the not/only on terrain is currently broken for water terrain. We're looking into a fix for this.[/i]

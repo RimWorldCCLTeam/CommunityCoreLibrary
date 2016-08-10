@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+
+        <MinimapOverlays.label>Affichages</MinimapOverlays.label>
+
+        <MinimapOverlays.description>La fenêtre de la mini-carte peut être affichée de différentes manières en même temps. Quelques affichages sont cachés (OFF) par défaut. Vous pouvez faire modifier la mini-carte entièrement en faisant un clique gauche sur les différents icônes. Vous pouvez aussi modifier les affichages individuel en cliquant droit et en selectionnant l'affichage individuel du menu. Aussi, des affichages ont d'autres options que le on/off. Ceux-ci peuvent être accessible par le biais de menu de configuration "Minimap".</MinimapOverlays.description>
+
+
+</LanguageData>
