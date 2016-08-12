@@ -111,6 +111,10 @@ namespace CommunityCoreLibrary.Detour
             if( t is Building_AutomatedFactory )
             {
                 def = ((Building_AutomatedFactory)t).BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
+                if( def == null )
+                {
+                    return FoodOptimalityUnusable;
+                }
             }
             else if( t is Building_NutrientPasteDispenser )
             {
@@ -120,7 +124,7 @@ namespace CommunityCoreLibrary.Detour
             switch( def.ingestible.preferability )
             {
             case FoodPreferability.NeverForNutrition:
-                return -9999999f;
+                return FoodOptimalityUnusable;
             case FoodPreferability.DesperateOnly:
                 num -= 150f;
                 break;
@@ -130,7 +134,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 if( comp.Stage == RotStage.Dessicated )
                 {
-                    return -9999999f;
+                    return FoodOptimalityUnusable;
                 }
                 if(
                     ( comp.Stage == RotStage.Fresh )&&

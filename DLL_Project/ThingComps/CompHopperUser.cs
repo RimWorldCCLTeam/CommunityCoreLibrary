@@ -16,23 +16,23 @@ namespace CommunityCoreLibrary
 
             public List<CompHopper>         hoppers = new List<CompHopper>();
             public StorageSettings          settings = new StorageSettings();
-            public ThingCategoryDef         categoryDef;
-            public ThingDef                 thingDef;
-            public int                      count;
+            public ThingCategoryDef         fixedCategoryDef;
+            public ThingDef                 fixedThingDef;
+            public int                      fixedCount;
             private int                     hoppersRequired = -1;
 
             public                          HopperSettingsAmount( ThingDef thingDef, float count )
             {
-                this.categoryDef = null;
-                this.thingDef = thingDef;
-                this.count = Mathf.CeilToInt( count );
+                this.fixedCategoryDef = null;
+                this.fixedThingDef = thingDef;
+                this.fixedCount = Mathf.CeilToInt( count );
             }
 
             public                          HopperSettingsAmount( ThingCategoryDef categoryDef, float count )
             {
-                this.categoryDef = categoryDef;
-                this.thingDef = null;
-                this.count = Mathf.CeilToInt( count );
+                this.fixedCategoryDef = categoryDef;
+                this.fixedThingDef = null;
+                this.fixedCount = Mathf.CeilToInt( count );
             }
 
             public bool                     ShouldBeRefrigerated
@@ -50,21 +50,21 @@ namespace CommunityCoreLibrary
                     if( hoppersRequired < 0 )
                     {
                         hoppersRequired = 0;
-                        if( this.categoryDef != null )
+                        if( this.fixedCategoryDef != null )
                         {
                             int largest = 0;
-                            foreach( var thingDef in categoryDef.childThingDefs )
+                            foreach( var thingDef in fixedCategoryDef.childThingDefs )
                             {
                                 if( thingDef.stackLimit > largest )
                                 {
                                     largest = thingDef.stackLimit;
                                 }
                             }
-                            hoppersRequired = Mathf.Max( 1, Mathf.CeilToInt( (float) count / largest ) );
+                            hoppersRequired = Mathf.Max( 1, Mathf.CeilToInt( (float) fixedCount / largest ) );
                         }
-                        if( this.thingDef != null )
+                        if( this.fixedThingDef != null )
                         {
-                            hoppersRequired = Mathf.Max( 1, Mathf.CeilToInt( (float) count / thingDef.stackLimit ) );
+                            hoppersRequired = Mathf.Max( 1, Mathf.CeilToInt( (float) fixedCount / fixedThingDef.stackLimit ) );
                         }
                     }
                     return hoppersRequired;
@@ -76,11 +76,11 @@ namespace CommunityCoreLibrary
                 int countNeeded = CountForThingDef( thingDef, baseCount, recipe );
                 for( int index = 0; index < list.Count; ++index )
                 {
-                    if( list[ index ].thingDef == thingDef )
+                    if( list[ index ].fixedThingDef == thingDef )
                     {
-                        if( countNeeded > list[ index ].count )
+                        if( countNeeded > list[ index ].fixedCount )
                         {
-                            list[ index ] = new HopperSettingsAmount( list[ index ].thingDef, countNeeded );
+                            list[ index ] = new HopperSettingsAmount( list[ index ].fixedThingDef, countNeeded );
                         }
                         return;
                     }
@@ -93,11 +93,11 @@ namespace CommunityCoreLibrary
                 int countNeeded = CountForCategoryDef( categoryDef, baseCount, recipe );
                 for( int index = 0; index < list.Count; ++index )
                 {
-                    if( list[ index ].categoryDef == categoryDef )
+                    if( list[ index ].fixedCategoryDef == categoryDef )
                     {
-                        if( countNeeded > list[ index ].count )
+                        if( countNeeded > list[ index ].fixedCount )
                         {
-                            list[ index ] = new HopperSettingsAmount( list[ index ].categoryDef, countNeeded );
+                            list[ index ] = new HopperSettingsAmount( list[ index ].fixedCategoryDef, countNeeded );
                         }
                         return;
                     }
@@ -160,6 +160,7 @@ namespace CommunityCoreLibrary
         private List<HopperSettingsAmount>  hopperSettings = new List<HopperSettingsAmount>();
 
         private bool                        settingsBuilt = false;
+        private bool                        gameWasJustLoaded = false;
 
         #region Neighbouring Cell Enumeration
 
@@ -209,6 +210,15 @@ namespace CommunityCoreLibrary
             base.PostSpawnSetup();
 
             FindAndProgramHoppers();
+        }
+
+        public override void                PostExposeData()
+        {
+            base.PostExposeData();
+            if( Scribe.mode == LoadSaveMode.PostLoadInit )
+            {
+                gameWasJustLoaded = true;
+            }
         }
 
         public override void                PostDeSpawn()
@@ -463,13 +473,13 @@ namespace CommunityCoreLibrary
             // Assign hopper settings filters from ingredients
             foreach( var hopperSetting in hopperSettings )
             {
-                if( hopperSetting.categoryDef != null )
+                if( hopperSetting.fixedCategoryDef != null )
                 {
-                    hopperSetting.settings.filter.SetAllow( hopperSetting.categoryDef, true );
+                    hopperSetting.settings.filter.SetAllow( hopperSetting.fixedCategoryDef, true );
                 }
-                if( hopperSetting.thingDef != null )
+                if( hopperSetting.fixedThingDef != null )
                 {
-                    hopperSetting.settings.filter.SetAllow( hopperSetting.thingDef, true );
+                    hopperSetting.settings.filter.SetAllow( hopperSetting.fixedThingDef, true );
                 }
             }
 
@@ -491,7 +501,7 @@ namespace CommunityCoreLibrary
             {
                 var settingA = hopperSettings[ index ];
                 if(
-                    ( settingA.categoryDef != null )&&
+                    ( settingA.fixedCategoryDef != null )&&
                     ( settingA.settings.filter.AllowedDefCount > 1 )
                 )
                 {
@@ -502,12 +512,12 @@ namespace CommunityCoreLibrary
                             var settingB = hopperSettings[ index2 ];
                             if(
                                 (
-                                    ( settingB.categoryDef != null )&&
-                                    ( settingA.categoryDef.ThisAndChildCategoryDefs.Contains( settingB.categoryDef ) )
+                                    ( settingB.fixedCategoryDef != null )&&
+                                    ( settingA.fixedCategoryDef.ThisAndChildCategoryDefs.Contains( settingB.fixedCategoryDef ) )
                                 )||
                                 (
-                                    ( settingB.thingDef != null )&&
-                                    ( settingA.categoryDef.DescendantThingDefs.Contains( settingB.thingDef ) )
+                                    ( settingB.fixedThingDef != null )&&
+                                    ( settingA.fixedCategoryDef.DescendantThingDefs.Contains( settingB.fixedThingDef ) )
                                 )
                             )
                             {
@@ -536,7 +546,7 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-                hopperSetting.count = largest;
+                hopperSetting.fixedCount = largest;
             }
 
             // Remove empty hopper settings from the list
@@ -550,7 +560,7 @@ namespace CommunityCoreLibrary
             }
 
             // Sort the hopper settings from most required ingredients to least
-            hopperSettings.Sort( ( x, y ) => ( x.count > y.count ? -1 : 1 ) );
+            hopperSettings.Sort( ( x, y ) => ( x.fixedCount > y.fixedCount ? -1 : 1 ) );
 
             // Finalize hopper settings
             for( int index = 0; index < hopperSettings.Count; ++index )
@@ -742,6 +752,11 @@ namespace CommunityCoreLibrary
             {
                 // Rebuild the hopper settings
                 BuildHopperSettings();
+            }
+            if( gameWasJustLoaded )
+            {
+                gameWasJustLoaded = false;
+                return;
             }
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
