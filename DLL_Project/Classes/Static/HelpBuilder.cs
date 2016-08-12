@@ -1500,7 +1500,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( var disease in diseases )
                 {
-                    var diseaseCommonality = ( biomeDef.CommonalityOfDisease( disease ) / biomeDef.diseaseMtbDays ) * GenDate.DaysPerYear;
+                    var diseaseCommonality = biomeDef.CommonalityOfDisease( disease ) / ( biomeDef.diseaseMtbDays * GenDate.DaysPerYear );
                     defs.Add( disease.diseaseIncident );
                     chances.Add( diseaseCommonality.ToStringPercent() );
                 }
