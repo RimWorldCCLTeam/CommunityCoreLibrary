@@ -256,7 +256,8 @@ namespace CommunityCoreLibrary
                     var key = pair.Key.products[0].thingDef;
                     SetAllowed( pair.Key, pair.Value );
                 }
-                ResetAndReprogramHoppers();
+                //ResetAndReprogramHoppers();
+                currentRecipeCount = this.def.AllRecipes.Count;
             }
         }
 
@@ -395,7 +396,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                //Log.Message( string.Format( "{0}.ResourceFilter()", this.ThingID ) );
+                //Log.Message( string.Format( "{0}.ResourceFilter", this.ThingID ) );
                 if( def.AllRecipes.NullOrEmpty() )
                 {
                     CCL_Log.TraceMod(
@@ -478,13 +479,13 @@ namespace CommunityCoreLibrary
 
         public void                         SetAllowed( RecipeDef recipeDef, bool allowed )
         {
+            //Log.Message( string.Format( "{0}.SetAllowed( {1}, {2} )", this.ThingID, recipeDef == null ? "null" : recipeDef.defName, allowed ) );
             var inAllowed = allowed;
             var product = recipeDef.products[ 0 ].thingDef;
             allowed &= (
                 ( recipeDef.researchPrerequisite == null )||
                 ( recipeDef.researchPrerequisite.IsFinished )
             );
-            //Log.Message( string.Format( "{0}.SetAllowed( {1}, {2}->{3} )", this.ThingID, recipeDef.defName, inAllowed, allowed ) );
             Allowances allowance;
             if( productionAllowances.TryGetValue( product, out allowance ) )
             {
@@ -883,15 +884,13 @@ namespace CommunityCoreLibrary
             {
                 return (Thing) null;
             }
-            List<ThingAmount> chosen = new List<ThingAmount>();
+            var chosen = new List<ThingAmount>();
             if( !CompHopperUser.RemoveResourcesFromHoppers( recipe, chosen ) )
             {
                 return null;
             }
             var thing = ThingMaker.MakeThing( thingDef );
             thing.stackCount = recipe.products[0].count;
-            // A14: Changed thingClass meal to CompIngredients
-            // - Fluffy.
             var ingredients = thing.TryGetComp<CompIngredients>();
             if ( ingredients != null )
             {
