@@ -24,6 +24,8 @@ namespace CommunityCoreLibrary
         public List<WorkTags>                       workDisables        = new List<WorkTags>();
         public List<BackstoryDefSkillListItem>      skillGains          = new List<BackstoryDefSkillListItem>();
         public List<string>                         spawnCategories     = new List<string>();
+        public List<TraitEntry>                     forcedTraits        = new List<TraitEntry>();
+        public List<TraitEntry>                     disallowedTraits    = new List<TraitEntry>();
         public string                               saveKeyIdentifier;
 
         #endregion
@@ -98,6 +100,26 @@ namespace CommunityCoreLibrary
                 b.workDisables = WorkTags.None;
             }
             b.skillGains = skillGains.ToDictionary(i => i.defName, i => i.amount);
+
+            if( forcedTraits.Count > 0 )
+            {
+                b.forcedTraits = new List<TraitEntry>();
+                foreach( var trait in forcedTraits )
+                {
+                    var newTrait = new TraitEntry( trait.def, trait.degree );
+                    b.forcedTraits.Add( newTrait );
+                }
+            }
+
+            if( disallowedTraits.Count > 0 )
+            {
+                b.disallowedTraits = new List<TraitEntry>();
+                foreach( var trait in disallowedTraits )
+                {
+                    var newTrait = new TraitEntry( trait.def, trait.degree );
+                    b.disallowedTraits.Add( newTrait );
+                }
+            }
 
             b.ResolveReferences();
             b.PostLoad();
