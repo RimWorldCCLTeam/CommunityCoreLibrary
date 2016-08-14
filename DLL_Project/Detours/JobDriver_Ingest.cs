@@ -62,6 +62,7 @@ namespace CommunityCoreLibrary.Detour
             var foodSource = obj.TargetThing( FoodInd );
             var alcohol = obj.TargetThing( AlcoholInd );
 
+            yield return Toils_Reserve.Reserve( FoodInd, 1 );
             yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.InteractionCell )
                                    .FailOnDespawnedNullOrForbidden( FoodInd );
             if( foodSource is Building_NutrientPasteDispenser )

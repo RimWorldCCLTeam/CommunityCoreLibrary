@@ -39,6 +39,11 @@ namespace CommunityCoreLibrary.Detour
 
         internal static void                _DrawInfoInCorner()
         {
+            if( Current.ProgramState != ProgramState.Entry )
+            {
+                // Only display it when in the main menu
+                return;
+            }
             var versionStringShort = GetVersionStringShort();
             var buildDate = GetBuildDate();
 

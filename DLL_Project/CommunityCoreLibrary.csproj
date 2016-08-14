@@ -293,6 +293,7 @@
     <Compile Include="ThinkNodes\ThinkNode_PrioritySorter_SubtreesByTag.cs" />
     <Compile Include="Detours\Pawn_RelationsTracker.cs" />
     <Compile Include="Detours\VersionControl.cs" />
+    <Compile Include="Detours\Toils_Ingest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
