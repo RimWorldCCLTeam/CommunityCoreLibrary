@@ -1,17 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-
-using Verse;
 
 namespace CommunityCoreLibrary
 {
-
-    public struct TickerSwitcher
+    
+    public struct ITabInjectionSet
     {
 
         public string                       requiredMod;
 
-        public TickerType                   tickerType;
+        public Type                         newITab;
+        public Type                         replaceITab;
 
         public List< string >               targetDefs;
 
@@ -22,3 +21,4 @@ namespace CommunityCoreLibrary
     }
 
 }
+

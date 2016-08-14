@@ -33,69 +33,93 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.ThingDefAvailability.Count; ++index )
             {
-                var availabilitySet = def.ThingDefAvailability[ index ];
-                bool processThis = true;
-                if( !availabilitySet.requiredMod.NullOrEmpty() )
+                var qualifierValid = true;
+                var injectionSet = def.ThingDefAvailability[ index ];
+                if(
+                    ( !injectionSet.requiredMod.NullOrEmpty() )&&
+                    ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
+                )
                 {
-                    processThis = Find_Extensions.ModByName( availabilitySet.requiredMod ) != null;
+                    continue;
                 }
-                if( processThis )
+                if( !injectionSet.menuHidden.NullOrEmpty() )
                 {
-                    if( !availabilitySet.menuHidden.NullOrEmpty() )
+                    var menuHidden = injectionSet.menuHidden.ToLower();
+                    if(
+                        ( menuHidden != "true" )&&
+                        ( menuHidden != "false" )
+                    )
                     {
-                        var menuHidden = availabilitySet.menuHidden.ToLower();
-                        if(
-                            ( menuHidden != "true" )&&
-                            ( menuHidden != "false" )
-                        )
+                        isValid = false;
+                        errors += string.Format( "\n\tmenuHidden '{0}' is invalid in ThingDefAvailability", injectionSet.menuHidden );
+                    }
+                }
+                if( !injectionSet.designationCategory.NullOrEmpty() )
+                {
+                    if( injectionSet.designationCategory != "None" )
+                    {
+                        var category = DefDatabase<DesignationCategoryDef>.GetNamed( injectionSet.designationCategory, true );
+                        if( category == null )
                         {
                             isValid = false;
-                            errors += string.Format( "\n\tmenuHidden '{0}' is invalid in ThingDefAvailability", availabilitySet.menuHidden );
+                            errors += string.Format( "\n\tDesignationCategory '{0}' is invalid in ThingDefAvailability", injectionSet.designationCategory );
                         }
-                        if( !availabilitySet.designationCategory.NullOrEmpty() )
+                    }
+                }
+                if( injectionSet.researchPrerequisites != null )
+                {
+                    if( injectionSet.researchPrerequisites.Count > 0 )
+                    {
+                        for( int index2 = 0; index2 < injectionSet.researchPrerequisites.Count; ++index2 )
                         {
-                            if( availabilitySet.designationCategory != "None" )
+                            var projectDef = DefDatabase<ResearchProjectDef>.GetNamed( injectionSet.researchPrerequisites[ index2 ], true );
+                            if( projectDef == null )
                             {
-                                var category = DefDatabase<DesignationCategoryDef>.GetNamed( availabilitySet.designationCategory, true );
-                                if( category == null )
-                                {
-                                    isValid = false;
-                                    errors += string.Format( "\n\tDesignationCategory '{0}' is invalid in ThingDefAvailability", availabilitySet.designationCategory );
-                                }
+                                isValid = false;
+                                errors += string.Format( "\n\tresearchPrerequisite '{0}' is invalid in ThingDefAvailability", injectionSet.researchPrerequisites[ index2 ] );
                             }
                         }
-                        if( availabilitySet.researchPrerequisites != null )
+                    }
+                }
+                if(
+                    ( injectionSet.targetDefs.NullOrEmpty() )&&
+                    ( injectionSet.qualifier == null )
+                )
+                {
+                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
+                    isValid = false;
+                    qualifierValid = false;
+                }
+                if(
+                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
+                    ( injectionSet.qualifier != null )
+                )
+                {
+                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
+                    isValid = false;
+                    qualifierValid = false;
+                }
+                if( qualifierValid )
+                {
+                    if( !injectionSet.targetDefs.NullOrEmpty() )
+                    {
+                        for( int index2 = 0; index2 < injectionSet.targetDefs.Count; ++index2 )
                         {
-                            if( availabilitySet.researchPrerequisites.Count > 0 )
+                            var targetDef = DefDatabase<ThingDef>.GetNamed( injectionSet.targetDefs[ index2 ], true );
+                            if( targetDef == null )
                             {
-                                for( int index2 = 0; index2 < availabilitySet.researchPrerequisites.Count; ++index2 )
-                                {
-                                    var projectDef = DefDatabase<ResearchProjectDef>.GetNamed( availabilitySet.researchPrerequisites[ index2 ], true );
-                                    if( projectDef == null )
-                                    {
-                                        isValid = false;
-                                        errors += string.Format( "\n\tresearchPrerequisite '{0}' is invalid in ThingDefAvailability", availabilitySet.researchPrerequisites[ index2 ] );
-                                    }
-                                }
+                                isValid = false;
+                                errors += string.Format( "\n\ttargetDef '{0}' is invalid in ThingDefAvailability", injectionSet.targetDefs[ index2 ] );
                             }
                         }
-                        if( availabilitySet.targetDefs.NullOrEmpty() )
-                        {
-                            errors += "\n\tNull or no targetDefs in ThingDefAvailability";
-                            isValid = false;
-                        }
-                        else
-                        {
-                            for( int index2 = 0; index2 < availabilitySet.targetDefs.Count; ++index2 )
-                            {
-                                var targetDef = DefDatabase<ThingDef>.GetNamed( availabilitySet.targetDefs[ index2 ], true );
-                                if( targetDef == null )
-                                {
-                                    isValid = false;
-                                    errors += string.Format( "\n\ttargetDef '{0}' is invalid in ThingDefAvailability", availabilitySet.targetDefs[ index2 ] );
-                                }
-                            }
-                        }
+                    }
+                }
+                if( injectionSet.qualifier != null )
+                {
+                    if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
+                    {
+                        errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
+                        isValid = false;
                     }
                 }
             }
@@ -129,49 +153,49 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.ThingDefAvailability.Count; ++index )
             {
-                var availabilitySet = def.ThingDefAvailability[ index ];
-
-                bool processThis = true;
-                if( !availabilitySet.requiredMod.NullOrEmpty() )
+                var injectionSet = def.ThingDefAvailability[ index ];
+                if(
+                    ( !injectionSet.requiredMod.NullOrEmpty() )&&
+                    ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
+                )
                 {
-                    processThis = Find_Extensions.ModByName( availabilitySet.requiredMod ) != null;
+                    continue;
                 }
-                if( processThis )
+                var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
+                if( !thingDefs.NullOrEmpty() )
                 {
-                    bool setMenuHidden = !availabilitySet.menuHidden.NullOrEmpty();
-                    bool setDesignation = !availabilitySet.designationCategory.NullOrEmpty();
-                    bool setResearch = availabilitySet.researchPrerequisites != null;
+                    bool setMenuHidden = !injectionSet.menuHidden.NullOrEmpty();
+                    bool setDesignation = !injectionSet.designationCategory.NullOrEmpty();
+                    bool setResearch = injectionSet.researchPrerequisites != null;
 
                     bool menuHidden = false;
                     List<ResearchProjectDef> research = null;
 
                     if( setMenuHidden )                                  
                     {
-                        menuHidden = availabilitySet.menuHidden.ToLower() == "true" ? true : false;
+                        menuHidden = injectionSet.menuHidden.ToLower() == "true" ? true : false;
                     }
                     if(
                         ( setResearch )&&
-                        ( availabilitySet.researchPrerequisites.Count > 0 )
+                        ( injectionSet.researchPrerequisites.Count > 0 )
                     )
                     {
-                        research = DefDatabase<ResearchProjectDef>.AllDefs.Where( projectDef => availabilitySet.researchPrerequisites.Contains( projectDef.defName ) ).ToList();
+                        research = DefDatabase<ResearchProjectDef>.AllDefs.Where( projectDef => injectionSet.researchPrerequisites.Contains( projectDef.defName ) ).ToList();
                     }
 
-                    var targetDefs = DefDatabase<ThingDef>.AllDefs.Where( thingDef => availabilitySet.targetDefs.Contains( thingDef.defName ) ).ToList();
-
-                    foreach( var target in targetDefs )
+                    foreach( var thingDef in thingDefs )
                     {
                         if( setMenuHidden )
                         {
-                            target.menuHidden = menuHidden;
+                            thingDef.menuHidden = menuHidden;
                         }
                         if( setDesignation )
                         {
-                            target.ChangeDesignationCategory( availabilitySet.designationCategory );
+                            thingDef.ChangeDesignationCategory( injectionSet.designationCategory );
                         }
                         if( setResearch )
                         {
-                            target.researchPrerequisites = research;
+                            thingDef.researchPrerequisites = research;
                         }
                     }
                 }

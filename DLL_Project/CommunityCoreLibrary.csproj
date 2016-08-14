@@ -188,7 +188,7 @@
     <Compile Include="Interfaces\IInjector.cs" />
     <Compile Include="Defs\ModHelperDef\Facilities.cs" />
     <Compile Include="Structures\StockGeneratorInjectionSet.cs" />
-    <Compile Include="Defs\ModHelperDef\TraderKinds.cs" />
+    <Compile Include="Defs\ModHelperDef\StockGenerators.cs" />
     <Compile Include="Detours\MainMenuDrawer.cs" />
     <Compile Include="Windows\Window_ModConfigurationMenu.cs" />
     <Compile Include="Extensions\GenTemperature_Extensions.cs" />
@@ -294,6 +294,9 @@
     <Compile Include="Detours\Pawn_RelationsTracker.cs" />
     <Compile Include="Detours\VersionControl.cs" />
     <Compile Include="Detours\Toils_Ingest.cs" />
+    <Compile Include="Structures\ITabInjectionSet.cs" />
+    <Compile Include="Defs\ModHelperDef\ITabInjectors.cs" />
+    <Compile Include="Classes\Abstract\DefInjectorQualifier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
