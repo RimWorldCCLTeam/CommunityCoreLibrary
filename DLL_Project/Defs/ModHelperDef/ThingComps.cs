@@ -190,23 +190,25 @@ namespace CommunityCoreLibrary
                 var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
                 if( !thingDefs.NullOrEmpty() )
                 {
+#if DEBUG
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append( "ThingComps :: Qualifier returned: " );
+#endif
                     foreach( var thingDef in thingDefs )
                     {
+#if DEBUG
+                        stringBuilder.Append( thingDef.defName + ", " );
+#endif
                         // TODO:  Make a full copy using the comp in this def as a template
                         // Currently adds the comp in this def so all target use the same def
-                        if( thingDef.HasComp( injectionSet.compProps.compClass ) )
-                        {
-                            CCL_Log.TraceMod(
-                                def,
-                                Verbosity.Warnings,
-                                string.Format( "Trying to inject ThingComp '{0}' into '{1}' when it already exists (another mod may have already injected).", injectionSet.compProps.compClass.ToString(), thingDef.defName ),
-                                "ThingComp Injector" );
-                        }
-                        else
+                        if( !thingDef.HasComp( injectionSet.compProps.compClass ) )
                         {
                             thingDef.comps.Add( injectionSet.compProps );
                         }
                     }
+#if DEBUG
+                    CCL_Log.Message( stringBuilder.ToString(), def.ModName );
+#endif
                 }
             }
 

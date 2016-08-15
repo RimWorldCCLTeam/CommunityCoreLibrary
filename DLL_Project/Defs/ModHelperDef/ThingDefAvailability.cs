@@ -164,6 +164,10 @@ namespace CommunityCoreLibrary
                 var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
                 if( !thingDefs.NullOrEmpty() )
                 {
+#if DEBUG
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append( "ThingDefAvailability :: Qualifier returned: " );
+#endif
                     bool setMenuHidden = !injectionSet.menuHidden.NullOrEmpty();
                     bool setDesignation = !injectionSet.designationCategory.NullOrEmpty();
                     bool setResearch = injectionSet.researchPrerequisites != null;
@@ -185,6 +189,9 @@ namespace CommunityCoreLibrary
 
                     foreach( var thingDef in thingDefs )
                     {
+#if DEBUG
+                        stringBuilder.Append( thingDef.defName + ", " );
+#endif
                         if( setMenuHidden )
                         {
                             thingDef.menuHidden = menuHidden;
@@ -198,6 +205,9 @@ namespace CommunityCoreLibrary
                             thingDef.researchPrerequisites = research;
                         }
                     }
+#if DEBUG
+                    CCL_Log.Message( stringBuilder.ToString(), def.ModName );
+#endif
                 }
             }
 

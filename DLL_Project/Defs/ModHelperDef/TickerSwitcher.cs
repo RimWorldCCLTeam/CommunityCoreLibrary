@@ -134,10 +134,20 @@ namespace CommunityCoreLibrary
                 var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
                 if( !thingDefs.NullOrEmpty() )
                 {
+#if DEBUG
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append( "TickerSwitcher :: Qualifier returned: " );
+#endif
                     foreach( var thingDef in thingDefs )
                     {
+#if DEBUG
+                        stringBuilder.Append( thingDef.defName + ", " );
+#endif
                         thingDef.tickerType = injectionSet.tickerType;
                     }
+#if DEBUG
+                    CCL_Log.Message( stringBuilder.ToString(), def.ModName );
+#endif
                 }
             }
 

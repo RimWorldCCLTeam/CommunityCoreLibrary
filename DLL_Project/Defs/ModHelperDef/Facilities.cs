@@ -157,12 +157,15 @@ namespace CommunityCoreLibrary
                         else
                         {
                             var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, null );
-                            foreach( var thingDef in thingDefs )
+                            if( !thingDefs.NullOrEmpty() )
                             {
-                                if( !CanInjectInto( thingDef ) )
+                                foreach( var thingDef in thingDefs )
                                 {
-                                    errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", thingDef.defName );
-                                    isValid = false;
+                                    if( !CanInjectInto( thingDef ) )
+                                    {
+                                        errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", thingDef.defName );
+                                        isValid = false;
+                                    }
                                 }
                             }
                         }
@@ -235,10 +238,20 @@ namespace CommunityCoreLibrary
                 var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
                 if( !thingDefs.NullOrEmpty() )
                 {
+#if DEBUG
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append( "Facilities :: Qualifier returned: " );
+#endif
                     foreach( var thingDef in thingDefs )
                     {
+#if DEBUG
+                        stringBuilder.Append( thingDef.defName + ", " );
+#endif
                         LinkFacility( thingDef, facilityDef );
                     }
+#if DEBUG
+                    CCL_Log.Message( stringBuilder.ToString(), def.ModName );
+#endif
                 }
             }
 
