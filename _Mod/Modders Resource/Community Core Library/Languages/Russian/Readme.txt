@@ -1,5 +1,5 @@
 ﻿Skyarkhangel
 https://github.com/skyarkhangel/
 
-Pavel lysenko aka Ohar
+Pavel Lysenko aka Ohar
 https://github.com/ohar/
