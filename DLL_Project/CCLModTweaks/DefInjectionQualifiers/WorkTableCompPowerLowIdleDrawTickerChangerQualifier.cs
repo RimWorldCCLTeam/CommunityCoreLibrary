@@ -32,6 +32,10 @@ namespace CCLModTweaks
             {
                 return false;
             }
+            if( thingDef.tickerType != TickerType.Never )
+            {
+                return false;
+            }
             return true;
        }
 
