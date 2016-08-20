@@ -9,8 +9,9 @@ namespace CommunityCoreLibrary
         public Type                         designatorClass;
 
         public string                       designationCategoryDef;
-
         public Type                         designatorNextTo;
+
+        public bool                         reverseDesignator;
 
     }
 }
