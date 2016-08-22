@@ -69,16 +69,6 @@
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ResourceReadoutCategorized</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleShowMiniMap</defName>
-        <labelKey>MiniMap.MCMToggleButton</labelKey>
-        <exposeValue>false</exposeValue>
-        <iconTexture>UI/Icons/MiniMap/map</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
-        <order>70</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowMiniMap</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
-
     <!--
     <CommunityCoreLibrary.ToggleSettingDef>
         <defName></defName>
