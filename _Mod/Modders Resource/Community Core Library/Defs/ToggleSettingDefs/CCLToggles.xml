@@ -6,7 +6,7 @@
         <labelKey>MiniMap.MCMToggleButton</labelKey>
         <exposeValue>false</exposeValue>
         <iconTexture>UI/Icons/MiniMap/toggle</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>70</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowMiniMap</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>

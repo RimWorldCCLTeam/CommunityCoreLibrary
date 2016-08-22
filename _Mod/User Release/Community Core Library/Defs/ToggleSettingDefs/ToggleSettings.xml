@@ -6,7 +6,7 @@
         <labelKey>ZoneVisibilityToggleButton</labelKey>
         <saveKey>showZones</saveKey>
         <iconTexture>UI/Buttons/ShowZones</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>10</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowZones</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
@@ -16,7 +16,7 @@
         <labelKey>ShowBeautyToggleButton</labelKey>
         <saveKey>showBeauty</saveKey>
         <iconTexture>UI/Buttons/ShowBeauty</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>20</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowBeauty</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
@@ -27,7 +27,7 @@
         <tutorTag>InspectRoomStats</tutorTag>
         <saveKey>showRoomStats</saveKey>
         <iconTexture>UI/Buttons/ShowRoomStats</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>30</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowRoomStats</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
@@ -37,7 +37,7 @@
         <labelKey>ShowColonistBarToggleButton</labelKey>
         <saveKey>showColonistBar</saveKey>
         <iconTexture>UI/Buttons/ShowColonistBar</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>40</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowColonistBar</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
@@ -47,7 +47,7 @@
         <labelKey>AutoHomeAreaToggleButton</labelKey>
         <saveKey>autoHomeArea</saveKey>
         <iconTexture>UI/Buttons/AutoHomeArea</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>50</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_AutoHomeArea</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
@@ -64,7 +64,7 @@
         <labelKey>CategorizedResourceReadoutToggleButton</labelKey>
         <exposeValue>false</exposeValue>
         <iconTexture>UI/Buttons/ResourceReadoutCategorized</iconTexture>
-        <soundDef>MouseoverToggle</soundDef>
+        <soundDef>MouseoverButtonToggle</soundDef>
         <order>60</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ResourceReadoutCategorized</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
