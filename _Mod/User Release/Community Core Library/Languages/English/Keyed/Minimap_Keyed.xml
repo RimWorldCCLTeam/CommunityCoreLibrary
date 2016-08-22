@@ -51,6 +51,10 @@
     <MiniMap.WL.HuntingRadiusTip>Size of 'radar blip' for animals designated for hunting</MiniMap.WL.HuntingRadiusTip>
     <MiniMap.WL.TamingRadius>Taming animal size</MiniMap.WL.TamingRadius>
     <MiniMap.WL.TamingRadiusTip>Size of 'radar blip' for animals designated for taming</MiniMap.WL.TamingRadiusTip>
+    <MiniMap.PlanningTool.planningColor>Planning tool color</MiniMap.PlanningTool.planningColor>
+    <MiniMap.PlanningTool.planningColorTip>Color of planning tool designator.</MiniMap.PlanningTool.planningColorTip>
+    <MiniMap.Mining.miningColor>Mining color</MiniMap.Mining.miningColor>
+    <MiniMap.Mining.miningColorTip>Color of mining designator.</MiniMap.Mining.miningColorTip>
     <MiniMap.Power.poweredColor>Powered color</MiniMap.Power.poweredColor>
     <MiniMap.Power.poweredColorTip>Color of powered powerlines and buildings, as well as fully charged batteries</MiniMap.Power.poweredColorTip>
     <MiniMap.Power.batteryColor>Battery power color</MiniMap.Power.batteryColor>

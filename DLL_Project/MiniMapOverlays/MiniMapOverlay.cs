@@ -61,6 +61,18 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
+        public string                   SaveKey
+        {
+            get
+            {
+                if( minimap.miniMapDef.dynamicOverlays )
+                {
+                    return MiniMapController.regEx.Replace( overlayDef.label, "" );
+                }
+                return overlayDef.defName;
+            }
+        }
+
         public virtual string           label
         {
             get

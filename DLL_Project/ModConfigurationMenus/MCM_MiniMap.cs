@@ -97,16 +97,22 @@ namespace CommunityCoreLibrary
         private void MinimapHeader( Listing_Standard listing, MiniMap.MiniMap minimap )
         {
             var str = minimap.LabelCap;
-            listing.Label( str );
-            listing.Gap( 6 );
+            if( !string.IsNullOrEmpty( str ) )
+            {
+                listing.Label( str );
+                listing.Gap( 6 );
+            }
             listing.Indent();
         }
 
         private void OverlayHeader( Listing_Standard listing, MiniMap.MiniMapOverlay overlay )
         {
             var str = overlay.LabelCap;
-            listing.Label( str );
-            listing.Gap( 6 );
+            if( !string.IsNullOrEmpty( str ) )
+            {
+                listing.Label( str );
+                listing.Gap( 6 );
+            }
             listing.Indent();
         }
 
@@ -127,7 +133,7 @@ namespace CommunityCoreLibrary
                 if( minimap.IsOrHasIConfigurable )
                 {
                     #region Minimap Header
-                    Scribe.EnterNode( minimap.miniMapDef.defName );
+                    Scribe.EnterNode( minimap.SaveKey );
                     #endregion
 
                     #region Handle MiniMap IConfigurable
@@ -145,7 +151,7 @@ namespace CommunityCoreLibrary
                         if( iOverlay != null )
                         {
                             #region Overlay Header
-                            Scribe.EnterNode( overlay.overlayDef.defName );
+                            Scribe.EnterNode( overlay.SaveKey );
                             #endregion
 
                             #region Handle Overlay IConfigurable
