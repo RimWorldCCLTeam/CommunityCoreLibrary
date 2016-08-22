@@ -299,6 +299,18 @@
     <Compile Include="Classes\Abstract\DefInjectionQualifier.cs" />
     <Compile Include="MiniMapOverlays\MiniMapOverlay_PlanningTool.cs" />
     <Compile Include="MiniMapOverlays\MiniMapOverlay_Mining.cs" />
+    <Compile Include="Defs\ToggleSettingDef.cs" />
+    <Compile Include="Classes\Abstract\ToggleSetting.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowZones.cs" />
+    <Compile Include="Detours\PlaySettings.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowBeauty.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_AutoHomeArea.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowColonistBar.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowRoomStats.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_UseWorkPriorities.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ResourceReadoutCategorized.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowMiniMap.cs" />
+    <Compile Include="MainMenus\MainMenu_QuickStart.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -318,5 +330,6 @@
   <ItemGroup />
   <ItemGroup>
     <Folder Include="ThinkNodes\" />
+    <Folder Include="ToggleSettings\" />
   </ItemGroup>
 </Project>
