@@ -30,7 +30,7 @@ Most buildings will not draw power when they are not in use. This includes the c
 
 Auto Doors draw less power when they are not actually opening or closing.
 
-Hydroponics basins "cycle" power at a rate of 50W for 5000 "ticks" and then 100W for 2500 "ticks" and will offer to share their growing options with other hydroponics basins.  (A "tick" is 1/60 of a second, there are 30000 "ticks" to a game day.)
+Hydroponics basins "cycle" power at a rate of 50W for 5000 "ticks" and then 100W for 2500 "ticks" and will offer to share their growing options with other hydroponics basins.  (A "tick" is 1/60 of a second, there are 60000 "ticks" to a game day.)
 
 [color=orange]Advanced Research Recipes[/color]
 Artillery Shells require 'Mortars' research to be complete before they are available to be crafted at the smithing and machining workbenches.  Hops requires 'Brewing' before it can be planted and grown.
