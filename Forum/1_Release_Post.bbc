@@ -1,5 +1,5 @@
 [center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Logo_Long.png?raw=true[/img]
-[size=14pt]v0.14.2.1[/size]
+[size=14pt]v0.14.3[/size]
 
 [size=8pt]Compatible with RimWorld builds:
 1220, 1230, 1232, 1234, 1238, 1241, 1249[/size]
@@ -40,15 +40,16 @@ If you are a modder, download the modders resource or the source package.
 
 [size=12pt]Regular users download the "User Release" package.[/size]
 [list type=decimal]
-[li]Extract both the folders in the zip into your Mods folder.[/li]
+[li]Extract all the folders in the zip into your Mods folder.[/li]
 [li]Enable "Community Core Library" immediately after "Core" - This is [b][i]REQUIRED[/i][/b] and a popup window will open to correct this if the library does not detect the correct load order position.[/li]
 [li]The "Community Core Library - Vanilla Tweaks" is entirely optional but highly recommended.  It does not matter where in your load order it is as it uses injection to modify the vanilla game objects.  Other mods may make changes to the same vanilla game objects but the tweaks mod will still take affect as a result of this mechanic.  The only rule is that this mod must be loaded after the core library.[/li]
+[li]The "Community Core Library - Mod Tweaks" is also optional and likewise is highly recommended.  This mod should be enabled last after every other mod.[/li]
 [/list]
 
 [size=12pt]Modders download the "Modders Resource" package.[/size]
 [list type=decimal]
 [li]Do not unzip this into Mods.[/li]
-[li]Install the two mod folders into your Mods directory and enable them as per the user release.  (Although, installing and enabling the tweaks mod is still optional.)[/li]
+[li]Install the [i]mod[/i] folders into your Mods directory and enable them as per the user release.  (Although, installing and enabling the tweaks mods is still optional.)[/li]
 [li]Turn on development mode in the games main options menu, and;[/li]
 [li]Check your output_log.txt!  It will contain valuable information if CCL encounters errors when handling your mod!  This will help you fix those trivial bugs.[/li]
 [li]Always refer to "Def Descriptions", "Examples" and these forum posts (#1-10) herein refered to as "the documentation" for how to use this library.[/li]

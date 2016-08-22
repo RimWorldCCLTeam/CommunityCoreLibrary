@@ -149,6 +149,14 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
+        public string                   SaveKey
+        {
+            get
+            {
+                return miniMapDef.defName;
+            }
+        }
+
         public virtual string           label
         {
             get

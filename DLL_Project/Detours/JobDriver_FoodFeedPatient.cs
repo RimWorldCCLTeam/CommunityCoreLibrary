@@ -35,6 +35,7 @@ namespace CommunityCoreLibrary.Detour
 
             if( foodThing is Building )
             {
+                yield return Toils_Reserve.Reserve( FoodInd, 1 );
                 yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.InteractionCell ).FailOnForbidden( FoodInd );
                 if( foodThing is Building_NutrientPasteDispenser )
                 {

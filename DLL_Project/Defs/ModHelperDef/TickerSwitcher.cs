@@ -23,21 +23,54 @@ namespace CommunityCoreLibrary
 
             bool isValid = true;
 
-            foreach( var switcherSet in def.tickerSwitcher )
+            for( var index = 0; index < def.tickerSwitcher.Count; index++ )
             {
-                bool processThis = true;
-                if( !switcherSet.requiredMod.NullOrEmpty() )
+                var qualifierValid = true;
+                var injectionSet = def.tickerSwitcher[ index ];
+                if(
+                    ( !injectionSet.requiredMod.NullOrEmpty() )&&
+                    ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
+                )
                 {
-                    processThis = Find_Extensions.ModByName( switcherSet.requiredMod ) != null;
+                    continue;
                 }
-                if( processThis )
+                if(
+                    ( injectionSet.targetDefs.NullOrEmpty() )&&
+                    ( injectionSet.qualifier == null )
+                )
                 {
-                    foreach( var targetName in switcherSet.targetDefs )
+                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
+                    isValid = false;
+                    qualifierValid = false;
+                }
+                if(
+                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
+                    ( injectionSet.qualifier != null )
+                )
+                {
+                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
+                    isValid = false;
+                    qualifierValid = false;
+                }
+                if( qualifierValid )
+                {
+                    if( !injectionSet.targetDefs.NullOrEmpty() )
                     {
-                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                        if( targetDef == null )
+                        foreach( var targetName in injectionSet.targetDefs )
                         {
-                            errors += string.Format( "Unable to resolve targetDef '{0}' in TickerSwitcher", targetName );
+                            var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
+                            if( targetDef == null )
+                            {
+                                errors += string.Format( "Unable to resolve targetDef '{0}' in TickerSwitcher", targetName );
+                                isValid = false;
+                            }
+                        }
+                    }
+                    if( injectionSet.qualifier != null )
+                    {
+                        if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
+                        {
+                            errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
                             isValid = false;
                         }
                     }
@@ -55,19 +88,22 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var switcherSet in def.tickerSwitcher )
+            for( var index = 0; index < def.tickerSwitcher.Count; index++ )
             {
-                bool processThis = true;
-                if( !switcherSet.requiredMod.NullOrEmpty() )
+                var injectionSet = def.tickerSwitcher[ index ];
+                if(
+                    ( !injectionSet.requiredMod.NullOrEmpty() )&&
+                    ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
+                )
                 {
-                    processThis = Find_Extensions.ModByName( switcherSet.requiredMod ) != null;
+                    continue;
                 }
-                if( processThis )
+                var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
+                if( !thingDefs.NullOrEmpty() )
                 {
-                    foreach( var targetName in switcherSet.targetDefs )
+                    foreach( var thingDef in thingDefs )
                     {
-                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                        if( targetDef.tickerType != switcherSet.tickerType )
+                        if( thingDef.tickerType != injectionSet.tickerType )
                         {
                             return false;
                         }
@@ -85,20 +121,33 @@ namespace CommunityCoreLibrary
                 return true;
             }
 
-            foreach( var switcherSet in def.tickerSwitcher )
+            for( var index = 0; index < def.tickerSwitcher.Count; index++ )
             {
-                bool processThis = true;
-                if( !switcherSet.requiredMod.NullOrEmpty() )
+                var injectionSet = def.tickerSwitcher[ index ];
+                if(
+                    ( !injectionSet.requiredMod.NullOrEmpty() )&&
+                    ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
+                )
                 {
-                    processThis = Find_Extensions.ModByName( switcherSet.requiredMod ) != null;
+                    continue;
                 }
-                if( processThis )
+                var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
+                if( !thingDefs.NullOrEmpty() )
                 {
-                    foreach( var targetName in switcherSet.targetDefs )
+#if DEBUG
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append( "TickerSwitcher :: Qualifier returned: " );
+#endif
+                    foreach( var thingDef in thingDefs )
                     {
-                        var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                        targetDef.tickerType = switcherSet.tickerType;
+#if DEBUG
+                        stringBuilder.Append( thingDef.defName + ", " );
+#endif
+                        thingDef.tickerType = injectionSet.tickerType;
                     }
+#if DEBUG
+                    CCL_Log.Message( stringBuilder.ToString(), def.ModName );
+#endif
                 }
             }
 

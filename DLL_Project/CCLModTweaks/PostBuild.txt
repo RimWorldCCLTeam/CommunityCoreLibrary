@@ -1,0 +1,41 @@
+REM Copy this file to "PostBuild.bat"
+REM This is a local file copy after build.  Get it once and your .gitignore
+REM should handle it after that.  Make all your local copies at the end.
+
+REM Set this to your local RimWorld install path and CCL Mod Tweaks Assemblies directory
+REM Example:
+REM Set InstalledCCLAssemblies="C:\Games\Steam\steamapps\common\RimWorld\Mods\Community Core Library - Mod Tweaks\Assemblies"
+Set InstalledCCLAssemblies="/badkarma/"
+
+if NOT EXIST %InstalledCCLAssemblies% (
+    echo Missing or invalid copy target:
+    echo %InstalledCCLAssemblies%
+    EXIT -1
+)
+
+echo Build Config: %1
+echo Build Target: %2
+echo Solution Path: %3
+echo CCL Install Path: %InstalledCCLAssemblies%
+
+del "%3DLL_Project\CCLModTweaks\bin\CCLModTweaks.pdb"
+
+echo Copy to RimWorld
+
+copy %2 %InstalledCCLAssemblies%
+
+if %1 == Release (
+    echo Copy to User Release
+    copy %2 "%3_Mod\User Release\Community Core Library - Mod Tweaks\Assemblies"
+) else (
+    echo Copy to Modders Resource
+    copy %2 "%3_Mod\Modders Resource\Community Core Library - Mod Tweaks\Assemblies"
+)
+
+REM Add any other local copies here
+REM See example below
+
+rem echo Copy to ModPile
+rem copy %2 "C:\Utils\dev\Projects\ModPile\Source-DLLs"
+
+:Finished

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
 
@@ -25,8 +26,8 @@ namespace CommunityCoreLibrary.MiniMap
             this.area = area;
 
             // initial update
-            Update();
-            texture.Apply();
+            //Update();
+            //texture.Apply();
         }
 
         #endregion Constructors

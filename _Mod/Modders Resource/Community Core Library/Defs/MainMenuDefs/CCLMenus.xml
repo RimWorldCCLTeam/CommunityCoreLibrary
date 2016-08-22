@@ -10,6 +10,13 @@
     </CommunityCoreLibrary.MainMenuDef>
 
     <CommunityCoreLibrary.MainMenuDef>
+        <defName>QuickStart</defName>
+        <labelKey>QuickStart</labelKey>
+        <order>1000</order>
+        <menuClass>CommunityCoreLibrary.MainMenu_QuickStart</menuClass>
+    </CommunityCoreLibrary.MainMenuDef>
+
+    <CommunityCoreLibrary.MainMenuDef>
         <defName>ModConfigurationMenu</defName>
         <labelKey>ModConfigurationOptions</labelKey>
         <order>250</order>

@@ -7,7 +7,8 @@
 *.userprefs
 *.sln.docstates
 DLL_Project/bin/*.dll
-DLL_Project/*.bat
+DLL_Project/CCLModTweaks/bin/*.dll
+*.bat
 
 # Build results
 [Dd]ebug/

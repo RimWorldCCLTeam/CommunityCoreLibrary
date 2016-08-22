@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 
 using RimWorld;
 using UnityEngine;
@@ -26,6 +26,9 @@ namespace CommunityCoreLibrary.MiniMap
         public static bool              visible = false;
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
 
+        private static string           regExPattern = "\\W";
+        public static Regex             regEx;
+
         #endregion Fields
 
         #region Constructors
@@ -33,6 +36,7 @@ namespace CommunityCoreLibrary.MiniMap
         static                          MiniMapController()
         {
             defaultWindowRect = new Rect( Screen.width - DEFAULTWINDOWSIZE, 0f, DEFAULTWINDOWSIZE, DEFAULTWINDOWSIZE );
+            regEx = new Regex( regExPattern );
         }
 
         public                          MiniMapController()
@@ -318,16 +322,10 @@ namespace CommunityCoreLibrary.MiniMap
             bool hidden;
             foreach( var minimap in Controller.Data.MiniMaps )
             {
-                // Note: Minimaps with dynamic overlays break scribing because they have
-                // a machine generated defName which may not be the same after load.
-                if( minimap.miniMapDef.dynamicOverlays )
-                {
-                    continue;
-                }
 
                 #region Minimap Header
 
-                Scribe.EnterNode( minimap.miniMapDef.defName );
+                Scribe.EnterNode( minimap.SaveKey );
 
                 #endregion
 
@@ -340,7 +338,7 @@ namespace CommunityCoreLibrary.MiniMap
                 {
                     #region Overlay Header
 
-                    Scribe.EnterNode( overlay.overlayDef.defName );
+                    Scribe.EnterNode( overlay.SaveKey );
 
                     #endregion
 
@@ -369,17 +367,14 @@ namespace CommunityCoreLibrary.MiniMap
             bool hidden = true; // Don't really need to set this but the compiler complains if we don't
             foreach( var minimap in Controller.Data.MiniMaps )
             {
-                if(
-                    ( minimap.miniMapDef.dynamicOverlays )||
-                    ( !Scribe.curParent.HasChildNode( minimap.miniMapDef.defName ) )
-                )
-                {   // Dynamic minimap overlays or no saved data for this minimap
+                if( !Scribe.curParent.HasChildNode( minimap.SaveKey ) )
+                {   // No saved data for this minimap
                     continue;
                 }
 
                 #region Minimap Header
 
-                Scribe.EnterNode( minimap.miniMapDef.defName );
+                Scribe.EnterNode( minimap.SaveKey );
 
                 #endregion
 
@@ -391,14 +386,15 @@ namespace CommunityCoreLibrary.MiniMap
                 foreach( var overlay in minimap.overlayWorkers )
                 {
 
-                    if( !Scribe.curParent.HasChildNode( overlay.overlayDef.defName ) )
+                    //if( !Scribe.curParent.HasChildNode( overlay.overlayDef.defName ) )
+                    if( !Scribe.curParent.HasChildNode( overlay.SaveKey ) )
                     {   // No saved data for this overlay
                         continue;
                     }
 
                     #region Overlay Header
 
-                    Scribe.EnterNode( overlay.overlayDef.defName );
+                    Scribe.EnterNode( overlay.SaveKey );
 
                     #endregion
 

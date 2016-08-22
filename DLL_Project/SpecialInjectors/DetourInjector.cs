@@ -249,11 +249,23 @@ namespace CommunityCoreLibrary
             MethodInfo CCL_Pawn_RelationsTracker_AttractionTo = typeof( Detour._Pawn_RelationsTracker ).GetMethod( "_AttractionTo", UniversalBindingFlags );
             if (!Detours.TryDetourFromTo( RimWorld_Pawn_RelationsTracker_AttractionTo, CCL_Pawn_RelationsTracker_AttractionTo ) ) 
                 return false;
+            
+            // Detour RimWorld.PlaySettings.ExposeData
+            MethodInfo RimWorld_PlaySetting_ExposeData = typeof( PlaySettings ).GetMethod( "ExposeData", UniversalBindingFlags );
+            MethodInfo CCL_PlaySetting_ExposeData = typeof( Detour._PlaySettings ).GetMethod( "_ExposeData", UniversalBindingFlags );
+            if( !Detours.TryDetourFromTo( RimWorld_PlaySetting_ExposeData, CCL_PlaySetting_ExposeData ) )
+                return false;
 
+            // Detour RimWorld.PlaySettings.DoPlaySettingsGlobalControls
+            MethodInfo RimWorld_PlaySettings_DoPlaySettingsGlobalControls = typeof( PlaySettings ).GetMethod( "DoPlaySettingsGlobalControls", UniversalBindingFlags );
+            MethodInfo CCL_PlaySettings_DoPlaySettingsGlobalControls = typeof( Detour._PlaySettings ).GetMethod( "_DoPlaySettingsGlobalControls", UniversalBindingFlags );
+            if( !Detours.TryDetourFromTo( RimWorld_PlaySettings_DoPlaySettingsGlobalControls, CCL_PlaySettings_DoPlaySettingsGlobalControls ) )
+                return false;
+            
             /*
             // Detour 
-            MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", UniversalFlags );
-            MethodInfo CCL_bar = typeof( Detour._bar ).GetMethod( "_bar_method", UniversalFlags );
+            MethodInfo foo = typeof( foo_class ).GetMethod( "foo_method", UniversalBindingFlags );
+            MethodInfo CCL_bar = typeof( Detour._bar ).GetMethod( "_bar_method", UniversalBindingFlags );
             if( !Detours.TryDetourFromTo( foo, CCL_bar ) )
                 return false;
 

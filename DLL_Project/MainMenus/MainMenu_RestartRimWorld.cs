@@ -12,12 +12,18 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return Color.green;
+                return Controller.Data.RequireRestart ? Color.green : Color.white;
             }
         }
 
         public override bool RenderNow( bool anyMapFiles )
         {
+#if DEBUG
+            if( Prefs.DevMode )
+            {
+                return true;
+            }
+#endif
             return Controller.Data.RequireRestart;
         }
 

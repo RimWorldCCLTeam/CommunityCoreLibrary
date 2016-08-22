@@ -6,19 +6,19 @@
     <CompColorLightInspect>Couleur: </CompColorLightInspect>
 
     <CommandChangeColorLabel>Changer la couleur</CommandChangeColorLabel>
-    <CommandChangeColorDesc>LClick - {0};\nRClick - {1}</CommandChangeColorDesc>
+    <CommandChangeColorDesc>Clique Gauche - {0};\Clique Droit - {1}</CommandChangeColorDesc>
 
     <CommandChangeRoommateColorLabel>Synchroniser les lumières colorées de la pièce</CommandChangeRoommateColorLabel>
-    <CommandChangeRoommateColorLClick>LClick - Uniquement {0}</CommandChangeRoommateColorLClick>
-    <CommandChangeRoommateColorRClick>RClick - Toutes les lumières</CommandChangeRoommateColorRClick>
+    <CommandChangeRoommateColorLClick>Clique Gauche - Uniquement {0}</CommandChangeRoommateColorLClick>
+    <CommandChangeRoommateColorRClick>Clique Droit - Toutes les lumières</CommandChangeRoommateColorRClick>
 
     <CommandChangeTouchingPlantLabel>Synchroniser les plantes accolées</CommandChangeTouchingPlantLabel>
     <CommandChangeRoommatePlantLabel>Synchroniser les plantes dans la salle</CommandChangeRoommatePlantLabel>
-    <CommandChangeRoommatePlantLClick>LClick - Uniquement {0}</CommandChangeRoommatePlantLClick>
-    <CommandChangeRoommatePlantRClick>RClick - Toutes les plantes</CommandChangeRoommatePlantRClick>
+    <CommandChangeRoommatePlantLClick>Clique Gauche - Uniquement {0}</CommandChangeRoommatePlantLClick>
+    <CommandChangeRoommatePlantRClick>Clique Droit - Toutes les plantes</CommandChangeRoommatePlantRClick>
 
-    <CommandGroupOfThingsLClick>LClick - Dans la pièce</CommandGroupOfThingsLClick>
-    <CommandGroupOfThingsRClick>RClick - Sur la map</CommandGroupOfThingsRClick>
+    <CommandGroupOfThingsLClick>Clique Gauche - Dans la pièce</CommandGroupOfThingsLClick>
+    <CommandGroupOfThingsRClick>Clique Droit - Sur la map</CommandGroupOfThingsRClick>
 
     <CommandGroupOfThingsByDefLabel>Synchroniser tous {0} accolés</CommandGroupOfThingsByDefLabel>
     <CommandGroupOfThingsByLinkerLabel>Synchroniser tous {0} reliés </CommandGroupOfThingsByLinkerLabel>
@@ -33,7 +33,7 @@
     <RefrigeratedStorage>Dans le stockage réfrigéré</RefrigeratedStorage>
 
     <ModConfigurationOptions>Options du Mod</ModConfigurationOptions>
-    <ModConfigurationSaved>Saved {0} mod configuration</ModConfigurationSaved>
+    <ModConfigurationSaved>Configuration du mod {0} sauvegardée</ModConfigurationSaved>
 
     <BadLoadOrder>Un mauvais ordre de chargement a été détecté.\n\nCommunity Core Library n'est pas le second mod chargé. Cliquez sur 'Redémarrer Maintenant' à partir de ce menu pour corriger cette erreur et redémarrer RimWorld.</BadLoadOrder>
     <WarnAboutRestart>Un changement majeur s'est produit aux données du jeu, tel que le chargement de mods ou de language.\n\nN'importe quel changement majeur nécessite le redémarrage de RimWorld.\n\nJouer au jeu sans le redémarrer pourrait donner de petites erreurs imperceptibles... ou une invasion d'aliens sans fin.</WarnAboutRestart>
@@ -44,9 +44,14 @@
     <RestartNow>Redémarrer Maintenant</RestartNow>
     <AcceptTheConsequences>J'en accepte les conséquences</AcceptTheConsequences>
 
+    <CCLBuildNowAvailable>CCL Version {0} est maintenant disponible. Va voir sur github.com pour plus d'info.</CCLBuildNowAvailable>
+    <CCLBuildUpToDate>CCL est à jour.</CCLBuildUpToDate>
+    <ErrorGettingCCLVersionInfo>Une erreur est survenue en essayant de retrouver les infos sur la version de CCL: {0}</ErrorGettingCCLVersionInfo>
+    <LoadingCCLVersionInfo>Chargement des infos sur la version de CCL...</LoadingCCLVersionInfo>
+
     <!-- Validation error messages used in CCL.UI.LabeledInput and it's child classes -->
-    <CCL.UI.InputField.DefaultValidationError>Validation error; {0} is not a valid input</CCL.UI.InputField.DefaultValidationError>
-    <CCL.UI.InputField_Float.ValidationError>Validation error; {0} is not a valid number</CCL.UI.InputField_Float.ValidationError>
-    <CCL.UI.InputField_Int.ValidationError>Validation error; {0} is not a valid whole number</CCL.UI.InputField_Int.ValidationError>
+    <CCL.UI.InputField.DefaultValidationError>Erreur de validation; {0} n'est pas une entrée valide</CCL.UI.InputField.DefaultValidationError>
+    <CCL.UI.InputField_Float.ValidationError>Erreur de validation; {0} n'est pas un nombre valide</CCL.UI.InputField_Float.ValidationError>
+    <CCL.UI.InputField_Int.ValidationError>Erreur de validation; {0} n'est pas un nombre entier</CCL.UI.InputField_Int.ValidationError>
 
 </LanguageData>

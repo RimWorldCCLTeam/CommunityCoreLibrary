@@ -30,7 +30,7 @@ Most buildings will not draw power when they are not in use. This includes the c
 
 Auto Doors draw less power when they are not actually opening or closing.
 
-Hydroponics basins "cycle" power at a rate of 50W for 5000 "ticks" and then 100W for 2500 "ticks" and will offer to share their growing options with other hydroponics basins.  (A "tick" is 1/60 of a second, there are 30000 "ticks" to a game day.)
+Hydroponics basins "cycle" power at a rate of 50W for 5000 "ticks" and then 100W for 2500 "ticks" and will offer to share their growing options with other hydroponics basins.  (A "tick" is 1/60 of a second, there are 60000 "ticks" to a game day.)
 
 [color=orange]Advanced Research Recipes[/color]
 Artillery Shells require 'Mortars' research to be complete before they are available to be crafted at the smithing and machining workbenches.  Hops requires 'Brewing' before it can be planted and grown.
@@ -44,5 +44,12 @@ Hydroponic basins and plant pots can share growing information with other hydrop
 [color=orange]Nutrient Paste Dispensers[/color]
 The nutrient paste dispensers use the generic hoppers provided with the core library and the vanilla hopper is hidden from use.  This allows easier management of the dispensers by automatically programming the hoppers connected to them.
 
-[color=orange]Remember![/color]
-All changes are defined in xml in the Vanilla Tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml, so break out your text editor (such as notepad)!  It's so easy [url=https://www.youtube.com/watch?v=e8aj1AlYvxI]a cave man could do it[/url]!
+
+[size=12pt][color=orange]What the "Mod Tweaks" mod offers[/color][/size]
+
+[color=orange]Power Savings for mod added work tables[/color]
+Similar to the Vanilla Tweaks, the Mod Tweaks will make changes to mod added work tables which require power so that they will not use power then not in use.  Works with all mods without specific patches.
+
+
+[size=12pt][color=orange]Remember![/color][/size]
+All changes are defined in xml in the tweaks.  If you only want the core library, don't enable the tweaks.  If you do use the tweaks, you can change [i][b]ANYTHING[/b][/i] as it's all defined in xml, so break out your text editor (such as notepad)!  It's so easy [url=https://www.youtube.com/watch?v=e8aj1AlYvxI]a cave man could do it[/url]!
