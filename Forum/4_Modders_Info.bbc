@@ -15,6 +15,7 @@
 [li][color=orange]Name[/color] - Def to add new first, last and nicknames for pawns.[/li]
 [li][color=orange]Outfit[/color] - Add new outfits with a simple def instead of having to write C# code to inject them.[/li]
 [li][color=orange]Pawn Bio[/color] - Def to add new pawn biographies.[/li]
+[li][color=orange]Toggle Settings[/color] - Defines the toggle buttons in the lower-right corner of the map screen.[/li]
 [/list]
 
 [size=10pt][color=orange]Def Extensions[/color] (xml)[/size]
