@@ -44,6 +44,11 @@
     <RestartNow>Redémarrer Maintenant</RestartNow>
     <AcceptTheConsequences>J'en accepte les conséquences</AcceptTheConsequences>
 
+    <CCLBuildNowAvailable>CCL Version {0} est maintenant disponible. Va voir sur github.com pour plus d'info.</CCLBuildNowAvailable>
+    <CCLBuildUpToDate>CCL est à jour.</CCLBuildUpToDate>
+    <ErrorGettingCCLVersionInfo>Une erreur est survenue en essayant de retrouver les infos sur la version de CCL: {0}</ErrorGettingCCLVersionInfo>
+    <LoadingCCLVersionInfo>Chargement des infos sur la version de CCL...</LoadingCCLVersionInfo>
+
     <!-- Validation error messages used in CCL.UI.LabeledInput and it's child classes -->
     <CCL.UI.InputField.DefaultValidationError>Erreur de validation; {0} n'est pas une entrée valide</CCL.UI.InputField.DefaultValidationError>
     <CCL.UI.InputField_Float.ValidationError>Erreur de validation; {0} n'est pas un nombre valide</CCL.UI.InputField_Float.ValidationError>
