@@ -44,6 +44,8 @@
     <RestartNow>Перезапустить игру</RestartNow>
     <AcceptTheConsequences>Да, я понимаю возможные последствия</AcceptTheConsequences>
 
+    <QuickStart>Быстрый старт</QuickStart>
+
     <CCLBuildNowAvailable>Доступна новая {0}, версия CCL. Проверь github.com для информации.</CCLBuildNowAvailable>
     <CCLBuildUpToDate>У вас последняя версия CCL.</CCLBuildUpToDate>
     <ErrorGettingCCLVersionInfo>Ошибка получения сведений о версии CCL, для информации: {0}</ErrorGettingCCLVersionInfo>
