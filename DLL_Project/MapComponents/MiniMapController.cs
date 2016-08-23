@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using RimWorld;
 using UnityEngine;
@@ -26,6 +27,9 @@ namespace CommunityCoreLibrary.MiniMap
         public static bool              visible = false;
         public static List<MiniMap>     visibleMiniMaps = new List<MiniMap>();
 
+        private static string           regExPattern = "\\W";
+        private static Regex            regEx;
+
         #endregion Fields
 
         #region Constructors
@@ -33,6 +37,7 @@ namespace CommunityCoreLibrary.MiniMap
         static                          MiniMapController()
         {
             defaultWindowRect = new Rect( Screen.width - DEFAULTWINDOWSIZE, 0f, DEFAULTWINDOWSIZE, DEFAULTWINDOWSIZE );
+            regEx = new Regex( regExPattern );
         }
 
         public                          MiniMapController()
@@ -313,22 +318,25 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region Save/Load Minimap and Overlays
 
+        public static string            GenSaveKey( string inputString )
+        {
+            // Remove non-valid xml tag characters from the string
+            var regExed = regEx.Replace( inputString, "" );
+            Log.Message( string.Format( "GenSaveKey( '{0}' ) = '{1}'", inputString, regExed ) );
+            return regExed;
+        }
+
         private void                    ExposeDataSave()
         {
             bool hidden;
             foreach( var minimap in Controller.Data.MiniMaps )
             {
-                // Note: Minimaps with dynamic overlays break scribing because they have
-                // a machine generated defName which may not be the same after load.
-                if( minimap.miniMapDef.dynamicOverlays )
+
+                #region Minimap Header
+                if( !Scribe.EnterNode( minimap.SaveKey ) )
                 {
                     continue;
                 }
-
-                #region Minimap Header
-
-                Scribe.EnterNode( minimap.miniMapDef.defName );
-
                 #endregion
 
                 hidden = minimap.Hidden;
@@ -339,27 +347,28 @@ namespace CommunityCoreLibrary.MiniMap
                 foreach( var overlay in minimap.overlayWorkers )
                 {
                     #region Overlay Header
-
-                    Scribe.EnterNode( overlay.overlayDef.defName );
-
+                    var saveKey = overlay.SaveKey;
+                    if(
+                        ( string.IsNullOrEmpty( saveKey ) )||
+                        ( !Scribe.EnterNode( overlay.SaveKey ) )
+                    )
+                    {
+                        continue;
+                    }
                     #endregion
 
                     hidden = overlay.Hidden;
                     Scribe_Values.LookValue( ref hidden, "hidden", overlay.overlayDef.hiddenByDefault, true );
 
                     #region Finalize Overlay
-
                     Scribe.ExitNode();
-
                     #endregion
                 }
 
                 #endregion
 
                 #region Finalize Minimap
-
                 Scribe.ExitNode();
-
                 #endregion
             }
         }
@@ -369,46 +378,42 @@ namespace CommunityCoreLibrary.MiniMap
             bool hidden = true; // Don't really need to set this but the compiler complains if we don't
             foreach( var minimap in Controller.Data.MiniMaps )
             {
-                if(
-                    ( minimap.miniMapDef.dynamicOverlays )||
-                    ( !Scribe.curParent.HasChildNode( minimap.miniMapDef.defName ) )
-                )
-                {   // Dynamic minimap overlays or no saved data for this minimap
+                
+                #region Minimap Header
+                if( !Scribe.EnterNode( minimap.SaveKey ) )
+                {   // No saved data for this minimap
                     continue;
                 }
-
-                #region Minimap Header
-
-                Scribe.EnterNode( minimap.miniMapDef.defName );
-
                 #endregion
 
                 Scribe_Values.LookValue( ref hidden, "hidden", minimap.miniMapDef.hiddenByDefault, true );
                 minimap.Hidden = hidden;
 
+                if( minimap.miniMapDef.dynamicOverlays )
+                {   // Rebuild overlays for minimap
+                    minimap.Reset();
+                }
+
                 #region Handle all MiniMap Overlays
 
                 foreach( var overlay in minimap.overlayWorkers )
                 {
-
-                    if( !Scribe.curParent.HasChildNode( overlay.overlayDef.defName ) )
+                    #region Overlay Header
+                    var saveKey = overlay.SaveKey;
+                    if(
+                        ( string.IsNullOrEmpty( saveKey ) )||
+                        ( !Scribe.EnterNode( saveKey ) )
+                    )
                     {   // No saved data for this overlay
                         continue;
                     }
-
-                    #region Overlay Header
-
-                    Scribe.EnterNode( overlay.overlayDef.defName );
-
                     #endregion
 
                     Scribe_Values.LookValue( ref hidden, "hidden", overlay.overlayDef.hiddenByDefault, true );
                     overlay.Hidden = hidden;
 
                     #region Finalize Overlay
-
                     Scribe.ExitNode();
-
                     #endregion
                 }
 

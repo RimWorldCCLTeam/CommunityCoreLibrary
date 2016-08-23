@@ -149,6 +149,14 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
+        public virtual string           SaveKey
+        {
+            get
+            {
+                return miniMapDef.defName;
+            }
+        }
+
         public virtual string           label
         {
             get
@@ -208,6 +216,10 @@ namespace CommunityCoreLibrary.MiniMap
                 overlay.ClearTexture( apply );
                 overlay.texture.Apply();
             }
+        }
+
+        public virtual void             Reset()
+        {
         }
 
         public virtual void             Update()

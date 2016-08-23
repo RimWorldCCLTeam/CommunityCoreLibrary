@@ -37,6 +37,14 @@
       <li>string</li>
     </spawnCategories>
     
+    <forcedTraits>                            [optional] This sets which traits are forced for this backstory. Check the bottom of the file for an explanation of how this works. If you do not want to force any traits, then remove this entry.
+      <li></li>
+    </forcedTraits>
+    
+    <disallowedTraits>                        [optional] This sets which traits are disallowed by this backstory.
+      <li></li>
+    </disallowedTraits>
+    
     <saveKeyIdentifier>string</saveKeyIdentifier> [required] This is the unique key used when storing the back story. Doesn't have to be long.
     
   </CommunityCoreLibrary.BackstoryDef>

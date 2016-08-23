@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Verse;
@@ -15,6 +16,10 @@ namespace CommunityCoreLibrary
         public List< string >               researchPrerequisites;
 
         public List< string >               targetDefs;
+
+        public Type                         qualifier;
+
+        public DefInjectionQualifier        qualifierInt;
 
     }
 

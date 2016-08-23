@@ -14,9 +14,18 @@ namespace CommunityCoreLibrary
     {
         public static bool DesignatorExists( this DesignatorData designatorData )
         {
-            var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
-            List<Designator> designators = designationCategory._resolvedDesignators();
-            return designators.Exists( d => d.GetType() == designatorData.designatorClass );
+            bool rVal = true;
+            if( !string.IsNullOrEmpty( designatorData.designationCategoryDef ) )
+            {
+                var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
+                List<Designator> designators = designationCategory._resolvedDesignators();
+                rVal &= designators.Exists( d => d.GetType() == designatorData.designatorClass );
+            }
+            if( designatorData.reverseDesignator )
+            {
+                rVal &= ReverseDesignatorDatabase_Extensions.Find( designatorData.designatorClass ) != null;
+            }
+            return rVal;
         }
     }
 }

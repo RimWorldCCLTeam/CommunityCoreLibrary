@@ -112,7 +112,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 def = ((Building_AutomatedFactory)t).BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                 if( def == null )
-                {
+                {   // This should never happen, why is it?
                     return FoodOptimalityUnusable;
                 }
             }
@@ -452,6 +452,12 @@ namespace CommunityCoreLibrary.Detour
                     {
                         Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is unreachable", getter.LabelShort, t.ThingID ) );
+                        return false;
+                    }
+                    if( !getter.CanReserve( t, 1 ) )
+                    {
+                        Profiler.EndSample();
+                        //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is unreservable", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     // NPD checks

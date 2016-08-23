@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <CommunityCoreLibrary.ModHelperDef>
+        <defName>CommunityCoreLibraryModTweaks</defName>
+
+        <ModName>Community Core Library - Mod Tweaks</ModName>
+
+        <minCCLVersion>0.14.3</minCCLVersion>
+
+        <ThingComps>
+
+            <!-- Add CompPowerLowIdleDraw to WorkTables -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 0 watts when not in use -->
+                </compProps>
+                <qualifier>CCLModTweaks.WorkTableCompPowerLowIdleDrawCompAdderQualifier</qualifier>
+            </li>
+
+        </ThingComps>
+
+        <tickerSwitcher>
+
+            <!-- Switch to Normal ticker on defs -->
+            <li>
+                <tickerType>Normal</tickerType>
+                <qualifier>CCLModTweaks.WorkTableCompPowerLowIdleDrawTickerChangerQualifier</qualifier>
+            </li>
+
+        </tickerSwitcher>
+
+    </CommunityCoreLibrary.ModHelperDef>
+
+</Defs>

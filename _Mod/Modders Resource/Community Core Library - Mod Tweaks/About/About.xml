@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+
+    <name>Community Core Library - Mod Tweaks</name>
+
+    <author>RimWorld CCL Team</author>
+
+    <url>https://ludeon.com/forums/index.php?topic=14172.0</url>
+
+    <targetVersion>0.14.1220</targetVersion>
+
+    <description>v0.14.3
+
+Requires Community Core Library v0.14.3
+
+Compatible with RimWorld builds:
+1220, 1230, 1232, 1234, 1238, 1241, 1249
+
+Makes optional changes to the mod game objects.
+
+This mod is optional but recommended (by the CCL modding team, but we're biased).
+</description>
+
+</ModMetaData>

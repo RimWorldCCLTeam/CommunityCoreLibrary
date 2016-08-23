@@ -61,6 +61,18 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
+        public virtual string           SaveKey
+        {
+            get
+            {
+                if( minimap.miniMapDef.dynamicOverlays )
+                {
+                    throw new Exception( "Dynamic minimap overlays must override SaveKey to provide a save-safe key!" );
+                }
+                return overlayDef.defName;
+            }
+        }
+
         public virtual string           label
         {
             get

@@ -30,6 +30,7 @@ namespace CommunityCoreLibrary
         // InjectionSubController
         public List< Type >                 SpecialInjectors;
         public List< CompInjectionSet >     ThingComps;
+        public List< ITabInjectionSet >     ITabs;
         public List< TickerSwitcher >       tickerSwitcher;
         public List< FacilityInjectionSet > Facilities;
         public List< StockGeneratorInjectionSet > TraderKinds;
@@ -79,9 +80,10 @@ namespace CommunityCoreLibrary
             {
                 new MHD_SpecialInjectors(),
                 new MHD_ThingComps(),
+                new MHD_ITabs(),
                 new MHD_TickerSwitcher(),
                 new MHD_Facilities(),
-                new MHD_TraderKinds(),
+                new MHD_StockGenerators(),
                 new MHD_ThingDefAvailability(),
                 new MHD_PostLoadInjectors(),
                 new MHD_MapComponents(),

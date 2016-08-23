@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
 
@@ -25,8 +26,8 @@ namespace CommunityCoreLibrary.MiniMap
             this.area = area;
 
             // initial update
-            Update();
-            texture.Apply();
+            //Update();
+            //texture.Apply();
         }
 
         #endregion Constructors
@@ -48,6 +49,14 @@ namespace CommunityCoreLibrary.MiniMap
             foreach ( var cell in area.ActiveCells )
             {
                 texture.SetPixel( cell.x, cell.z, color );
+            }
+        }
+
+        public override string          SaveKey
+        {
+            get
+            {
+                return MiniMapController.GenSaveKey( area.GetUniqueLoadID() );
             }
         }
 

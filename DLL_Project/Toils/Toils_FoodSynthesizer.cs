@@ -26,6 +26,7 @@ namespace CommunityCoreLibrary
                 takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
                 takeFromSynthesizer.AddEndCondition( () =>
                     {
+                        Find.Reservations.Release( synthesizer, eater );
                         return JobCondition.Incompletable;
                     }
                 );
@@ -36,15 +37,16 @@ namespace CommunityCoreLibrary
                 takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
                 takeFromSynthesizer.AddFinishAction( () =>
                     {
-                        Thing thing = synthesizer.TryProduceThingDef( bestDef );
-                        if( thing == null )
-                        {
+                        var meal = synthesizer.TryProduceThingDef( bestDef );
+                        Find.Reservations.Release( synthesizer, eater );
+                        if( meal == null )
+                        {   // This should never happen, why is it?
                             Log.Error( eater.Label + " unable to take " + bestDef.label + " from " + synthesizer.ThingID );
                             eater.jobs.curDriver.EndJobWith( JobCondition.Incompletable );
                         }
                         else
                         {
-                            eater.carrier.TryStartCarry( thing );
+                            eater.carrier.TryStartCarry( meal );
                             eater.jobs.curJob.targetA = (TargetInfo) eater.carrier.CarriedThing;
                         }
                     }
