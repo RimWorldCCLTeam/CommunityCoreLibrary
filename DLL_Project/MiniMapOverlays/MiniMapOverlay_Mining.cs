@@ -28,6 +28,8 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override void Update()
         {
+            ClearTexture();
+
             // get the mining designators
             var miningDesignators = Find.DesignationManager.allDesignations
                                         .Where( d => d.def == DesignationDefOf.Mine )
