@@ -322,7 +322,7 @@ namespace CommunityCoreLibrary.MiniMap
         {
             // Remove non-valid xml tag characters from the string
             var regExed = regEx.Replace( inputString, "" );
-            Log.Message( string.Format( "GenSaveKey( '{0}' ) = '{1}'", inputString, regExed ) );
+            //Log.Message( string.Format( "GenSaveKey( '{0}' ) = '{1}'", inputString, regExed ) );
             return regExed;
         }
 

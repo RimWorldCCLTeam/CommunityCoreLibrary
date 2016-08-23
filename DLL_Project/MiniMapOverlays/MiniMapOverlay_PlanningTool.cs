@@ -28,6 +28,8 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override void Update()
         {
+            ClearTexture();
+
             // get the planning designators
             var planningDesignators = Find.DesignationManager.allDesignations
                                           .Where( d => d.def == DesignationDefOf.Plan )
