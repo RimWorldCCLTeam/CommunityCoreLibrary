@@ -151,7 +151,14 @@ namespace CommunityCoreLibrary
                         if( iOverlay != null )
                         {
                             #region Overlay Header
-                            Scribe.EnterNode( overlay.SaveKey );
+                            var saveKey = overlay.SaveKey;
+                            if(
+                                ( string.IsNullOrEmpty( saveKey ) )||
+                                ( !Scribe.EnterNode( saveKey ) )
+                            )
+                            {
+                                continue;
+                            }
                             #endregion
 
                             #region Handle Overlay IConfigurable

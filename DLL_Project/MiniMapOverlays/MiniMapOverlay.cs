@@ -61,13 +61,13 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public string                   SaveKey
+        public virtual string           SaveKey
         {
             get
             {
                 if( minimap.miniMapDef.dynamicOverlays )
                 {
-                    return MiniMapController.regEx.Replace( overlayDef.label, "" );
+                    throw new Exception( "Dynamic minimap overlays must override SaveKey to provide a save-safe key!" );
                 }
                 return overlayDef.defName;
             }

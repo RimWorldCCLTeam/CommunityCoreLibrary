@@ -7,7 +7,7 @@ namespace CommunityCoreLibrary
     public static class XML_Helper
     {
         
-        // TODO:  Move this method to an extension class (question, under what though?)
+        // TODO:  Remove this as Scribe.EnterNode returns a bool and does the same job
         public static bool                  HasChildNode( this XmlNode xmlNode, string childNode )
         {
             var xmlEnumerator = xmlNode.ChildNodes.GetEnumerator();

@@ -149,7 +149,7 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
-        public string                   SaveKey
+        public virtual string           SaveKey
         {
             get
             {
@@ -216,6 +216,10 @@ namespace CommunityCoreLibrary.MiniMap
                 overlay.ClearTexture( apply );
                 overlay.texture.Apply();
             }
+        }
+
+        public virtual void             Reset()
+        {
         }
 
         public virtual void             Update()

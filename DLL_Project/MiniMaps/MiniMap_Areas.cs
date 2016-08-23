@@ -19,6 +19,12 @@ namespace CommunityCoreLibrary.MiniMap
 
         #region Methods
 
+        public override void Reset()
+        {
+            overlayWorkers.Clear();
+            UpdateAreaOverlays();
+        }
+
         public override void Update()
         {
             UpdateAreaOverlays();
@@ -31,7 +37,7 @@ namespace CommunityCoreLibrary.MiniMap
                 return;
 
             // check if we need to add area overlays
-            foreach ( var area in Find.AreaManager.AllAreas )
+            foreach( var area in Find.AreaManager.AllAreas )
             {
                 if ( !overlayWorkers.Any( w => ((MiniMapOverlay_Area)w).area == area ) )
                     overlayWorkers.Add( new MiniMapOverlay_Area( this, new MiniMapOverlayDef(), area ) );

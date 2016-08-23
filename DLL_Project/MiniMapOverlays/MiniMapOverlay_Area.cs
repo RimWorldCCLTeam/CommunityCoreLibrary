@@ -52,6 +52,14 @@ namespace CommunityCoreLibrary.MiniMap
             }
         }
 
+        public override string          SaveKey
+        {
+            get
+            {
+                return MiniMapController.GenSaveKey( area.GetUniqueLoadID() );
+            }
+        }
+
         #endregion Methods
     }
 }
