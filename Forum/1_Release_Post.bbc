@@ -62,6 +62,10 @@ If you are a modder, download the modders resource or the source package.
 [li]If you want to contribute, bug fix, nitpick, etc, you should fork from the unstable development branch and propose changes through pull requests.[/li][/list]
 
 
+Once installed and placed in the correct load order, your load order should look like this:
+[center][img]https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/blob/master/WebGraphics/CCL_Load_Order.png?raw=true[/img][/center]
+
+
 
 [size=12pt][color=orange]Download[/color][/size]
 [color=white][url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases/latest]Latest release[/url] | [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/releases]All releases[/url] | [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary]GitHub repository[/url][/color]
