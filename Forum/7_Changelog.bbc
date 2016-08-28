@@ -2,7 +2,8 @@
 
 For the full list of changes in each version, please refer to the [url=https://github.com/RimWorldCCLTeam/CommunityCoreLibrary/pull/??]commit log[/url].  This section is just for convenience sake.
 
-[code]v0.14.3.1 - Fixes planning tool and mining minimap overlays not clearing their texture before drawing, removes left-over debug message.
+[code]v0.15.0 - Alpha 15 update.
+v0.14.3.1 - Fixes planning tool and mining minimap overlays not clearing their texture before drawing, removes left-over debug message.
 v0.14.3 - Mod Tweaks, Russian translation, ToggleSettingDef, traits to BackStoryDef, ITab injector, reverse designators, more utility minimap overlays and some rare occurance bugs fixed.
 v0.14.2.1 - Small bugs stomped
 v0.14.2 - Adds OutfitDef and additional C# API methods.

@@ -7,12 +7,12 @@
 
     <url>https://ludeon.com/forums/index.php?topic=16599.0</url>
 
-    <targetVersion>0.14.1220</targetVersion>
+    <targetVersion>0.15.1273</targetVersion>
 
-    <description>v0.14.3
+    <description>v0.15.0
 
 Compatible with RimWorld builds:
-1220, 1230, 1232, 1234, 1238, 1241, 1249
+1273
 
 Provides a common core set of library functions for modders as well as making required core changes.
 
