@@ -25,7 +25,7 @@ namespace CommunityCoreLibrary.Detour
         {
             if( _FoodOptimalityEffectFromMoodCurve == null )
             {
-                _FoodOptimalityEffectFromMoodCurve = typeof( FoodUtility ).GetField( "FoodOptimalityEffectFromMoodCurve", BindingFlags.Static | BindingFlags.NonPublic );
+                _FoodOptimalityEffectFromMoodCurve = typeof( FoodUtility ).GetField( "FoodOptimalityEffectFromMoodCurve", Controller.Data.UniversalBindingFlags );
             }
             return (SimpleCurve)_FoodOptimalityEffectFromMoodCurve.GetValue( null );
         }
@@ -34,7 +34,7 @@ namespace CommunityCoreLibrary.Detour
         {
             if( _ingestThoughts == null )
             {
-                _ingestThoughts = typeof( FoodUtility ).GetField( "ingestThoughts", BindingFlags.Static | BindingFlags.NonPublic );
+                _ingestThoughts = typeof( FoodUtility ).GetField( "ingestThoughts", Controller.Data.UniversalBindingFlags );
             }
             return (List<ThoughtDef>)_ingestThoughts.GetValue( null );
         }
@@ -43,7 +43,7 @@ namespace CommunityCoreLibrary.Detour
         {
             if( _SpawnedFoodSearchInnerScan == null )
             {
-                _SpawnedFoodSearchInnerScan = typeof( FoodUtility ).GetMethod( "SpawnedFoodSearchInnerScan", BindingFlags.Static | BindingFlags.NonPublic );
+                _SpawnedFoodSearchInnerScan = typeof( FoodUtility ).GetMethod( "SpawnedFoodSearchInnerScan", Controller.Data.UniversalBindingFlags );
             }
             return (Thing)_SpawnedFoodSearchInnerScan.Invoke( null, new object[] { eater, root, searchSet, peMode, traverseParams, maxDistance, validator } );
         }
@@ -62,48 +62,7 @@ namespace CommunityCoreLibrary.Detour
         }
 #endif
 
-        internal static bool                _GetFoodDefAlcohol;
-        internal static ThingDef            _GetFoodDef( Thing foodSource )
-        {
-            var lookForAlcohol = _GetFoodDefAlcohol;
-            _GetFoodDefAlcohol = false;
-
-            //CCL_Log.Message( string.Format( "GetFoodDef( {0} )", foodSource.ThingID ) );
-
-            var nutrientPasteDispenser = foodSource as Building_NutrientPasteDispenser;
-            if( nutrientPasteDispenser != null )
-            {
-                //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, nutrientPasteDispenser.DispensableDef.defName ) );
-                return nutrientPasteDispenser.DispensableDef;
-            }
-
-            var factory = foodSource as Building_AutomatedFactory;
-            if( factory != null )
-            {
-                if( lookForAlcohol )
-                {
-                    var product = factory.BestProduct( FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol );
-                    //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, product.defName ) );
-                    return product;
-                }
-                else
-                {
-                    var product = factory.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
-                    //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, product.defName ) );
-                    return product;
-                }
-            }
-
-            var prey = foodSource as Pawn;
-            if( prey != null )
-            {
-                //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, prey.RaceProps.corpseDef.defName ) );
-                return prey.RaceProps.corpseDef;
-            }
-            //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, foodSource.def.defName ) );
-            return foodSource.def;
-        }
-
+        [DetourClassMethod( typeof( FoodUtility ), "FoodSourceOptimality" )]
         internal static float               _FoodSourceOptimality( Pawn eater, Thing t, float dist )
         {
             var def = t.def;
@@ -141,7 +100,7 @@ namespace CommunityCoreLibrary.Detour
                     ( comp.TicksUntilRotAtCurrentTemp < 30000 )
                 )
                 {
-                    num += 40f;
+                    num += 12f;
                 }
             }
             //CCL_Log.Message( string.Format( "FoodSourceOptimality for {0} eating {1} from {2} = {3}", eater.LabelShort, def.defName, t.ThingID, num ) );
@@ -157,9 +116,14 @@ namespace CommunityCoreLibrary.Detour
                     num += curve.Evaluate( list[ index ].stages[ 0 ].baseMoodEffect );
                 }
             }
+            if( t.def.ingestible != null )
+            {
+                num += t.def.ingestible.optimalityOffset;
+            }
             return num;
         }
 
+        [DetourClassMethod( typeof( FoodUtility ), "ThoughtsFromIngesting" )]
         internal static List<ThoughtDef>    _ThoughtsFromIngesting( Pawn ingester, Thing t )
         {
             var ingestThoughts = IngestThoughts();
@@ -249,10 +213,9 @@ namespace CommunityCoreLibrary.Detour
             return ingestThoughts;
         }
 
-        internal static Thing               _BestFoodSourceOnMap( Pawn getter, Pawn eater, bool desperate, FoodPreferability maxPref = FoodPreferability.MealLavish, bool allowPlant = true, bool allowLiquor = true, bool allowCorpse = true, bool allowDispenserFull = true, bool allowDispenserEmpty = true, bool allowForbidden = false )
+        [DetourClassMethod( typeof( FoodUtility ), "BestFoodSourceOnMap" )]
+        internal static Thing               _BestFoodSourceOnMap( Pawn getter, Pawn eater, bool desperate, FoodPreferability maxPref = FoodPreferability.MealLavish, bool allowPlant = true, bool allowDrug = true, bool allowCorpse = true, bool allowDispenserFull = true, bool allowDispenserEmpty = true, bool allowForbidden = false )
         {
-            Profiler.BeginSample( "BestFoodInWorldFor getter=" + getter.LabelCap + " eater=" + eater.LabelCap );
-
             var getterCanManipulate = (
                 ( getter.RaceProps.ToolUser )&&
                 ( getter.health.capacities.CapableOf( PawnCapacityDefOf.Manipulation ) )
@@ -263,7 +226,6 @@ namespace CommunityCoreLibrary.Detour
             )
             {
                 Log.Error( string.Format( "{0} tried to find food to bring to {1} but {0} is incapable of Manipulation.", getter.LabelCap, eater.LabelCap ) );
-                Profiler.EndSample();
                 return null;
             }
 
@@ -275,10 +237,9 @@ namespace CommunityCoreLibrary.Detour
             validator.getter = getter;
             validator.allowDispenserEmpty = allowDispenserEmpty;
             validator.allowCorpse = allowCorpse;
-            validator.allowLiquor = allowLiquor;
+            validator.allowDrug = allowDrug;
             validator.desperate = desperate;
             validator.eater = eater;
-            validator.allowLiquor &= !desperate;
             validator.minPref =
                 desperate
                 ? FoodPreferability.DesperateOnly
@@ -298,13 +259,13 @@ namespace CommunityCoreLibrary.Detour
                 ? ThingRequest.ForGroup( ThingRequestGroup.FoodSourceNotPlantOrTree )
                 : ThingRequest.ForGroup( ThingRequestGroup.FoodSource );
 
-            var thingsRequested = Find.ListerThings.ThingsMatching( thingRequest );
-            //DumpThingsRequestedForGroup( thingRequest, thingsRequested );
-
             var potentialFoodSource = (Thing)null;
 
             if( getter.RaceProps.Humanlike )
             {
+                var thingsRequested = Find.ListerThings.ThingsMatching( thingRequest );
+                //DumpThingsRequestedForGroup( thingRequest, thingsRequested );
+
                 //CCL_Log.Message( "Humanlike inner scan..." );
                 potentialFoodSource = SpawnedFoodSearchInnerScan(
                     eater,
@@ -322,7 +283,7 @@ namespace CommunityCoreLibrary.Detour
             else
             {
                 //CCL_Log.Message( "Non-humanlike closest reachable..." );
-                int searchRegionsMax = 30;
+                var searchRegionsMax = 30;
                 if( getter.Faction == Faction.OfPlayer )
                 {
                     searchRegionsMax = 60;
@@ -361,7 +322,6 @@ namespace CommunityCoreLibrary.Detour
                         false );
                 }
             }
-            Profiler.EndSample();
             //CCL_Log.Message( string.Format( "{0} picked {1} for {2}", getter.LabelShort, potentialFoodSource == null ? "nothing" : potentialFoodSource.ThingID, eater.LabelShort ) );
             return potentialFoodSource;
         }
@@ -376,19 +336,17 @@ namespace CommunityCoreLibrary.Detour
             internal Pawn getter;
             internal bool allowDispenserEmpty;
             internal bool allowCorpse;
-            internal bool allowLiquor;
+            internal bool allowDrug;
             internal bool desperate;
             internal Pawn eater;
 
             internal bool ValidateFast( Thing t )
             {
-                Profiler.BeginSample( "foodValidator" );
                 if(
                     ( !allowForbidden )&&
                     ( t.IsForbidden( getter ) )
                 )
                 {
-                    Profiler.EndSample();
                     //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is forbidden", getter.LabelShort, t.ThingID ) );
                     return false;
                 }
@@ -398,13 +356,11 @@ namespace CommunityCoreLibrary.Detour
                     ( t.Faction != getter.HostFaction )
                 )
                 {
-                    Profiler.EndSample();
                     //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is the wrong faction - Faction for {1} is {2} - Faction for {0} is {3}, host is {4}", getter.LabelShort, t.ThingID, t.Faction?.Name, getter.Faction?.Name, getter.HostFaction?.Name ) );
                     return false;
                 }
                 if( !t.IsSociallyProper( getter ) )
                 {
-                    Profiler.EndSample();
                     //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is socially improper", getter.LabelShort, t.ThingID ) );
                     return false;
                 }
@@ -414,13 +370,11 @@ namespace CommunityCoreLibrary.Detour
                     // Common checks for all machines
                     if( !allowDispenserFull )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because cannot use full dispensers", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !getterCanManipulate )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because {0} cannot manipulate", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
@@ -430,13 +384,11 @@ namespace CommunityCoreLibrary.Detour
                         ( !compPower.PowerOn )
                     )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is unpowered", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !t.InteractionCell.Standable() )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because the interaction cell is unstandable", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
@@ -450,13 +402,11 @@ namespace CommunityCoreLibrary.Detour
                             false )
                     ) )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is unreachable", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !getter.CanReserve( t, 1 ) )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is unreservable", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
@@ -469,7 +419,6 @@ namespace CommunityCoreLibrary.Detour
                             ( NPD.DispensableDef.ingestible.preferability > maxPref )
                         )
                         {
-                            Profiler.EndSample();
                             //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is not preferable", getter.LabelShort, t.ThingID ) );
                             return false;
                         }
@@ -478,7 +427,6 @@ namespace CommunityCoreLibrary.Detour
                             ( !NPD.HasEnoughFeedstockInHoppers() )
                         )
                         {
-                            Profiler.EndSample();
                             //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is empty", getter.LabelShort, t.ThingID ) );
                             return false;
                         }
@@ -490,7 +438,6 @@ namespace CommunityCoreLibrary.Detour
                         var mealDef = FS.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                         if( mealDef == null )
                         {
-                            Profiler.EndSample();
                             //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is empty", getter.LabelShort, t.ThingID ) );
                             return false;
                         }
@@ -499,7 +446,6 @@ namespace CommunityCoreLibrary.Detour
                             ( mealDef.ingestible.preferability > maxPref )
                         )
                         {
-                            Profiler.EndSample();
                             //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is not preferable", getter.LabelShort, t.ThingID ) );
                             return false;
                         }
@@ -513,13 +459,11 @@ namespace CommunityCoreLibrary.Detour
                         ( t.def.ingestible.preferability > maxPref )
                     )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is not preferable", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !t.IngestibleNow )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is not ingestible now", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
@@ -528,16 +472,14 @@ namespace CommunityCoreLibrary.Detour
                         ( t is Corpse )
                     )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is a corpse", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if(
-                        ( !allowLiquor )&&
-                        ( t.def.ingestible.isPleasureDrug )
+                        ( !allowDrug )&&
+                        ( t.def.IsDrug )
                     )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is liquor", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
@@ -549,30 +491,25 @@ namespace CommunityCoreLibrary.Detour
                         )
                     )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is not fresh or it's dessicated", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !eater.RaceProps.WillAutomaticallyEat( t ) )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it will not automatically eat it", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !getter.AnimalAwareOf( t ) )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it is not aware of it", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                     if( !getter.CanReserve( t, 1 ) )
                     {
-                        Profiler.EndSample();
                         //CCL_Log.Message( string.Format( "{0} cannot use {1} because it cannot reserve it", getter.LabelShort, t.ThingID ) );
                         return false;
                     }
                 }
-                Profiler.EndSample();
                 //CCL_Log.Message( string.Format( "{0} can use {1}", getter.LabelShort, t.ThingID ) );
                 return true;
             }

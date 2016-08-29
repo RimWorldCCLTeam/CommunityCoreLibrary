@@ -9,60 +9,55 @@ using UnityEngine;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _CompRottable
+    internal class _CompRottable : CompRottable
     {
 
         internal static MethodInfo          _ShouldTakeDessicateDamage;
 
         #region Reflected Methods
 
-        internal static bool                ShouldTakeDessicateDamage( this CompRottable obj )
+        internal bool                       ShouldTakeDessicateDamage()
         {
             if( _ShouldTakeDessicateDamage == null )
             {
-                _ShouldTakeDessicateDamage = typeof( CompRottable ).GetMethod( "ShouldTakeDessicateDamage", BindingFlags.Instance | BindingFlags.NonPublic );
+                _ShouldTakeDessicateDamage = typeof( CompRottable ).GetMethod( "ShouldTakeDessicateDamage", Controller.Data.UniversalBindingFlags );
             }
-            return (bool) _ShouldTakeDessicateDamage.Invoke( obj, null );
+            return (bool) _ShouldTakeDessicateDamage.Invoke( this, null );
         }
 
         #endregion
 
         #region Comp Properties & Thing Comps
 
-        internal static CompProperties_Rottable PropsRot( this CompRottable obj )
+        internal CompProperties_Rottable    PropsRot
         {
-            return obj.props as CompProperties_Rottable;
+            get
+            {
+                return this.props as CompProperties_Rottable;
+            }
         }
 
-        internal static CompRefrigerated    CompRefrigerated( this CompRottable obj )
+        internal CompRefrigerated           refrigeratedComp
         {
-            IntVec3 checkPos = IntVec3.Invalid;
-            if( obj.parent.holder != null )
+            get
             {
-                checkPos = obj.parent.PositionHeld;
+                var checkPos = this.parent.PositionHeld;
+                if( !checkPos.InBounds() )
+                {
+                    return null;
+                }
+                var refrigerator = checkPos.GetThingList().FirstOrDefault( t => (
+                    ( t.TryGetComp<CompRefrigerated>() != null )
+                ) );
+                return refrigerator?.TryGetComp<CompRefrigerated>();
             }
-            else
-            {
-                checkPos = obj.parent.Position;
-            }
-            if(
-                ( checkPos == IntVec3.Invalid )||
-                ( !checkPos.InBounds() )
-            )
-            {
-                return null;
-            }
-            var refrigerator = checkPos.GetThingList().FirstOrDefault( t => (
-                ( t.TryGetComp<CompRefrigerated>() != null )
-            ) );
-            return refrigerator?.TryGetComp<CompRefrigerated>();
         }
 
-        internal static CompPowerTrader     PowerTraderFor( this CompRefrigerated obj )
+        internal CompPowerTrader            compPowerFor( CompRefrigerated compRefrigerated )
         {
-            if( obj != null )
+            if( compRefrigerated != null )
             {
-                return obj.parent.TryGetComp<CompPowerTrader>();
+                return compRefrigerated.parent.TryGetComp<CompPowerTrader>();
             }
             return null;
         }
@@ -71,73 +66,78 @@ namespace CommunityCoreLibrary.Detour
 
         #region Private Methods
 
-        internal static bool                InRefrigerator( this CompRottable obj )
+        internal bool                       IsInRefrigerator
         {
-            var compRefrigerated = obj.CompRefrigerated();
-            var compPowerTrader = PowerTraderFor( compRefrigerated );
-            return (
-                ( compRefrigerated != null )&&
-                (
-                    ( compPowerTrader == null )||
+            get
+            {
+                var compRefrigerated = this.refrigeratedComp;
+                var compPowerTrader = compPowerFor( compRefrigerated );
+                return (
+                    ( compRefrigerated != null )&&
                     (
-                        ( compPowerTrader != null )&&
-                        ( compPowerTrader.PowerOn )
+                        ( compPowerTrader == null )||
+                        (
+                            ( compPowerTrader != null )&&
+                            ( compPowerTrader.PowerOn )
+                        )
                     )
-                )
-            );
+                );
+            }
         }
 
         #endregion
 
         #region Method Detours
 
-        internal static void                _CompTickRare( this CompRottable obj )
+        [DetourClassMethod( typeof( CompRottable ), "CompTickRare" )]
+        public override void                CompTickRare()
         {
-            if( obj.InRefrigerator() )
+            if( this.IsInRefrigerator )
             {
                 return;
             }
-            float num = obj.RotProgress;
-            obj.RotProgress += (float) Mathf.RoundToInt( 1f * GenTemperature.RotRateAtTemperature( GenTemperature.GetTemperatureForCell( obj.parent.PositionHeld ) ) * 250f );
+            float num = this.RotProgress;
+            this.RotProgress += (float) Mathf.RoundToInt( 1f * GenTemperature.RotRateAtTemperature( GenTemperature.GetTemperatureForCell( this.parent.PositionHeld ) ) * 250f );
             if(
-                ( obj.Stage == RotStage.Rotting )&&
-                ( obj.PropsRot().rotDestroys )
+                ( this.Stage == RotStage.Rotting )&&
+                ( this.PropsRot.rotDestroys )
             )
             {
-                obj.parent.Destroy( DestroyMode.Vanish );
+                this.parent.Destroy( DestroyMode.Vanish );
             }
             else
             {
-                if( Mathf.FloorToInt( num / 60000f ) == Mathf.FloorToInt( obj.RotProgress / 60000f ) )
+                if( Mathf.FloorToInt( num / (float) GenDate.TicksPerDay ) == Mathf.FloorToInt( this.RotProgress / (float) GenDate.TicksPerDay ) )
                 {
                     return;
                 }
                 if(
-                    ( obj.Stage == RotStage.Rotting )&&
-                    ( obj.PropsRot().rotDamagePerDay > 0.0f )
+                    ( this.Stage == RotStage.Rotting )&&
+                    ( this.PropsRot.rotDamagePerDay > 0.0f )
                 )
                 {
-                    obj.parent.TakeDamage( new DamageInfo( DamageDefOf.Rotting, GenMath.RoundRandom( obj.PropsRot().rotDamagePerDay ), (Thing) null, new BodyPartDamageInfo?(), (ThingDef) null ) );
+                    this.parent.TakeDamage( new DamageInfo( DamageDefOf.Rotting, GenMath.RoundRandom( this.PropsRot.rotDamagePerDay ), (Thing) null, new BodyPartDamageInfo?(), (ThingDef) null ) );
                 }
                 else
                 {
                     if(
-                        ( obj.Stage != RotStage.Dessicated )||
-                        ( obj.PropsRot().dessicatedDamagePerDay <= 0.0f )||
-                        ( !obj.ShouldTakeDessicateDamage() )
+                        ( this.Stage != RotStage.Dessicated )||
+                        ( this.PropsRot.dessicatedDamagePerDay <= 0.0f )||
+                        ( !this.ShouldTakeDessicateDamage() )
                     )
                     {
                         return;
                     }
-                    obj.parent.TakeDamage( new DamageInfo( DamageDefOf.Rotting, GenMath.RoundRandom( obj.PropsRot().dessicatedDamagePerDay ), (Thing) null, new BodyPartDamageInfo?(), (ThingDef) null ) );
+                    this.parent.TakeDamage( new DamageInfo( DamageDefOf.Rotting, GenMath.RoundRandom( this.PropsRot.dessicatedDamagePerDay ), (Thing) null, new BodyPartDamageInfo?(), (ThingDef) null ) );
                 }
             }
         }
 
-        internal static string              _CompInspectStringExtra( this CompRottable obj )
+        [DetourClassMethod( typeof( CompRottable ), "CompInspectStringExtra" )]
+        public override string              CompInspectStringExtra()
         {
             var stringBuilder = new StringBuilder();
-            switch( obj.Stage )
+            switch( this.Stage )
             {
             case RotStage.Fresh:
                 stringBuilder.AppendLine( "RotStateFresh".Translate() );
@@ -149,25 +149,25 @@ namespace CommunityCoreLibrary.Detour
                 stringBuilder.AppendLine( "RotStateDessicated".Translate() );
                 break;
             }
-            if( obj.InRefrigerator() )
+            if( this.IsInRefrigerator )
             {
                 stringBuilder.AppendLine( "RefrigeratedStorage".Translate() );
             }
-            else if( ( obj.PropsRot().TicksToRotStart - obj.RotProgress ) > 0.0f )
+            else if( ( this.PropsRot.TicksToRotStart - this.RotProgress ) > 0.0f )
             {
-                float num = GenTemperature.RotRateAtTemperature( Mathf.RoundToInt( GenTemperature.GetTemperatureForCell( obj.parent.Position ) ) );
-                int rotAtCurrentTemp = obj.TicksUntilRotAtCurrentTemp;
+                float num = GenTemperature.RotRateAtTemperature( Mathf.RoundToInt( GenTemperature.GetTemperatureForCell( this.parent.PositionHeld ) ) );
+                int rotAtCurrentTemp = this.TicksUntilRotAtCurrentTemp;
                 if( num < 1.0f / 1000.0f )
                 {
                     stringBuilder.AppendLine( "CurrentlyFrozen".Translate() );
                 }
                 else if( num < 0.999000012874603f )
                 {
-                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.ToStringTicksToDays() ) );
+                    stringBuilder.AppendLine( "CurrentlyRefrigerated".Translate( rotAtCurrentTemp.ToStringTicksToPeriodVagueMax() ) );
                 }
                 else
                 {
-                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.ToStringTicksToDays() ) );
+                    stringBuilder.AppendLine( "NotRefrigerated".Translate( rotAtCurrentTemp.ToStringTicksToPeriodVagueMax() ) );
                 }
             }
             return stringBuilder.ToString();

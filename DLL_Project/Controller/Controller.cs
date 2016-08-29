@@ -37,6 +37,8 @@ namespace CommunityCoreLibrary.Controller
 
         internal static SubController[]     SubControllers;
 
+        internal const BindingFlags         UniversalBindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
         // Some settings or windows require a game restart
         public static bool                  RequireRestart = false;
         public static bool                  ReloadingPlayData = false;

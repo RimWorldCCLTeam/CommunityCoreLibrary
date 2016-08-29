@@ -9,79 +9,65 @@ using Verse;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _CompHeatPusherPowered
+    internal class _CompHeatPusherPowered : CompHeatPusherPowered
     {
 
         #region Helper Methods
 
-        internal static CompPowerTrader         powerComp( this CompHeatPusherPowered obj )
+        internal CompPowerLowIdleDraw           lowPowerComp
         {
-            return obj.parent.TryGetComp<CompPowerTrader>();
-        }
-
-        internal static CompPowerLowIdleDraw    lowPowerComp( this CompHeatPusherPowered obj )
-        {
-            return obj.parent.TryGetComp<CompPowerLowIdleDraw>();
-        }
-
-        internal static CompFlickable           flickableComp( this CompHeatPusherPowered obj )
-        {
-            return obj.parent.TryGetComp<CompFlickable>();
-        }
-
-        internal static CompRefuelable          refuelableComp( this CompHeatPusherPowered obj )
-        {
-            return obj.parent.TryGetComp<CompRefuelable>();
-        }
-
-        internal static CompBreakdownable       breakdownableComp( this CompHeatPusherPowered obj )
-        {
-            return obj.parent.TryGetComp<CompBreakdownable>();
+            get
+            {
+                return this.parent.TryGetComp<CompPowerLowIdleDraw>();
+            }
         }
 
         #endregion
 
         #region Detoured Methods
 
-        internal static bool _ShouldPushHeatNow( this CompHeatPusherPowered obj )
+        [DetourClassProperty( typeof( CompHeatPusherPowered ), "ShouldPushHeatNow" )]
+        protected override bool ShouldPushHeatNow
         {
-            var powerComp           = obj.powerComp();
-            if(
-                ( powerComp != null )&&
-                ( !powerComp.PowerOn )
-            )
+            get
             {
-                return false;
+                if(
+                    ( powerComp != null )&&
+                    ( !powerComp.PowerOn )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( lowPowerComp != null )&&
+                    ( lowPowerComp.LowPowerMode )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( refuelableComp != null )&&
+                    ( !refuelableComp.HasFuel )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( breakdownableComp != null )&&
+                    ( breakdownableComp.BrokenDown )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( flickableComp == null )||
+                    ( !flickableComp.SwitchIsOn )
+                )
+                {
+                    return false;
+                }
+                return true;
             }
-            var lowPowerComp        = obj.lowPowerComp();
-            if(
-                ( lowPowerComp != null )&&
-                ( lowPowerComp.LowPowerMode )
-            )
-            {
-                return false;
-            }
-            var refuelableComp      = obj.refuelableComp();
-            if(
-                ( refuelableComp != null )&&
-                ( !refuelableComp.HasFuel )
-            )
-            {
-                return false;
-            }
-            var breakdownableComp   = obj.breakdownableComp();
-            if(
-                ( breakdownableComp != null )&&
-                ( breakdownableComp.BrokenDown )
-            )
-            {
-                return false;
-            }
-            var flickableComp       = obj.flickableComp();
-            return(
-                ( flickableComp == null )||
-                ( flickableComp.SwitchIsOn )
-            );
         }
 
         #endregion

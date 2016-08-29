@@ -9,78 +9,99 @@ using Verse;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _CompGlower
+    internal class _CompGlower : CompGlower
     {
 
         #region Helper Methods
 
-        internal static CompPowerTrader         powerComp( this CompGlower obj )
+        internal CompPowerTrader                powerComp
         {
-            return obj.parent.TryGetComp<CompPowerTrader>();
+            get
+            {
+                return this.parent.TryGetComp<CompPowerTrader>();
+            }
         }
 
-        internal static CompPowerLowIdleDraw    lowPowerComp( this CompGlower obj )
+        internal CompPowerLowIdleDraw           lowPowerComp
         {
-            return obj.parent.TryGetComp<CompPowerLowIdleDraw>();
+            get
+            {
+                return this.parent.TryGetComp<CompPowerLowIdleDraw>();
+            }
         }
 
-        internal static CompFlickable           flickableComp( this CompGlower obj )
+        internal CompFlickable                  flickableComp
         {
-            return obj.parent.TryGetComp<CompFlickable>();
+            get
+            {
+                return this.parent.TryGetComp<CompFlickable>();
+            }
         }
 
-        internal static CompRefuelable          refuelableComp( this CompGlower obj )
+        internal CompRefuelable                 refuelableComp
         {
-            return obj.parent.TryGetComp<CompRefuelable>();
+            get
+            {
+                return this.parent.TryGetComp<CompRefuelable>();
+            }
+        }
+
+        internal static CompGlowerToggleable    ToggleableComp( CompGlower baseComp )
+        {
+            return baseComp as CompGlowerToggleable;
         }
 
         #endregion
 
         #region Detoured Methods
 
-        internal static bool _ShouldBeLitNow( this CompGlower obj )
+        [DetourClassProperty( typeof( CompGlower ), "ShouldBeLitNow" )]
+        internal bool _ShouldBeLitNow
         {
-            if( !obj.parent.Spawned )
+            get
             {
-                return false;
+                if( !this.parent.Spawned )
+                {
+                    return false;
+                }
+                var toggleableComp      = ToggleableComp( this );
+                if(
+                    ( toggleableComp != null )&&
+                    ( !toggleableComp.Lit )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( powerComp != null )&&
+                    ( !powerComp.PowerOn )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( refuelableComp != null )&&
+                    ( !refuelableComp.HasFuel )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( lowPowerComp != null )&&
+                    ( lowPowerComp.LowPowerMode )
+                )
+                {
+                    return false;
+                }
+                if(
+                    ( flickableComp == null )||
+                    ( !flickableComp.SwitchIsOn )
+                )
+                {
+                    return false;
+                }
+                return true;
             }
-            var toggleableComp      = obj as CompGlowerToggleable;
-            if(
-                ( toggleableComp != null )&&
-                ( !toggleableComp.Lit )
-            )
-            {
-                return false;
-            }
-            var powerComp           = obj.powerComp();
-            if(
-                ( powerComp != null )&&
-                ( !powerComp.PowerOn )
-            )
-            {
-                return false;
-            }
-            var refuelableComp      = obj.refuelableComp();
-            if(
-                ( refuelableComp != null )&&
-                ( !refuelableComp.HasFuel )
-            )
-            {
-                return false;
-            }
-            var lowPowerComp        = obj.lowPowerComp();
-            if(
-                ( lowPowerComp != null )&&
-                ( lowPowerComp.LowPowerMode )
-            )
-            {
-                return false;
-            }
-            var flickableComp       = obj.flickableComp();
-            return(
-                ( flickableComp == null )||
-                ( flickableComp.SwitchIsOn )
-            );
         }
 
         #endregion

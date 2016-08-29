@@ -13,20 +13,21 @@ using Verse.AI;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _JobDriver_FoodFeedPatient
+    internal class _JobDriver_FoodFeedPatient : JobDriver_FoodFeedPatient
     {
 
         internal const TargetIndex FoodInd = TargetIndex.A;
         internal const TargetIndex DelivereeInd = TargetIndex.B;
         internal const float FeedDurationMultiplier = 1.5f;
 
-        internal static IEnumerable<Toil> _MakeNewToils( this JobDriver_FoodFeedPatient obj )
+        [DetourClassMethod( typeof( JobDriver_FoodFeedPatient ), "MakeNewToils" )]
+        protected override IEnumerable<Toil> MakeNewToils()
         {
-            var foodThing = obj.TargetThing( FoodInd );
-            var deliveree = (Pawn) obj.TargetThing( DelivereeInd );
+            var foodThing = this.TargetThing( FoodInd );
+            var deliveree = (Pawn) this.TargetThing( DelivereeInd );
 
-            obj.FailOnDespawnedNullOrForbidden( DelivereeInd );
-            obj.FailOn( () =>
+            this.FailOnDespawnedNullOrForbidden( DelivereeInd );
+            this.FailOn( () =>
             {
                 return !FoodUtility.ShouldBeFedBySomeone( deliveree );
             } );
@@ -36,14 +37,21 @@ namespace CommunityCoreLibrary.Detour
             if( foodThing is Building )
             {
                 yield return Toils_Reserve.Reserve( FoodInd, 1 );
+                this.AddFinishAction( () =>
+                {
+                    if( Find.Reservations.ReservedBy( foodThing, pawn ) )
+                    {   // Release reservation if aborted early
+                        Find.Reservations.Release( foodThing, pawn );
+                    }
+                } );
                 yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.InteractionCell ).FailOnForbidden( FoodInd );
                 if( foodThing is Building_NutrientPasteDispenser )
                 {
-                    yield return Toils_Ingest.TakeMealFromDispenser( FoodInd, obj.pawn );
+                    yield return Toils_Ingest.TakeMealFromDispenser( FoodInd, this.pawn );
                 }
                 else if( foodThing is Building_AutomatedFactory )
                 {
-                    yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodInd, obj.pawn );
+                    yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodInd, this.pawn );
                 }
                 else // Unknown building
                 {
@@ -51,15 +59,22 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             else if(
-                ( obj.pawn.inventory != null )&&
-                ( obj.pawn.inventory.Contains( foodThing ) )
+                ( this.pawn.inventory != null )&&
+                ( this.pawn.inventory.Contains( foodThing ) )
             )
             {
-                yield return Toils_Misc.TakeItemFromInventoryToCarrier( obj.pawn, FoodInd );
+                yield return Toils_Misc.TakeItemFromInventoryToCarrier( this.pawn, FoodInd );
             }
             else
             {
                 yield return Toils_Reserve.Reserve( FoodInd, 1 );
+                this.AddFinishAction( () =>
+                {
+                    if( Find.Reservations.ReservedBy( foodThing, pawn ) )
+                    {   // Release reservation if aborted early
+                        Find.Reservations.Release( foodThing, pawn );
+                    }
+                } );
                 yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.ClosestTouch ).FailOnForbidden( FoodInd );
                 yield return Toils_Ingest.PickupIngestible( FoodInd, deliveree );
             }

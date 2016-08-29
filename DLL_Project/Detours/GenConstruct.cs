@@ -12,6 +12,7 @@ namespace CommunityCoreLibrary.Detour
     internal static class _GenConstruct
     {
 
+        [DetourClassMethod( typeof( GenConstruct ), "CanBuildOnTerrain" )]
         internal static bool _CanBuildOnTerrain( BuildableDef entDef, IntVec3 c, Rot4 rot, Thing thingToIgnore = null )
         {
 
@@ -42,14 +43,13 @@ namespace CommunityCoreLibrary.Detour
             {
                 var cellRect = GenAdj.OccupiedRect( c, rot, entDef.Size );
                 cellRect.ClipInsideMap();
-                var iterator = cellRect.GetIterator();
-                while( !iterator.Done() )
+                foreach( var cell in cellRect )
                 {
-                    if( !Restrictions.RestrictedTerrain.Contains( Find.TerrainGrid.TerrainAt( iterator.Current ) ) )
+                    if( !Restrictions.RestrictedTerrain.Contains( cell.GetTerrain() ) )
                     {
                         return false;
                     }
-                    var thingList = iterator.Current.GetThingList();
+                    var thingList = cell.GetThingList();
                     for( int index = 0; index < thingList.Count; ++index )
                     {
                         if( thingList[ index ] != thingToIgnore )
@@ -64,7 +64,6 @@ namespace CommunityCoreLibrary.Detour
                             }
                         }
                     }
-                    iterator.MoveNext();
                 }
             }
             else
@@ -79,14 +78,13 @@ namespace CommunityCoreLibrary.Detour
                 }
                 var cellRect = GenAdj.OccupiedRect( c, rot, entDef.Size );
                 cellRect.ClipInsideMap();
-                var iterator = cellRect.GetIterator();
-                while( !iterator.Done() )
+                foreach( var cell in cellRect )
                 {
-                    if( !Find.TerrainGrid.TerrainAt( iterator.Current ).affordances.Contains( entDef.terrainAffordanceNeeded ) )
+                    if( !cell.GetTerrain().affordances.Contains( entDef.terrainAffordanceNeeded ) )
                     {
                         return false;
                     }
-                    var thingList = iterator.Current.GetThingList();
+                    var thingList = cell.GetThingList();
                     for( int index = 0; index < thingList.Count; ++index )
                     {
                         if( thingList[ index ] != thingToIgnore )
@@ -101,7 +99,6 @@ namespace CommunityCoreLibrary.Detour
                             }
                         }
                     }
-                    iterator.MoveNext();
                 }
             }
             // Allow placement
