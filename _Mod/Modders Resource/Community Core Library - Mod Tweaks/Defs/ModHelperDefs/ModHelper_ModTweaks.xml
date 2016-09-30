@@ -10,26 +10,191 @@
 
         <ThingComps>
 
-            <!-- Add CompPowerLowIdleDraw to WorkTables -->
+            <!-- Add CompPowerLowIdleDraw to Work Tables -->
             <li>
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 0 watts when not in use -->
                 </compProps>
-                <qualifier>CCLModTweaks.WorkTableCompPowerLowIdleDrawCompAdderQualifier</qualifier>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompWorkTable</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Research Benches -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 0 watts when not in use -->
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompResearchBench</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Facilities -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 0 watts when not in use -->
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompFacility</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Watchable Buildings (TVs, etc) -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 10 watts idle -->
+                    <operationalMode>GroupUse</operationalMode>
+                    <idlePowerFactor>10</idlePowerFactor>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompWatchableBuilding</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Doors -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 10 watts idle -->
+                    <operationalMode>WhenNear</operationalMode>
+                    <idlePowerFactor>10</idlePowerFactor>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompDoor</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Refrigerators (Refrigerated Hopper, etc) -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- Cycles to 1/4 power draw -->
+                    <operationalMode>Cycle</operationalMode>
+                    <idlePowerFactor>0.25</idlePowerFactor>
+                    <cycleLowTicks>2500</cycleLowTicks>
+                    <cycleHighTicks>1500</cycleHighTicks>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompRefrigerator</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Food Dispensers (Nutrient Paste Dispensers, etc) -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 1/4 power draw when idle -->
+                    <operationalMode>WhenNear</operationalMode>
+                    <idlePowerFactor>0.25</idlePowerFactor>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompFoodDispenser</qualifier>
+            </li>
+
+            <!-- Add CompHopperUser to Food Dispensers (Nutrient Paste Dispensers, etc) -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_HopperUser">
+                    <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+                    <resources>
+                        <allowedQualitiesConfigurable>false</allowedQualitiesConfigurable>
+                        <categories>
+                            <li>FoodRaw</li>
+                        </categories>
+                        <exceptedThingDefs>
+                            <li>Hay</li>
+                            <li>Human_Meat</li>
+                        </exceptedThingDefs>
+                        <exceptedCategories>
+                            <li>EggsFertilized</li>
+                        </exceptedCategories>
+                    </resources>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyHopperUserCompFoodDispenser</qualifier>
+            </li>
+
+            <!-- Add CompPowerLowIdleDraw to Plant Growers (Hydroponics, etc) -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- Cycle full/half power -->
+                    <operationalMode>Cycle</operationalMode>
+                    <idlePowerFactor>0.50</idlePowerFactor>
+                    <cycleLowTicks>2500</cycleLowTicks>
+                    <cycleHighTicks>2500</cycleHighTicks>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompPlantGrower</qualifier>
+            </li>
+
+            <!-- Add CompNeighbourlyGrower to Plant Growers (Hydroponics, Plant Pots, etc) -->
+            <li>
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyGrowerCompPlantGrower</qualifier>
             </li>
 
         </ThingComps>
 
-        <tickerSwitcher>
+        <TickerSwitcher>
 
-            <!-- Switch to Normal ticker on defs -->
+            <!-- Switch to Normal ticker on Work Tables -->
             <li>
                 <tickerType>Normal</tickerType>
-                <qualifier>CCLModTweaks.WorkTableCompPowerLowIdleDrawTickerChangerQualifier</qualifier>
+                <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerWorkTable</qualifier>
             </li>
 
-        </tickerSwitcher>
+            <!-- Switch to Normal ticker on Research Benches -->
+            <li>
+                <tickerType>Normal</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerResearchBench</qualifier>
+            </li>
+
+            <!-- Switch to Normal ticker on Facilities -->
+            <li>
+                <tickerType>Normal</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerFacility</qualifier>
+            </li>
+
+            <!-- Switch to Normal ticker on Watchable Buildings (TVs, etc) -->
+            <li>
+                <tickerType>Normal</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerWatchableBuilding</qualifier>
+            </li>
+
+            <!-- Switch to Normal ticker on Food Dispensers (Nutrient Paste Dispensers, etc) - Note:  This will probably never happen as these buildings will typically already have a ticker type set -->
+            <li>
+                <tickerType>Normal</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerFoodDispenser</qualifier>
+            </li>
+
+            <!-- Switch to Rare ticker on Refrigerators (Refrigerated Hopper, etc) -->
+            <li>
+                <tickerType>Rare</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerRareTickerRefrigerator</qualifier>
+            </li>
+
+            <!-- Switch to Rare ticker on Plant Growers (Hydroponics, etc) - Note:  This will probably never happen as these buildings will typically already have a ticker type set -->
+            <li>
+                <tickerType>Rare</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerRareTickerPlantGrower</qualifier>
+            </li>
+
+        </TickerSwitcher>
+
+        <ThingDefAvailability>
+
+            <!-- Enable generic hoppers -->
+            <li>
+                <menuHidden>false</menuHidden>
+                <designationCategory>Production</designationCategory>
+                <targetDefs>
+                    <li>GenericHopper</li>
+                    <li>RefrigeratedHopper</li>
+                </targetDefs>
+            </li>
+
+            <!-- Disable vanilla hopper -->
+            <li>
+                <menuHidden>true</menuHidden>
+                <designationCategory>None</designationCategory>
+                <targetDefs>
+                    <li>Hopper</li>
+                </targetDefs>
+            </li>
+
+        </ThingDefAvailability>
 
     </CommunityCoreLibrary.ModHelperDef>
 

@@ -179,7 +179,7 @@ namespace CommunityCoreLibrary
             // Validate "GroupUse"
             if(
                 ( IdleProps.operationalMode == LowIdleDrawMode.GroupUse )&&
-                ( parent.def.GetJoyGiverDefsUsing() == null )
+                ( parent.def.GetJoyGiverDefsUsing().NullOrEmpty() )
             )
             {
                 CCL_Log.TraceMod(

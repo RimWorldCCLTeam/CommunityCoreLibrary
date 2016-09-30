@@ -1,55 +1,86 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary.Detour
 {
     internal static class _OutfitDatabase
     {
-        public static List<OutfitDef> OutfitDefs = new List<OutfitDef>();
 
-        internal static void _GenerateStartingOutfits(this OutfitDatabase outfitDatabase)
+        private const string            OutfitLabelAnything = "Anything";
+        private const string            OutfitLabelNothing = "Nothing";
+        private const string            OutfitLabelWorker = "Worker";
+        private const string            OutfitLabelSoldier = "Soldier";
+        private const string            OutfitLabelNaked = "Nudist";
+
+        internal static List<OutfitDef> OutfitDefs = new List<OutfitDef>();
+
+        [DetourClassMethod( typeof( OutfitDatabase ), "GenerateStartingOutfits" )]
+        internal static void _GenerateStartingOutfits( this OutfitDatabase outfitDatabase )
         {
-            outfitDatabase.MakeNewOutfit().label = "Anything";
+            outfitDatabase.MakeNewOutfit().label = OutfitLabelAnything;
 
-            Outfit outfit = outfitDatabase.MakeNewOutfit();
-            outfit.label = "Nothing";
-            outfit.filter.SetDisallowAll();
+            var outfitNothing = outfitDatabase.MakeNewOutfit();
+            outfitNothing.label = OutfitLabelNothing;
+            outfitNothing.filter.SetDisallowAll();
 
-            Outfit outfit1 = outfitDatabase.MakeNewOutfit();
-            outfit1.label = "Worker";
-            outfit1.filter.SetDisallowAll();
-            foreach (ThingDef allDef in DefDatabase<ThingDef>.AllDefs)
+            var outfitWorker = outfitDatabase.MakeNewOutfit();
+            outfitWorker.label = OutfitLabelWorker;
+            outfitWorker.filter.SetDisallowAll();
+            var workerApparel = DefDatabase<ThingDef>
+                .AllDefs
+                .Where( thingDef => (
+                    ( thingDef.apparel != null )&&
+                    ( !thingDef.apparel.defaultOutfitTags.NullOrEmpty() )&&
+                    ( thingDef.apparel.defaultOutfitTags.Contains( OutfitLabelWorker ) )
+                ) ).ToList();
+            foreach( var apparelDef in workerApparel )
             {
-                if (allDef.apparel != null && allDef.apparel.defaultOutfitTags != null && allDef.apparel.defaultOutfitTags.Contains("Worker"))
-                    outfit1.filter.SetAllow(allDef, true);
+                outfitWorker.filter.SetAllow( apparelDef, true );
             }
 
-            Outfit outfit2 = outfitDatabase.MakeNewOutfit();
-            outfit2.label = "Soldier";
-            outfit2.filter.SetDisallowAll();
-            foreach (ThingDef allDef in DefDatabase<ThingDef>.AllDefs)
+            var outfitSoldier = outfitDatabase.MakeNewOutfit();
+            outfitSoldier.label = OutfitLabelSoldier;
+            outfitSoldier.filter.SetDisallowAll();
+            var soldierApparel = DefDatabase<ThingDef>
+                .AllDefs
+                .Where( thingDef => (
+                    ( thingDef.apparel != null )&&
+                    ( !thingDef.apparel.defaultOutfitTags.NullOrEmpty() )&&
+                    ( thingDef.apparel.defaultOutfitTags.Contains( OutfitLabelSoldier ) )
+                ) ).ToList();
+            foreach( var apparelDef in soldierApparel )
             {
-                if (allDef.apparel != null && allDef.apparel.defaultOutfitTags != null && allDef.apparel.defaultOutfitTags.Contains("Soldier"))
-                    outfit2.filter.SetAllow(allDef, true);
+                outfitSoldier.filter.SetAllow( apparelDef, true );
             }
 
-            Outfit outfit3 = outfitDatabase.MakeNewOutfit();
-            outfit3.label = "Nudist";
-            outfit3.filter.SetDisallowAll();
-            foreach (ThingDef allDef in DefDatabase<ThingDef>.AllDefs)
+            var outfitNaked = outfitDatabase.MakeNewOutfit();
+            outfitNaked.label = OutfitLabelNaked;
+            outfitNaked.filter.SetDisallowAll();
+            var nakedApparel = DefDatabase<ThingDef>
+                .AllDefs
+                .Where( thingDef => (
+                    ( thingDef.apparel != null )&&
+                    ( thingDef.apparel.bodyPartGroups.NullOrEmpty() )&&
+                    ( !thingDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) )&&
+                    ( !thingDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) )
+                ) ).ToList();
+            foreach( var apparelDef in nakedApparel )
             {
-                if (allDef.apparel != null && !allDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) && !allDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
-                    outfit3.filter.SetAllow(allDef, true);
+                outfitNaked.filter.SetAllow(apparelDef, true);
             }
 
-            // do my stuff here
-            foreach (OutfitDef outfitDef in OutfitDefs)
+            // Add outfits to database
+            foreach( OutfitDef outfitDef in OutfitDefs )
             {
-                Outfit newOutfit = outfitDatabase.MakeNewOutfit();
+                var newOutfit = outfitDatabase.MakeNewOutfit();
                 newOutfit.label = outfitDef.label;
                 newOutfit.filter = outfitDef.filter;
             }
         }
+
     }
+
 }

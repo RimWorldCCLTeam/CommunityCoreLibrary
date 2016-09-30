@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary
         public List< Type >                 SpecialInjectors;
         public List< CompInjectionSet >     ThingComps;
         public List< ITabInjectionSet >     ITabs;
-        public List< TickerSwitcher >       tickerSwitcher;
+        public List< TickerSwitcher >       TickerSwitcher;
         public List< FacilityInjectionSet > Facilities;
         public List< StockGeneratorInjectionSet > TraderKinds;
         public List< ThingDefAvailability > ThingDefAvailability;
@@ -42,7 +42,6 @@ namespace CommunityCoreLibrary
 
         // InjectionSubController
         public List< Type >                 PostLoadInjectors;
-        public List< Type >                 MapComponents;
         public List< DesignatorData >       Designators;
 
         #endregion
@@ -57,7 +56,7 @@ namespace CommunityCoreLibrary
         public bool                         dummy = false;
 
         // Used to link directly to the mod which this def controls
-        public ModContentPack                    mod;
+        public ModContentPack               mod;
 
         #endregion
 
@@ -78,6 +77,7 @@ namespace CommunityCoreLibrary
             // Actual injection happens in the Injecton Sub Controller
             Injectors = new IInjector[]
             {
+                new MHD_Detours(),
                 new MHD_SpecialInjectors(),
                 new MHD_ThingComps(),
                 new MHD_ITabs(),
@@ -86,7 +86,6 @@ namespace CommunityCoreLibrary
                 new MHD_StockGenerators(),
                 new MHD_ThingDefAvailability(),
                 new MHD_PostLoadInjectors(),
-                new MHD_MapComponents(),
                 new MHD_Designators()
             };
         }
@@ -191,14 +190,14 @@ namespace CommunityCoreLibrary
 
         public bool                         Inject( IInjector injector )
         {
-            if( injector.Injected( this ) )
+            if( injector.DefIsInjected( this ) )
             {
                 return true;
             }
 
             Controller.Data.Trace_Current_Mod = this;
 
-            var result = injector.Inject( this );
+            var result = injector.InjectByDef( this );
 
             Controller.Data.Trace_Current_Mod = null;
             return result;

@@ -35,10 +35,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Community Core Library">
-      <HintPath>..\bin\Community Core Library.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\bin\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -50,11 +46,33 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DefInjectionQualifiers\WorkTableCompPowerLowIdleDrawTickerChangerQualifier.cs" />
-    <Compile Include="DefInjectionQualifiers\WorkTableCompPowerLowIdleDrawCompAdderQualifier.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerNormalTickerWorkTable.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompWorkTable.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompResearchBench.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerNormalTickerResearchBench.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompWatchableBuilding.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerNormalTickerWatchableBuilding.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompFoodDispenser.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerNormalTickerFoodDispenser.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompPlantGrower.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerRareTickerPlantGrower.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyGrowerCompPlantGrower.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompDoor.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompFacility.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerNormalTickerFacility.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyHopperUserCompFoodDispenser.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompRefrigerator.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerRareTickerRefrigerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DefInjectionQualifiers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommunityCoreLibrary.csproj">
+      <Project>{A36BEEB2-7379-475B-B537-827E34571962}</Project>
+      <Name>CommunityCoreLibrary</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -20,9 +20,9 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString => "ThingDefs availability changed";
+        public override string              InjectString => "ThingDefs availability changed";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.ThingDefAvailability.NullOrEmpty() )
             {
@@ -33,7 +33,6 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.ThingDefAvailability.Count; ++index )
             {
-                var qualifierValid = true;
                 var injectionSet = def.ThingDefAvailability[ index ];
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
@@ -81,54 +80,14 @@ namespace CommunityCoreLibrary
                         }
                     }
                 }
-                if(
-                    ( injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier == null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if(
-                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier != null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if( qualifierValid )
-                {
-                    if( !injectionSet.targetDefs.NullOrEmpty() )
-                    {
-                        for( int index2 = 0; index2 < injectionSet.targetDefs.Count; ++index2 )
-                        {
-                            var targetDef = DefDatabase<ThingDef>.GetNamed( injectionSet.targetDefs[ index2 ], true );
-                            if( targetDef == null )
-                            {
-                                isValid = false;
-                                errors += string.Format( "\n\ttargetDef '{0}' is invalid in ThingDefAvailability", injectionSet.targetDefs[ index2 ] );
-                            }
-                        }
-                    }
-                }
-                if( injectionSet.qualifier != null )
-                {
-                    if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
-                    {
-                        errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
-                        isValid = false;
-                    }
-                }
+                isValid &= DefInjectionQualifier.TargetQualifierValid( injectionSet.targetDefs, injectionSet.qualifier, "ThingDefAvailability", ref errors );
             }
 
             return isValid;
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.ThingDefAvailability.NullOrEmpty() )
             {
@@ -144,7 +103,7 @@ namespace CommunityCoreLibrary
             return injected;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.ThingDefAvailability.NullOrEmpty() )
             {

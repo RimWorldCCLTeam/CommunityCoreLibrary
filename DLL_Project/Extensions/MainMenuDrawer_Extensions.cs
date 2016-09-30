@@ -75,24 +75,115 @@ namespace CommunityCoreLibrary
         {
             // Fetch internal Verse.TexButton class
             _Verse_TexButton = Controller.Data.Assembly_CSharp.GetType( "Verse.TexButton" );
+            if( _Verse_TexButton == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get class 'Verse.TexButton' in 'Assembly_CSharp'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
-            _CloseMainTab   = typeof( MainMenuDrawer ).GetMethod( "CloseMainTab", BindingFlags.Static | BindingFlags.NonPublic );
+            _CloseMainTab   = typeof( MainMenuDrawer ).GetMethod( "CloseMainTab", Controller.Data.UniversalBindingFlags );
+            if( _CloseMainTab == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get method 'CloseMainTab' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
-            _anyMapFiles    = typeof( MainMenuDrawer ).GetField( "anyMapFiles", BindingFlags.Static | BindingFlags.NonPublic );
+            _anyMapFiles    = typeof( MainMenuDrawer ).GetField( "anyMapFiles", Controller.Data.UniversalBindingFlags );
+            if( _anyMapFiles == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'anyMapFiles' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
-            _PaneSize       = typeof( MainMenuDrawer ).GetField( "PaneSize", BindingFlags.Static | BindingFlags.NonPublic );
-            _TitleSize      = typeof( MainMenuDrawer ).GetField( "TitleSize", BindingFlags.Static | BindingFlags.NonPublic );
+            _PaneSize       = typeof( MainMenuDrawer ).GetField( "PaneSize", Controller.Data.UniversalBindingFlags );
+            if( _PaneSize == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'PaneSize' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
+            _TitleSize      = typeof( MainMenuDrawer ).GetField( "TitleSize", Controller.Data.UniversalBindingFlags );
+            if( _TitleSize == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'TitleSize' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
-            _IconBlog       = _Verse_TexButton.GetField( "IconBlog", BindingFlags.Static | BindingFlags.Public );
-            _IconForums     = _Verse_TexButton.GetField( "IconForums", BindingFlags.Static | BindingFlags.Public );
-            _IconTwitter    = _Verse_TexButton.GetField( "IconTwitter", BindingFlags.Static | BindingFlags.Public );
-            _IconBook       = _Verse_TexButton.GetField( "IconBook", BindingFlags.Static | BindingFlags.Public );
-            _IconSoundtrack = _Verse_TexButton.GetField( "IconSoundtrack", BindingFlags.Static | BindingFlags.Public );
+            _IconBlog       = _Verse_TexButton.GetField( "IconBlog", Controller.Data.UniversalBindingFlags );
+            if( _IconBlog == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'IconBlog' in 'TexButton'",
+                    "MainMenuDrawer_Extensions" );
+            }
+            _IconForums     = _Verse_TexButton.GetField( "IconForums", Controller.Data.UniversalBindingFlags );
+            if( _IconForums == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'IconForums' in 'TexButton'",
+                    "MainMenuDrawer_Extensions" );
+            }
+            _IconTwitter    = _Verse_TexButton.GetField( "IconTwitter", Controller.Data.UniversalBindingFlags );
+            if( _IconTwitter == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'IconTwitter' in 'TexButton'",
+                    "MainMenuDrawer_Extensions" );
+            }
+            _IconBook       = _Verse_TexButton.GetField( "IconBook", Controller.Data.UniversalBindingFlags );
+            if( _IconBook == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'IconBook' in 'TexButton'",
+                    "MainMenuDrawer_Extensions" );
+            }
+            _IconSoundtrack = _Verse_TexButton.GetField( "IconSoundtrack", Controller.Data.UniversalBindingFlags );
+            if( _IconSoundtrack == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'IconSoundtrack' in 'TexButton'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
-            _TexTitle       = typeof( MainMenuDrawer ).GetField( "TexTitle", BindingFlags.Static | BindingFlags.NonPublic );
+            _TexTitle       = typeof( MainMenuDrawer ).GetField( "TexTitle", Controller.Data.UniversalBindingFlags );
+            if( _TexTitle == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'TexTitle' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
-            _TexLudeonLogo  = typeof( MainMenuDrawer ).GetField( "TexLudeonLogo", BindingFlags.Static | BindingFlags.NonPublic );
-            _LudeonLogoSize = typeof( MainMenuDrawer ).GetField( "LudeonLogoSize", BindingFlags.Static | BindingFlags.NonPublic );
+            _TexLudeonLogo  = typeof( MainMenuDrawer ).GetField( "TexLudeonLogo", Controller.Data.UniversalBindingFlags );
+            if( _TexLudeonLogo == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'TexLudeonLogo' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
+            _LudeonLogoSize = typeof( MainMenuDrawer ).GetField( "LudeonLogoSize", Controller.Data.UniversalBindingFlags );
+            if( _LudeonLogoSize == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'LudeonLogoSize' in 'MainMenuDrawer'",
+                    "MainMenuDrawer_Extensions" );
+            }
 
         }
 

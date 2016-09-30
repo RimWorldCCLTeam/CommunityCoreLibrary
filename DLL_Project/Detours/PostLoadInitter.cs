@@ -8,19 +8,29 @@ namespace CommunityCoreLibrary.Detour
 
     internal static class _PostLoadInitter
     {
-
+        // Unused, do we really want to do this anyway? 1000101 - 04/09/2016
+        /*
         internal static FieldInfo           _saveablesToPostLoad;
+
+        static                              _PostLoadInitter()
+        {
+            _saveablesToPostLoad = typeof( PostLoadInitter ).GetField( "saveablesToPostLoad", Controller.Data.UniversalBindingFlags );
+            if( _saveablesToPostLoad == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'saveablesToPostLoad' in 'PostloadInitter'",
+                    "Detour.PostLoadInitter" );
+            }
+        }
 
         internal static HashSet<IExposable> SaveablesToPostLoad()
         {
-            if( _saveablesToPostLoad == null )
-            {
-                _saveablesToPostLoad = typeof( PostLoadInitter ).GetField( "saveablesToPostLoad", BindingFlags.Static | BindingFlags.NonPublic );
-            }
             return (HashSet<IExposable>)_saveablesToPostLoad.GetValue( null );
         }
 
-        internal static void _DoAllPostLoadInits()
+        [DetourClassMethod( typeof( PostLoadInitter ), "DoAllPostLoadInits" )]
+        internal static void                _DoAllPostLoadInits()
         {
             Scribe.mode = LoadSaveMode.PostLoadInit;
             var hashSet = SaveablesToPostLoad();
@@ -41,6 +51,7 @@ namespace CommunityCoreLibrary.Detour
             PostLoadInitter.Clear();
             Scribe.mode = LoadSaveMode.Inactive;
         }
+        */
 
     }
 }

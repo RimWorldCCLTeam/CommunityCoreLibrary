@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace CommunityCoreLibrary
 {
 
@@ -6,15 +7,15 @@ namespace CommunityCoreLibrary
     public class DetourClassProperty : Attribute
     {
         
-        public Type                         targetClass;
-        public string                       property;
-        public DetourInjectionTiming        injectionTiming;
+        public Type                         fromClass;
+        public string                       fromProperty;
+        public InjectionTiming              injectionTiming;
 
-        public                              DetourClassProperty( Type targetClass, string property, DetourInjectionTiming injectionTiming = DetourInjectionTiming.PostSpecialInjector )
+        public                              DetourClassProperty( Type fromClass, string fromProperty, InjectionTiming injectionTiming = InjectionTiming.BeforeSpecialInjectors )
         {
-            this.targetClass        = targetClass;
-            this.property           = property;
-            this.injectionTiming    = injectionTiming;
+            this.fromClass                  = fromClass;
+            this.fromProperty               = fromProperty;
+            this.injectionTiming            = injectionTiming;
         }
 
     }

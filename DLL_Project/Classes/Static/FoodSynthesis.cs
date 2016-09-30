@@ -21,8 +21,8 @@ namespace CommunityCoreLibrary
                 if( _IsMeal == null )
                 {
                     _IsMeal = new Func<ThingDef,bool>( def =>
-                        ( def.IsIngestible() )&&
-                        ( !def.IsAlcohol() )
+                        ( def.IsIngestible )&&
+                        ( !def.IsDrug )
                     );
                 }
                 return _IsMeal;
@@ -44,33 +44,33 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private static Func<ThingDef,bool>          _IsAlcohol;
-        public static Func<ThingDef,bool>           IsAlcohol
+        private static Func<ThingDef,bool>          _IsDrug;
+        public static Func<ThingDef,bool>           IsDrug
         {
             get
             {
-                if( _IsAlcohol == null )
+                if( _IsDrug == null )
                 {
-                    _IsAlcohol = new Func<ThingDef,bool>( def =>
-                        ( def.IsAlcohol() )
+                    _IsDrug = new Func<ThingDef,bool>( def =>
+                        ( def.IsDrug )
                     );
                 }
-                return _IsAlcohol;
+                return _IsDrug;
             }
         }
 
-        private static Func<ThingDef,ThingDef,int>  _SortAlcohol;
-        public static Func<ThingDef,ThingDef,int>   SortAlcohol
+        private static Func<ThingDef,ThingDef,int>  _SortDrug;
+        public static Func<ThingDef,ThingDef,int>   SortDrug
         {
             get
             {
-                if( _SortAlcohol == null )
+                if( _SortDrug == null )
                 {
-                    _SortAlcohol = new Func<ThingDef, ThingDef, int>( ( x, y ) =>
+                    _SortDrug = new Func<ThingDef, ThingDef, int>( ( x, y ) =>
                         ( x.ingestible.joy > y.ingestible.joy ) ? -1 : 1
                     );
                 }
-                return _SortAlcohol;
+                return _SortDrug;
             }
         }
 

@@ -7,20 +7,17 @@ using Verse;
 namespace CCLModTweaks
 {
     
-    public class WorkTableCompPowerLowIdleDrawCompAdderQualifier : DefInjectionQualifier
+    public class QualifyLowPowerNormalTickerFoodDispenser : DefInjectionQualifier
     {
 
-        public override bool Test( Def def )
+        public override bool DefIsUsable( Def def )
         {
             var thingDef = def as ThingDef;
             if( thingDef == null )
             {
                 return false;
             }
-            if(
-                ( thingDef.thingClass != typeof( Building_WorkTable ) )&&
-                ( thingDef.thingClass != typeof( Building_WorkTable_HeatPush ) )
-            )
+            if( !thingDef.IsFoodDispenser )
             {
                 return false;
             }
@@ -28,7 +25,11 @@ namespace CCLModTweaks
             {
                 return false;
             }
-            if( thingDef.HasComp( typeof( CompPowerLowIdleDraw) ) )
+            if( !thingDef.HasComp( typeof( CompPowerLowIdleDraw ) ) )
+            {
+                return false;
+            }
+            if( thingDef.tickerType != TickerType.Never )
             {
                 return false;
             }

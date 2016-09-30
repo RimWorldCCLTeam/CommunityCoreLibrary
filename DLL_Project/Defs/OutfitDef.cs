@@ -12,16 +12,16 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public static OutfitDef Named(string defName)
+        public static OutfitDef                     Named( string defName )
         {
             return DefDatabase<OutfitDef>.GetNamed(defName);
         }
 
-        public override void ResolveReferences()
+        public override void                        ResolveReferences()
         {
             base.ResolveReferences();
 
-            _OutfitDatabase.OutfitDefs.Add(this);
+            _OutfitDatabase.OutfitDefs.Add( this );
         }
     }
 }

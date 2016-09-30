@@ -89,6 +89,7 @@
                             <subNodes>
                                 <li Class="JobGiver_GetFood"/>
                                 <li Class="JobGiver_GetRest"/>
+                                <li Class="JobGiver_SatisfyChemicalNeed"/>
                                 <li Class="ThinkNode_Priority_GetJoy">
                                     <subNodes>
                                         <li Class="JobGiver_GetJoy"/>
@@ -204,6 +205,7 @@
                             <subNodes>
                                 <li Class="JobGiver_GetFood"/>
                                 <li Class="JobGiver_GetRest"/>
+                                <li Class="JobGiver_SatisfyChemicalNeed"/>
                                 <li Class="ThinkNode_Priority_GetJoy">
                                     <subNodes>
                                         <li Class="JobGiver_GetJoyInBed"/>

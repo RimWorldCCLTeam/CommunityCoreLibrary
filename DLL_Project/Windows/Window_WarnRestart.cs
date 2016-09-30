@@ -61,7 +61,7 @@ namespace CommunityCoreLibrary
         {
             if( Controller.Data.PlayWithoutRestart )
             {
-                Controller.MainMonoBehaviour.ReloadRimWorld();
+                Controller.PlayDataLoader.Reload();
             }
             Controller.Data.RestartWarningIsOpen = false;
             Controller.Data.WarnedAboutRestart = true;
@@ -171,7 +171,7 @@ namespace CommunityCoreLibrary
             {
                 callbackBeforeRestart.Invoke();
             }
-            Controller.MainMonoBehaviour.RestartRimWorld();
+            Controller.RimWorld.Restart();
         }
 
 	}

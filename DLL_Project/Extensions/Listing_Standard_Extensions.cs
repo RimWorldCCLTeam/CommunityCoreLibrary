@@ -13,22 +13,26 @@ namespace CommunityCoreLibrary
 
         private static FieldInfo            _curX;
 
-        public static float                 Indentation( this Listing_Standard obj )
+        static                              Listing_Standard_Extensions()
         {
+            _curX = typeof( Listing_Standard ).GetField( "curX", Controller.Data.UniversalBindingFlags );
             if( _curX == null )
             {
-                _curX = typeof( Listing_Standard ).GetField( "curX", BindingFlags.Instance | BindingFlags.NonPublic );
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'curX' in 'Listing_Standard'",
+                    "Lister_Standard_Extensions" );
             }
+        }
+
+        public static float                 Indentation( this Listing_Standard obj )
+        {
             return (float)_curX.GetValue( obj );
         }
 
         public static void                  Indent( this Listing_Standard listing, float distance = 24f )
         {
-            if( _curX == null )
-            {
-                _curX = typeof( Listing_Standard ).GetField( "curX", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
-            var curX = (float)_curX.GetValue( listing );
+            var curX = listing.Indentation();
             var newX = curX + distance;
             var curW = listing.ColumnWidth;
             var newW = curW - distance;

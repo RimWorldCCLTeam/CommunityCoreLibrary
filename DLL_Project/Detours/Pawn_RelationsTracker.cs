@@ -8,24 +8,32 @@ using UnityEngine;
 namespace CommunityCoreLibrary.Detour
 {
     
-    internal static class _Pawn_RelationsTracker
+    internal class _Pawn_RelationsTracker : Pawn_RelationsTracker
     {
 
         internal static LifeStageDef        MechanoidFullyFormed = DefDatabase<LifeStageDef>.GetNamed( "MechanoidFullyFormed" );
 
         internal static FieldInfo           _pawn;
 
-        internal static Pawn                GetPawn( this Pawn_RelationsTracker _this )
+        public                              _Pawn_RelationsTracker( Pawn pawn ) : base( pawn )
         {
+        }
+
+        static                              _Pawn_RelationsTracker()
+        {
+            _pawn = typeof( Pawn_RelationsTracker ).GetField( "pawn", Controller.Data.UniversalBindingFlags );
             if( _pawn == null )
             {
-                _pawn = typeof( Pawn_RelationsTracker ).GetField( "pawn", BindingFlags.Instance | BindingFlags.NonPublic );
-                if( _pawn == null )
-                {
-                    Log.ErrorOnce( "Unable to reflect Pawn_RelationsTracker.pawn!", 0x12348765 );
-                }
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'pawn' in 'Pawn_RelationsTracker'",
+                    "Detour.Pawn_RelationsTracker" );
             }
-            return (Pawn)_pawn.GetValue( _this );
+        }
+
+        internal Pawn                       GetPawn()
+        {
+            return (Pawn)_pawn.GetValue( this );
         }
 
         internal static bool                PawnsAreValidMatches( Pawn pawn1, Pawn pawn2 )
@@ -71,19 +79,21 @@ namespace CommunityCoreLibrary.Detour
             return true;
         }
 
-        internal static float               _CompatibilityWith( this Pawn_RelationsTracker _this, Pawn otherPawn )
+        [DetourClassMethod( typeof( Pawn_RelationsTracker ), "CompatibilityWith" )]
+        internal float                      _CompatibilityWith( Pawn otherPawn )
         {
-            var pawn = _this.GetPawn();
+            var pawn = this.GetPawn();
             if( !PawnsAreValidMatches( pawn, otherPawn ) )
             {
                 return 0f;
             }
-            return Mathf.Clamp( GenMath.LerpDouble( 0.0f, 20f, 0.45f, -0.45f, Mathf.Abs( pawn.ageTracker.AgeBiologicalYearsFloat - otherPawn.ageTracker.AgeBiologicalYearsFloat ) ), -0.45f, 0.45f) + _this.ConstantPerPawnsPairCompatibilityOffset( otherPawn.thingIDNumber );
+            return Mathf.Clamp( GenMath.LerpDouble( 0.0f, 20f, 0.45f, -0.45f, Mathf.Abs( pawn.ageTracker.AgeBiologicalYearsFloat - otherPawn.ageTracker.AgeBiologicalYearsFloat ) ), -0.45f, 0.45f) + this.ConstantPerPawnsPairCompatibilityOffset( otherPawn.thingIDNumber );
         }
 
-        internal static float               _AttractionTo( this Pawn_RelationsTracker _this, Pawn otherPawn )
+        [DetourClassMethod( typeof( Pawn_RelationsTracker ), "AttractionTo" )]
+        internal float                      _AttractionTo( Pawn otherPawn )
         {
-            var pawn = _this.GetPawn();
+            var pawn = this.GetPawn();
 
             if( !PawnsAreValidMatches( pawn, otherPawn ) )
             {

@@ -21,9 +21,9 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString => "Stock Generators injected";
+        public override string              InjectString => "Stock Generators injected";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.TraderKinds.NullOrEmpty() )
             {
@@ -70,7 +70,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.TraderKinds.NullOrEmpty() )
             {
@@ -86,7 +86,7 @@ namespace CommunityCoreLibrary
             return injected;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.TraderKinds.NullOrEmpty() )
             {

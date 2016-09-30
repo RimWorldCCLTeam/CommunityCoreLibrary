@@ -32,7 +32,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return ThingRequestGroup.HasGUIOverlay.ListByGroup();
+                return ThingRequestGroup.HasGUIOverlay.ListsByGroup();
             }
         }
 

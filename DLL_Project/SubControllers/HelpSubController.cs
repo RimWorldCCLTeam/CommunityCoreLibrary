@@ -22,17 +22,24 @@ namespace CommunityCoreLibrary.Controller
 
         public override bool                Initialize()
         {
+            var stringBuilder = new StringBuilder();
+            string finalMessage = string.Empty;
+            CCL_Log.CaptureBegin( stringBuilder );
+
             // Don't auto-gen help if "quicktest" or "nohelp" command line switches are used
+            var buildHelp = true;
             if(
-                ( !GenCommandLine.CommandLineArgPassed( "quicktest" ) )&&
-                ( !GenCommandLine.CommandLineArgPassed( "nohelp" ) )
+                ( GenCommandLine.CommandLineArgPassed( "quicktest" ) )||
+                ( GenCommandLine.CommandLineArgPassed( "nohelp" ) )
             )
             {
-                
-                LongEventHandler.SetCurrentEventText( "LibraryHelpGen".Translate() );
+                buildHelp = false;
+                finalMessage = "Skipping auto-gen";
+            }
 
-                var stringBuilder = new StringBuilder();
-                CCL_Log.CaptureBegin( stringBuilder );
+            if( buildHelp )
+            {
+                LongEventHandler.SetCurrentEventText( "LibraryHelpGen".Translate() );
 
                 var startTime = DateTime.Now;
 
@@ -45,12 +52,13 @@ namespace CommunityCoreLibrary.Controller
 
                 var finishTime = DateTime.Now;
                 var finalTime = finishTime - startTime;
-
-                CCL_Log.CaptureEnd( stringBuilder, string.Format( "Completed in {0}", finalTime.ToString() ) );
-                CCL_Log.Message( stringBuilder.ToString(), "Help System" );
+                finalMessage = string.Format( "Completed in {0}", finalTime.ToString() );
 
                 LongEventHandler.SetCurrentEventText( "Initializing".Translate() );
             }
+
+            CCL_Log.CaptureEnd( stringBuilder, finalMessage );
+            CCL_Log.Message( stringBuilder.ToString(), "Help System" );
             strReturn = "Initialized";
             State = SubControllerState.Hybernating;
             return true;

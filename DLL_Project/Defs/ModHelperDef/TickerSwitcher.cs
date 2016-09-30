@@ -12,21 +12,20 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
-        public string                       InjectString => "Tickers switched";
+        public override string              InjectString => "Tickers switched";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
-            if( def.tickerSwitcher.NullOrEmpty() )
+            if( def.TickerSwitcher.NullOrEmpty() )
             {
                 return true;
             }
 
             bool isValid = true;
 
-            for( var index = 0; index < def.tickerSwitcher.Count; index++ )
+            for( var index = 0; index < def.TickerSwitcher.Count; index++ )
             {
-                var qualifierValid = true;
-                var injectionSet = def.tickerSwitcher[ index ];
+                var injectionSet = def.TickerSwitcher[ index ];
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
                     ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
@@ -34,63 +33,23 @@ namespace CommunityCoreLibrary
                 {
                     continue;
                 }
-                if(
-                    ( injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier == null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if(
-                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier != null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if( qualifierValid )
-                {
-                    if( !injectionSet.targetDefs.NullOrEmpty() )
-                    {
-                        foreach( var targetName in injectionSet.targetDefs )
-                        {
-                            var targetDef = DefDatabase< ThingDef >.GetNamed( targetName, false );
-                            if( targetDef == null )
-                            {
-                                errors += string.Format( "Unable to resolve targetDef '{0}' in TickerSwitcher", targetName );
-                                isValid = false;
-                            }
-                        }
-                    }
-                    if( injectionSet.qualifier != null )
-                    {
-                        if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
-                        {
-                            errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
-                            isValid = false;
-                        }
-                    }
-                }
+                isValid &= DefInjectionQualifier.TargetQualifierValid( injectionSet.targetDefs, injectionSet.qualifier, "TickerSwitcher", ref errors );
             }
 
             return isValid;
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
-            if( def.tickerSwitcher.NullOrEmpty() )
+            if( def.TickerSwitcher.NullOrEmpty() )
             {
                 return true;
             }
 
-            for( var index = 0; index < def.tickerSwitcher.Count; index++ )
+            for( var index = 0; index < def.TickerSwitcher.Count; index++ )
             {
-                var injectionSet = def.tickerSwitcher[ index ];
+                var injectionSet = def.TickerSwitcher[ index ];
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
                     ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
@@ -114,16 +73,16 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
-            if( def.tickerSwitcher.NullOrEmpty() )
+            if( def.TickerSwitcher.NullOrEmpty() )
             {
                 return true;
             }
 
-            for( var index = 0; index < def.tickerSwitcher.Count; index++ )
+            for( var index = 0; index < def.TickerSwitcher.Count; index++ )
             {
-                var injectionSet = def.tickerSwitcher[ index ];
+                var injectionSet = def.TickerSwitcher[ index ];
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
                     ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
@@ -136,7 +95,7 @@ namespace CommunityCoreLibrary
                 {
 #if DEBUG
                     var stringBuilder = new StringBuilder();
-                    stringBuilder.Append( "TickerSwitcher :: Qualifier returned: " );
+                    stringBuilder.Append( string.Format( "TickerSwitcher ({0}):: Qualifier returned: ", injectionSet.tickerType.ToString() ) );
 #endif
                     foreach( var thingDef in thingDefs )
                     {

@@ -10,14 +10,22 @@ namespace CommunityCoreLibrary
     public static class Pawn_NeedsTracker_Extensions
     {
 
-        private static FieldInfo       _pawn;
+        private static FieldInfo        _pawn;
 
-        public static Pawn            pawn( this Pawn_NeedsTracker obj )
+        static                          Pawn_NeedsTracker_Extensions()
         {
+            _pawn = typeof( Pawn_NeedsTracker ).GetField( "pawn", Controller.Data.UniversalBindingFlags );
             if( _pawn == null )
             {
-                _pawn = typeof( Pawn_NeedsTracker ).GetField( "pawn", BindingFlags.Instance | BindingFlags.NonPublic );
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'drawer' in class 'Pawn'",
+                    "Pawn_NeedsTracker_Extensions");
             }
+        }
+
+        public static Pawn              pawn( this Pawn_NeedsTracker obj )
+        {
             return (Pawn) _pawn.GetValue( obj );
         }
 

@@ -12,15 +12,9 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "ITabs injected";
-            }
-        }
+        public override string              InjectString => "ITabs injected";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.ITabs.NullOrEmpty() )
             {
@@ -31,7 +25,6 @@ namespace CommunityCoreLibrary
 
             for( var iTabIndex = 0; iTabIndex < def.ITabs.Count; iTabIndex++ )
             {
-                var qualifierValid = true;
                 var injectionSet = def.ITabs[ iTabIndex ];
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
@@ -40,7 +33,6 @@ namespace CommunityCoreLibrary
                 {
                     continue;
                 }
-                var replaceTabIsValid = true;
                 if(
                     ( injectionSet.newITab == null )||
                     ( !injectionSet.newITab.IsSubclassOf( typeof( ITab ) ) )
@@ -56,86 +48,8 @@ namespace CommunityCoreLibrary
                 {
                     errors += string.Format( "Unable to resolve ITab '{0}'", injectionSet.replaceITab );
                     isValid = false;
-                    replaceTabIsValid = false;
                 }
-                if(
-                    ( injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier == null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if(
-                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier != null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if( qualifierValid )
-                {
-                    if( !injectionSet.targetDefs.NullOrEmpty() )
-                    {
-                        for( var index = 0; index < injectionSet.targetDefs.Count; index++ )
-                        {
-                            if( injectionSet.targetDefs[ index ].NullOrEmpty() )
-                            {
-                                errors += string.Format( "targetDef in ITabs is null or empty at index {0}", index.ToString() );
-                                isValid = false;
-                            }
-                            else
-                            {
-                                var thingDef = DefDatabase<ThingDef>.GetNamed( injectionSet.targetDefs[ index ], false );
-                                if( thingDef == null )
-                                {
-                                    errors += string.Format( "Unable to resolve targetDef '{0}'", injectionSet.targetDefs[ index ] );
-                                    isValid = false;
-                                }
-                                else if(
-                                    ( injectionSet.replaceITab != null )&&
-                                    ( replaceTabIsValid )
-                                )
-                                {
-                                    if( !CanReplaceOn( thingDef, injectionSet.replaceITab ) )
-                                    {
-                                        errors += string.Format( "targetDef '{0}' does not contain ITab '{1}' to replace", injectionSet.targetDefs[ index ], injectionSet.replaceITab );
-                                        isValid = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if( injectionSet.qualifier != null )
-                    {
-                        if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
-                        {
-                            errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
-                            isValid = false;
-                        }
-                        else if(
-                                ( injectionSet.replaceITab != null )&&
-                                ( replaceTabIsValid )
-                            )
-                        {
-                            var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, null );
-                            if( !thingDefs.NullOrEmpty() )
-                            {
-                                foreach( var thingDef in thingDefs )
-                                {
-                                    if( !CanReplaceOn( thingDef, injectionSet.replaceITab ) )
-                                    {
-                                        errors += string.Format( "qualified ThingDef '{0}' does not contain ITab '{1}' to replace", thingDef.defName, injectionSet.replaceITab );
-                                        isValid = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                isValid &= DefInjectionQualifier.TargetQualifierValid( injectionSet.targetDefs, injectionSet.qualifier, "ITabs", ref errors );
             }
 
             return isValid;
@@ -150,7 +64,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.ITabs.NullOrEmpty() )
             {
@@ -186,7 +100,7 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.ITabs.NullOrEmpty() )
             {
@@ -208,14 +122,14 @@ namespace CommunityCoreLibrary
                 {
 #if DEBUG
                     var stringBuilder = new StringBuilder();
-                    stringBuilder.Append( "ITabs :: Qualifier returned: " );
+                    stringBuilder.Append( string.Format( "ITabs ({0}):: Qualifier returned: ", injectionSet.newITab.FullName ) );
 #endif
                     foreach( var thingDef in thingDefs )
                     {
 #if DEBUG
                         stringBuilder.Append( thingDef.defName + ", " );
 #endif
-                        if( !InjectITab( injectionSet.newITab, injectionSet.replaceITab, thingDef ) )
+                        if( !InjectOrReplaceITabOn( injectionSet.newITab, injectionSet.replaceITab, thingDef ) )
                         {
                             return false;
                         }
@@ -230,7 +144,7 @@ namespace CommunityCoreLibrary
 
         }
 
-        private bool                        InjectITab( Type newITab, Type replaceITab, ThingDef thingDef )
+        private bool                        InjectOrReplaceITabOn( Type newITab, Type replaceITab, ThingDef thingDef )
         {
             var injectedITab = (ITab) Activator.CreateInstance( newITab );
             if( injectedITab == null )

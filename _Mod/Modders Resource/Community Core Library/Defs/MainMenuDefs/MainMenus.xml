@@ -2,6 +2,13 @@
 <Defs>
 
     <CommunityCoreLibrary.MainMenuDef>
+        <defName>Tutorial</defName>
+        <labelKey>LearnToPlay</labelKey>
+        <order>800</order>
+        <menuClass>CommunityCoreLibrary.MainMenu_Tutorial</menuClass>
+    </CommunityCoreLibrary.MainMenuDef>
+
+    <CommunityCoreLibrary.MainMenuDef>
         <defName>NewColony</defName>
         <labelKey>NewColony</labelKey>
         <order>700</order>

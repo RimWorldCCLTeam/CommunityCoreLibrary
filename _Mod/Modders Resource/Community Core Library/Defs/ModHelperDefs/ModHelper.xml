@@ -15,11 +15,6 @@
             </li>
         </ModConfigurationMenus>
 
-        <MapComponents>
-            <li>CommunityCoreLibrary.HideItemManager</li>
-            <li>CommunityCoreLibrary.MiniMap.MiniMapController</li>
-        </MapComponents>
-
         <SpecialInjectors>
             <!--
                 Assembly Dumper will create a file called "assembly_dump.txt" which will

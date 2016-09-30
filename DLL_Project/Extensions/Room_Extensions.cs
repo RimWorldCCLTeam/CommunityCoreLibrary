@@ -16,23 +16,43 @@ namespace CommunityCoreLibrary
         internal static FieldInfo           _cachedOpenRoofCount;
         internal static FieldInfo           _statsAndRoleDirty;
 
+        static                              Room_Extensions()
+        {
+            _cachedCellCount = typeof( Room ).GetField( "cachedCellCount", Controller.Data.UniversalBindingFlags );
+            if( _cachedCellCount == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'cachedCellCount' in class 'Room'",
+                    "Room_Extensions");
+            }
+            _cachedOpenRoofCount = typeof( Room ).GetField( "cachedOpenRoofCount", Controller.Data.UniversalBindingFlags );
+            if( _cachedOpenRoofCount == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'cachedOpenRoofCount' in class 'Room'",
+                    "Room_Extensions");
+            }
+            _statsAndRoleDirty = typeof( Room ).GetField( "statsAndRoleDirty", Controller.Data.UniversalBindingFlags );
+            if( _statsAndRoleDirty == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'statsAndRoleDirty' in class 'Room'",
+                    "Room_Extensions");
+            }
+        }
+
         #region Cached Cell Count
 
         public static int                   CachedCellCountGet( this Room room )
         {
-            if( _cachedCellCount == null )
-            {
-                _cachedCellCount = typeof( Room ).GetField( "cachedCellCount", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             return (int)_cachedCellCount.GetValue( room );
         }
 
         public static void                  CachedCellCountSet( this Room room, int value )
         {
-            if( _cachedCellCount == null )
-            {
-                _cachedCellCount = typeof( Room ).GetField( "cachedCellCount", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             _cachedCellCount.SetValue( room, value );
         }
 
@@ -42,19 +62,11 @@ namespace CommunityCoreLibrary
 
         public static int                   CachedOpenRoofCountGet( this Room room )
         {
-            if( _cachedOpenRoofCount == null )
-            {
-                _cachedOpenRoofCount = typeof( Room ).GetField( "cachedOpenRoofCount", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             return (int)_cachedOpenRoofCount.GetValue( room );
         }
 
         public static void                  CachedOpenRoofCountSet( this Room room, int value )
         {
-            if( _cachedOpenRoofCount == null )
-            {
-                _cachedOpenRoofCount = typeof( Room ).GetField( "cachedOpenRoofCount", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             _cachedOpenRoofCount.SetValue( room, value );
         }
 
@@ -64,19 +76,11 @@ namespace CommunityCoreLibrary
 
         public static bool                  StatsAndRoleDirtyGet( this Room room )
         {
-            if( _statsAndRoleDirty == null )
-            {
-                _statsAndRoleDirty = typeof( Room ).GetField( "statsAndRoleDirty", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             return (bool)_statsAndRoleDirty.GetValue( room );
         }
 
         public static void                  StatsAndRoleDirtySet( this Room room, bool value )
         {
-            if( _statsAndRoleDirty == null )
-            {
-                _statsAndRoleDirty = typeof( Room ).GetField( "statsAndRoleDirty", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             _statsAndRoleDirty.SetValue( room, value );
         }
 

@@ -9,8 +9,12 @@ namespace CommunityCoreLibrary.Detour
     internal static class _ThingSelectionUtility
     {
         
+        [DetourClassMethod( typeof( ThingSelectionUtility ), "SelectableNow" )]
         internal static bool _SelectableNow( this Thing t )
         {
+            // If it's not selectablt,
+            // not spawned, or;
+            // the thing is registered with the Hide Item Manager
             if(
                 ( !t.def.selectable )||
                 ( !t.Spawned )||

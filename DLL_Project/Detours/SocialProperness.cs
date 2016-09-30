@@ -11,7 +11,9 @@ namespace CommunityCoreLibrary.Detour
 
         // Fixes social properness for prison cells by checking that the thing/interaction
         // cells location is a prison cell instead of the same room
-        internal static bool _IsSociallyProper( this Thing t, Pawn p, bool forPrisoner, bool animalsCare = false )
+        // TODO: Check if it should return true if it's for a prisoner and the prisoner can't path
+        [DetourClassMethod( typeof( SocialProperness ), "IsSociallyProper" )]
+        internal static bool                _IsSociallyProper( this Thing t, Pawn p, bool forPrisoner, bool animalsCare = false )
         {
             if(
                 ( !animalsCare )&&

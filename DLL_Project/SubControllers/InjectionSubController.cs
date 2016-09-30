@@ -16,14 +16,17 @@ namespace CommunityCoreLibrary.Controller
     {
 
         // Use arrays instead of lists to ensure order
+        private static IInjector            detourInjector;
+        private static IInjector            specialInjector;
         private static IInjector[]          initInjectors;
         private static IInjector[]          updateInjectors;
 
         static                              InjectionSubController()
         {
+            detourInjector  = ModHelperDef.GetInjector( typeof( MHD_Detours ) );
+            specialInjector = ModHelperDef.GetInjector( typeof( MHD_SpecialInjectors ) );
             initInjectors = new IInjector[]
             {
-                ModHelperDef.GetInjector( typeof( MHD_SpecialInjectors ) ),
                 ModHelperDef.GetInjector( typeof( MHD_ThingComps ) ),
                 ModHelperDef.GetInjector( typeof( MHD_ITabs ) ),
                 ModHelperDef.GetInjector( typeof( MHD_TickerSwitcher ) ),
@@ -34,7 +37,6 @@ namespace CommunityCoreLibrary.Controller
             updateInjectors = new IInjector[]
             {
                 ModHelperDef.GetInjector( typeof( MHD_PostLoadInjectors ) ),
-                ModHelperDef.GetInjector( typeof( MHD_MapComponents ) ),
                 ModHelperDef.GetInjector( typeof( MHD_Designators ) )
             };
         }
@@ -61,22 +63,43 @@ namespace CommunityCoreLibrary.Controller
                 return false;
             }
 
+            // Do pre-special injector detours
+            if( !InjectByTiming( detourInjector, InjectionTiming.BeforeSpecialInjectors ) )
+            {
+                CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
+                strReturn = stringBuilder.ToString();
+                State = SubControllerState.InitializationError;
+                return false;
+            }
+
+            // Do special injectors
+            if( !InjectByDef( specialInjector ) )
+            {
+                CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
+                strReturn = stringBuilder.ToString();
+                State = SubControllerState.InitializationError;
+                return false;
+            }
+
+            // Do post-special injector detours
+            if( !InjectByTiming( detourInjector, InjectionTiming.AfterSpecialInjectors ) )
+            {
+                CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
+                strReturn = stringBuilder.ToString();
+                State = SubControllerState.InitializationError;
+                return false;
+            }
+
             foreach( var injector in initInjectors )
             {
                 // Inject the group into the system
-                if( !Inject( injector ) )
+                if( !InjectByDef( injector ) )
                 {
                     CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
                     strReturn = stringBuilder.ToString();
                     State = SubControllerState.InitializationError;
                     return false;
                 }
-#if DEBUG
-                CCL_Log.Trace(
-                    Verbosity.Injections,
-                    injector.InjectString
-                );
-#endif
             }
 
             MHD_Facilities.ReResolveDefs();
@@ -102,19 +125,13 @@ namespace CommunityCoreLibrary.Controller
             foreach( var injector in updateInjectors )
             {
                 // Inject the group into the system
-                if( !Inject( injector ) )
+                if( !InjectByDef( injector ) )
                 {
                     CCL_Log.CaptureEnd( stringBuilder, "Errors during injection" );
                     strReturn = stringBuilder.ToString();
                     State = SubControllerState.InitializationError;
                     return false;
                 }
-#if DEBUG
-                CCL_Log.Trace(
-                    Verbosity.Injections,
-                    injector.InjectString
-                );
-#endif
             }
 
             // Post-load injections complete, stop calling this
@@ -124,7 +141,7 @@ namespace CommunityCoreLibrary.Controller
             return true;
         }
 
-        public bool                         Inject( IInjector injector )
+        public bool                         InjectByDef( IInjector injector )
         {
             bool result = true;
 
@@ -132,12 +149,42 @@ namespace CommunityCoreLibrary.Controller
 
             foreach( var modHelperDef in modHelperDefs )
             {
-                if( !injector.Injected( modHelperDef ) )
+                if( !injector.DefIsInjected( modHelperDef ) )
                 {
                     result &= modHelperDef.Inject( injector );
                 }
             }
 
+#if DEBUG
+            if( result )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Injections,
+                    injector.InjectString
+                );
+            }
+#endif
+            return result;
+        }
+
+        public bool                         InjectByTiming( IInjector injector, InjectionTiming Timing )
+        {
+            bool result = true;
+
+            if( !injector.TimingIsInjected( Timing ) )
+            {
+                result &= injector.InjectByTiming( Timing );
+            }
+
+#if DEBUG
+            if( result )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Injections,
+                    string.Format( "{0} {1}", Timing.ToString(), injector.InjectString )
+                );
+            }
+#endif
             return result;
         }
 

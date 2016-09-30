@@ -14,12 +14,20 @@ namespace CommunityCoreLibrary
 
         private static FieldInfo            _linkedBuildings;
 
-        public static List<Thing>           LinkedBuildings( this CompFacility compFacility )
+        static                              CompFacility_Extensions()
         {
+            _linkedBuildings = typeof( CompFacility ).GetField( "linkedBuildings", Controller.Data.UniversalBindingFlags );
             if( _linkedBuildings == null )
             {
-                _linkedBuildings = typeof( CompFacility ).GetField( "linkedBuildings", BindingFlags.Instance | BindingFlags.NonPublic );
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'linkedBuildings' in 'CompFacility'",
+                    "CompFacility_Extensions" );
             }
+        }
+
+        public static List<Thing>           LinkedBuildings( this CompFacility compFacility )
+        {
             return (List<Thing>) _linkedBuildings.GetValue( compFacility );
         }
 

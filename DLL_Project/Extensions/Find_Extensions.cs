@@ -62,7 +62,7 @@ namespace CommunityCoreLibrary
             {
                 return null;
             }
-            var defSets = typeof( ModContentPack ).GetField( "defSets", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( mod ) as Dictionary<System.Type, ModDefSet>;
+            var defSets = typeof( ModContentPack ).GetField( "defSets", Controller.Data.UniversalBindingFlags ).GetValue( mod ) as Dictionary<System.Type, ModDefSet>;
             ModDefSet modDefSet = (ModDefSet) null;
             if( !defSets.TryGetValue( typeof (T), out modDefSet ) )
             {
@@ -86,7 +86,7 @@ namespace CommunityCoreLibrary
         }
 
         // Get the def list of a specific type for a specific mod
-        public static List<T>               DefListOfTypeForMod<T>( ModContentPack mod ) where T : Def, new()
+        public static List<T>                   DefListOfTypeForMod<T>( ModContentPack mod ) where T : Def, new()
         {
             if( mod == null )
             {
@@ -98,10 +98,33 @@ namespace CommunityCoreLibrary
             return list.ConvertAll( def => ( (T) def ) );
         }
 
-        // Search for mod by name
-        public static ModContentPack             ModByName( string name )
+        // Get the def list of a specific type for a specific mod
+        public static List<T>                   DefListOfTypeForMod<T>( ModMetaData mod ) where T : Def, new()
         {
-            var allMods = Controller.Data.Mods;
+            if( mod == null )
+            {
+                return null;
+            }
+            var content = LoadedModManager.RunningMods.FirstOrDefault( pack => pack.Identifier == mod.Identifier );
+            if( content == null )
+            {
+                return null;
+            }
+            return DefListOfTypeForMod<T>( content );
+        }
+
+        // Search for mod by name
+        public static ModContentPack             ModByName( string name, bool useGameList = false )
+        {
+            List<ModContentPack> allMods;
+            if( useGameList )
+            {
+                allMods = LoadedModManager.RunningMods.ToList();
+            }
+            else
+            {
+                allMods = Controller.Data.Mods;
+            }
             foreach( var mod in allMods )
             {
                 if( mod.Name == name )

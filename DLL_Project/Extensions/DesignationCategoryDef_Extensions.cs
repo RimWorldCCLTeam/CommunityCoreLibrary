@@ -14,9 +14,21 @@ namespace CommunityCoreLibrary
     {
         // A14 - resolvedDesignators is now private - the public accessor filters by currently allowed.
         // TODO: This should be moved to a helper class.
-        public static FieldInfo _resolvedDesignatorsField = typeof( DesignationCategoryDef ).GetField( "resolvedDesignators", BindingFlags.NonPublic | BindingFlags.Instance );
+        public static FieldInfo             _resolvedDesignatorsField;
 
-        public static List<Designator> _resolvedDesignators( this DesignationCategoryDef category )
+        static                              DesignationCategoryDef_Extensions()
+        {
+            _resolvedDesignatorsField = typeof( DesignationCategoryDef ).GetField( "resolvedDesignators", Controller.Data.UniversalBindingFlags );
+            if( _resolvedDesignatorsField == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'resolvedDesignatorsField' in 'DesignationCategoryDef'",
+                    "DesignationCategoryDef_Extensions" );
+            }
+        }
+
+        public static List<Designator>      ResolvedDesignators( this DesignationCategoryDef category )
         {
             return _resolvedDesignatorsField.GetValue( category ) as List<Designator>;
         }

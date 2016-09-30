@@ -12,7 +12,7 @@
     <CommunityCoreLibrary.MainMenuDef>
         <defName>QuickStart</defName>
         <labelKey>QuickStart</labelKey>
-        <order>1000</order>
+        <order>2000</order>
         <menuClass>CommunityCoreLibrary.MainMenu_QuickStart</menuClass>
     </CommunityCoreLibrary.MainMenuDef>
 

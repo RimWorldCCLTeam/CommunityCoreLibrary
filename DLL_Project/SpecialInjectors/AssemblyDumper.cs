@@ -54,7 +54,7 @@ namespace CommunityCoreLibrary
                         CCL_Log.IndentStream( stream );
                         {
 #region Fields
-                            var fields = type.GetFields( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public );
+                            var fields = type.GetFields( Controller.Data.UniversalBindingFlags );
                             if( !fields.NullOrEmpty() )
                             {
                                 CCL_Log.Write( "Fields:", stream );
@@ -77,7 +77,7 @@ namespace CommunityCoreLibrary
                             }
 #endregion
 #region Properties
-                            var properties = type.GetProperties( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public );
+                            var properties = type.GetProperties( Controller.Data.UniversalBindingFlags );
                             if( !properties.NullOrEmpty() )
                             {
                                 CCL_Log.Write( "Properties:", stream );
@@ -114,7 +114,7 @@ namespace CommunityCoreLibrary
                             }
 #endregion
 #region Methods
-                            var methods = type.GetMethods( BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public );
+                            var methods = type.GetMethods( Controller.Data.UniversalBindingFlags );
                             if( !methods.NullOrEmpty() )
                             {
                                 CCL_Log.Write( "Methods:", stream );

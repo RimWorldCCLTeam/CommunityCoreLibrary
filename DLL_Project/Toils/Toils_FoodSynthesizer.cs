@@ -56,9 +56,9 @@ namespace CommunityCoreLibrary
             return takeFromSynthesizer;
         }
 
-        public static Toil TakeAlcoholFromSynthesizer( TargetIndex ind, Pawn eater )
+        public static Toil TakeDrugFromSynthesizer( TargetIndex ind, Pawn eater )
         {
-            return TakeFromSynthesier( ind, eater, FoodSynthesis.IsAlcohol, FoodSynthesis.SortAlcohol );
+            return TakeFromSynthesier( ind, eater, FoodSynthesis.IsDrug, FoodSynthesis.SortDrug );
         }
 
         public static Toil TakeMealFromSynthesizer( TargetIndex ind, Pawn eater )

@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary
 
 		public override void ClickAction()
 		{
-            Controller.MainMonoBehaviour.RestartRimWorld();
+            Controller.RimWorld.Restart();
 		}
 
 	}

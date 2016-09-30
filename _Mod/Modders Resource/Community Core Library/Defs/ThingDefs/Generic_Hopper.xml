@@ -14,6 +14,7 @@
 
     <ThingDef Name="BuildingBase" Abstract="True">
         <category>Building</category>
+        <thingClass>Building</thingClass>
         <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
         <selectable>true</selectable>
         <drawerType>MapMeshAndRealTime</drawerType>
@@ -21,11 +22,11 @@
         <repairEffect>Repair</repairEffect>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <filthLeaving>BuildingRubble</filthLeaving>
-        <minifiedDef>MinifiedFurniture</minifiedDef>
     </ThingDef>
 
     <ThingDef Name="HopperBase" ParentName="BuildingBase" Abstract="True">
         <thingClass>CommunityCoreLibrary.Building_Hopper</thingClass>
+        <minifiedDef>MinifiedFurniture</minifiedDef>
         <comps>
             <li>
                 <compClass>CommunityCoreLibrary.CompHopper</compClass>
@@ -34,7 +35,7 @@
         <placeWorkers>
             <li>CommunityCoreLibrary.PlaceWorker_HopperUserMagnifier</li>
         </placeWorkers>
-        
+
         <!-- These two lines will hide the generic hoppers -->
         <menuHidden>true</menuHidden>
         <designationCategory>None</designationCategory>
@@ -96,7 +97,6 @@
                 <cornerTR>Damage/Corner</cornerTR>
             </damageData>
         </graphicData>
-        <tickerType>Rare</tickerType>
         <altitudeLayer>Building</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <fillPercent>0.5</fillPercent>
@@ -108,13 +108,6 @@
             <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>100</basePowerConsumption>
-            </li>
-            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                <idlePowerFactor>0.25</idlePowerFactor>
-                <operationalMode>Cycle</operationalMode>
-                <cycleLowTicks>2500</cycleLowTicks>
-                <cycleHighTicks>1500</cycleHighTicks>
             </li>
         </comps>
         <building>
@@ -136,10 +129,14 @@
             <Steel>15</Steel>
             <Component>1</Component>
         </costList>
+        <tickerType>Never</tickerType>
         <neverMultiSelect>true</neverMultiSelect>
         <staticSunShadowHeight>0.3</staticSunShadowHeight>
         <surfaceType>Item</surfaceType>
         <constructEffect>ConstructMetal</constructEffect>
+        <researchPrerequisites>
+            <li>AirConditioning</li>
+        </researchPrerequisites>
     </ThingDef>
 
 </Defs>

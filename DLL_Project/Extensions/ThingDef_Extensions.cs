@@ -18,14 +18,22 @@ namespace CommunityCoreLibrary
         // Dummy for functions needing a ref list
         public static List<Def>             nullDefs = null;
 
+        static                              ThingDef_Extensions()
+        {
+            _allRecipesCached = typeof( ThingDef ).GetField( "allRecipesCached", Controller.Data.UniversalBindingFlags );
+            if( _allRecipesCached == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'allRecipesCached' in class 'ThingDef'",
+                    "ThingDef_Extensions");
+            }
+        }
+
         #region Recipe Cache
 
         public static void                  RecacheRecipes( this ThingDef thingDef, bool validateBills )
         {
-            if( _allRecipesCached == null )
-            {
-                _allRecipesCached = typeof( ThingDef ).GetField( "allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             _allRecipesCached.SetValue( thingDef, null );
 
             if(
@@ -69,57 +77,6 @@ namespace CommunityCoreLibrary
 
         #region Availability
 
-        public static bool                  IsFoodMachine( this ThingDef thingDef )
-        {
-            if( typeof( Building_NutrientPasteDispenser ).IsAssignableFrom( thingDef.thingClass ) )
-            {
-                return true;
-            }
-            if( typeof( Building_AutomatedFactory ).IsAssignableFrom( thingDef.thingClass ) )
-            {   // Make sure we are only return factories which are configured as food synthesizers
-                var propsFactory = thingDef.GetCompProperty<CompProperties_AutomatedFactory>();
-                if( propsFactory != null )
-                {
-                    if(
-                        ( propsFactory.outputVector == FactoryOutputVector.DirectToPawn )&&
-                        ( propsFactory.productionMode == FactoryProductionMode.PawnInteractionOnly )
-                    )
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public static bool                  IsIngestible( this ThingDef thingDef )
-        {
-            return thingDef.ingestible != null;
-        }
-
-        public static bool                  IsAlcohol( this ThingDef thingDef )
-        {
-            if(
-                ( thingDef.IsIngestible() )&&
-                ( thingDef.ingestible.hediffGivers != null )&&
-                ( thingDef.ingestible.hediffGivers.Exists( hediff => hediff.hediffDef == HediffDefOf.Alcohol ) )
-            )
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public static bool                  IsImplant( this ThingDef thingDef )
-        {
-            // Return true if a recipe exist implanting this thing def
-            return
-                DefDatabase< RecipeDef >.AllDefsListForReading.Exists( r => (
-                    ( r.addsHediff != null )&&
-                    ( r.IsIngredient( thingDef ) )
-                ) );
-        }
-
         public static RecipeDef             GetImplantRecipeDef( this ThingDef thingDef )
         {
             // Get recipe for implant
@@ -136,7 +93,7 @@ namespace CommunityCoreLibrary
             var recipeDef = thingDef.GetImplantRecipeDef();
             return recipeDef != null
                 ? recipeDef.addsHediff
-                    : null;
+                : null;
         }
 
         public static bool                  EverHasRecipes( this ThingDef thingDef )
@@ -188,14 +145,14 @@ namespace CommunityCoreLibrary
             )
             {
                 oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( thingDef.designationCategory );
-                oldDesignator = (Designator_Build) oldCategory._resolvedDesignators().FirstOrDefault( d => (
+                oldDesignator = (Designator_Build) oldCategory.ResolvedDesignators().FirstOrDefault( d => (
                     ( d is Designator_Build )&&
                     ( ( d as Designator_Build ).PlacingDef == (BuildableDef) thingDef )
                 ) );
             }
             if( oldCategory != null )
             {
-                oldCategory._resolvedDesignators().Remove( oldDesignator );
+                oldCategory.ResolvedDesignators().Remove( oldDesignator );
             }
             if( newCategoryDef != null )
             {
@@ -208,7 +165,7 @@ namespace CommunityCoreLibrary
                 {
                     newDesignator = (Designator_Build) Activator.CreateInstance( typeof( Designator_Build ), new System.Object[] { (BuildableDef) thingDef } );
                 }
-                newCategoryDef._resolvedDesignators().Add( newDesignator );
+                newCategoryDef.ResolvedDesignators().Add( newDesignator );
             }
             thingDef.designationCategory = newCategory;
             return true;

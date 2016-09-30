@@ -15,48 +15,64 @@ namespace CommunityCoreLibrary
         private static FieldInfo            _pawn;
         private static FieldInfo            _workGiversDirty;
 
-        public static void                  ConfirmInitializedDebug( this Pawn_WorkSettings p )
+        static                              Pawn_WorkSettings_Extensions()
         {
+            _ConfirmInitializedDebug = typeof( Pawn_WorkSettings ).GetMethod( "ConfirmInitializedDebug", Controller.Data.UniversalBindingFlags );
             if( _ConfirmInitializedDebug == null )
             {
-                _ConfirmInitializedDebug = typeof( Pawn_WorkSettings ).GetMethod( "ConfirmInitializedDebug", BindingFlags.Instance | BindingFlags.NonPublic );
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'ConfirmInitializedDebug' in class 'Pawn_WorkSettings'",
+                    "Pawn_WorkSettings_Extensions");
             }
+            _priorities = typeof( Pawn_WorkSettings ).GetField( "priorities", Controller.Data.UniversalBindingFlags );
+            if( _priorities == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'priorities' in class 'Pawn_WorkSettings'",
+                    "Pawn_WorkSettings_Extensions");
+            }
+            _pawn = typeof( Pawn_WorkSettings ).GetField( "pawn", Controller.Data.UniversalBindingFlags );
+            if( _pawn == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'pawn' in class 'Pawn_WorkSettings'",
+                    "Pawn_WorkSettings_Extensions");
+            }
+            _workGiversDirty = typeof( Pawn_WorkSettings ).GetField( "workGiversDirty", Controller.Data.UniversalBindingFlags );
+            if( _workGiversDirty == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'workGiversDirty' in class 'Pawn_WorkSettings'",
+                    "Pawn_WorkSettings_Extensions");
+            }
+        }
+
+        public static void                  ConfirmInitializedDebug( this Pawn_WorkSettings p )
+        {
             _ConfirmInitializedDebug.Invoke( p, null );
         }
 
         public static DefMap<WorkTypeDef, int> Priorities( this Pawn_WorkSettings p )
         {
-            if( _priorities == null )
-            {
-                _priorities = typeof( Pawn_WorkSettings ).GetField( "priorities", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             return (DefMap<WorkTypeDef, int>)_priorities.GetValue( p );
         }
 
         public static Pawn                  Pawn( this Pawn_WorkSettings p )
         {
-            if( _pawn == null )
-            {
-                _pawn = typeof( Pawn_WorkSettings ).GetField( "pawn", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             return (Pawn)_pawn.GetValue( p );
         }
 
         public static bool                  WorkGiversDirtyGet( this Pawn_WorkSettings p )
         {
-            if( _workGiversDirty == null )
-            {
-                _workGiversDirty = typeof( Pawn_WorkSettings ).GetField( "workGiversDirty", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             return (bool)_workGiversDirty.GetValue( p );
         }
 
         public static void                  WorkGiversDirtySet( this Pawn_WorkSettings p, bool value )
         {
-            if( _workGiversDirty == null )
-            {
-                _workGiversDirty = typeof( Pawn_WorkSettings ).GetField( "workGiversDirty", BindingFlags.Instance | BindingFlags.NonPublic );
-            }
             _workGiversDirty.SetValue( p, value );
         }
 

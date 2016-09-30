@@ -19,15 +19,9 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "Special Injectors injected";
-            }
-        }
+        public override string              InjectString => "Special Injectors injected";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.SpecialInjectors.NullOrEmpty() )
             {
@@ -52,7 +46,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.SpecialInjectors.NullOrEmpty() )
             {
@@ -68,7 +62,7 @@ namespace CommunityCoreLibrary
             return injected;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.SpecialInjectors.NullOrEmpty() )
             {

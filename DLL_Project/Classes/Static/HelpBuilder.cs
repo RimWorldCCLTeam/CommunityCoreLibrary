@@ -141,10 +141,10 @@ namespace CommunityCoreLibrary
         {
             // Get list of things
             var thingDefs =
-                DefDatabase< ThingDef >.AllDefsListForReading.Where( t => 
-                    t.IsIngestible() &&
-                    t.ingestible.isPleasureDrug 
-                ).ToList();
+                DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
+                    ( t.IsIngestible )&&
+                    ( t.IsDrug )
+                ) ).ToList();
 
             if( thingDefs.NullOrEmpty() )
             {
@@ -166,8 +166,8 @@ namespace CommunityCoreLibrary
             // Get list of things
             var thingDefs =
                 DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
-                    t.IsNutritionGivingIngestible &&
-                    !t.ingestible.isPleasureDrug
+                    ( t.IsNutritionGivingIngestible )&&
+                    ( !t.IsDrug )
                 ) ).ToList();
 
             if( thingDefs.NullOrEmpty() )
@@ -678,7 +678,7 @@ namespace CommunityCoreLibrary
 
                 #region Ingestible Stats
                 // Look at base stats
-                if( thingDef.IsIngestible() )
+                if( thingDef.IsIngestible )
                 {
                     // only show Joy if it's non-zero
                     List<Def> needDefs = new List<Def>();
@@ -711,9 +711,8 @@ namespace CommunityCoreLibrary
                 #region Body Part Stats
 
                 if( ( !thingDef.thingCategories.NullOrEmpty() ) &&
-                    // A14 - BodyPartsAndImplants => BodyParts + BodyPartsArtificial?
                     ( thingDef.thingCategories.Contains( ThingCategoryDefOf.BodyParts ) ) &&
-                    ( thingDef.IsImplant() ) )
+                    ( thingDef.isBodyPartOrImplant ) )
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
 

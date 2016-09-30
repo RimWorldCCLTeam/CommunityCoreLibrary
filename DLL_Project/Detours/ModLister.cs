@@ -13,15 +13,24 @@ namespace CommunityCoreLibrary.Detour
 
         internal static FieldInfo           _mods;
 
-        internal static List<ModMetaData>   GetMods()
+        static                              _ModLister()
         {
+            _mods = typeof( ModLister ).GetField( "mods", Controller.Data.UniversalBindingFlags );
             if( _mods == null )
             {
-                _mods = typeof( ModLister ).GetField( "mods", BindingFlags.Static | BindingFlags.NonPublic );
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'mods' in 'ModLister'",
+                    "Detour.ModLister" );
             }
+        }
+
+        internal static List<ModMetaData>   GetMods()
+        {
             return (List<ModMetaData>)_mods.GetValue( null );
         }
 
+        [DetourClassMethod( typeof( ModLister ), "InstalledModsListHash" )]
         internal static int _InstalledModsListHash( bool activeOnly )
         {
             int num = 0;

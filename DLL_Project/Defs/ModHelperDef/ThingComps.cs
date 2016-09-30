@@ -12,9 +12,9 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
-        public string                       InjectString => "ThingComps injected";
+        public override string              InjectString => "ThingComps injected";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.ThingComps.NullOrEmpty() )
             {
@@ -26,7 +26,6 @@ namespace CommunityCoreLibrary
             for( var index = 0; index < def.ThingComps.Count; index++ )
             {
                 var injectionSet = def.ThingComps[ index ];
-                var qualifierValid = true;
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
                     ( Find_Extensions.ModByName( injectionSet.requiredMod ) == null )
@@ -34,83 +33,7 @@ namespace CommunityCoreLibrary
                 {
                     continue;
                 }
-                if(
-                    ( injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier == null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if(
-                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier != null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if( injectionSet.compProps == null )
-                {
-                    errors += "\n\tNull compProps in ThingComps";
-                    isValid = false;
-                }
-                if( qualifierValid )
-                {
-                    if( !injectionSet.targetDefs.NullOrEmpty() )
-                    {
-                        for( int index2 = 0; index2 < injectionSet.targetDefs.Count; ++index2 )
-                        {
-                            if( injectionSet.targetDefs[ index2 ].NullOrEmpty() )
-                            {
-                                errors += string.Format( "targetDef in ThingComps is null or empty at index {0}", index2.ToString() );
-                                isValid = false;
-                            }
-                            else
-                            {
-                                var thingDef = DefDatabase< ThingDef >.GetNamed( injectionSet.targetDefs[ index2 ], false );
-                                if( thingDef == null )
-                                {
-                                    errors += string.Format( "Unable to resolve targetDef '{0}' in ThingComps", thingDef.defName );
-                                    isValid = false;
-                                }
-                                else
-                                {
-                                    if( !CanInjectInto( thingDef, injectionSet.compProps.compClass, injectionSet.compProps.GetType() ) )
-                                    {
-                                        errors += string.Format( "Cannot inject ThingComps '{0}' into targetDef '{1}' - ThingComp with compClass or CompProperties may already exist, ", injectionSet.compProps, thingDef.defName );
-                                        isValid = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if( injectionSet.qualifier != null )
-                    {
-                        if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
-                        {
-                            errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
-                            isValid = false;
-                        }
-                        else
-                        {
-                            var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, null );
-                            if( !thingDefs.NullOrEmpty() )
-                            {
-                                foreach( var thingDef in thingDefs )
-                                {
-                                    if( !CanInjectInto( thingDef, injectionSet.compProps.compClass, injectionSet.compProps.GetType() ) )
-                                    {
-                                        errors += string.Format( "Cannot inject ThingComps '{0}' into targetDef '{1}' - ThingComp with compClass or CompProperties may already exist, ", injectionSet.compProps, thingDef.defName );
-                                        isValid = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                isValid &= DefInjectionQualifier.TargetQualifierValid( injectionSet.targetDefs, injectionSet.qualifier, "ThingComps", ref errors );
             }
 
             return isValid;
@@ -130,7 +53,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.ThingComps.NullOrEmpty() )
             {
@@ -170,7 +93,7 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.ThingComps.NullOrEmpty() )
             {
@@ -192,7 +115,7 @@ namespace CommunityCoreLibrary
                 {
 #if DEBUG
                     var stringBuilder = new StringBuilder();
-                    stringBuilder.Append( "ThingComps :: Qualifier returned: " );
+                    stringBuilder.Append( string.Format( "ThingComps ({0}):: Qualifier returned: ", injectionSet.compProps.compClass.FullName ) );
 #endif
                     foreach( var thingDef in thingDefs )
                     {

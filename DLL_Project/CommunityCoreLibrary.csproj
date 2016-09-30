@@ -145,8 +145,8 @@
     <Compile Include="Enumerations\ResearchEnableMode.cs" />
     <Compile Include="Extensions\ListerThings_Extensions.cs" />
     <Compile Include="Version\Version.cs" />
-    <Compile Include="Controller\Controller.cs" />
-    <Compile Include="Controller\Controller_MainMonoBehaviour.cs" />
+    <Compile Include="Controller\Data.cs" />
+    <Compile Include="Controller\MainMonoBehaviour.cs" />
     <Compile Include="ColorPicker\ColorWrapper.cs" />
     <Compile Include="ColorPicker\Dialog_ColorPicker.cs" />
     <Compile Include="ColorPicker\Helper_Color.cs" />
@@ -175,7 +175,7 @@
     <Compile Include="CompProperties\CompProperties_AutomatedFactory.cs" />
     <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
     <Compile Include="SpecialInjectors\DetourInjector.cs" />
-    <Compile Include="SubControllers\LibrarySubController.cs" />
+    <Compile Include="SubControllers\ModHelperSubController.cs" />
     <Compile Include="SubControllers\ResearchSubController.cs" />
     <Compile Include="SubControllers\InjectionSubController.cs" />
     <Compile Include="SubControllers\HelpSubController.cs" />
@@ -183,7 +183,6 @@
     <Compile Include="Defs\ModHelperDef\SpecialInjectors.cs" />
     <Compile Include="Defs\ModHelperDef\ThingComps.cs" />
     <Compile Include="Defs\ModHelperDef\PostLoadInjectors.cs" />
-    <Compile Include="Defs\ModHelperDef\MapComponents.cs" />
     <Compile Include="Defs\ModHelperDef\Designators.cs" />
     <Compile Include="Interfaces\IInjector.cs" />
     <Compile Include="Defs\ModHelperDef\Facilities.cs" />
@@ -279,7 +278,6 @@
     <Compile Include="SpecialInjectors\AssemblyDumper.cs" />
     <Compile Include="Extensions\ThinkNode_Extensions.cs" />
     <Compile Include="Extensions\StatWorker_Extensions.cs" />
-    <Compile Include="Detours\MentalStateWorker_BingingAlcohol.cs" />
     <Compile Include="Extensions\JoyGiver_SocialRelax_Extensions.cs" />
     <Compile Include="Detours\ThingListGroupHelper.cs" />
     <Compile Include="Detours\GenConstruct.cs" />
@@ -312,7 +310,20 @@
     <Compile Include="MainMenus\MainMenu_QuickStart.cs" />
     <Compile Include="Classes\Attributes\DetourClassMethod.cs" />
     <Compile Include="Classes\Attributes\DetourClassProperty.cs" />
-    <Compile Include="Enumerations\DetourInjectionTiming.cs" />
+    <Compile Include="Enumerations\InjectionTiming.cs" />
+    <Compile Include="Detours\ThingDef.cs" />
+    <Compile Include="Extensions\GenFilePaths_Extensions.cs" />
+    <Compile Include="Detours\AddictionUtility.cs" />
+    <Compile Include="Detours\JobGiver_BingeDrug.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowLearningHelper.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowRoofOverlay.cs" />
+    <Compile Include="Defs\ModHelperDef\Detours.cs" />
+    <Compile Include="MainMenus\MainMenu_Tutorial.cs" />
+    <Compile Include="Detours\ModAssemblyHandler.cs" />
+    <Compile Include="Controller\Library.cs" />
+    <Compile Include="Controller\PlayDataLoader.cs" />
+    <Compile Include="Controller\SubControllers.cs" />
+    <Compile Include="Controller\RimWorld.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

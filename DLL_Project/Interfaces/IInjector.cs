@@ -1,19 +1,57 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+
+using Verse;
 
 namespace CommunityCoreLibrary
 {
 
-    public interface IInjector
+    public enum IInjectorType
+    {
+        ByDef,
+        ByTiming
+    }
+
+
+    public abstract class IInjector
     {
 
+        public virtual IInjectorType        InjectorType
+        {
+            get
+            {
+                return IInjectorType.ByDef;
+            }
+        }
+
 #if DEBUG
-        string                              InjectString { get; }
-        bool                                IsValid( ModHelperDef def, ref string errors );
+        public abstract string              InjectString { get; }
+
+        public virtual bool                 IsValid( ModHelperDef def, ref string errors )
+        {
+            return true;
+        }
 #endif
 
-        bool                                Injected( ModHelperDef def );
+        public virtual bool                 DefIsInjected( ModHelperDef def )
+        {
+            return true;
+        }
+        public virtual bool                 TimingIsInjected( InjectionTiming priority )
+        {
+            return true;
+        }
 
-        bool                                Inject( ModHelperDef def );
+        public virtual bool                 InjectByDef( ModHelperDef def )
+        {
+            return true;
+        }
+        public virtual bool                 InjectByTiming( InjectionTiming priority )
+        {
+            return true;
+        }
 
     }
 

@@ -6,7 +6,7 @@ using Verse;
 namespace CommunityCoreLibrary.Detour
 {
     
-    internal static class _WorkGiver_Warden_DeliverFood
+    internal class _WorkGiver_Warden_DeliverFood : WorkGiver_Warden_DeliverFood
     {
 
         #region Helper Methods
@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary.Detour
             if(
                 ( p.RaceProps.ToolUser )&&
                 ( p.health.capacities.CapableOf( PawnCapacityDefOf.Manipulation ) )&&
-                ( foodSource.def.IsFoodMachine() )
+                ( foodSource.def.IsFoodDispenser )
             )
             {
                 if( foodSource is Building_NutrientPasteDispenser )
@@ -49,8 +49,9 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
-        #region Reflected Methods
+        #region Detoured Methods
 
+        [DetourClassMethod( typeof( WorkGiver_Warden_DeliverFood ), "FoodAvailableInRoomTo" )]
         internal static bool                _FoodAvailableInRoomTo( Pawn prisoner )
         {
             if(
@@ -77,8 +78,8 @@ namespace CommunityCoreLibrary.Detour
                     ( prisoner.health.capacities.CapableOf( PawnCapacityDefOf.Manipulation ) )&&
                     ( foodSources.Any( (source) =>
                 {
-                    if( source.def.IsFoodMachine() )
-                    {
+                    if( source.def.IsFoodDispenser )
+                    {   // Properly handle Nutrient Paste Dispensers and Food Synthesizers (Automated Factories)
                         if(
                             ( source is Building_NutrientPasteDispenser )&&
                             ( ((Building_NutrientPasteDispenser)source).CanDispenseNow )
@@ -105,7 +106,7 @@ namespace CommunityCoreLibrary.Detour
                 {
                     var foodSource = foodSources[ foodIndex ];
                     if(
-                        ( foodSource.def.IsFoodMachine() )||
+                        ( foodSource.def.IsFoodDispenser )||
                         (
                             ( foodSource.def.IsNutritionGivingIngestible )&&
                             ( foodSource.def.ingestible.preferability > FoodPreferability.NeverForNutrition )

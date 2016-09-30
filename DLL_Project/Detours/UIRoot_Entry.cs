@@ -12,32 +12,36 @@ using Verse.Sound;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _UIRoot_Entry
+    internal class _UIRoot_Entry : UIRoot_Entry
     {
 
         #region Detoured Methods
 
-        internal static bool        _ShouldDoMainMenu_get( this UIRoot_Entry entry )
+        [DetourClassProperty( typeof( UIRoot_Entry ), "ShouldDoMainMenu" )]
+        internal static bool        _ShouldDoMainMenu
         {
-            if( 
-                ( Controller.Data.RestartWarningIsOpen )||
-                ( Controller.Data.ReloadingPlayData )
-            )
+            get
             {
-                return false;
-            }
-            WindowStack windowStack = Find.WindowStack;
-            for( int index = 0; index < windowStack.Count; ++index )
-            {
-                if(
-                    ( windowStack[ index ].layer == WindowLayer.Dialog )&&
-                    ( !( windowStack[index] is EditWindow_Log ) )
+                if( 
+                    ( Controller.Data.RestartWarningIsOpen )||
+                    ( Controller.Data.ReloadingPlayData )
                 )
                 {
                     return false;
                 }
+                WindowStack windowStack = Find.WindowStack;
+                for( int index = 0; index < windowStack.Count; ++index )
+                {
+                    if(
+                        ( windowStack[ index ].layer == WindowLayer.Dialog )&&
+                        ( !( windowStack[index] is EditWindow_Log ) )
+                    )
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
-            return true;
         }
 
         #endregion

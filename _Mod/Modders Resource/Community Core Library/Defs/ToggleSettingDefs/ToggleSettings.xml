@@ -2,12 +2,22 @@
 <defs>
 
     <CommunityCoreLibrary.ToggleSettingDef>
+        <defName>ToggleLearningHelper</defName>
+        <labelKey>ShowLearningHelperWhenEmptyToggleButton</labelKey>
+        <saveKey>showLearningHelper</saveKey>
+        <iconTexture>UI/Buttons/ShowLearningHelper</iconTexture>
+        <soundDef>MouseoverButtonToggle</soundDef>
+        <order>10</order>
+        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowLearningHelper</toggleClass>
+    </CommunityCoreLibrary.ToggleSettingDef>
+
+    <CommunityCoreLibrary.ToggleSettingDef>
         <defName>ToggleShowZones</defName>
         <labelKey>ZoneVisibilityToggleButton</labelKey>
         <saveKey>showZones</saveKey>
         <iconTexture>UI/Buttons/ShowZones</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>10</order>
+        <order>20</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowZones</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 
@@ -17,7 +27,7 @@
         <saveKey>showBeauty</saveKey>
         <iconTexture>UI/Buttons/ShowBeauty</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>20</order>
+        <order>30</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowBeauty</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 
@@ -28,7 +38,7 @@
         <saveKey>showRoomStats</saveKey>
         <iconTexture>UI/Buttons/ShowRoomStats</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>30</order>
+        <order>40</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowRoomStats</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 
@@ -38,8 +48,18 @@
         <saveKey>showColonistBar</saveKey>
         <iconTexture>UI/Buttons/ShowColonistBar</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>40</order>
+        <order>50</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowColonistBar</toggleClass>
+    </CommunityCoreLibrary.ToggleSettingDef>
+
+    <CommunityCoreLibrary.ToggleSettingDef>
+        <defName>ToggleRoofOverlay</defName>
+        <labelKey>ShowRoofOverlayToggleButton</labelKey>
+        <saveKey>showRoofOverlay</saveKey>
+        <iconTexture>UI/Buttons/ShowRoofOverlay</iconTexture>
+        <soundDef>MouseoverButtonToggle</soundDef>
+        <order>60</order>
+        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowRoofOverlay</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 
     <CommunityCoreLibrary.ToggleSettingDef>
@@ -48,7 +68,7 @@
         <saveKey>autoHomeArea</saveKey>
         <iconTexture>UI/Buttons/AutoHomeArea</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>50</order>
+        <order>70</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_AutoHomeArea</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 
@@ -65,7 +85,7 @@
         <exposeValue>false</exposeValue>
         <iconTexture>UI/Buttons/ResourceReadoutCategorized</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>60</order>
+        <order>80</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ResourceReadoutCategorized</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 

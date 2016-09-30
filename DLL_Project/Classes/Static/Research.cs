@@ -4,7 +4,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public delegate void AdvancedResearchMod(bool Enable);
+    public delegate void AdvancedResearchMod( bool Enable );
 
     public static class Research
     {
@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                return DefDatabase<ResearchProjectDef>.GetNamed("CommunityCoreLibraryResearchLocker");
+                return DefDatabase<ResearchProjectDef>.GetNamed( "CommunityCoreLibraryResearchLocker" );
             }
         }
 

@@ -109,15 +109,25 @@ namespace CommunityCoreLibrary
             }
         }
 
+        public static bool                  DefOutputToPawnsDirectly( ThingDef thingDef )
+        {
+            var compAutomatedFactory = thingDef.GetCompProperty<CompProperties_AutomatedFactory>();
+            if( compAutomatedFactory == null )
+            {
+                return false;
+            }
+            if( compAutomatedFactory.outputVector != FactoryOutputVector.DirectToPawn )
+            {
+                return false;
+            }
+            return compAutomatedFactory.productionMode == FactoryProductionMode.PawnInteractionOnly;
+        }
+
         public bool                         OutputToPawnsDirectly
         {
             get
             {
-                if( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.DirectToPawn )
-                {
-                    return false;
-                }
-                return CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.PawnInteractionOnly;
+                return DefOutputToPawnsDirectly( this.def );
             }
         }
 

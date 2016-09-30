@@ -15,10 +15,11 @@ using CommunityCoreLibrary;
 namespace CommunityCoreLibrary.Detour
 {
 
-    internal static class _JobGiver_GetFood
+    internal class _JobGiver_GetFood : JobGiver_GetFood
     {
-        
-        internal static Job _TryGiveJob( this JobGiver_GetFood obj, Pawn pawn )
+
+        [DetourClassMethod( typeof( JobGiver_GetFood ), "TryGiveJob" )]
+        protected override Job TryGiveJob( Pawn pawn )
         {
             bool desperate = pawn.needs.food.CurCategory == HungerCategory.Starving;
             Thing foodSource;
@@ -103,7 +104,7 @@ namespace CommunityCoreLibrary.Detour
                         {
                             return null;
                         }
-                        foodDef = FoodUtility.GetFoodDef( foodSource );
+                        foodDef = foodSource.def;
                     }
                 }
             }
@@ -111,7 +112,7 @@ namespace CommunityCoreLibrary.Detour
             //CCL_Log.Message( string.Format( "Giving JobDriver_Ingest to {0} using {1}", pawn.LabelShort, foodSource.ThingID ) );
             // Ingest job for found food source
             var ingestJob = new Job( JobDefOf.Ingest, foodSource );
-            ingestJob.maxNumToCarry = FoodUtility.WillEatStackCountOf( pawn, foodDef );
+            ingestJob.maxNumToCarry = FoodUtility.WillIngestStackCountOf( pawn, foodDef );
             return ingestJob;
         }
 

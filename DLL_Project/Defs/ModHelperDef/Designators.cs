@@ -13,15 +13,9 @@ namespace CommunityCoreLibrary
     {
 
 #if DEBUG
-        public string                       InjectString
-        {
-            get
-            {
-                return "Designators injected";
-            }
-        }
+        public override string              InjectString => "Designators injected";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.Designators.NullOrEmpty() )
             {
@@ -72,7 +66,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.Designators.NullOrEmpty() )
             {
@@ -90,7 +84,7 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.Designators.NullOrEmpty() )
             {
@@ -118,12 +112,12 @@ namespace CommunityCoreLibrary
                         if( injectionSet.designatorNextTo == null )
                         {
                             // Inject the designator
-                            designationCategory._resolvedDesignators().Add( designatorObject );
+                            designationCategory.ResolvedDesignators().Add( designatorObject );
                         }
                         else
                         {
                             // Prefers to be beside a specific designator
-                            var designatorIndex = designationCategory._resolvedDesignators().FindIndex( d => (
+                            var designatorIndex = designationCategory.ResolvedDesignators().FindIndex( d => (
                                 ( d.GetType() == injectionSet.designatorNextTo )
                             ) );
 
@@ -131,12 +125,12 @@ namespace CommunityCoreLibrary
                             {
                                 // Other designator doesn't exist (yet?)
                                 // Inject the designator at the end
-                                designationCategory._resolvedDesignators().Add( designatorObject );
+                                designationCategory.ResolvedDesignators().Add( designatorObject );
                             }
                             else
                             {
                                 // Inject beside desired designator
-                                designationCategory._resolvedDesignators().Insert( designatorIndex + 1, designatorObject );
+                                designationCategory.ResolvedDesignators().Insert( designatorIndex + 1, designatorObject );
                             }
                         }
                     }

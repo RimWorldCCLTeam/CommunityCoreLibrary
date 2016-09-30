@@ -7,7 +7,7 @@
         <exposeValue>false</exposeValue>
         <iconTexture>UI/Icons/MiniMap/toggle</iconTexture>
         <soundDef>MouseoverButtonToggle</soundDef>
-        <order>70</order>
+        <order>1000</order>
         <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowMiniMap</toggleClass>
     </CommunityCoreLibrary.ToggleSettingDef>
 

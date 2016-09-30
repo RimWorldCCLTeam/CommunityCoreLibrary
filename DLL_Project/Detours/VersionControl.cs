@@ -12,31 +12,44 @@ namespace CommunityCoreLibrary.Detour
     internal static class _VersionControl
     {
 
-        internal static FieldInfo           _versionStringShort;
+        internal static FieldInfo           _versionString;
         internal static FieldInfo           _buildDate;
+
+        static                              _VersionControl()
+        {
+            _versionString = typeof( VersionControl ).GetField( "versionString", Controller.Data.UniversalBindingFlags );
+            if( _versionString == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'versionString' in 'VersionControl'",
+                    "Detour.VersionControl" );
+            }
+            _buildDate = typeof( VersionControl ).GetField( "buildDate", Controller.Data.UniversalBindingFlags );
+            if( _buildDate == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'buildDate' in 'VersionControl'",
+                    "Detour.VersionControl" );
+            }
+        }
 
         #region Reflected Methods
 
         internal static string              GetVersionStringShort()
         {
-            if( _versionStringShort == null )
-            {
-                _versionStringShort = typeof( VersionControl ).GetField( "versionStringShort", BindingFlags.Static | BindingFlags.NonPublic );
-            }
-            return (string)_versionStringShort.GetValue( null );
+            return (string)_versionString.GetValue( null );
         }
 
         internal static DateTime            GetBuildDate()
         {
-            if( _buildDate == null )
-            {
-                _buildDate = typeof( VersionControl ).GetField( "buildDate", BindingFlags.Static | BindingFlags.NonPublic );
-            }
             return (DateTime)_buildDate.GetValue( null );
         }
 
         #endregion
 
+        [DetourClassMethod( typeof( VersionControl ), "DrawInfoInCorner" )]
         internal static void                _DrawInfoInCorner()
         {
             if( Current.ProgramState != ProgramState.Entry )
@@ -59,12 +72,14 @@ namespace CommunityCoreLibrary.Detour
             {
                 str2 = str2 + "\n" + "LoggedIntoSteamAs".Translate( SteamUtility.SteamPersonaName );
             }
-            Rect rect = new Rect( 10f, 10f, 330f, Text.CalcHeight( str2, 330f ) );
+            var str2Height = Text.CalcHeight( str2, 330f );
+            Rect rect = new Rect( 10f, 10f, 330f, str2Height );
             Widgets.Label( rect, str2 );
             GUI.color = Color.white;
             var versionRect = new Rect( 10f, rect.yMax - 5f, 330f, 999f );
             Current.Root.gameObject.GetComponent<LatestVersionGetter>().DrawAt( versionRect );
-            Version.DrawAt( versionRect );
+            // Now draw CCL version compared to the remote
+            Version.DrawAt( versionRect, str2Height );
         }
 
     }

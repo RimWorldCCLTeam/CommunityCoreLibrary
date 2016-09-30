@@ -20,157 +20,15 @@
                 </targetDefs>
             </li>
 
-            <!-- Add CompNeighbourlyGrower to defs -->
-            <li>
-                <compProps>
-                    <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
-                </compProps>
-                <targetDefs>
-                    <li>HydroponicsBasin</li>
-                    <li>PlantPot</li>
-                </targetDefs>
-            </li>
-
-            <!-- Add CompHopperUser to defs -->
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_HopperUser">
-                    <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
-                    <resources>
-                        <allowedQualitiesConfigurable>false</allowedQualitiesConfigurable>
-                        <categories>
-                            <li>FoodRaw</li>
-                        </categories>
-                        <exceptedThingDefs>
-                            <li>Hay</li>
-                            <li>Human_Meat</li>
-                        </exceptedThingDefs>
-                        <exceptedCategories>
-                            <li>EggsFertilized</li>
-                        </exceptedCategories>
-                    </resources>
-                </compProps>
-                <targetDefs>
-                    <li>NutrientPasteDispenser</li>
-                </targetDefs>
-            </li>
-
-            <!-- Add CompPowerLowIdleDraw to defs -->
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <!-- 1/4 power draw when idle -->
-                    <idlePowerFactor>0.25</idlePowerFactor>
-                    <operationalMode>WhenNear</operationalMode>
-                </compProps>
-                <targetDefs>
-                    <li>NutrientPasteDispenser</li>
-                </targetDefs>
-            </li>
-
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <!-- 10 watts idle -->
-                    <idlePowerFactor>10</idlePowerFactor>
-                    <operationalMode>WhenNear</operationalMode>
-                </compProps>
-                <targetDefs>
-                    <li>Autodoor</li>
-                </targetDefs>
-            </li>
-
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <!-- Cycle full/half power -->
-                    <idlePowerFactor>0.50</idlePowerFactor>
-                    <operationalMode>Cycle</operationalMode>
-                    <cycleLowTicks>5000</cycleLowTicks>
-                    <cycleHighTicks>2500</cycleHighTicks>
-                </compProps>
-                <targetDefs>
-                    <li>HydroponicsBasin</li>
-                </targetDefs>
-            </li>
-
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <operationalMode>GroupUse</operationalMode>
-                    <!-- 10 watts idle -->
-                    <idlePowerFactor>10</idlePowerFactor>
-                </compProps>
-                <targetDefs>
-                    <li>TubeTelevision</li>
-                    <li>FlatscreenTelevision</li>
-                    <li>MegascreenTelevision</li>
-                </targetDefs>
-            </li>
-
-            <li>
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                    <!-- 0 watts when not in use -->
-                </compProps>
-                <targetDefs>
-                    <li>ComponentAssemblyBench</li>
-                    <li>ElectricCrematorium</li>
-                    <li>ElectricSmelter</li>
-                    <li>ElectricSmithy</li>
-                    <li>ElectricStove</li>
-                    <li>ElectricTailoringBench</li>
-                    <li>HiTechResearchBench</li>
-                    <li>TableMachining</li>
-                    <li>MultiAnalyzer</li>
-                    <li>VitalsMonitor</li>
-                </targetDefs>
-            </li>
-
         </ThingComps>
-
-        <tickerSwitcher>
-
-            <!-- Switch to Normal ticker on defs -->
-            <li>
-                <tickerType>Normal</tickerType>
-                <targetDefs>
-                    <li>ComponentAssemblyBench</li>
-                    <li>ElectricCrematorium</li>
-                    <li>ElectricSmelter</li>
-                    <li>ElectricSmithy</li>
-                    <li>ElectricStove</li>
-                    <li>ElectricTailoringBench</li>
-                    <li>HiTechResearchBench</li>
-                    <li>NutrientPasteDispenser</li>
-                    <li>TableMachining</li>
-                    <li>TubeTelevision</li>
-                    <li>FlatscreenTelevision</li>
-                    <li>MegascreenTelevision</li>
-                    <li>MultiAnalyzer</li>
-                    <li>VitalsMonitor</li>
-                </targetDefs>
-            </li>
-
-        </tickerSwitcher>
 
         <ThingDefAvailability>
 
-            <!-- Enable generic hoppers -->
-            <li>
-                <menuHidden>false</menuHidden>
-                <designationCategory>Production</designationCategory>
-                <targetDefs>
-                    <li>GenericHopper</li>
-                    <li>RefrigeratedHopper</li>
-                </targetDefs>
-            </li>
-
-            <!-- Disable vanilla hopper & colored lights -->
+            <!-- Disable colored lights -->
             <li>
                 <menuHidden>true</menuHidden>
                 <designationCategory>None</designationCategory>
                 <targetDefs>
-                    <li>Hopper</li>
                     <li>StandingLamp_Red</li>
                     <li>StandingLamp_Green</li>
                     <li>StandingLamp_Blue</li>

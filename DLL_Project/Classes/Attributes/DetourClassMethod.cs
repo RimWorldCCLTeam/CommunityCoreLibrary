@@ -6,15 +6,15 @@ namespace CommunityCoreLibrary
     [AttributeUsage(AttributeTargets.Method)]
     public class DetourClassMethod : Attribute
     {
-        public Type                         targetClass;
-        public string                       method;
-        public DetourInjectionTiming        injectionTiming;
+        public Type                         fromClass;
+        public string                       fromMethod;
+        public InjectionTiming              injectionTiming;
 
-        public                              DetourClassMethod( Type targetClass, string method, DetourInjectionTiming injectionTiming = DetourInjectionTiming.PostSpecialInjector )
+        public                              DetourClassMethod( Type fromClass, string fromMethod, InjectionTiming injectionTiming = InjectionTiming.BeforeSpecialInjectors )
         {
-            this.targetClass        = targetClass;
-            this.method             = method;
-            this.injectionTiming    = injectionTiming;
+            this.fromClass                  = fromClass;
+            this.fromMethod                 = fromMethod;
+            this.injectionTiming            = injectionTiming;
         }
 
     }

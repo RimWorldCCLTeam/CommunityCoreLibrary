@@ -14,14 +14,22 @@ namespace CommunityCoreLibrary.Detour
 
         internal static MethodInfo          _ShouldTakeDessicateDamage;
 
+        static                              _CompRottable()
+        {
+            _ShouldTakeDessicateDamage = typeof( CompRottable ).GetMethod( "ShouldTakeDessicateDamage", Controller.Data.UniversalBindingFlags );
+            if( _ShouldTakeDessicateDamage == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'ShouldTakeDessicateDamage' in 'CompRottable'",
+                    "Detour.CompRottable" );
+            }
+        }
+
         #region Reflected Methods
 
         internal bool                       ShouldTakeDessicateDamage()
         {
-            if( _ShouldTakeDessicateDamage == null )
-            {
-                _ShouldTakeDessicateDamage = typeof( CompRottable ).GetMethod( "ShouldTakeDessicateDamage", Controller.Data.UniversalBindingFlags );
-            }
             return (bool) _ShouldTakeDessicateDamage.Invoke( this, null );
         }
 

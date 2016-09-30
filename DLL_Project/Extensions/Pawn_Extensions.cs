@@ -11,31 +11,20 @@ namespace CommunityCoreLibrary
         
         internal static FieldInfo       _GetPawnDrawTracker;
 
-        internal static bool            CanBingeOn( this Pawn pawn, ChemicalDef chemicalDef, DrugCategory drugCategory )
+        static                          Pawn_Extensions()
         {
-            return(
-                ( AddictionUtility.CanBingeOnNow( pawn, chemicalDef, drugCategory ) )||
-                (
-                    ( drugCategory == DrugCategory.Hard )&&
-                    ( AddictionUtility.CanBingeOnNow( pawn, chemicalDef, DrugCategory.Social ) )
-                )
-            );
+            _GetPawnDrawTracker = typeof( Pawn ).GetField( "drawer", Controller.Data.UniversalBindingFlags );
+            if( _GetPawnDrawTracker == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'drawer' in class 'Pawn'",
+                    "Pawn_Extensions");
+            }
         }
 
         public static Pawn_DrawTracker  GetPawnDrawTracker( this Pawn pawn )
         {
-            if( _GetPawnDrawTracker == null )
-            {
-                _GetPawnDrawTracker = typeof( Pawn ).GetField( "drawer", BindingFlags.Instance | BindingFlags.NonPublic );
-                if( _GetPawnDrawTracker == null )
-                {
-                    CCL_Log.Trace(
-                        Verbosity.FatalErrors,
-                        "Unable to get 'drawer' in class 'Pawn'",
-                        "CommunityCoreLibrary.Detour.JobDriver_SocialRelax");
-                    return null;
-                }
-            }
             return (Pawn_DrawTracker)_GetPawnDrawTracker.GetValue( pawn );
         }
 

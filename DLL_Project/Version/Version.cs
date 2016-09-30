@@ -178,7 +178,7 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public static void                  DrawAt( Rect rect )
+        public static void                  DrawAt( Rect rect, float offsetFromTop )
         {
             Color color = Color.white;
             string str = string.Empty;
@@ -211,8 +211,9 @@ namespace CommunityCoreLibrary
                     str = "CCLBuildUpToDate".Translate();
                 }
             }
+            rect.y += offsetFromTop;
             rect.y -= 5f;
-            rect.y += Text.CalcHeight( str, rect.width );
+            rect.height = Text.CalcHeight( str, rect.width );
             GUI.color = color;
             Widgets.Label( rect, str );
             GUI.color = Color.white;

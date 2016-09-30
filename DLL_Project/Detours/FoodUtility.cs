@@ -19,32 +19,48 @@ namespace CommunityCoreLibrary.Detour
         internal static FieldInfo           _ingestThoughts;
         internal static MethodInfo          _SpawnedFoodSearchInnerScan;
 
+        static                              _FoodUtility()
+        {
+            _FoodOptimalityEffectFromMoodCurve = typeof( FoodUtility ).GetField( "FoodOptimalityEffectFromMoodCurve", Controller.Data.UniversalBindingFlags );
+            if( _FoodOptimalityEffectFromMoodCurve == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'FoodOptimalityEffectFromMoodCurve' in 'FoodUtility'",
+                    "Detour.FoodUtility" );
+            }
+            _ingestThoughts = typeof( FoodUtility ).GetField( "ingestThoughts", Controller.Data.UniversalBindingFlags );
+            if( _ingestThoughts == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'ingestThoughts' in 'FoodUtility'",
+                    "Detour.FoodUtility" );
+            }
+            _SpawnedFoodSearchInnerScan = typeof( FoodUtility ).GetMethod( "SpawnedFoodSearchInnerScan", Controller.Data.UniversalBindingFlags );
+            if( _SpawnedFoodSearchInnerScan == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get method 'SpawnedFoodSearchInnerScan' in 'FoodUtility'",
+                    "Detour.FoodUtility" );
+            }
+        }
+
         #region Reflected Methods
 
         internal static SimpleCurve         FoodOptimalityEffectFromMoodCurve()
         {
-            if( _FoodOptimalityEffectFromMoodCurve == null )
-            {
-                _FoodOptimalityEffectFromMoodCurve = typeof( FoodUtility ).GetField( "FoodOptimalityEffectFromMoodCurve", Controller.Data.UniversalBindingFlags );
-            }
             return (SimpleCurve)_FoodOptimalityEffectFromMoodCurve.GetValue( null );
         }
 
         internal static List<ThoughtDef>    IngestThoughts()
         {
-            if( _ingestThoughts == null )
-            {
-                _ingestThoughts = typeof( FoodUtility ).GetField( "ingestThoughts", Controller.Data.UniversalBindingFlags );
-            }
             return (List<ThoughtDef>)_ingestThoughts.GetValue( null );
         }
 
         internal static Thing               SpawnedFoodSearchInnerScan( Pawn eater, IntVec3 root, List<Thing> searchSet, PathEndMode peMode, TraverseParms traverseParams, float maxDistance = 9999, Predicate<Thing> validator = null )
         {
-            if( _SpawnedFoodSearchInnerScan == null )
-            {
-                _SpawnedFoodSearchInnerScan = typeof( FoodUtility ).GetMethod( "SpawnedFoodSearchInnerScan", Controller.Data.UniversalBindingFlags );
-            }
             return (Thing)_SpawnedFoodSearchInnerScan.Invoke( null, new object[] { eater, root, searchSet, peMode, traverseParams, maxDistance, validator } );
         }
 
@@ -61,6 +77,60 @@ namespace CommunityCoreLibrary.Detour
             CCL_Log.Message( str );
         }
 #endif
+
+
+        internal static ThingDef            _GetSpecificSynthesizedProduct;
+        internal static bool                _GetSynthesizedDrug;
+        internal static ThingDef            _GetFinalIngestibleDef( Thing foodSource )
+        {
+            var getSynthesizedDrug = _GetSynthesizedDrug;
+            var specificSynthesizedProduct = _GetSpecificSynthesizedProduct;
+            _GetSynthesizedDrug = false;
+            _GetSpecificSynthesizedProduct = null;
+
+            //CCL_Log.Message( string.Format( "GetFoodDef( {0} )", foodSource.ThingID ) );
+
+            var nutrientPasteDispenser = foodSource as Building_NutrientPasteDispenser;
+            if( nutrientPasteDispenser != null )
+            {
+                //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, nutrientPasteDispenser.DispensableDef.defName ) );
+                return nutrientPasteDispenser.DispensableDef;
+            }
+
+            var factory = foodSource as Building_AutomatedFactory;
+            if( factory != null )
+            {
+                if( specificSynthesizedProduct != null )
+                {
+                    if( factory.CanProduce( specificSynthesizedProduct ) )
+                    {
+                        return specificSynthesizedProduct;
+                    }
+                    getSynthesizedDrug = specificSynthesizedProduct.IsDrug;
+                }
+                if( getSynthesizedDrug )
+                {
+                    var product = factory.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug );
+                    //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, product.defName ) );
+                    return product;
+                }
+                else
+                {
+                    var product = factory.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
+                    //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, product.defName ) );
+                    return product;
+                }
+            }
+
+            var prey = foodSource as Pawn;
+            if( prey != null )
+            {
+                //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, prey.RaceProps.corpseDef.defName ) );
+                return prey.RaceProps.corpseDef;
+            }
+            //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, foodSource.def.defName ) );
+            return foodSource.def;
+        }
 
         [DetourClassMethod( typeof( FoodUtility ), "FoodSourceOptimality" )]
         internal static float               _FoodSourceOptimality( Pawn eater, Thing t, float dist )

@@ -68,9 +68,9 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public string                       InjectString => "Facilities injected";
+        public override string              InjectString => "Facilities injected";
 
-        public bool                         IsValid( ModHelperDef def, ref string errors )
+        public override bool                IsValid( ModHelperDef def, ref string errors )
         {
             if( def.Facilities.NullOrEmpty() )
             {
@@ -81,7 +81,6 @@ namespace CommunityCoreLibrary
 
             for( int index = 0; index < def.Facilities.Count; ++index )
             {
-                var qualifierValid = true;
                 var injectionSet = def.Facilities[ index ];
                 if(
                     ( !injectionSet.requiredMod.NullOrEmpty() )&&
@@ -110,63 +109,19 @@ namespace CommunityCoreLibrary
                         isValid = false;
                     }
                 }
-                if(
-                    ( injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier == null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both null, one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
-                if(
-                    ( !injectionSet.targetDefs.NullOrEmpty() )&&
-                    ( injectionSet.qualifier != null )
-                )
-                {
-                    errors += "targetDefs and qualifier are both supplied, only one or the other must be supplied";
-                    isValid = false;
-                    qualifierValid = false;
-                }
+                var qualifierValid = DefInjectionQualifier.TargetQualifierValid( injectionSet.targetDefs, injectionSet.qualifier, "Facilities", ref errors );
+                isValid &= qualifierValid;
                 if( qualifierValid )
                 {
-                    if( !injectionSet.targetDefs.NullOrEmpty() )
+                    var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs );
+                    if( !thingDefs.NullOrEmpty() )
                     {
-                        for( int index2 = 0; index2 < injectionSet.targetDefs.Count; ++index2 )
+                        foreach( var thingDef in thingDefs )
                         {
-                            var thingDef = DefDatabase<ThingDef>.GetNamed( injectionSet.targetDefs[ index2 ], false );
-                            if( thingDef == null )
+                            if( !CanInjectInto( thingDef ) )
                             {
-                                errors += string.Format( "Unable to resolve targetDef '{0}' in Facilities", injectionSet.targetDefs[ index2 ] );
+                                errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", thingDef.defName );
                                 isValid = false;
-                            }
-                            else if( !CanInjectInto( thingDef ) )
-                            {
-                                errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", injectionSet.targetDefs[ index2 ] );
-                                isValid = false;
-                            }
-                        }
-                    }
-                    if( injectionSet.qualifier != null )
-                    {
-                        if( !injectionSet.qualifier.IsSubclassOf( typeof( DefInjectionQualifier ) ) )
-                        {
-                            errors += string.Format( "Unable to resolve qualifier '{0}'", injectionSet.qualifier );
-                            isValid = false;
-                        }
-                        else
-                        {
-                            var thingDefs = DefInjectionQualifier.FilteredThingDefs( injectionSet.qualifier, ref injectionSet.qualifierInt, null );
-                            if( !thingDefs.NullOrEmpty() )
-                            {
-                                foreach( var thingDef in thingDefs )
-                                {
-                                    if( !CanInjectInto( thingDef ) )
-                                    {
-                                        errors += string.Format( "'{0}' is missing CompAffectedByFacilities for facility injection", thingDef.defName );
-                                        isValid = false;
-                                    }
-                                }
                             }
                         }
                     }
@@ -182,7 +137,7 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public bool                         Injected( ModHelperDef def )
+        public override bool                DefIsInjected( ModHelperDef def )
         {
             if( def.Facilities.NullOrEmpty() )
             {
@@ -217,7 +172,7 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public bool                         Inject( ModHelperDef def )
+        public override bool                InjectByDef( ModHelperDef def )
         {
             if( def.Facilities.NullOrEmpty() )
             {
@@ -240,7 +195,7 @@ namespace CommunityCoreLibrary
                 {
 #if DEBUG
                     var stringBuilder = new StringBuilder();
-                    stringBuilder.Append( "Facilities :: Qualifier returned: " );
+                    stringBuilder.Append( string.Format( "Facilities ({0}):: Qualifier returned: ", facilityDef.defName ) );
 #endif
                     foreach( var thingDef in thingDefs )
                     {

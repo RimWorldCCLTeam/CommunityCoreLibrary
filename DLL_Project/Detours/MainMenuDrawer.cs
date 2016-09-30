@@ -46,6 +46,7 @@ namespace CommunityCoreLibrary.Detour
         1.0 +--------------------------------------------------------------+
         */
 
+        [DetourClassMethod( typeof( MainMenuDrawer ), "MainMenuOnGUI", InjectionTiming.ImmediatelyOnDLLLoad )]
         internal static void _MainMenuOnGUI()
         {
             #region Version
@@ -143,7 +144,7 @@ namespace CommunityCoreLibrary.Detour
             menuOptionsRect.y += MainMenuDrawerExt.OptionListSpacing;
             GUI.BeginGroup( menuOptionsRect );
             
-            MainMenuDrawer.DoMainMenuButtons(
+            MainMenuDrawer.DoMainMenuControls(
                 menuOptionsRect,
                 MainMenuDrawerExt.AnyMapFiles );
             
@@ -151,7 +152,8 @@ namespace CommunityCoreLibrary.Detour
             #endregion
         }
 
-        internal static void _DoMainMenuButtons( Rect rect, bool anyMapFiles )
+        [DetourClassMethod( typeof( MainMenuDrawer ), "DoMainMenuControls", InjectionTiming.ImmediatelyOnDLLLoad )]
+        internal static void _DoMainMenuControls( Rect rect, bool anyMapFiles )
         {
             #region Set Single Column Rect
             var optionColumnRect = new Rect( 0.0f, 0.0f, MainMenuDrawerExt.GameRectWidth, rect.height );

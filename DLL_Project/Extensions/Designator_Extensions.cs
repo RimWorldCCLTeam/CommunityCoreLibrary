@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary
             if( !string.IsNullOrEmpty( designatorData.designationCategoryDef ) )
             {
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designatorData.designationCategoryDef, false );
-                List<Designator> designators = designationCategory._resolvedDesignators();
+                List<Designator> designators = designationCategory.ResolvedDesignators();
                 rVal &= designators.Exists( d => d.GetType() == designatorData.designatorClass );
             }
             if( designatorData.reverseDesignator )

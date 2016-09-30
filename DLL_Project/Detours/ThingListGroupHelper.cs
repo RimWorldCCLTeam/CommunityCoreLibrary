@@ -11,6 +11,7 @@ namespace CommunityCoreLibrary.Detour
     internal static class _ThingListGroupHelper
     {
 
+        [DetourClassMethod( typeof( ThingListGroupHelper ), "Includes" )]
         internal static bool _Includes( this ThingRequestGroup group, ThingDef def )
         {
             switch( group )
@@ -34,7 +35,7 @@ namespace CommunityCoreLibrary.Detour
             case ThingRequestGroup.FoodSource:
                 if( !def.IsNutritionGivingIngestible )
                 {
-                    return def.IsFoodMachine();
+                    return def.IsFoodDispenser;
                 }
                 return true;
             case ThingRequestGroup.FoodSourceNotPlantOrTree:
@@ -42,12 +43,13 @@ namespace CommunityCoreLibrary.Detour
                     ( !def.IsNutritionGivingIngestible )||
                     ( ( def.ingestible.foodType & ~FoodTypeFlags.Plant & ~FoodTypeFlags.Tree ) == FoodTypeFlags.None )
                 )
-                {
-                    return def.IsFoodMachine();
+                {   // Modified behaviour to catch all Nutrient Paste Dispensers
+                    // and Automated Factories that are food dispensers
+                    return def.IsFoodDispenser;
                 }
                 return true;
             case ThingRequestGroup.Corpse:
-                return def.thingClass == typeof (Corpse);
+                return def.thingClass == typeof( Corpse );
             case ThingRequestGroup.Blueprint:
                 return def.IsBlueprint;
             case ThingRequestGroup.BuildingArtificial:
@@ -97,6 +99,25 @@ namespace CommunityCoreLibrary.Detour
                     return def.Minifiable;
                 }
                 return true;
+            case ThingRequestGroup.Drug:
+                // Catch Automated Factories that can be drug synthesizers
+                if( def.IsFoodDispenser )
+                {
+                    var products = def.AllRecipes;
+                    if( products.NullOrEmpty() )
+                    {
+                        return false;
+                    }
+                    foreach( var product in products )
+                    {
+                        if( product.products.Any( thingCount => thingCount.thingDef.IsDrug ) )
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                return def.IsDrug;
             case ThingRequestGroup.Construction:
                 if( !def.IsBlueprint )
                 {

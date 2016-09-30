@@ -1,11 +1,13 @@
-﻿using Verse;
+﻿using RimWorld;
+using Verse;
 
 namespace CommunityCoreLibrary.Detour
 {
     
     internal static class _PageUtility
     {
-        
+     
+        [DetourClassMethod( typeof( PageUtility ), "InitGameStart" )]
         internal static void _InitGameStart()
         {
             LongEventHandler.QueueLongEvent(

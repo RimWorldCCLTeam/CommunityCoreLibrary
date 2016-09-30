@@ -8,7 +8,8 @@ namespace CommunityCoreLibrary.Detour
     internal static class _PreLoadUtility
     {
 
-        internal static void _CheckVersionAndLoad( string path, ScribeMetaHeaderUtility.ScribeHeaderMode mode, Action loadAct )
+        [DetourClassMethod( typeof( PreLoadUtility ), "CheckVersionAndLoad" )]
+        internal static void                _CheckVersionAndLoad( string path, ScribeMetaHeaderUtility.ScribeHeaderMode mode, Action loadAct )
         {
             bool mismatchWarnings;
             try
@@ -27,6 +28,7 @@ namespace CommunityCoreLibrary.Detour
                         (object) ex
                     }));
                 }
+                Controller.Data.ResetInjectionSubController();
                 ScribeMetaHeaderUtility.LoadGameDataHeader( mode, false );
                 mismatchWarnings = ScribeMetaHeaderUtility.TryCreateDialogsForVersionMismatchWarnings( loadAct );
                 CrossRefResolver.ResolveAllCrossReferences();
@@ -38,7 +40,6 @@ namespace CommunityCoreLibrary.Detour
                 PostLoadInitter.Clear();
                 throw;
             }
-            Controller.Data.ResetInjectionSubController();
             if( mismatchWarnings )
             {
                 return;

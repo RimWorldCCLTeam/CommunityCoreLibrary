@@ -161,8 +161,7 @@ namespace CommunityCoreLibrary
             // Generate the config file name
             // A14 - ConfigFolderPath became private - take a step back from the public ConfigFilePath
             // - Fluffy
-            string configFolder = Path.GetDirectoryName( GenFilePaths.ConfigFilePath );
-            string filePath = Path.Combine( configFolder, ConfigFilePrefix );
+            string filePath = Path.Combine( GenFilePaths_Extensions.ConfigFolderPath, ConfigFilePrefix );
             filePath += host.key;
             filePath += ConfigFileSuffix;
             return filePath;

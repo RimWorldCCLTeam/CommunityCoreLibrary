@@ -30,7 +30,21 @@ namespace CommunityCoreLibrary
         static MainMenu_QuickStart()
         {
             Type QuickStarter = Controller.Data.Assembly_CSharp.GetType( "Verse.QuickStarter" );
-            _quickStarted = QuickStarter.GetField( "quickStarted", BindingFlags.Static | BindingFlags.NonPublic );
+            if( QuickStarter == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get class 'Verse.QuickStarter' in 'Assembly_CSharp'",
+                    "MainMenu_QuickStart" );
+            }
+            _quickStarted = QuickStarter.GetField( "quickStarted", Controller.Data.UniversalBindingFlags );
+            if( _quickStarted == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'quickStarted' in 'QuickStarter'",
+                    "MainMenu_QuickStart" );
+            }
         }
 
 #endif
