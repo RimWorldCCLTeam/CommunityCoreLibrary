@@ -20,7 +20,7 @@ echo CCL Install Path: %InstalledCCLAssemblies%
 
 del "%~3DLL_Project\bin\Community Core Library.pdb"
 
-%~3DLL_Project\bin\InjectModuleInitializer.exe /m:CommunityCoreLibrary.Controller.Library::PreLoad "Community Core Library.dll"
+"%~3DLL_Project\bin\InjectModuleInitializer.exe" /m:CommunityCoreLibrary.Controller.Library::PreLoad "Community Core Library.dll"
 
 echo Copy to RimWorld
 copy %2 %InstalledCCLAssemblies%
