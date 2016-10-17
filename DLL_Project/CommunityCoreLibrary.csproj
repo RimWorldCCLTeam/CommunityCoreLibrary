@@ -332,7 +332,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)PostBuild.bat" $(ConfigurationName) "$(TargetPath)" $(SolutionDir)</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)PostBuild.bat" $(ConfigurationName) "$(TargetPath)" "$(SolutionDir)"</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="PostBuild.bat" />

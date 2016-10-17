@@ -18,7 +18,7 @@ echo Build Target: %2
 echo Solution Path: %3
 echo CCL Install Path: %InstalledCCLAssemblies%
 
-del "%3DLL_Project\CCLModTweaks\bin\CCLModTweaks.pdb"
+del "%~3DLL_Project\CCLModTweaks\bin\CCLModTweaks.pdb"
 
 echo Copy to RimWorld
 
@@ -26,10 +26,10 @@ copy %2 %InstalledCCLAssemblies%
 
 if %1 == Release (
     echo Copy to User Release
-    copy %2 "%3_Mod\User Release\Community Core Library - Mod Tweaks\Assemblies"
+    copy %2 "%~3_Mod\User Release\Community Core Library - Mod Tweaks\Assemblies"
 ) else (
     echo Copy to Modders Resource
-    copy %2 "%3_Mod\Modders Resource\Community Core Library - Mod Tweaks\Assemblies"
+    copy %2 "%~3_Mod\Modders Resource\Community Core Library - Mod Tweaks\Assemblies"
 )
 
 REM Add any other local copies here

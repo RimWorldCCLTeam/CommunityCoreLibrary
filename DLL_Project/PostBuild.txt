@@ -18,19 +18,19 @@ echo Build Target: %2
 echo Solution Path: %3
 echo CCL Install Path: %InstalledCCLAssemblies%
 
-del "%3DLL_Project\bin\Community Core Library.pdb"
+del "%~3DLL_Project\bin\Community Core Library.pdb"
 
-%3DLL_Project\bin\InjectModuleInitializer.exe /m:CommunityCoreLibrary.Controller.Library::PreLoad "Community Core Library.dll"
+"%~3DLL_Project\bin\InjectModuleInitializer.exe" /m:CommunityCoreLibrary.Controller.Library::PreLoad "Community Core Library.dll"
 
 echo Copy to RimWorld
 copy %2 %InstalledCCLAssemblies%
 
 if %1 == Release (
     echo Copy to User Release
-    copy %2 "%3_Mod\User Release\Community Core Library\Assemblies"
+    copy %2 "%~3_Mod\User Release\Community Core Library\Assemblies"
 ) else (
     echo Copy to Modders Resource
-    copy %2 "%3_Mod\Modders Resource\Community Core Library\Assemblies"
+    copy %2 "%~3_Mod\Modders Resource\Community Core Library\Assemblies"
 )
 
 REM Add any other local copies here
