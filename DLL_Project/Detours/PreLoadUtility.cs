@@ -28,7 +28,8 @@ namespace CommunityCoreLibrary.Detour
                         (object) ex
                     }));
                 }
-                Controller.Data.ResetInjectionSubController();
+                // TODO:  Detour different sequence for GameLoad injectors
+                //Controller.Data.ResetInjectionSubController();
                 ScribeMetaHeaderUtility.LoadGameDataHeader( mode, false );
                 mismatchWarnings = ScribeMetaHeaderUtility.TryCreateDialogsForVersionMismatchWarnings( loadAct );
                 CrossRefResolver.ResolveAllCrossReferences();

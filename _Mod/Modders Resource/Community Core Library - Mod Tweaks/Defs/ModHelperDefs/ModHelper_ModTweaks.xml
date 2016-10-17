@@ -8,10 +8,10 @@
 
         <minCCLVersion>0.15.0</minCCLVersion>
 
-        <ThingComps>
+        <SequencedInjectionSets>
 
             <!-- Add CompPowerLowIdleDraw to Work Tables -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 0 watts when not in use -->
@@ -20,7 +20,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Research Benches -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 0 watts when not in use -->
@@ -29,7 +29,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Facilities -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 0 watts when not in use -->
@@ -38,7 +38,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Watchable Buildings (TVs, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 10 watts idle -->
@@ -49,7 +49,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Doors -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 10 watts idle -->
@@ -60,7 +60,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Refrigerators (Refrigerated Hopper, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- Cycles to 1/4 power draw -->
@@ -73,7 +73,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Food Dispensers (Nutrient Paste Dispensers, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- 1/4 power draw when idle -->
@@ -84,7 +84,7 @@
             </li>
 
             <!-- Add CompHopperUser to Food Dispensers (Nutrient Paste Dispensers, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_HopperUser">
                     <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
                     <resources>
@@ -105,7 +105,7 @@
             </li>
 
             <!-- Add CompPowerLowIdleDraw to Plant Growers (Hydroponics, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
                     <!-- Cycle full/half power -->
@@ -118,65 +118,57 @@
             </li>
 
             <!-- Add CompNeighbourlyGrower to Plant Growers (Hydroponics, Plant Pots, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
                     <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
                 </compProps>
                 <qualifier>CCLModTweaks.QualifyGrowerCompPlantGrower</qualifier>
             </li>
 
-        </ThingComps>
-
-        <TickerSwitcher>
-
             <!-- Switch to Normal ticker on Work Tables -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Normal</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerWorkTable</qualifier>
             </li>
 
             <!-- Switch to Normal ticker on Research Benches -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Normal</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerResearchBench</qualifier>
             </li>
 
             <!-- Switch to Normal ticker on Facilities -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Normal</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerFacility</qualifier>
             </li>
 
             <!-- Switch to Normal ticker on Watchable Buildings (TVs, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Normal</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerWatchableBuilding</qualifier>
             </li>
 
             <!-- Switch to Normal ticker on Food Dispensers (Nutrient Paste Dispensers, etc) - Note:  This will probably never happen as these buildings will typically already have a ticker type set -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Normal</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerFoodDispenser</qualifier>
             </li>
 
             <!-- Switch to Rare ticker on Refrigerators (Refrigerated Hopper, etc) -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Rare</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerRareTickerRefrigerator</qualifier>
             </li>
 
             <!-- Switch to Rare ticker on Plant Growers (Hydroponics, etc) - Note:  This will probably never happen as these buildings will typically already have a ticker type set -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Rare</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerRareTickerPlantGrower</qualifier>
             </li>
 
-        </TickerSwitcher>
-
-        <ThingDefAvailability>
-
             <!-- Enable generic hoppers -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingDefAvailability">
                 <menuHidden>false</menuHidden>
                 <designationCategory>Production</designationCategory>
                 <targetDefs>
@@ -186,7 +178,7 @@
             </li>
 
             <!-- Disable vanilla hopper -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingDefAvailability">
                 <menuHidden>true</menuHidden>
                 <designationCategory>None</designationCategory>
                 <targetDefs>
@@ -194,7 +186,7 @@
                 </targetDefs>
             </li>
 
-        </ThingDefAvailability>
+        </SequencedInjectionSets>
 
     </CommunityCoreLibrary.ModHelperDef>
 

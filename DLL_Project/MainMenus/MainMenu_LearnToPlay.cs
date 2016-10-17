@@ -7,12 +7,12 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_Tutorial : MainMenu
+	public class MainMenu_LearnToPlay : MainMenu
 	{
 
         static MethodInfo                   _MainMenuDrawer_InitLearnToPlay;
 
-        static                              MainMenu_Tutorial()
+        static                              MainMenu_LearnToPlay()
         {
             _MainMenuDrawer_InitLearnToPlay = typeof( MainMenuDrawer ).GetMethod( "InitLearnToPlay", Controller.Data.UniversalBindingFlags );
             if( _MainMenuDrawer_InitLearnToPlay == null )
@@ -20,7 +20,7 @@ namespace CommunityCoreLibrary
                 CCL_Log.Trace(
                     Verbosity.FatalErrors,
                     "Unable to get method 'InitLearnToPlay' in 'MainMenuDrawer'",
-                    "MainMenu_Tutorial" );
+                    "MainMenu_LearnToPlay" );
             }
         }
 

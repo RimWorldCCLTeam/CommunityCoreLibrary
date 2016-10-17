@@ -44,7 +44,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( Verse.PlayDataLoader ), "ClearAllPlayData", InjectionTiming.ImmediatelyOnDLLLoad )]
+        [DetourClassMethod( typeof( Verse.PlayDataLoader ), "ClearAllPlayData", InjectionSequence.DLLLoad )]
         internal static void _ClearAllPlayData()
         {
             Controller.Data.RequireRestart = true;
@@ -74,7 +74,7 @@ namespace CommunityCoreLibrary.Detour
 #endif
         }
 
-        [DetourClassMethod( typeof( Verse.PlayDataLoader ), "LoadAllPlayData", InjectionTiming.ImmediatelyOnDLLLoad )]
+        [DetourClassMethod( typeof( Verse.PlayDataLoader ), "LoadAllPlayData", InjectionSequence.DLLLoad )]
         internal static void _LoadAllPlayData( bool recovering = false )
         {
             if( Controller.Data.RestartWarningIsOpen )

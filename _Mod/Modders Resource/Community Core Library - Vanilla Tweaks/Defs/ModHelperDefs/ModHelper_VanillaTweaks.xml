@@ -8,10 +8,10 @@
 
         <minCCLVersion>0.15.0</minCCLVersion>
 
-        <ThingComps>
+        <SequencedInjectionSets>
 
             <!-- Add CompColoredLight to defs -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_ColoredLight">
                     <compClass>CommunityCoreLibrary.CompColoredLight</compClass>
                 </compProps>
@@ -20,12 +20,8 @@
                 </targetDefs>
             </li>
 
-        </ThingComps>
-
-        <ThingDefAvailability>
-
             <!-- Disable colored lights -->
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingDefAvailability">
                 <menuHidden>true</menuHidden>
                 <designationCategory>None</designationCategory>
                 <targetDefs>
@@ -35,7 +31,7 @@
                 </targetDefs>
             </li>
 
-        </ThingDefAvailability>
+        </SequencedInjectionSets>
 
     </CommunityCoreLibrary.ModHelperDef>
 

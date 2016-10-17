@@ -46,7 +46,7 @@ namespace CommunityCoreLibrary.Detour
         1.0 +--------------------------------------------------------------+
         */
 
-        [DetourClassMethod( typeof( MainMenuDrawer ), "MainMenuOnGUI", InjectionTiming.ImmediatelyOnDLLLoad )]
+        [DetourClassMethod( typeof( MainMenuDrawer ), "MainMenuOnGUI", InjectionSequence.DLLLoad )]
         internal static void _MainMenuOnGUI()
         {
             #region Version
@@ -152,7 +152,7 @@ namespace CommunityCoreLibrary.Detour
             #endregion
         }
 
-        [DetourClassMethod( typeof( MainMenuDrawer ), "DoMainMenuControls", InjectionTiming.ImmediatelyOnDLLLoad )]
+        [DetourClassMethod( typeof( MainMenuDrawer ), "DoMainMenuControls", InjectionSequence.DLLLoad ) ]
         internal static void _DoMainMenuControls( Rect rect, bool anyMapFiles )
         {
             #region Set Single Column Rect

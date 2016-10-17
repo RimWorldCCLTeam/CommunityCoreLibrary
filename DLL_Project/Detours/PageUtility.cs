@@ -13,7 +13,8 @@ namespace CommunityCoreLibrary.Detour
             LongEventHandler.QueueLongEvent(
                 () =>
             {
-                Controller.Data.ResetInjectionSubController();
+                // TODO:  Detour different sequence for GameLoad injectors
+                //Controller.Data.ResetInjectionSubController();
                 MapIniter_NewGame.PrepForMapGen();
                 Find.GameInitData.startedFromEntry = true;
                 Find.Scenario.PreMapGenerate();

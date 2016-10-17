@@ -2,10 +2,16 @@
 <Defs>
 
     <CommunityCoreLibrary.MainMenuDef>
-        <defName>Tutorial</defName>
+        <defName>LearnToPlay</defName>
         <labelKey>LearnToPlay</labelKey>
         <order>800</order>
-        <menuClass>CommunityCoreLibrary.MainMenu_Tutorial</menuClass>
+        <menuClass>CommunityCoreLibrary.MainMenu_LearnToPlay</menuClass>
+        <!--
+            Should really all be called "Tutorial" since it's the word
+            that means "to teach/learn to ..." but core is core...
+            *sigh*
+            - 1000101
+        -->
     </CommunityCoreLibrary.MainMenuDef>
 
     <CommunityCoreLibrary.MainMenuDef>

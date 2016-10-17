@@ -10,6 +10,7 @@ using Verse.AI;
 namespace CommunityCoreLibrary
 {
 
+    [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.SpecialInjectors )]
     public class DetourInjector : SpecialInjector
     {
 

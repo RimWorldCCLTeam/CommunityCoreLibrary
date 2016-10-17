@@ -1,0 +1,7 @@
+SubController:              Validation:     Initialization:     Update:
+
+HelpSubController           n/a             80                  n/a
+InjectionSubController      90              100                 100
+ModOrderSubController       100             50                  n/a
+MiniMapSubController        10              40                  n/a
+ResearchSubController       50              90                  50

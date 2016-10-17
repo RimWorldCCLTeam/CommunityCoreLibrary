@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -63,7 +66,7 @@ namespace CommunityCoreLibrary.Controller
             // Inject all CCL detours that are ImmediatelyOnDLLLoad
             if( libraryValid )
             {
-                libraryValid &= DetourOnDLLLoad();
+                libraryValid &= InjectionSubController.TrySequencedInjectorsOnLoad( Controller.Data.Assembly_CCL );
             }
 
             if( libraryValid )
@@ -81,34 +84,6 @@ namespace CommunityCoreLibrary.Controller
                 "Library :: Validation" );
 
             Controller.Data.LibraryValid = libraryValid;
-        }
-
-        private static bool                 DetourOnDLLLoad()
-        {
-            var detourPairs = Detours.GetDetourPairs( Controller.Data.Assembly_CCL, InjectionTiming.ImmediatelyOnDLLLoad );
-            if( detourPairs.NullOrEmpty() )
-            {
-                CCL_Log.Error(
-                    "Unable to find methods and properties with detour attributes with for ImmediatelyOnDLLLoad for " + Controller.Data.UnityObjectName,
-                    "Library.DetourOnDLLLoad"
-                );
-                return false;
-            }
-            if( !Detours.TryDetourFromTo( detourPairs ) )
-            {
-                CCL_Log.Error(
-                    "Unable to detour methods and properties with detour attributes of ImmediatelyOnDLLLoad for " + Controller.Data.UnityObjectName,
-                    "Library.DetourOnDLLLoad"
-                );
-                return false;
-            }
-#if DEBUG
-            CCL_Log.Trace(
-                Verbosity.Injections,
-                string.Format( "{0} {1}", InjectionTiming.ImmediatelyOnDLLLoad.ToString(), "Detours injected" )
-            );
-#endif
-            return true;
         }
 
         internal static void                Initialize()

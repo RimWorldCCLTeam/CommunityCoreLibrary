@@ -165,18 +165,6 @@ namespace CommunityCoreLibrary.Controller
             }
         }
 
-        internal static void                ResetInjectionSubController()
-        {
-            MHD_PostLoadInjectors.Reset();
-            var injectionSubController = GetController( typeof( InjectionSubController ) );
-            if( injectionSubController == null )
-            {
-                CCL_Log.Error( "Unable to get InjectionSubController!" );
-                return;
-            }
-            injectionSubController.State = SubControllerState.Ok;
-        }
-
         internal static SubController       GetController( Type type )
         {
             foreach( var subController in SubControllers )

@@ -1,15 +1,5 @@
-﻿using System;
-using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading;
-
-using RimWorld;
+﻿using RimWorld;
 using Verse;
-using Verse.AI;
-using UnityEngine;
 
 namespace CommunityCoreLibrary.Detour
 {

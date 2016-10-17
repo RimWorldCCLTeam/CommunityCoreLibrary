@@ -4,17 +4,16 @@ namespace CommunityCoreLibrary
 {
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class DetourClassMethod : Attribute
+    public class DetourClassMethod : SequencedInjectorAttribute
     {
+        
         public Type                         fromClass;
         public string                       fromMethod;
-        public InjectionTiming              injectionTiming;
 
-        public                              DetourClassMethod( Type fromClass, string fromMethod, InjectionTiming injectionTiming = InjectionTiming.BeforeSpecialInjectors )
+        public                              DetourClassMethod( Type fromClass, string fromMethod, InjectionSequence sequence = InjectionSequence.MainLoad, InjectionTiming timing = InjectionTiming.Detours ) : base( sequence, timing )
         {
             this.fromClass                  = fromClass;
             this.fromMethod                 = fromMethod;
-            this.injectionTiming            = injectionTiming;
         }
 
     }

@@ -83,35 +83,9 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
-        #region Helper Methods
-
-        private bool                                DetourMethodsOnLoad( Assembly assembly )
-        {   // Get all detour pairs for this assembly scheduled on DLL load
-            var detourPairs = Detours.GetDetourPairs( assembly, InjectionTiming.ImmediatelyOnDLLLoad );
-            if( !detourPairs.NullOrEmpty() )
-            {
-                if( !Detours.TryDetourFromTo( detourPairs ) )
-                {
-                    return false;
-                }
-#if DEBUG
-                else
-                {
-                    CCL_Log.Trace(
-                        Verbosity.Injections,
-                        string.Format( "{0} {1}", InjectionTiming.ImmediatelyOnDLLLoad.ToString(), "Detours injected" )
-                    );
-                }
-#endif
-            }
-            return true;
-        }
-
-        #endregion
-
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( ModAssemblyHandler ), "ReloadAll", InjectionTiming.ImmediatelyOnDLLLoad )]
+        [DetourClassMethod( typeof( ModAssemblyHandler ), "ReloadAll", InjectionSequence.DLLLoad )]
         internal void                               _ReloadAll()
         {
             if( !GlobalResolverIsSet )
@@ -160,8 +134,8 @@ namespace CommunityCoreLibrary.Detour
                         if( AssemblyIsUsable( assembly ) )
                         {
                             this.loadedAssemblies.Add( assembly );
-                            // CCL added logic - Detour methods on DLL Load
-                            DetourMethodsOnLoad( assembly );
+                            // CCL added logic - Do injections on DLL Load
+                            Controller.InjectionSubController.TrySequencedInjectorsOnLoad( assembly );
                         }
                     }
                 }

@@ -25,24 +25,9 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        #region Engine Level Injectors
+        #region Sequenced Injectors
 
-        // InjectionSubController
-        public List< Type >                 SpecialInjectors;
-        public List< CompInjectionSet >     ThingComps;
-        public List< ITabInjectionSet >     ITabs;
-        public List< TickerSwitcher >       TickerSwitcher;
-        public List< FacilityInjectionSet > Facilities;
-        public List< StockGeneratorInjectionSet > TraderKinds;
-        public List< ThingDefAvailability > ThingDefAvailability;
-
-        #endregion
-
-        #region Game Level Injectors
-
-        // InjectionSubController
-        public List< Type >                 PostLoadInjectors;
-        public List< DesignatorData >       Designators;
+        public List<SequencedInjectionSet>  SequencedInjectionSets;
 
         #endregion
 
@@ -64,31 +49,32 @@ namespace CommunityCoreLibrary
 
         // Interfaces for different injectors
         // Use an array instead of a list to ensure order
-        public static IInjector[]           Injectors;
+        //public static SequencedInjector[]           SequencedInjectors;
 
         #endregion
 
         #region Constructors
 
+        /*
         static                              ModHelperDef()
         {
             // Add the injectors to the order-specific array
             // These injectors will be validated in order
             // Actual injection happens in the Injecton Sub Controller
-            Injectors = new IInjector[]
+            SequencedInjectors = new SequencedInjector[]
             {
-                new MHD_Detours(),
-                new MHD_SpecialInjectors(),
+                new SequencedInjector_Detours(),
+                new SequencedInjector_SpecialInjectors(),
                 new MHD_ThingComps(),
                 new MHD_ITabs(),
                 new MHD_TickerSwitcher(),
                 new MHD_Facilities(),
                 new MHD_StockGenerators(),
                 new MHD_ThingDefAvailability(),
-                new MHD_PostLoadInjectors(),
-                new MHD_Designators()
+                new SequencedInjector_Designators()
             };
         }
+        */
 
         #endregion
 
@@ -158,14 +144,16 @@ namespace CommunityCoreLibrary
 
                 #endregion
 
+                /*
                 #region Injector Validation
 
-                foreach( var injector in Injectors )
+                foreach( var injector in SequencedInjectors )
                 {
                     isValid &= injector.IsValid( this, ref errors );
                 }
 
                 #endregion
+                */
 
 #endif
 
@@ -186,9 +174,22 @@ namespace CommunityCoreLibrary
 
         #endregion
 
+        public override void                PostLoad()
+        {
+            base.PostLoad();
+            if( !SequencedInjectionSets.NullOrEmpty() )
+            {
+                foreach( var sequencedInjectionSet in SequencedInjectionSets )
+                {
+                    sequencedInjectionSet.PostLoad();
+                }
+            }
+        }
+
         #region Injection
 
-        public bool                         Inject( IInjector injector )
+        /*
+        public bool                         Inject( SequencedInjector injector )
         {
             if( injector.DefIsInjected( this ) )
             {
@@ -202,11 +203,14 @@ namespace CommunityCoreLibrary
             Controller.Data.Trace_Current_Mod = null;
             return result;
         }
+        */
 
-        public static IInjector             GetInjector( Type injector )
+        /*
+        public static SequencedInjector             GetInjector( Type injector )
         {
-            return Injectors.First( i => i.GetType() == injector );
+            return SequencedInjectors.First( i => i.GetType() == injector );
         }
+        */
 
         #endregion
 

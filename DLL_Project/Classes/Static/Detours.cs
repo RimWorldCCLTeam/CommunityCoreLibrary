@@ -40,18 +40,20 @@ namespace CommunityCoreLibrary
             // error out on null arguments
             if( fromMethod == null )
             {
-                CCL_Log.Trace( Verbosity.FatalErrors,
+                CCL_Log.Trace(
+                    Verbosity.Injections,
                     "fromMethod is null",
-                    "Detours"
+                    "Detour"
                 );
                 return false;
             }
 
             if( toMethod == null )
             {
-                CCL_Log.Trace( Verbosity.FatalErrors,
+                CCL_Log.Trace(
+                    Verbosity.Injections,
                     "toMethod is null",
-                    "Detours"
+                    "Detour"
                 );
                 return false;
             }
@@ -60,20 +62,20 @@ namespace CommunityCoreLibrary
             string fromString       = fromMethod.DeclaringType.FullName + "." + fromMethod.Name + " @ 0x" + fromMethod.MethodHandle.GetFunctionPointer().ToString( "X" + ( IntPtr.Size *  2 ).ToString() );
             string toString         = toMethod.DeclaringType.FullName   + "." + toMethod.Name   + " @ 0x" + toMethod.MethodHandle.GetFunctionPointer().ToString( "X" + ( IntPtr.Size *  2 ).ToString() );
 
-#if DEBUG
             if( detouredFromMethods.Contains( fromString ) )
             {
-                CCL_Log.Trace( Verbosity.Warnings,
-                    "fromMethod ('" + fromString + "') is previously detoured to '" + detouredToMethods[ detouredFromMethods.IndexOf( fromString ) ] + "'",
-                    "Detours"
+                CCL_Log.Trace(
+                    Verbosity.Warnings,
+                    string.Format( "'{0}' has already been detoured to '{1}'", fromString, detouredToMethods[ detouredFromMethods.IndexOf( fromString ) ] ),
+                    "Detour"
                 );
             } 
-            CCL_Log.Trace( Verbosity.Injections,
-                "Detouring '" + fromString + "' to '" + toString + "'",
-                "Detours"
+            CCL_Log.Trace(
+                Verbosity.Injections,
+                string.Format( "'{0}' to '{1}'", fromString, toString ),
+                "Detour"
             );
-#endif
-            
+
             detouredFromMethods.Add( fromString );
             detouredToMethods.Add( toString );
 
@@ -129,25 +131,25 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public static bool                  TryDetourFromTo ( List<DetourPair> detourPairs )
+        public static bool                  TryDetourFromTo( List<DetourPair> detours )
         {
-            if( detourPairs.NullOrEmpty() )
+            if( detours.NullOrEmpty() )
             {
                 return true;
             }
-            foreach( var detourPair in detourPairs )
+            foreach( var detour in detours )
             {
                 if(
-                    ( detourPair.fromMethod == null )||
-                    ( detourPair.toMethod == null )
+                    ( detour.fromMethod == null )||
+                    ( detour.toMethod == null )
                 )
                 {
                     return false;
                 }
             }
-            foreach( var detourPair in detourPairs )
+            foreach( var detour in detours )
             {
-                if( !TryDetourFromTo( detourPair.fromMethod, detourPair.toMethod ) )
+                if( !TryDetourFromTo( detour.fromMethod, detour.toMethod ) )
                 {
                     return false;
                 }
@@ -155,7 +157,20 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public static List<DetourPair>      GetDetourPairs( Assembly toAssembly, InjectionTiming Timing )
+        public static bool                  TryTimedAssemblyDetours( Assembly assembly, InjectionSequence sequence, InjectionTiming timing )
+        {
+            var detourPairs = GetTimedDetours( assembly, sequence, timing );
+            if( !detourPairs.NullOrEmpty() )
+            {
+                if( !TryDetourFromTo( detourPairs ) )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static List<DetourPair>      GetTimedDetours( Assembly toAssembly, InjectionSequence sequence, InjectionTiming timing )
         {
             // Get only types which have methods and/or properties marked with either of the detour attributes
             List<Type> toTypes = null;
@@ -181,22 +196,32 @@ namespace CommunityCoreLibrary
                 return null;
             }
 
+            // Invalid timing
+            if(
+                ( sequence == InjectionSequence.Never )||
+                ( timing == InjectionTiming.Never )
+            )
+            {
+                return null;
+            }
+
             // Create return list for the detours
-            var detourPairs = new List<DetourPair>();
+            var detours = new List<DetourPair>();
 
             // Process the types and fetch their detours
             foreach( var toType in toTypes )
             {
                 // Get the raw methods
-                GetDetourPairedMethods(    ref detourPairs, toType, Timing );
+                GetTimedDetouredMethods(    ref detours, toType, sequence, timing );
                 // Get the cloaked methods (properties)
-                GetDetourPairedProperties( ref detourPairs, toType, Timing );
+                GetTimedDetouredProperties( ref detours, toType, sequence, timing );
             }
 
-            return detourPairs;
+            // Return the list for this sequence and timing
+            return detours;
         }
 
-        private static void                 GetDetourPairedMethods( ref List<DetourPair> detourPairs, Type toType, InjectionTiming Timing )
+        private static void                 GetTimedDetouredMethods( ref List<DetourPair> detours, Type toType, InjectionSequence sequence, InjectionTiming timing )
         {
             var toMethods = toType
                 .GetMethods( Controller.Data.UniversalBindingFlags )
@@ -208,18 +233,26 @@ namespace CommunityCoreLibrary
             }
             foreach( var toMethod in toMethods )
             {
-                foreach( DetourClassMethod attribute in toMethod.GetCustomAttributes( typeof( DetourClassMethod ), true ) )
+                DetourClassMethod attribute = null;
+                if( toMethod.TryGetAttribute<DetourClassMethod>( out attribute ) )
                 {
-                    if( attribute.injectionTiming != Timing )
+                    if(
+                        ( attribute.injectionSequence != sequence )||
+                        (
+                            ( timing != InjectionTiming.All )&&
+                            ( attribute.injectionTiming != timing )
+                        )
+                    )
                     {   // Ignore any detours which timing doesn't match
                         continue;
                     }
                     if( attribute.fromClass == null )
                     {   // Report and ignore any missing classes
-                        CCL_Log.Trace( Verbosity.FatalErrors,
-                                      string.Format( "fromClass is null for '{0}.{1}'", toType.FullName, toMethod.Name ),
-                                      "Detours"
-                                     );
+                        CCL_Log.Trace(
+                            Verbosity.Injections,
+                            string.Format( "fromClass is null for '{0}.{1}'", toType.FullName, toMethod.Name ),
+                            "Detour"
+                        );
                         continue;
                     }
                     MethodInfo fromMethod;
@@ -239,19 +272,20 @@ namespace CommunityCoreLibrary
                     }
                     if( fromMethod == null )
                     {   // Report and ignore any missing methods
-                        CCL_Log.Trace( Verbosity.FatalErrors,
-                                      string.Format( "fromMethod is null for '{0}.{1}'", toType.FullName, toMethod.Name ),
-                                      "Detours"
-                                     );
+                        CCL_Log.Trace(
+                            Verbosity.Injections,
+                            string.Format( "fromMethod is null for '{0}.{1}'", toType.FullName, toMethod.Name ),
+                            "Detour"
+                        );
                         continue;
                     }
                     // Add detour for method
-                    detourPairs.Add( new DetourPair( fromMethod, toMethod ) );
+                    detours.Add( new DetourPair( fromMethod, toMethod ) );
                 }
             }
         }
 
-        private static void                 GetDetourPairedProperties( ref List<DetourPair> detourPairs, Type toType, InjectionTiming Timing )
+        private static void                 GetTimedDetouredProperties( ref List<DetourPair> detours, Type toType, InjectionSequence sequence, InjectionTiming timing  )
         {
             var toProperties = toType
                 .GetProperties( Controller.Data.UniversalBindingFlags )
@@ -263,27 +297,36 @@ namespace CommunityCoreLibrary
             }
             foreach( var toProperty in toProperties )
             {
-                foreach( DetourClassProperty attribute in toProperty.GetCustomAttributes( typeof( DetourClassProperty ), true ) )
+                DetourClassProperty attribute = null;
+                if( toProperty.TryGetAttribute<DetourClassProperty>( out attribute ) )
                 {
-                    if( attribute.injectionTiming != Timing )
+                    if(
+                        ( attribute.injectionSequence != sequence )||
+                        (
+                            ( timing != InjectionTiming.All )&&
+                            ( attribute.injectionTiming != timing )
+                        )
+                    )
                     {   // Ignore any detours which timing doesn't match
                         continue;
                     }
                     if( attribute.fromClass == null )
                     {   // Report and ignore any missing classes
-                        CCL_Log.Trace( Verbosity.FatalErrors,
-                                      string.Format( "fromClass is null for '{0}.{1}'", toType.FullName, toProperty.Name ),
-                                      "Detours"
-                                     );
+                        CCL_Log.Trace(
+                            Verbosity.Injections,
+                            string.Format( "fromClass is null for '{0}.{1}'", toType.FullName, toProperty.Name ),
+                            "Detour"
+                        );
                         continue;
                     }
                     var fromProperty = attribute.fromClass.GetProperty( attribute.fromProperty, Controller.Data.UniversalBindingFlags );
                     if( fromProperty == null )
                     {   // Report and ignore any missing properties
-                        CCL_Log.Trace( Verbosity.FatalErrors,
-                                      string.Format( "fromProperty is null for '{0}.{1}'", toType.FullName, toProperty.Name ),
-                                      "Detours"
-                                     );
+                        CCL_Log.Trace(
+                            Verbosity.Injections,
+                            string.Format( "fromProperty is null for '{0}.{1}'", toType.FullName, toProperty.Name ),
+                            "Detour"
+                        );
                         continue;
                     }
                     var toMethod = toProperty.GetGetMethod( true );
@@ -292,14 +335,15 @@ namespace CommunityCoreLibrary
                         var fromMethod = fromProperty.GetGetMethod( true );
                         if( fromMethod == null )
                         {   // Report and ignore missing get method
-                            CCL_Log.Trace( Verbosity.FatalErrors,
-                                      string.Format( "fromProperty has no get method for '{0}.{1}'", toType.FullName, toProperty.Name ),
-                                      "Detours"
-                                     );
+                            CCL_Log.Trace(
+                                Verbosity.Injections,
+                                string.Format( "fromProperty has no get method for '{0}.{1}'", toType.FullName, toProperty.Name ),
+                                "Detour"
+                            );
                         }
                         else
                         {   // Add detour for get method
-                            detourPairs.Add( new DetourPair( fromMethod, toMethod ) );
+                            detours.Add( new DetourPair( fromMethod, toMethod ) );
                         }
                     }
                     toMethod = toProperty.GetSetMethod( true );
@@ -308,14 +352,15 @@ namespace CommunityCoreLibrary
                         var fromMethod = fromProperty.GetSetMethod( true );
                         if( fromMethod == null )
                         {   // Report and ignore missing set method
-                            CCL_Log.Trace( Verbosity.FatalErrors,
-                                          string.Format( "fromProperty has no set method for '{0}.{1}'", toType.FullName, toProperty.Name ),
-                                          "Detours"
-                                         );
+                            CCL_Log.Trace(
+                                Verbosity.Injections,
+                                string.Format( "fromProperty has no set method for '{0}.{1}'", toType.FullName, toProperty.Name ),
+                                "Detour"
+                            );
                         }
                         else
                         {   // Add detour for set method
-                            detourPairs.Add( new DetourPair( fromMethod, toMethod ) );
+                            detours.Add( new DetourPair( fromMethod, toMethod ) );
                         }
                     }
                 }

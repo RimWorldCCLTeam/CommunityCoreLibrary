@@ -211,18 +211,24 @@ namespace CommunityCoreLibrary
                             bool mhdUnlock = false;
                             foreach( var mhd in DefDatabase<ModHelperDef>.AllDefs )
                             {
-                                if( mhd.ThingDefAvailability != null )
+                                if( mhd.SequencedInjectionSets != null )
                                 {
-                                    foreach( var tda in mhd.ThingDefAvailability )
+                                    foreach( var tda in mhd.SequencedInjectionSets )
                                     {
                                         if(
-                                            ( tda.targetDefs.Contains( thingDef.defName ) )&&
-                                            ( !tda.designationCategory.NullOrEmpty() )&&
-                                            ( tda.designationCategory.ToLower() != "none" )
+                                            ( tda.GetType() == typeof( SequencedInjectionSet_ThingDefAvailability ) )&&
+                                            ( tda.targetDefs.Contains( thingDef.defName ) )
                                         )
                                         {
-                                            mhdUnlock = true;
-                                            break;
+                                            var injectorData = tda as SequencedInjectionSet_ThingDefAvailability;
+                                            if(
+                                                ( !string.IsNullOrEmpty( injectorData.designationCategory ) )&&
+                                                ( injectorData.designationCategory.ToLower() != "none" )
+                                            )
+                                            {
+                                                mhdUnlock = true;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
