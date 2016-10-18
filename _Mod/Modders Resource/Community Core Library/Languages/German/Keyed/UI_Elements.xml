@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- UI Elements -->
+
+    <CompColorLightInspect>Farbe: </CompColorLightInspect>
+
+    <CommandChangeColorLabel>Farbe ändern</CommandChangeColorLabel>
+    <CommandChangeColorDesc>LClick - {0};\nRClick - {1}</CommandChangeColorDesc>
+
+    <CommandChangeRoommateColorLabel>Farbe der Beleuchtung im Raum angleichen</CommandChangeRoommateColorLabel>
+    <CommandChangeRoommateColorLClick>LClick - Nur {0}</CommandChangeRoommateColorLClick>
+    <CommandChangeRoommateColorRClick>RClick - Komplette Beleuchtung</CommandChangeRoommateColorRClick>
+
+    <CommandChangeTouchingPlantLabel>Alle Pflanzen angleichen</CommandChangeTouchingPlantLabel>
+    <CommandChangeRoommatePlantLabel>Pflanzen im Raum angleichen</CommandChangeRoommatePlantLabel>
+    <CommandChangeRoommatePlantLClick>LClick - Nur {0}</CommandChangeRoommatePlantLClick>
+    <CommandChangeRoommatePlantRClick>RClick - Alle Pflanzen</CommandChangeRoommatePlantRClick>
+
+    <CommandGroupOfThingsLClick>LClick - Im Raum</CommandGroupOfThingsLClick>
+    <CommandGroupOfThingsRClick>RClick - Überall</CommandGroupOfThingsRClick>
+
+    <CommandGroupOfThingsByDefLabel>Gleiche alle benachbarten {0} an</CommandGroupOfThingsByDefLabel>
+    <CommandGroupOfThingsByLinkerLabel>Gleiche alle verbundenen {0} an</CommandGroupOfThingsByLinkerLabel>
+
+    <CommandGroupOfThingsByDefInRoomLabel>Gleiche alle {0} im Raum an</CommandGroupOfThingsByDefInRoomLabel>
+    <CommandGroupOfThingsByLinkerInRoomLabel>Gleiche alle verbundenen {0} im Raum an</CommandGroupOfThingsByLinkerInRoomLabel>
+
+    <HelpOTabTitle>Mod Hilfe</HelpOTabTitle>
+    <NoHelpDefs>Keine Hilfe-defs gefunden</NoHelpDefs>
+    <JumpToTopic>Klicken um zu Abschnitt zu springen</JumpToTopic>
+
+    <RefrigeratedStorage>In geühlten Lagerbereichen</RefrigeratedStorage>
+
+    <ModConfigurationOptions>Mod Einstellungen</ModConfigurationOptions>
+    <ModConfigurationSaved>{0} Einstellungen gespeichert</ModConfigurationSaved>
+
+    <BadLoadOrder>Etwas stimmt mit der Reihenfolge der Mods nicht.\n\nCommunity Core Library ist nicht die zweite Mod in der Liste. Wähle 'Jetzt neu starten' in diesem Menu aus, um RimWorld neu zu starten.</BadLoadOrder>
+    <WarnAboutRestart>Eine größere Änderung wurde an den Spieldaten vorgenommen, wie zum Beispiel Mods oder die Sprache.\n\nRimWorld sollte nue gestartet werden.\n\nWeiterspielen ohne Neustart ann alle möglichen Probleme verursachen!.</WarnAboutRestart>
+    <ReallyWarnAboutRestart>Du spielst wirlich gern mit dem Feuer.\n\nEin Neustart ist dringend Empfohlen!.</ReallyWarnAboutRestart>
+    <WarnAboutRestartDebug>Du solltest das Spiel neu starten, nachdem Spieldaten geändert wurdne.\n\nAls  modder wusstest du das aber, stimmts?</WarnAboutRestartDebug>
+    <ContinueWithoutRestart>Ohne Neustart spielen</ContinueWithoutRestart>
+    <RestartLater>Später</RestartLater>
+    <RestartNow>Jetzt neu starten</RestartNow>
+    <AcceptTheConsequences>Ich akzeptiere die Konsequenzen</AcceptTheConsequences>
+
+    <QuickStart>Quick Start</QuickStart>
+
+    <CCLBuildNowAvailable>CCL Version {0} ist verfügbar. Schaue auf github.com für weitere Informationen.</CCLBuildNowAvailable>
+    <CCLBuildUpToDate>Dies ist die atuelle Version von CCL.</CCLBuildUpToDate>
+    <ErrorGettingCCLVersionInfo>Fehler beim ermitteln der Versionsinformationen von CCL: {0}</ErrorGettingCCLVersionInfo>
+    <LoadingCCLVersionInfo>Lade CCL Versionsinformationen...</LoadingCCLVersionInfo>
+
+    <!-- Validation error messages used in CCL.UI.LabeledInput and it's child classes -->
+    <CCL.UI.InputField.DefaultValidationError>Überprüfungsfehler; {0} ist eine gültige Eingabe</CCL.UI.InputField.DefaultValidationError>
+    <CCL.UI.InputField_Float.ValidationError>Überprüfungsfehler; {0} ist keine gültige Zahl</CCL.UI.InputField_Float.ValidationError>
+    <CCL.UI.InputField_Int.ValidationError>Überprüfungsfehler; {0} ist keine gültige Ganzzahl</CCL.UI.InputField_Int.ValidationError>
+
+</LanguageData>

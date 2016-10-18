@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- Comp Replacement Strings -->
+
+    <CompShearableGrowth>Wachstum</CompShearableGrowth>
+    <CompMilkableFullness>Füllstand</CompMilkableFullness>
+
+</LanguageData>

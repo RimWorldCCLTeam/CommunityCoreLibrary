@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- PlaceWorkers -->
+    <MessagePlacementItemSurface>Muss auf einer Gegenstandsoberfläche platziert werden!</MessagePlacementItemSurface>
+    <MessagePlacementMustBeUnderRoof>Muss überdacht sein!</MessagePlacementMustBeUnderRoof>
+    <MessagePlacementAgainstSupport>Muss an einer Stützstruktur angebract werden!</MessagePlacementAgainstSupport>
+    <MessagePlacementCountRestricted>Hier können nicht mehr als {0} platziert werden!</MessagePlacementCountRestricted>
+    <MessagePlacementNotOn>Darf nicht auf {0} plartziert werden!</MessagePlacementNotOn>
+    <MessagePlacementNotHere>Darf hier nicht platziert werden!</MessagePlacementNotHere>
+    <AlertPlaceWorkerRestrictionSupportRemovedLabel>Eine Stütze wurde entfernt!</AlertPlaceWorkerRestrictionSupportRemovedLabel>
+    <AlertPlaceWorkerRestrictionSupportRemovedDesc>Etwas wurde zwerstört weil seine Stütze entfernt oder zerstört wurde!\n\nFolgende Dinge wurden aus diesem Grund zerstört:</AlertPlaceWorkerRestrictionSupportRemovedDesc>
+
+</LanguageData>
