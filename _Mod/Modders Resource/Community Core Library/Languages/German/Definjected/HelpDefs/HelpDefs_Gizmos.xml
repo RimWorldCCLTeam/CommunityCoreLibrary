@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+        <ColoredLights.label>Beleuchtung</ColoredLights.label>
+        <ColoredLights.description>Beleuchtungselemente können verschiedene Funtionen oder 'Gizmos' haben. Manche unterstützen die Farbwahl von Lampen und das Angleichen von benachbarten Beleuchtungselementen.</ColoredLights.description>
+
+        <NeighbourlyGrowers.label>Hydroponische Farmen</NeighbourlyGrowers.label>
+        <NeighbourlyGrowers.description>Hydroponische Farmen besitzen 'Gizmos', die es erlauben, die gepflanzten Samen mit den benachberten Einheiten anzugleichen. Einmal pflanzen - Bepflanzung teilen - fertig</NeighbourlyGrowers.description>
+
+</LanguageData>

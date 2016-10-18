@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+
+<LanguageData>
+
+		<MinimapOverlays.label>Minimap-Einblendungen</MinimapOverlays.label>
+        <MinimapOverlays.description>Das Minimap-Fenster kann diverse Einblendungen gleichzeitig anzeigen. Einige davon sind zu Beginn ausgeschaltet. Man kann eine Gruppe von Einblendungen durch Links-klicken auf das Symbol der Gruppe ein- und ausschalten. Einzelne Einblendungen einer GRuppe önnen mit einem Rechtklick auf das Symbol ausgewählt werden. Es erscheint dann ein Menu mit den entsprechenden Einblendungen. Einige der Einblendungen haben auch mehr Möglicheiten zur Auswahl als nur an und aus. Diese können in der Mod-Konfiguration der Minimap ausgewählt werden.</MinimapOverlays.description>
+
+</LanguageData>

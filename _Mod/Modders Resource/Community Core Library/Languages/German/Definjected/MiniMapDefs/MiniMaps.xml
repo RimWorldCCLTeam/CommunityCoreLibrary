@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<LanguageData>
+
+        <MiniMap_ViewPort.label>Ansichtsfenster</MiniMap_ViewPort.label>
+        <MiniMap_ViewPort.description>Zeigt die Größe des sichtbaren Bildschirmausschnitts auf der Minimap an.</MiniMap_ViewPort.description>
+
+        <MiniMap_Fog.label>Nebel</MiniMap_Fog.label>
+        <MiniMap_Fog.description>Zeigt den Nebel der Minimap an.</MiniMap_Fog.description>
+
+        <MiniMap_Pawns.label>Einheiten</MiniMap_Pawns.label>
+        <MiniMap_Pawns.description>Zeigt verschiedene Einheiten auf der Minimap an.</MiniMap_Pawns.description>
+
+        <MiniMap_Utilities.label>Infrastruktur</MiniMap_Utilities.label>
+        <MiniMap_Utilities.description>Zeigt Planung, Abbaugebiete und Stromzufuhr an.</MiniMap_Utilities.description>
+
+        <MiniMap_Areas.label>Gebiete</MiniMap_Areas.label>
+        <MiniMap_Areas.description>Zeigt verschiedene Gebiete in der Minimap an.</MiniMap_Areas.description>
+
+        <MiniMap_Terrain.label>местность</MiniMap_Terrain.label>
+        <MiniMap_Terrain.description>Отображение различные детали местности.</MiniMap_Terrain.description>
+
+
+</LanguageData>
