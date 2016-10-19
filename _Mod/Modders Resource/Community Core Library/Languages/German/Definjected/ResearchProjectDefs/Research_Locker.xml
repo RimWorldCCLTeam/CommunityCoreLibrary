@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<LanguageData>
+
+        <CommunityCoreLibraryResearchLocker.label>Forschungssperre</CommunityCoreLibraryResearchLocker.label>
+        <CommunityCoreLibraryResearchLocker.description>Community Core Library - Forschungssperre</CommunityCoreLibraryResearchLocker.description>
+        <CommunityCoreLibraryResearchLocker.descriptionDiscovered>Dies sollte versteckt sein. Das Standard-Forschungsmenu von RimWorld zeigt es leider trotzdem an.</CommunityCoreLibraryResearchLocker.descriptionDiscovered>
+
+</LanguageData>

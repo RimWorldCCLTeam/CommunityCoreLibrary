@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <MiniMap.OverlayIconTip>{0} Einblendung ist aktuell {1}.</MiniMap.OverlayIconTip>
+    <MiniMap.Toggle>Klicken zum Umschalten.</MiniMap.Toggle>
+    <MiniMap.ShowMCMOption>Menu {0} öffnen</MiniMap.ShowMCMOption>
+    <MiniMap.ToggleX>{0} - Umschalten {1}</MiniMap.ToggleX>
+    <MiniMap.MCMToggleMain>Minimap aktivieren</MiniMap.MCMToggleMain>
+    <MiniMap.MCMToggleButton>Minimap umschalten.\n\nDies zeigt oder versteckt das Fenster mit der Minimap.</MiniMap.MCMToggleButton>
+    <MiniMap.Unlock>Freigeben - ermöglicht die Änderung von Position und Größe.\nShift gedrückt halten, um das Gröenverhältnis beizubehalten.</MiniMap.Unlock>
+    <MiniMap.OneToOneScale>Minimap auf Kartengröße anpassen.</MiniMap.OneToOneScale>
+    <MiniMap.DefaultSize>Größe der Minimap zurücksetzen.</MiniMap.DefaultSize>
+    <MiniMap.Lock>Position und Gröe sperren.</MiniMap.Lock>
+
+
+    <!-- MCM keys for Minimaps shipped with CCL -->
+    <MiniMap.ViewPort.Color>Farbe</MiniMap.ViewPort.Color>
+    <MiniMap.ViewPort.ColorTip>Die Farbe des Rechtecks, das die aktuelle Ansicht anzeigt.</MiniMap.ViewPort.ColorTip>
+    <MiniMap.CP.Radius>Größe</MiniMap.CP.Radius>
+    <MiniMap.CP.RadiusTip>Größe des 'Radarsymbols' von Kolonisten.</MiniMap.CP.RadiusTip>
+    <MiniMap.CP.Color>Farbe</MiniMap.CP.Color>
+    <MiniMap.CP.ColorTip>Farbe des 'Radarsymbols' von Kolonisten.</MiniMap.CP.ColorTip>
+    <MiniMap.NCP.EnemyColor>Farbe von Feinden</MiniMap.NCP.EnemyColor>
+    <MiniMap.NCP.EnemyColorTip>Farbe des 'Radarsymbols' von feindlichen Figuren.</MiniMap.NCP.EnemyColorTip>
+    <MiniMap.NCP.TraderColor>Farbe von Händlern</MiniMap.NCP.TraderColor>
+    <MiniMap.NCP.TraderColorTip>Farbe des 'Radarsymbols' von Händlern.</MiniMap.NCP.TraderColorTip>
+    <MiniMap.NCP.VisitorColor>Farbe von Besuchern</MiniMap.NCP.VisitorColor>
+    <MiniMap.NCP.VisitorColorTip>Farbe des 'Radarsymbols' von Besuchern.</MiniMap.NCP.VisitorColorTip>
+    <MiniMap.NCP.EnemyRadius>Größe von Feinden</MiniMap.NCP.EnemyRadius>
+    <MiniMap.NCP.EnemyRadiusTip>Größe des 'Radarsymbols' von feindlichen Figuren.</MiniMap.NCP.EnemyRadiusTip>
+    <MiniMap.NCP.VisitorRadius>Größe von Besuchern</MiniMap.NCP.VisitorRadius>
+    <MiniMap.NCP.VisitorRadiusTip>Farbe des 'Radarsymbols' von Besuchern.</MiniMap.NCP.VisitorRadiusTip>
+    <MiniMap.NCP.TraderRadius>Größe von Händlern</MiniMap.NCP.TraderRadius>
+    <MiniMap.NCP.TraderRadiusTip>Größe des 'Radarsymbols' von Händlern.</MiniMap.NCP.TraderRadiusTip>
+    <MiniMap.WL.WildColor>Farbe von Wiltieren</MiniMap.WL.WildColor>
+    <MiniMap.WL.WildColorTip>Farbe des 'Radarsymbols' von Wildtieren.</MiniMap.WL.WildColorTip>
+    <MiniMap.WL.TameColor>Farbe von Haustieren</MiniMap.WL.TameColor>
+    <MiniMap.WL.TameColorTip>Farbe des 'Radarsymbols' von Haustieren.</MiniMap.WL.TameColorTip>
+    <MiniMap.WL.HostileColor>Farbe von feindlichen Tieren</MiniMap.WL.HostileColor>
+    <MiniMap.WL.HostileColorTip>Farbe des 'Radarsymbols' von feindlichen Tieren</MiniMap.WL.HostileColorTip>
+    <MiniMap.WL.HuntingColor>Farbe von zu jadenden Tieren</MiniMap.WL.HuntingColor>
+    <MiniMap.WL.HuntingColorTip>Farbe des 'Radarsymbols' von Tieren, die zur Jagd freigegeben wurden.</MiniMap.WL.HuntingColorTip>
+    <MiniMap.WL.TamingColor>Farbe von zu zähmenden Tieren</MiniMap.WL.TamingColor>
+    <MiniMap.WL.TamingColorTip>Farbe des 'Radarsymbols' von Tieren, die gezähmt werden sollen.</MiniMap.WL.TamingColorTip>
+    <MiniMap.WL.WildRadius>Größe von Wildtieren</MiniMap.WL.WildRadius>
+    <MiniMap.WL.WildRadiusTip>Größe des 'Radarsymbols' von Wildtieren.</MiniMap.WL.WildRadiusTip>
+    <MiniMap.WL.TameRadius>Größe von Haustieren</MiniMap.WL.TameRadius>
+    <MiniMap.WL.TameRadiusTip>Größe des 'Radarsymbols' von Haustieren.</MiniMap.WL.TameRadiusTip>
+    <MiniMap.WL.HostileRadius>Größe von feindlichen Tieren</MiniMap.WL.HostileRadius>
+    <MiniMap.WL.HostileRadiusTip>Größe des 'Radarsymbols' von feindlichen Tieren.</MiniMap.WL.HostileRadiusTip>
+    <MiniMap.WL.HuntingRadius>Größe von zu jagenden Tieren</MiniMap.WL.HuntingRadius>
+    <MiniMap.WL.HuntingRadiusTip>Größe des 'Radarsymbols' von Tieren, die zur Jagd freigegeben wurden.</MiniMap.WL.HuntingRadiusTip>
+    <MiniMap.WL.TamingRadius>Größe von zu zähmenden Tieren</MiniMap.WL.TamingRadius>
+    <MiniMap.WL.TamingRadiusTip>Größe des 'Radarsymbols' von Tieren, die gezähmt werden sollen.</MiniMap.WL.TamingRadiusTip>
+    <MiniMap.PlanningTool.planningColor>Farbe von Entwürfen</MiniMap.PlanningTool.planningColor>
+    <MiniMap.PlanningTool.planningColorTip>Farbe von Elementen, die mit dem Entwurfswerkzeug erstellt wurden.</MiniMap.PlanningTool.planningColorTip>
+    <MiniMap.Mining.miningColor>Farbe von Abbaugebieten</MiniMap.Mining.miningColor>
+    <MiniMap.Mining.miningColorTip>Farbe von Gebieten, die zum Abbau markiert wurden.</MiniMap.Mining.miningColorTip>
+    <MiniMap.Power.poweredColor>Farbe für Strom</MiniMap.Power.poweredColor>
+    <MiniMap.Power.poweredColorTip>Farbe für stromführende Leitungen, Gebäude und voll geladene Batterien.</MiniMap.Power.poweredColorTip>
+    <MiniMap.Power.batteryColor>Farbe für Batterien</MiniMap.Power.batteryColor>
+    <MiniMap.Power.batteryColorTip>Farbe für Leitungen und Gebäude, die von Batterien versorgt werden und für teilweise geladene Batterien.</MiniMap.Power.batteryColorTip>
+    <MiniMap.Power.notPoweredColor>Farbe für Stromausfall</MiniMap.Power.notPoweredColor>
+    <MiniMap.Power.notPoweredColorTip>Farbe für Leitungen und Gebäude ohne Strom, Leitungen, die nicht verbunden sind und leere Batterien.</MiniMap.Power.notPoweredColorTip>
+    <MiniMap.Power.offColor>Farbe für Abgeschaltet</MiniMap.Power.offColor>
+    <MiniMap.Power.offColorTip>Farbe für abgeschaltete Gebäude..</MiniMap.Power.offColorTip>
+
+</LanguageData>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <!-- HelpDef AutoGen Keys -->
+
+    <!-- Categorization Keys -->
+
+    <AutoHelpCategoryItems>Gegenstände</AutoHelpCategoryItems>
+    <AutoHelpCategoryBuildings>Gebäude</AutoHelpCategoryBuildings>
+    <AutoHelpCategoryRecipes>Rezepte</AutoHelpCategoryRecipes>
+    <AutoHelpCategoryResearch>Forschung</AutoHelpCategoryResearch>
+    <AutoHelpCategoryTerrain>Terrain &amp; Böden</AutoHelpCategoryTerrain>    
+    <AutoHelpCategoryFloraAndFauna>Flora &amp; Fauna</AutoHelpCategoryFloraAndFauna>
+
+    <AutoHelpSubCategoryTerrain>Terrain</AutoHelpSubCategoryTerrain>
+    <AutoHelpSubCategoryFlooring>Böden</AutoHelpSubCategoryFlooring>
+
+    <AutoHelpSubCategoryPlants>Pflanzen</AutoHelpSubCategoryPlants>
+    <AutoHelpSubCategoryAnimals>Tiere</AutoHelpSubCategoryAnimals>
+    <AutoHelpSubCategoryMechanoids>Mechanoide</AutoHelpSubCategoryMechanoids>
+    <AutoHelpSubCategoryHumanoids>Humanoide</AutoHelpSubCategoryHumanoids>
+    <AutoHelpSubCategoryBiomes>Biome</AutoHelpSubCategoryBiomes>
+
+    <AutoHelpSubCategoryApparel>Kleidung</AutoHelpSubCategoryApparel>
+    <AutoHelpSubCategoryBodyParts>Körperteile &amp; Implantate</AutoHelpSubCategoryBodyParts>
+    <AutoHelpSubCategoryDrugs>Drogen</AutoHelpSubCategoryDrugs>
+    <AutoHelpSubCategoryMeals>Mahlzeiten</AutoHelpSubCategoryMeals>
+    <AutoHelpSubCategoryWeapons>Waffen</AutoHelpSubCategoryWeapons>
+
+    <AutoHelpSubCategoryAdvanced>Erweitert</AutoHelpSubCategoryAdvanced>
+    <AutoHelpSubCategoryProjects>Projekte</AutoHelpSubCategoryProjects>
+    <AutoHelpSubCategorySpecial>Spezial</AutoHelpSubCategorySpecial>
+
+    <!-- List Prepend Keys -->
+    <AutoHelpListFacilitiesAffecting>Wird beeinflusst von</AutoHelpListFacilitiesAffecting>
+    <AutoHelpListFacilitiesAffected>Beeinflusst</AutoHelpListFacilitiesAffected>
+    <AutoHelpListJoyActivities>Freizeitaktivitäten</AutoHelpListJoyActivities>
+    <AutoHelpListRecipeProducts>Produziert</AutoHelpListRecipeProducts>
+    <AutoHelpListRecipes>Rezepte</AutoHelpListRecipes>
+    <AutoHelpListRecipesLocked>Rezepte gesperrt</AutoHelpListRecipesLocked>
+    <AutoHelpListRecipesUnlocked>Reepte freigeschaltet</AutoHelpListRecipesUnlocked>
+    <AutoHelpListRecipesOnThings>Anwendbar auf</AutoHelpListRecipesOnThings>
+    <AutoHelpListRecipesOnThingsLocked>Nicht verfgübar bei</AutoHelpListRecipesOnThingsLocked>
+    <AutoHelpListRecipesOnThingsUnlocked>Verfügbar bei</AutoHelpListRecipesOnThingsUnlocked>
+    <AutoHelpListResearchBy>Der Forschung folgend</AutoHelpListResearchBy>
+    <AutoHelpListResearchRequired>Benötigte Forschung</AutoHelpListResearchRequired>
+    <AutoHelpListResearchLeadsTo>Führt zu Forschung</AutoHelpListResearchLeadsTo>
+    <AutoHelpListResearchLockout>Durch Forschung gesperrt</AutoHelpListResearchLockout>
+    <AutoHelpListStuffCategories>Mögliches Zeugs</AutoHelpListStuffCategories>
+    <AutoHelpListPlantsLocked>Sperrt Anbau</AutoHelpListPlantsLocked>
+    <AutoHelpListPlantsUnlocked>Ermöglicht Anbau</AutoHelpListPlantsUnlocked>
+    <AutoHelpListPlantsIn>In</AutoHelpListPlantsIn>
+    <AutoHelpListThingsLocked>Sperrt Konstruktion</AutoHelpListThingsLocked>
+    <AutoHelpListThingsUnlocked>Ermöglicht Konstruktion</AutoHelpListThingsUnlocked>
+    <AutoHelpListCapacityModifiers>Kapazitätsmodifikator</AutoHelpListCapacityModifiers>    
+    <AutoHelpListStatOffsets>Statuseffet (Bonus)</AutoHelpListStatOffsets>
+    <AutoHelpListNutrition>Nährwert</AutoHelpListNutrition>
+    <AutoHelpListNutritionPlant>Nährwert (Pflanze)</AutoHelpListNutritionPlant>
+    <AutoHelpFacilityStats>Anlagenbonus</AutoHelpFacilityStats>
+    <AutoHelpRequired>Benötigt</AutoHelpRequired>
+    <AutoHelpIdlePower>Energie in Ruhe</AutoHelpIdlePower>
+    <AutoHelpGenerates>Erzeugt</AutoHelpGenerates>
+    <AutoHelpStores>Speochert</AutoHelpStores>
+    <AutoHelpEfficiency>Effizienz</AutoHelpEfficiency>
+
+    <AutoHelpListPlantYield>Erbringt</AutoHelpListPlantYield>
+    <AutoHelpListCanBePlantedIn>Kann gesät werden in</AutoHelpListCanBePlantedIn>
+    <AutoHelpListAppearsInBiomes>Kann wild wachsen in</AutoHelpListAppearsInBiomes>
+    <AutoHelpListUnlockableSowTags>Erfordert Forschung zum säen</AutoHelpListUnlockableSowTags>
+
+    <AutoHelpListTrainable>Kann trainiert werden in</AutoHelpListTrainable>
+    <AutoHelpListLifestages>Altersstufe</AutoHelpListLifestages>
+    <AutoHelpListReproduction>Fortpflanzung</AutoHelpListReproduction>
+    <AutoHelpListButcher>Matzgereiprodukte</AutoHelpListButcher>
+    <AutoHelpListDisassemble>Produkte bei Demontage</AutoHelpListDisassemble>
+    <AutoHelpListMilk>Milchprodukte</AutoHelpListMilk>
+    <AutoHelpListShear>Produkte vom Scheren</AutoHelpListShear>
+
+    <AutoHelpListBiomeTerrain>Terrain</AutoHelpListBiomeTerrain>
+    <AutoHelpListBiomePlants>Pflanzen</AutoHelpListBiomePlants>
+    <AutoHelpListBiomeAnimals>Tiere</AutoHelpListBiomeAnimals>
+    <AutoHelpListBiomeDiseases>Krankheiten (Wahrscheinlicheit pro Jahr)</AutoHelpListBiomeDiseases>
+
+    <!-- Specific Keys -->
+    <AutoHelpSurgeryFixOrReplace>Behandelt oder ersetzt</AutoHelpSurgeryFixOrReplace>
+
+    <AutoHelpCost>Kosten</AutoHelpCost>
+    <AutoHelpStuffCost>Kosten ({0})</AutoHelpStuffCost>
+    <AutoHelpThingCost>Baukosten</AutoHelpThingCost>
+    <AutoHelpTotalCost>Gesamtosten:</AutoHelpTotalCost>
+
+    <AutoHelpMaximumAffected>Betrifft maximal:</AutoHelpMaximumAffected>
+    <AutoHelpMaximumParticipants>Maximale Teilnehmer:</AutoHelpMaximumParticipants>
+
+    <AutoHelpJoyKind>Art der Freude:</AutoHelpJoyKind>
+    <AutoHelpJoySkill>Fertigkeit:</AutoHelpJoySkill>
+
+    <AutoHelpListFertility>Fruchtbareit</AutoHelpListFertility>
+    <AutoHelpListPathCost>Laufgeschindigkeit (weniger ist schneller)</AutoHelpListPathCost>
+
+    <AutoHelpGrowDays>Tage bis reif:</AutoHelpGrowDays>
+    <AutoHelpMinFertility>Minimale Bodenfruchtbareit:</AutoHelpMinFertility>
+    <AutoHelpLightRange>Benötigte Beleuchtung:</AutoHelpLightRange>
+
+    <AutoHelpHealthScale>Gesundheitssala:</AutoHelpHealthScale>
+    <AutoHelpLifeExpectancy>Lebenserwartung:</AutoHelpLifeExpectancy>
+    <AutoHelpIntelligence>Intelligenz:</AutoHelpIntelligence>
+    <AutoHelpDiet>Ernährung:</AutoHelpDiet>
+    <AutoHelpGestationPeriod>Tragzeit:</AutoHelpGestationPeriod>
+    <AutoHelpLitterSize>Abfallgröße:</AutoHelpLitterSize>
+    <AutoHelpEggLayer>Legt {0} Eier im Abstand von {1}</AutoHelpEggLayer>
+    <AutoHelpEveryX>alle {0}</AutoHelpEveryX> 
+
+    <AutoHelpPower>Energie</AutoHelpPower>
+    
+    <!-- Misc -->
+    <LetterYear>{0}J</LetterYear>
+
+</LanguageData>

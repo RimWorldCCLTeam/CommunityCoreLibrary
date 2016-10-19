@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+    <Alert_HopperNeedsBuilding_Label>Trichter ist nicht verbunden</Alert_HopperNeedsBuilding_Label>
+    <Alert_BuildingNeedsHopper_Label>Maschine benötigt Verbindung zu einem Trichter</Alert_BuildingNeedsHopper_Label>
+
+    <Alert_HopperNeedsBuilding_Description>Es gibt ein {0} ohne Trichterverbraucher..\n\nDamit das funktioniert, muss {0} Gebäude mit den passenden Resourcen versorgen.\n\nBaue ein Gebäude, welches einen Trichter benötigt der mit {0} verbunden ist.</Alert_HopperNeedsBuilding_Description>
+    <Alert_BuildingNeedsHopper_Description>Es gibt ein {0} ohne verbundenen Trichter.\n\nDamit das funttioniert, bentigt {0} eine Verbindung zu einem Trichter mit den passenden Resourcen.\n\nBaue einen Trichter, der mit {0} verbunden ist.</Alert_BuildingNeedsHopper_Description>
+
+</LanguageData>
