@@ -16,6 +16,7 @@ namespace CommunityCoreLibrary
         #region XML Data
 
         public string               labelKey;
+        public string               labelKeyAlt;
         public int                  order;
         public Type                 menuClass;
         public bool                 closeMainTab = false;
@@ -37,6 +38,14 @@ namespace CommunityCoreLibrary
             {
                 if( string.IsNullOrEmpty( labelKey ) )
                 {
+                    return label;
+                }
+                if( !labelKey.CanTranslate() )
+                {
+                    if( !string.IsNullOrEmpty( labelKeyAlt ) )
+                    {
+                        return labelKeyAlt.Translate();
+                    }
                     return label;
                 }
                 return labelKey.Translate();
