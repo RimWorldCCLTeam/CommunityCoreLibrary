@@ -127,13 +127,26 @@ namespace CommunityCoreLibrary.Detour
                             false ),
                         40f,
                         (drug) =>
-                    {
-                        if( ingester.CanReserve( drug, 1 ) )
                         {
-                            return !drug.IsForbidden( ingester );
-                        }
-                        return false;
-                    },
+                            if( drug.IsForbidden( ingester ) )
+                            {
+                                return false;
+                            }
+
+                            if( drug is Building_AutomatedFactory )
+                            {
+                                var FS = drug as Building_AutomatedFactory;
+                                if(
+                                    ( !FS.InteractionCell.Standable() ) ||
+                                    ( !FS.CompPowerTrader.PowerOn ) ||
+                                    ( FS.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) == null )
+                                )
+                                {
+                                    return false;
+                                }
+                            }
+                            return ingester.CanReserve( drug, 1 );
+                        },
                         null );
                     if( ingestible != null )
                     {
@@ -220,46 +233,12 @@ namespace CommunityCoreLibrary.Detour
                         )
                     )
                     {
-                        List<Thing> list = Find.ListerThings.AllThings.Where( t => (
-                            ( t.def.IsDrug ) ||
-                            ( t is Building_AutomatedFactory )
-                        ) ).ToList();
-                        if( list.Count > 0 )
+                        Thing thing;
+                        if( TryFindIngestibleToNurse(compGatherSpot.parent.Position, pawn, out thing)
+                                && thing != null)
                         {
-                            Thing thing = GenClosest.ClosestThing_Global_Reachable(
-                                compGatherSpot.parent.Position,
-                                list,
-                                PathEndMode.OnCell,
-                                TraverseParms.For(
-                                    pawn,
-                                    pawn.NormalMaxDanger() ),
-                                40f,
-                                ( t ) =>
-                            {
-                                if( t.IsForbidden( pawn ) )
-                                {
-                                    return false;
-                                }
-
-                                if( t is Building_AutomatedFactory )
-                                {
-                                    var FS = t as Building_AutomatedFactory;
-                                    if(
-                                        ( !FS.InteractionCell.Standable() ) ||
-                                        ( !FS.CompPowerTrader.PowerOn ) ||
-                                        ( FS.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) == null )
-                                    )
-                                    {
-                                        return false;
-                                    }
-                                }
-                                return pawn.CanReserve( t, 1 );
-                            } );
-                            if( thing != null )
-                            {
-                                job.targetC = (TargetInfo)thing;
-                                job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
-                            }
+                            job.targetC = (TargetInfo)thing;
+                            job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
                         }
                     }
                     return job;
