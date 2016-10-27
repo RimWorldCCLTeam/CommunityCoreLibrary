@@ -110,9 +110,22 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             nurseableDrugs.Shuffle();
+            //Not using a where clause so that I can cast the building to Building_AutomatedFactory.
+            List<Building_AutomatedFactory> listOfFactories = new List<Building_AutomatedFactory>();
+            foreach (Thing thing in Find.ListerBuildings.allBuildingsColonist)
+            {
+                if (thing is Building_AutomatedFactory)
+                {
+                    listOfFactories.Add((Building_AutomatedFactory) thing);
+                }
+            }
             for( int index = 0; index < nurseableDrugs.Count; ++index )
             {
-                var listOfDrugs = Find.ListerThings.ThingsOfDef( nurseableDrugs[ index ] );
+                var currentDrug = nurseableDrugs[index];
+                var listOfDrugs = Find.ListerThings.ThingsOfDef( currentDrug );
+                //Find factories that can dispense drug. Select upcasts them to Thing.
+//                var listOfFactoriesCanProduce = listOfFactories.Where(f => f.CanDispenseNow( currentDrug )).Select(t => (Thing)t);
+//                listOfDrugs.AddRange(listOfFactoriesCanProduce);
                 // TODO:  Add checks for synthesizers that can produce drugs
                 if( listOfDrugs.Count > 0 )
                 {
@@ -137,9 +150,8 @@ namespace CommunityCoreLibrary.Detour
                             {
                                 var FS = drug as Building_AutomatedFactory;
                                 if(
-                                    ( !FS.InteractionCell.Standable() ) ||
-                                    ( !FS.CompPowerTrader.PowerOn ) ||
-                                    ( FS.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) == null )
+                                    ( !FS.InteractionCell.Standable() ) || //removed comppower check. Done by the CanDispenseNow check.
+                                    ( FS.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) == null ) //not sure what this does. leaving for now.
                                 )
                                 {
                                     return false;

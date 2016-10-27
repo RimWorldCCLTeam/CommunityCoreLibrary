@@ -58,7 +58,37 @@ namespace CommunityCoreLibrary
 
         public static Toil TakeDrugFromSynthesizer( TargetIndex ind, Pawn eater )
         {
-            return TakeFromSynthesier( ind, eater, FoodSynthesis.IsDrug, FoodSynthesis.SortDrug );
+            CCL_Log.Message("Take from drugs.");
+            //would like to put this in the FoodSynthesis class but this would require changing the allowed function
+            //signature to take pawn as well. And a full refactor of all of the functions.
+            Func<ThingDef, bool> validator = FoodSynthesis.IsDrug;
+            if (eater.MentalState is MentalState_BingingDrug)
+            {
+                var bingingChemical = ((MentalState_BingingDrug) eater.MentalState).chemical;
+                //Pawn is binging, will only take the drug that satisfies need.
+                validator = thingDef =>
+                {
+                    if (thingDef.HasComp(typeof(CompProperties_Drug)))
+                    {
+                        var drugComp = (CompProperties_Drug) thingDef.GetCompProperty(typeof(CompProperties_Drug));
+                        return drugComp.chemical == bingingChemical;
+                    }
+                    return false;
+                };
+            }
+            else
+            {
+                if (eater.drugs != null)
+                {
+                    var drugPolicy = eater.drugs;
+                    //Pawn will only take allowed drugs.
+                    validator = thingDef =>
+                    {
+                        return eater.drugs.AllowedToTakeScheduledNow(thingDef);
+                    };
+                }
+            }
+            return TakeFromSynthesier( ind, eater, validator, FoodSynthesis.SortDrug );
         }
 
         public static Toil TakeMealFromSynthesizer( TargetIndex ind, Pawn eater )
