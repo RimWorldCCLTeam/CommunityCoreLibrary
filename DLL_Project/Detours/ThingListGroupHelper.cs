@@ -101,6 +101,7 @@ namespace CommunityCoreLibrary.Detour
                 return true;
             case ThingRequestGroup.Drug:
                 // Catch Automated Factories that can be drug synthesizers
+                /* TODO:  Investigate and expand drug system to use factories
                 if( def.IsFoodDispenser )
                 {
                     var products = def.AllRecipes;
@@ -117,6 +118,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     return false;
                 }
+                */
                 return def.IsDrug;
             case ThingRequestGroup.Construction:
                 if( !def.IsBlueprint )

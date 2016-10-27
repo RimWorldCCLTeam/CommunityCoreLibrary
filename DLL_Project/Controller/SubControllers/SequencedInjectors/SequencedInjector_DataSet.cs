@@ -78,7 +78,11 @@ namespace CommunityCoreLibrary
                             }
                             else
                             {
-                                Log.Message( string.Format( "SequencedInjectionSet {0} is valid", injectionSet.Name ) );
+                                CCL_Log.Trace(
+                                    Verbosity.Validation,
+                                    "Validated",
+                                    injectionSet.Name
+                                );
                             }
                         }
                     }
@@ -118,8 +122,8 @@ namespace CommunityCoreLibrary
                             {
                                 CCL_Log.Trace(
                                     Verbosity.Injections,
-                                    string.Format( "{0} :: Injected", injectionSet.GetType().FullName ),
-                                    "Sequenced Injection Set"
+                                    "Injected",
+                                    injectionSet.Name
                                 );
                             }
                             injected &= setInjected;

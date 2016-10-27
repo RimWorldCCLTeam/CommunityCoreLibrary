@@ -322,6 +322,8 @@
     <Compile Include="Controller\SubControllers\SequencedInjectors\SequencedInjectionSets\SequencedInjectionSet_StockGenerator.cs" />
     <Compile Include="Extensions\GenDefDatabase_Extensions.cs" />
     <Compile Include="Controller\SubControllers\SequencedInjectors\SequencedInjectionSets\SequencedInjectionSet_ThingDefAvailability.cs" />
+    <Compile Include="Controller\SubControllers\SequencedInjectors\SequencedInjector_MapComponents.cs" />
+    <Compile Include="MapComponents\MapComponentInjectionTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

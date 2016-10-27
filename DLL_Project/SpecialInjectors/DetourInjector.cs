@@ -31,6 +31,9 @@ namespace CommunityCoreLibrary
             case 1279:
                 RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__495";
                 break;
+            case 1284:
+                RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name = "<DrawLeftRect>m__496";
+                break;
             default:
                 CCL_Log.Trace(
                     Verbosity.Warnings,

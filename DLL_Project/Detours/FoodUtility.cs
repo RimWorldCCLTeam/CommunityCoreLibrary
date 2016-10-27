@@ -79,14 +79,16 @@ namespace CommunityCoreLibrary.Detour
 #endif
 
 
-        internal static ThingDef            _GetSpecificSynthesizedProduct;
-        internal static bool                _GetSynthesizedDrug;
+        //internal static ThingDef            _GetSpecificSynthesizedProduct;
+        //internal static bool                _GetSynthesizedDrug;
         internal static ThingDef            _GetFinalIngestibleDef( Thing foodSource )
         {
+            /* TODO:  Investigate and expand drug system to use factories
             var getSynthesizedDrug = _GetSynthesizedDrug;
             var specificSynthesizedProduct = _GetSpecificSynthesizedProduct;
             _GetSynthesizedDrug = false;
             _GetSpecificSynthesizedProduct = null;
+            */
 
             //CCL_Log.Message( string.Format( "GetFoodDef( {0} )", foodSource.ThingID ) );
 
@@ -100,6 +102,10 @@ namespace CommunityCoreLibrary.Detour
             var factory = foodSource as Building_AutomatedFactory;
             if( factory != null )
             {
+                var product = factory.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
+                //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, product.defName ) );
+                return product;
+                /* TODO:  Investigate and expand drug system to use factories
                 if( specificSynthesizedProduct != null )
                 {
                     if( factory.CanProduce( specificSynthesizedProduct ) )
@@ -120,6 +126,7 @@ namespace CommunityCoreLibrary.Detour
                     //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, product.defName ) );
                     return product;
                 }
+                */
             }
 
             var prey = foodSource as Pawn;

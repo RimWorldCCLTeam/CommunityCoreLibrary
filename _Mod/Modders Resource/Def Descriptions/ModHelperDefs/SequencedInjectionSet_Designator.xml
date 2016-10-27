@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Default Sequence:   InjectionSequence.GameLoad
+    Default Timing:     InjectionTiming.Priority_12
+
+    Target Type:        None
+
+    <li Class="CommunityCoreLibrary.SequencedInjectionSet_Designator">
+
+        <designatorClass>Designator</designatorClass>
+                                        [required] Class name of Designator to inject
+
+        <designationCategoryDef>DesignationCategoryDef<designationCategoryDef>
+                                        [optional*] Designation Category to inject designator into
+        <designatorNextTo>Designator</designatorNextTo>
+                                        [optional] Class name of Designator to inject beside (immediately after)
+
+        <reverseDesignator>bool</reverseDesignator>
+                                        [optional*] Create a reverse designator using the supplied designatorClass
+    
+    </li>
+
+    * At least one of the two options, designationCategoryDef or reverseDesignator, must be supplied.  Both can be injected
+    but an error will be thrown if neither are.
+
+    -->
+
+</Defs>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Default Sequence:   InjectionSequence.MainLoad
+    Default Timing:     InjectionTiming.Priority_8
+
+    Target Type:        Multi, ThingDef
+
+    <li Class="CommunityCoreLibrary.SequencedInjectionSet_Facility">
+
+        <facility>ThingDef</facility>   [required] Facility to inject into buildings
+
+    </li>
+
+    -->
+
+</Defs>

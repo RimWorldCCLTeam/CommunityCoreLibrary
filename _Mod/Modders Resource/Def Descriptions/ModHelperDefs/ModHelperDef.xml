@@ -24,150 +24,11 @@
             </li>
         </ModConfigurationMenus>
 
-        < -- Engine Level Injectors -- >
+        < -- Sequenced Injectors -- >
 
-        <SpecialInjectors>              [optional] Class names of SpecialInjectors to execute after mod validation and before any other injection
-            <li>SpecialInjector</li>
-        </SpecialInjectors>
-
-        <ThingComps>                    [optional] List of ThingComps to inject
-            <li>
-                <requiredMod>string</requiredMod>
-                                        [optional] Name of required mod to perform this injection
-
-                <compProps>             [required] Property of ThingComp to inject
-
-                    <compClass>ThingComp</compClass>
-                    ...
-
-                </compProps>
-
-                <targetDefs>            [optional***] List of ThingDefs to inject the ThingComp into
-                    <li>ThingDef</li>
-                </targetDefs>
-                
-                <qualifier>DefInjectionQualifier</qualifier>
-                                        [optional***] Qualifier class to test individual ThingDefs against from DefDatabase<ThingDef> to inject the ThingComp into
-            </li>
-        </ThingComps>
-
-        <ITabs>                         [optional] List of ITabs to inject or replace on ThingDefs
-            <li>
-                <requiredMod>string</requiredMod>
-                                        [optional] Name of required mod to perform this injection
-
-                <newITab>ITab</newITab> [required] ITab to inject into targets
-                
-                <replaceITab>ITab</replaceITab>
-                                        [optional] ITab to replace with newITab in the targets
-                
-                <targetDefs>            [optional***] List of ThingDefs to inject the ITab into
-                    <li>ThingDef</li>
-                </targetDefs>
-                
-                <qualifier>DefInjectionQualifier</qualifier>
-                                        [optional***] Qualifier class to test individual ThingDefs against from DefDatabase<ThingDef> to inject the ITab into
-            </li>
-        </ITabs>
-        
-        <tickerSwitcher>                [optional] List of ticker types to override on ThingDefs
-            <li>
-                <requiredMod>string</requiredMod>
-                                        [optional] Name of required mod to perform this injection
-
-                <tickerType>TickerType</tickerType>
-                                        [required] New ticker type to override on ThingDefs
-
-                <targetDefs>            [optional***] List of ThingDefs to override the ticker type on
-                    <li>ThingDef</li>
-                </targetDefs>
-                
-                <qualifier>DefInjectionQualifier</qualifier>
-                                        [optional***] Qualifier class to test individual ThingDefs against from DefDatabase<ThingDef> to override the ticker type on
-            </li>
-        </tickerSwitcher>
-
-        <Facilities>                    [optional] List of facilities (buildings with CompFacility) to inject into buildings with CompAffectedByFacilities
-            <li>
-                <requiredMod>string</requiredMod>
-                                        [optional] Name of required mod to perform this injection
-
-                <facility>ThingDef</facility>
-                                        [required] Facility to inject into buildings
-
-                <targetDefs>            [optional***] List of ThingDefs to inject the facility into
-                    <li>ThingDef</li>
-                </targetDefs>
-                
-                <qualifier>DefInjectionQualifier</qualifier>
-                                        [optional***] Qualifier class to test individual ThingDefs against from DefDatabase<ThingDef> to inject the facility into
-            </li>
-        </Facilities>
-
-        <TraderKinds>                   [optional] List of StockGenerators to inject into TraderKindDefs
-            <li>
-                <requiredMod>string</requiredMod>
-                                        [optional] Name of required mod to perform this injection
-                                        
-                <targetDef>TraderKindDef</targetDef>
-                                        [required] Trader to inject StockGenerator into
-                <stockGenerators>
-                    <li>StockGenerator</li>
-                                        [required] StockGenerator to inject into trader
-                </stockGenerators>
-            </li>
-        </TraderKinds>
-
-        <ThingDefAvailability>          [optional] List of override values to set on ThingDefs (primarily used to enable or disable ThingDefs)
-
-            <li>
-                <requiredMod>string</requiredMod>
-                                        [optional] Name of required mod to perform this injection
-                                        
-                <menuHidden>bool</menuHidden>
-                                        [optional] If set, will update ThingDef.menuHidden with the new value
-                                        
-                <designationCategory>DesignationCategoryDef</designationCategory>
-                                        [optional] If set, will update ThingDef.designationCategory and move the designator to the new category
-
-                <researchPrerequisites> [optional] If set, will update ThingDef.researchPrerequisites.  If an empty list is
-                    <li>ResearchProjectDef</li>    provided (as opposed to no list at all), the researchPrerequisites of the
-                </researchPrerequisites>           ThingDef will be cleared.
-
-                <targetDefs>            [optional***] List of ThingDefs to override the values on
-                    <li>ThingDef</li>
-                </targetDefs>
-                
-                <qualifier>DefInjectionQualifier</qualifier>
-                                        [optional***] Qualifier class to test individual ThingDefs against from DefDatabase<ThingDef> to override the values on
-            </li>
-
-        </ThingDefAvailability>
-
-        < -- Game Level Injectors -- >
-
-        <PostLoadInjectors>             [optional] Class names of SpecialInjectors to execute after starting a new game or loading save games
-            <li>SpecialInjector</li>
-        </PostLoadInjectors>
-
-        <MapComponents>                 [optional] Class names of MapComponents to inject into save games
-            <li>MapComponent</li>
-        </MapComponents>
-
-        <Designators>                   [optional] List of Designators to inject Designation Categories
-            <li>
-                <designatorClass>Designator</designatorClass>
-                                        [required] Class name of Designator to inject
-
-                <designationCategoryDef>DesignationCategoryDef<designationCategoryDef>
-                                        [optional****] Designation Category to inject designator into
-                <designatorNextTo>Designator</designatorNextTo>
-                                        [optional] Class name of Designator to inject beside (immediately after)
-
-                <reverseDesignator>bool</reverseDesignator>
-                                        [optional****] Create a reverse designator using the supplied designatorClass
-            </li>
-        </Designators>
+        <SequencedInjectionSets>        [optional***] Sequenced injection sets
+            <li>SequencedInjectionSet</li>
+        </SequencedInjectionSets>
 
     </CommunityCoreLibrary.ModHelperDef>
 
@@ -203,10 +64,7 @@
     functionality requiring information contained within the ModHelperDef (such as injections, AdvancedResearchDefs, etc) will be
     disabled.
 
-    *** A list of ThingDefs OR a qualifier class must be provided, if neither or both are provided an error will be thrown.
-
-    **** At least one of the two options, designationCategoryDef or reverseDesignator, must be supplied.  Both can be injected
-    but an error will be thrown if neither are.
+    *** See SequencedInjectionSet.xml and the individual sequenced injection set support files for details of each injector.
 
     -->
 

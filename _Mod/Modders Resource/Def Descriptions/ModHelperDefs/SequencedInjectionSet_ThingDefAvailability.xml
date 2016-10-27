@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Default Sequence:   InjectionSequence.MainLoad
+    Default Timing:     InjectionTiming.Priority_2
+
+    Target Type:        Multi, ThingDef
+
+    <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingDefAvailability">
+
+        <menuHidden>bool</menuHidden>   [optional] If set, will update ThingDef.menuHidden with the new value
+
+        <designationCategory>DesignationCategoryDef</designationCategory>
+                                        [optional] If set, will update ThingDef.designationCategory and move the designator to the new category
+
+        <researchPrerequisites>         [optional] If set, will update ThingDef.researchPrerequisites.  If an empty list is
+            <li>ResearchProjectDef</li>    provided (as opposed to no list at all), the researchPrerequisites of the
+        </researchPrerequisites>           ThingDef will be cleared.
+
+    </li>
+
+    -->
+
+</Defs>

@@ -40,6 +40,7 @@
         Detours                 = Priority_23,
         // Default InjectionSequence.GameLoad
         Designators             = Priority_12,
+        MapComponents           = Priority_24,
         // InjectionSequence.Never
         Never                   = -1,
         // InjectionSequence.Any

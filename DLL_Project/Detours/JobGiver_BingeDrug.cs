@@ -13,6 +13,8 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobGiver_BingeDrug : JobGiver_BingeDrug
     {
 
+        /* TODO:  Investigate and expand drug system to use factories
+        
         internal static bool                        IsValidDrugFor( Thing drugSource, ThingDef drugDef, ChemicalDef chemical, Hediff overdose, Pawn pawn )
         {
             var props = drugDef.GetCompProperty<CompProperties_Drug>();
@@ -101,6 +103,8 @@ namespace CommunityCoreLibrary.Detour
             );
             return ingestibleThing;
         }
+
+        */
 
     }
 

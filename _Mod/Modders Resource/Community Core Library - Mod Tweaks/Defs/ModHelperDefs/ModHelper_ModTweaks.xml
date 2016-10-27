@@ -119,7 +119,7 @@
 
             <!-- Add CompNeighbourlyGrower to Plant Growers (Hydroponics, Plant Pots, etc) -->
             <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
-                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compProps>
                     <compClass>CommunityCoreLibrary.CompNeighbourlyGrower</compClass>
                 </compProps>
                 <qualifier>CCLModTweaks.QualifyGrowerCompPlantGrower</qualifier>

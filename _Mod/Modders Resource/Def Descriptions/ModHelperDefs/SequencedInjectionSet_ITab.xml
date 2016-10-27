@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Default Sequence:   InjectionSequence.MainLoad
+    Default Timing:     InjectionTiming.Priority_14
+
+    Target Type:        Multi, ThingDef
+
+    <li Class="CommunityCoreLibrary.SequencedInjectionSet_ITab">
+
+        <newITab>ITab</newITab>         [required] ITab to inject into targets
+
+        <replaceITab>ITab</replaceITab> [optional] ITab to replace with newITab in the targets
+
+    </li>
+
+    -->
+
+</Defs>

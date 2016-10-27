@@ -33,7 +33,8 @@ namespace CommunityCoreLibrary.Controller
             {
                 new SequencedInjector_Detours(),
                 new SequencedInjector_SpecialInjectors(),
-                new SequencedInjector_DataSet()
+                new SequencedInjector_DataSet(),
+                new SequencedInjector_MapComponents()
             };
         }
 
@@ -67,7 +68,7 @@ namespace CommunityCoreLibrary.Controller
                 }
             }
 
-            CCL_Log.CaptureEnd( stringBuilder, !valid ? "Validated" : "Errors during validation" );
+            CCL_Log.CaptureEnd( stringBuilder, valid ? "Validated" : "Errors during validation" );
             strReturn = stringBuilder.ToString();
 
             State = valid ? SubControllerState.ValidationError : SubControllerState.Validated;
@@ -127,7 +128,7 @@ namespace CommunityCoreLibrary.Controller
                     "Error"
                 );
                 strReturn = stringBuilder.ToString();
-                State = SubControllerState.InitializationError;
+                State = SubControllerState.RuntimeError;
             }
 
             // Post-load injections complete, stop calling this
@@ -179,17 +180,13 @@ namespace CommunityCoreLibrary.Controller
 
         internal static bool                TrySequencedInjectorsOnLoad( Assembly assembly )
         {   // Get all injectors for this assembly scheduled on DLL load
+            var injected = true;
             for( var timing = InjectionTiming.Priority_25; timing >= InjectionTiming.Priority_0; timing-- )
             {
-                if(
-                    ( !Detours.TryTimedAssemblyDetours( assembly, InjectionSequence.DLLLoad, timing ) )||
-                    ( !SpecialInjector.TryTimedAssemblySpecialInjectors( assembly, InjectionSequence.DLLLoad, timing ) )
-                )
-                {
-                    return false;
-                }
+                injected &= Detours.TryTimedAssemblyDetours( assembly, InjectionSequence.DLLLoad, timing );
+                injected &= SpecialInjector.TryTimedAssemblySpecialInjectors( assembly, InjectionSequence.DLLLoad, timing );
             }
-            return true;
+            return injected;
         }
 
     }

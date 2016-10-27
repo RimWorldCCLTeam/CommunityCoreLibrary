@@ -172,7 +172,9 @@ namespace CommunityCoreLibrary.Detour
                 // A14 - PlayDataLoader.loaded is now private, Loaded property is getter only
                 PlayDataLoader_loaded.SetValue( null, false );
                 if ( !recovering )
+                {
                     return;
+                }
                 Log.Message( "Successfully recovered from errors and loaded play data." );
                 DelayedErrorWindowRequest.Add( Translator.Translate( "RecoveredFromErrorsText" ), Translator.Translate( "RecoveredFromErrorsDialogTitle" ) );
             }

@@ -49,6 +49,7 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             // Check synthesizers for drug production
+            /* TODO:  Investigate and expand drug system to use factories
             var listOfDrugSynthesizers = Find.ListerBuildings.AllBuildingsColonistOfClass<Building_AutomatedFactory>().Where( building => (
                 ( building.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) != null )
             ) ).ToList();
@@ -73,6 +74,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                 }
             }
+            */
             return false;
         }
 

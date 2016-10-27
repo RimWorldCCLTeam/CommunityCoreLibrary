@@ -14,6 +14,8 @@ namespace CommunityCoreLibrary.Detour
     internal class _JoyGiver_SocialRelax : JoyGiver_SocialRelax
     {
 
+        /* TODO:  Investigate and expand drug system to use factories
+
         #region Helper Methods
 
         internal static bool                        TryFindChairBesideTable( Thing table, Pawn sitter, out Thing chair )
@@ -267,6 +269,8 @@ namespace CommunityCoreLibrary.Detour
         }
 
         #endregion
+
+        */
 
     }
 

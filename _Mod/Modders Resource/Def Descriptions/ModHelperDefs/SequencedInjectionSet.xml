@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    All SequencedInjectionSets use these common fields (this is the base class).
+    
+    Fields such as injectionSequence and injectionTiming are set by the specific injection class to the
+    default value for the class but may be overriden in the XML.  Note that InjectionSequence.DLLLoad is
+    not available for XML injections as the assembly is loaded before XML and thus no XML information is
+    available when the DLL is loaded.
+    
+    Sequenced injections are handled in priority order then mod order.  All mods injections will be
+    interleaved in the sequence based on timing from Priority_25 to Priority_0.
+    
+    <li>
+
+        <injectionSequence>InjectionSequence</injectionSequence>
+                                        [optional] Sequence this injector should be executed in
+        <injectionTiming>InjectionTiming</injectionTiming>
+                                        [optional] Timing within sequence this injector should be executed in
+        
+        <requiredMod>string</requiredMod>
+                                        [optional] Name of required mod to perform this injection
+
+        <targetDef>Def*</targetDef>     [optional*] Specific target def for single target injectors
+        
+        <targetDefs>                    [optional*] List of target Defs for multi-target injectors
+            <li>Def*</li>
+        </targetDefs>
+        
+        <qualifier>DefInjectionQualifier</qualifier>
+                                        [optional*] Qualifier class to test individual Defs against from DefDatabase<> for multi-target injectors
+    </li>
+
+    Single target injectors must use targetDef to specify the target.
+    
+    Multi-target injectors must use targetDefs OR a qualifier class must be provided, if neither or both are provided an error will be thrown.
+
+    * The specific Def class and targeting will be determined by the individual sequenced injection set.
+
+    -->
+
+</Defs>

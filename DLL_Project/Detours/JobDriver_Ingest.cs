@@ -35,7 +35,7 @@ namespace CommunityCoreLibrary.Detour
         {
             get
             {
-                // TODO:  Figure this out???
+                // TODO:  Investigate and expand drug system to use factories
                 return false;
             }
         }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Default Sequence:   InjectionSequence.MainLoad
+    Default Timing:     InjectionTiming.Priority_11
+
+    Target Type:        Multi, ThingDef
+
+    <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
+
+        <tickerType>TickerType</tickerType>
+                                        [required] New ticker type to override on ThingDefs
+
+    </li>
+
+    -->
+
+</Defs>

@@ -4,7 +4,7 @@
     <!--
         Generic hoppers
         
-        These are disabled by default, to use them you should use ThingDefAvailability in your ModHelperDef
+        These are disabled by default, to use them you should use SequencedInjectionSet_ThingDefAvailability in your ModHelperDef
         
         The "Vanilla Tweaks" already enables them, but you can override the category and research requirements.
         

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+
+    Default Sequence:   InjectionSequence.MainLoad
+    Default Timing:     InjectionTiming.Priority_17
+
+    Target Type:        Multi, ThingDef
+
+    <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
+
+        <compProps>                     [required] Property of ThingComp to inject
+
+            <compClass>ThingComp</compClass>
+            ...
+
+        </compProps>
+
+    </li>
+
+    -->
+
+</Defs>

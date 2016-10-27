@@ -16,7 +16,7 @@ namespace CommunityCoreLibrary
         public                              SequencedInjectionSet_TickerSwitcher()
         {
             injectionSequence               = InjectionSequence.MainLoad;
-            injectionTiming                 = InjectionTiming.ThingComps;
+            injectionTiming                 = InjectionTiming.TickerSwitcher;
         }
 
         public override Type                defType => typeof( ThingDef );

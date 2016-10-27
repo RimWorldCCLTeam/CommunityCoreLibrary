@@ -62,7 +62,11 @@ namespace CommunityCoreLibrary
             }
             if( !designationCategory.NullOrEmpty() )
             {
-                if( designationCategory != "None" )
+                if( designationCategory == "None" )
+                {
+                    setDesignation = true;
+                }
+                else
                 {
                     var category = DefDatabase<DesignationCategoryDef>.GetNamed( designationCategory, true );
                     if( category == null )
@@ -149,14 +153,17 @@ namespace CommunityCoreLibrary
 #endif
             if( setMenuHidden )
             {
+                //Log.Message( string.Format( "Setting menuHidden to '{0}' on '{1}'", setMenuHiddenValue, thingDef.defName ) );
                 thingDef.menuHidden = setMenuHiddenValue;
             }
             if( setDesignation )
             {
+                //Log.Message( string.Format( "Setting designationCategory to '{0}' on '{1}'", designationCategory, thingDef.defName ) );
                 thingDef.ChangeDesignationCategory( designationCategory );
             }
             if( setResearch )
             {
+                //Log.Message( string.Format( "Setting researchPrerequisites to '{0}' on '{1}'", setResearchValue, thingDef.defName ) );
                 thingDef.researchPrerequisites = setResearchValue;
             }
             return true;

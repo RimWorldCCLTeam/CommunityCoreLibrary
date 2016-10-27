@@ -137,7 +137,8 @@ namespace CommunityCoreLibrary.Detour
                 this.FailOnDestroyedNullOrForbidden( OptionalIngestibleInd );
                 yield return Toils_Reserve.Reserve( OptionalIngestibleInd, 1 );
                 if( this.IsDispenser )
-                {
+                {   // TODO:  Investigate and expand drug system to use factories
+                    // This should never be executed as the underlying methods to return factories for drugs should not currently return factories
                     yield return Toils_Goto.GotoThing( OptionalIngestibleInd, PathEndMode.InteractionCell );
                     yield return Toils_FoodSynthesizer.TakeDrugFromSynthesizer( OptionalIngestibleInd, this.pawn );
                 }
