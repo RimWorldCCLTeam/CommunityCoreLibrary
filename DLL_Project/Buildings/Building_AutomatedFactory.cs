@@ -45,6 +45,7 @@ namespace CommunityCoreLibrary
         private CompPowerTrader             _CompPowerTrader = null;
         private CompHopperUser              _CompHopperUser = null;
         private CompAutomatedFactory        _CompAutomatedFactory = null;
+        private Dictionary<Pawn, ThingDef>     PawnRequestDict = new Dictionary<Pawn, ThingDef>();
 
         #region Reflections
 
@@ -64,6 +65,8 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Properties
+
+
 
         public RecipeDef                    CurrentRecipe
         {
@@ -752,6 +755,26 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Public Interface
+
+        public void SetRecipeForPawn(Pawn pawn, ThingDef thingDef )
+        {
+            if (this.CanProduce(thingDef))
+            {
+                this.PawnRequestDict[pawn] = thingDef;
+            }
+        }
+
+        public void ClearRecipeForPawn(Pawn pawn)
+        {
+            this.PawnRequestDict.Remove(pawn);
+        }
+
+        public ThingDef GetRecipeForPawn(Pawn pawn)
+        {
+            ThingDef result;
+            PawnRequestDict.TryGetValue(pawn, out result);
+            return result;
+        }
 
         public RecipeDef                    FindRecipeForProduct( ThingDef thingDef )
         {

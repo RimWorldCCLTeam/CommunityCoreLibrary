@@ -47,7 +47,7 @@ namespace CommunityCoreLibrary
                         else
                         {
                             eater.carrier.TryStartCarry( meal );
-                            eater.jobs.curJob.targetA = (TargetInfo) eater.carrier.CarriedThing;
+                            eater.jobs.curJob.SetTarget(TargetIndex.C, (TargetInfo) eater.carrier.CarriedThing);
                         }
                     }
                 );
@@ -58,10 +58,10 @@ namespace CommunityCoreLibrary
 
         public static Toil TakeDrugFromSynthesizer( TargetIndex ind, Pawn eater )
         {
-            CCL_Log.Message("Take from drugs.");
             //would like to put this in the FoodSynthesis class but this would require changing the allowed function
             //signature to take pawn as well. And a full refactor of all of the functions.
             Func<ThingDef, bool> validator = FoodSynthesis.IsDrug;
+            var synthesizer = (Building_AutomatedFactory) eater.jobs.curJob.GetTarget( ind ).Thing;
             if (eater.MentalState is MentalState_BingingDrug)
             {
                 var bingingChemical = ((MentalState_BingingDrug) eater.MentalState).chemical;
@@ -78,14 +78,28 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                if (eater.drugs != null)
+                ThingDef drug = synthesizer.GetRecipeForPawn(eater);
+                if (drug != null)
                 {
-                    var drugPolicy = eater.drugs;
-                    //Pawn will only take allowed drugs.
+                    //RecipeForPawn was set during the social relax search. This is the drug the pawn ended up with.
+                    //Already checked for drug policy.
                     validator = thingDef =>
                     {
-                        return eater.drugs.AllowedToTakeScheduledNow(thingDef);
+                        return thingDef == drug;
                     };
+                    synthesizer.ClearRecipeForPawn(eater);
+                }
+                else
+                {
+                    if (eater.drugs != null)
+                    {
+                        var drugPolicy = eater.drugs;
+                        //Pawn will only take allowed drugs.
+                        validator = thingDef =>
+                        {
+                            return eater.drugs.AllowedToTakeScheduledNow(thingDef);
+                        };
+                    }
                 }
             }
             return TakeFromSynthesier( ind, eater, validator, FoodSynthesis.SortDrug );

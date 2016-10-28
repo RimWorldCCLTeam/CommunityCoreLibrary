@@ -124,15 +124,24 @@ namespace CommunityCoreLibrary.Detour
                 var currentDrug = nurseableDrugs[index];
                 var listOfDrugs = Find.ListerThings.ThingsOfDef( currentDrug );
                 //Find factories that can dispense drug. Select upcasts them to Thing.
-//                var listOfFactoriesCanProduce = listOfFactories.Where(f => f.CanDispenseNow( currentDrug )).Select(t => (Thing)t);
+                var listOfFactoriesCanProduce = listOfFactories.Where(f => f.CanDispenseNow( currentDrug )).Select(t => (Thing)t).ToList();
+                List<Thing> allThings = new List<Thing>();
+                foreach (var factory in listOfFactoriesCanProduce)
+                {
+                    allThings.Add(factory);
+                }
+                foreach (var drug in listOfDrugs)
+                {
+                    allThings.Add(drug);
+                }
 //                listOfDrugs.AddRange(listOfFactoriesCanProduce);
                 // TODO:  Add checks for synthesizers that can produce drugs
-                if( listOfDrugs.Count > 0 )
+                if( allThings.Count > 0 )
                 {
                     ingestible = GenClosest.ClosestThing_Global_Reachable(
                         center,
-                        listOfDrugs,
-                        PathEndMode.OnCell,
+                        allThings,
+                        PathEndMode.InteractionCell,
                         TraverseParms.For(
                             ingester,
                             Danger.Deadly,
@@ -145,23 +154,15 @@ namespace CommunityCoreLibrary.Detour
                             {
                                 return false;
                             }
-
-                            if( drug is Building_AutomatedFactory )
-                            {
-                                var FS = drug as Building_AutomatedFactory;
-                                if(
-                                    ( !FS.InteractionCell.Standable() ) || //removed comppower check. Done by the CanDispenseNow check.
-                                    ( FS.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) == null ) //not sure what this does. leaving for now.
-                                )
-                                {
-                                    return false;
-                                }
-                            }
                             return ingester.CanReserve( drug, 1 );
                         },
                         null );
                     if( ingestible != null )
                     {
+                        if (ingestible is Building_AutomatedFactory)
+                        {
+                            ((Building_AutomatedFactory) ingestible).SetRecipeForPawn(ingester, currentDrug);
+                        }
                         return true;
                     }
                 }
@@ -246,11 +247,28 @@ namespace CommunityCoreLibrary.Detour
                     )
                     {
                         Thing thing;
-                        if( TryFindIngestibleToNurse(compGatherSpot.parent.Position, pawn, out thing)
-                                && thing != null)
+                        if(TryFindIngestibleToNurse(compGatherSpot.parent.Position, pawn, out thing)
+                           && thing != null)
                         {
                             job.targetC = (TargetInfo)thing;
-                            job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
+                            int stackSize;
+                            int maxSize;
+                            if (thing is Building_AutomatedFactory)
+                            {
+                                ThingDef drug = ((Building_AutomatedFactory) thing).GetRecipeForPawn(pawn);
+                                if (drug == null)
+                                {
+                                    return job;
+                                }
+                                stackSize = drug.ingestible.maxNumToIngestAtOnce;
+                                maxSize = drug.ingestible.maxNumToIngestAtOnce;
+                            }
+                            else
+                            {
+                                stackSize = thing.stackCount;
+                                maxSize = thing.def.ingestible.maxNumToIngestAtOnce;
+                            }
+                            job.maxNumToCarry = Mathf.Min(stackSize, maxSize);
                         }
                     }
                     return job;

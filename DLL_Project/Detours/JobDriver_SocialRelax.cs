@@ -67,11 +67,13 @@ namespace CommunityCoreLibrary.Detour
         {
             get
             {
-                var thing = this.TargetThing( OptionalIngestibleInd );
+                var thing = this.CurJob.GetTarget(TargetIndex.C).Thing;
                 if( thing == null )
                 {
+                    CCL_Log.Message("Thing is null");
                     return false;
                 }
+                CCL_Log.Message("is ingestible? thing: " + thing.def.label);
                 if( thing.def.IsIngestible )
                 {
                     return true;
@@ -169,12 +171,9 @@ namespace CommunityCoreLibrary.Detour
                JoyUtility.TryGainRecRoomThought( this.pawn )
             );
             relax.socialMode = RandomSocialMode.SuperActive;
-
             Toils_Ingest.AddIngestionEffects( relax, this.pawn, OptionalIngestibleInd, GatherSpotParentInd );
-
             yield return relax;
-
-            if( this.HasIngestible )
+            if( this.HasIngestibleOrDispenser )
             {
                 yield return Toils_Ingest.FinalizeIngest( this.pawn, OptionalIngestibleInd );
             }
