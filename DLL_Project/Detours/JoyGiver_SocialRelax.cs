@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -161,7 +160,7 @@ namespace CommunityCoreLibrary.Detour
                     {
                         if (ingestible is Building_AutomatedFactory)
                         {
-                            ((Building_AutomatedFactory) ingestible).SetRecipeForPawn(ingester, currentDrug);
+                            ingestible = new FactoryWithProduct((Building_AutomatedFactory) ingestible, currentDrug);
                         }
                         return true;
                     }
@@ -247,28 +246,24 @@ namespace CommunityCoreLibrary.Detour
                     )
                     {
                         Thing thing;
-                        if(TryFindIngestibleToNurse(compGatherSpot.parent.Position, pawn, out thing)
-                           && thing != null)
+                        if( TryFindIngestibleToNurse(compGatherSpot.parent.Position, pawn, out thing)
+                            && thing != null)
                         {
-                            job.targetC = (TargetInfo)thing;
-                            int stackSize;
-                            int maxSize;
-                            if (thing is Building_AutomatedFactory)
+                            FactoryWithProduct factoryWithProduct = thing as FactoryWithProduct;
+                            if (factoryWithProduct == null)
                             {
-                                ThingDef drug = ((Building_AutomatedFactory) thing).GetRecipeForPawn(pawn);
-                                if (drug == null)
-                                {
-                                    return job;
-                                }
-                                stackSize = drug.ingestible.maxNumToIngestAtOnce;
-                                maxSize = drug.ingestible.maxNumToIngestAtOnce;
+                                job.targetC = (TargetInfo) thing;
+                                job.maxNumToCarry = Mathf.Min(thing.stackCount,
+                                    thing.def.ingestible.maxNumToIngestAtOnce);
                             }
                             else
                             {
-                                stackSize = thing.stackCount;
-                                maxSize = thing.def.ingestible.maxNumToIngestAtOnce;
+                                job.targetC = (TargetInfo) factoryWithProduct.Factory;
+                                job.plantDefToSow = factoryWithProduct.ThingToProduce;
+                                job.maxNumToCarry = Mathf.Min(factoryWithProduct.AmmountCanProduce(),
+                                    factoryWithProduct.ThingToProduce.ingestible.maxNumToIngestAtOnce);
                             }
-                            job.maxNumToCarry = Mathf.Min(stackSize, maxSize);
+
                         }
                     }
                     return job;
