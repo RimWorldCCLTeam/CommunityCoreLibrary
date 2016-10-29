@@ -81,11 +81,6 @@ namespace CommunityCoreLibrary.Detour
                         hopperNeedsFilling = true;
                         hopper = FS.AdjacentReachableHopper( pawn );
                     }
-                    //TODO I think this is broken for factories. The code does not confirm there's material to fill the hopper available.
-                    //Not an issue with nutrient paste, since if you can't fill a nutrient paste hopper you're probably starving anyway.
-                    //But if you have a factory that makes Lavish Meals from meat. Colonists will wander around starving
-                    //trying to get meat even if there's fine meals in storage. I think anyway.
-                    //Also, current code would ignore a Fine meal factory if the Lavish meal factory has unreachable hoppers.
                 }
                 if( hopperNeedsFilling )
                 {
