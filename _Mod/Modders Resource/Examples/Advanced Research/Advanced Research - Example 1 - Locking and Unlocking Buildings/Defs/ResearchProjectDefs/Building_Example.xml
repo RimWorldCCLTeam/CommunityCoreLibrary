@@ -7,7 +7,7 @@
         <description>This will unlock the secrets of ancient technologies which have been lost though time.</description>
         <descriptionDiscovered>"What has been will be again, what has been done will be done again; there is nothing new under the sun." Ecclesiastes 1:9</descriptionDiscovered>
         <baseCost>1</baseCost>
-    	<techLevel>Industrial</techLevel>
+        <techLevel>Industrial</techLevel>
         <prerequisites/>
     </ResearchProjectDef>
 

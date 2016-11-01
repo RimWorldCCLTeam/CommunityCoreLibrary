@@ -2,15 +2,15 @@
 <Defs>
 
     <CommunityCoreLibrary.ModHelperDef>
-        <defName>BuildingExample</defName>
+        <defName>AdvancedResearchBuildingExample</defName>
 
-        <ModName>Building Example</ModName>
+        <ModName>Advanced Research Building Example</ModName>
 
-        <minCCLVersion>0.14.0</minCCLVersion>
+        <minCCLVersion>0.15.0</minCCLVersion>
 
-        <ThingDefAvailability>
+        <SequencedInjectionSets>
 
-            <li>
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingDefAvailability">
                 <menuHidden>false</menuHidden>
                 <designationCategory>Misc</designationCategory>
                 <targetDefs>
@@ -18,7 +18,7 @@
                 </targetDefs>
             </li>
 
-        </ThingDefAvailability>
+        </SequencedInjectionSets>
 
     </CommunityCoreLibrary.ModHelperDef>
 
