@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\FactoryWithProduct.cs" />
     <Compile Include="Classes\InputField.cs" />
     <Compile Include="Classes\Static\CCL_Widgets.cs" />
     <Compile Include="Defs\OutfitDef.cs" />
@@ -341,12 +342,5 @@
     <None Include="Controller\SubControllers\SubControllerOrderingReference.txt" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="ThinkNodes\" />
-    <Folder Include="ToggleSettings\" />
-    <Folder Include="Classes\Attributes\" />
-    <Folder Include="Controller\SubControllers\" />
-    <Folder Include="Controller\SubControllers\SequencedInjectors\" />
-    <Folder Include="Controller\SubControllers\SequencedInjectors\SequencedInjectionSets\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

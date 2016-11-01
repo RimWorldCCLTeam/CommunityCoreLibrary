@@ -71,8 +71,11 @@ namespace CommunityCoreLibrary.Detour
                 }
                 if( foodSource is Building_AutomatedFactory )
                 {
+                    //Fixed the exepction from passing a Factory into the WillIngestStackCountOf function.
+                    //However, truely fixing this will require detouring FoodUtilities to get proper functionality.
                     var FS = foodSource as Building_AutomatedFactory;
-                    if( foodDef == null )
+                    foodDef = FS.BestProduct(FoodSynthesis.IsMeal, FoodSynthesis.SortMeal);
+                    if( !FS.HasEnoughResourcesInHoppersFor(foodDef) )
                     {
                         //CCL_Log.Message( string.Format( "Hopper for {0} needs filling", foodSource.ThingID ) );
                         hopperNeedsFilling = true;

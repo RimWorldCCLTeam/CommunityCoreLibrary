@@ -65,6 +65,8 @@ namespace CommunityCoreLibrary
 
         #region Properties
 
+
+
         public RecipeDef                    CurrentRecipe
         {
             get

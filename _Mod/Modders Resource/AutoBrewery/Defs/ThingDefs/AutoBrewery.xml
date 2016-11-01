@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>AutoBrewery</defName>
+        <label>makes beer</label>
+        <thingClass>CommunityCoreLibrary.Building_AutomatedFactory</thingClass>
+        <graphicData>
+            <texPath>Things/Building/Production/NutrientDispenser</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <drawSize>(3,4)</drawSize>
+            <damageData>
+                <rect>(0.02,0.25,2.96,2.85)</rect>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+            </damageData>
+        </graphicData>
+        <altitudeLayer>Building</altitudeLayer>
+        <passability>Impassable</passability>
+        <fillPercent>1</fillPercent>
+        <statBases>
+            <WorkToMake>2200</WorkToMake>
+            <MaxHitPoints>350</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+        </statBases>
+        <description>makes beer</description>
+        <building>
+            <wantsHopperAdjacent>true</wantsHopperAdjacent>
+        </building>
+        <tickerType>Normal</tickerType>
+        <comps>
+            <li Class="CompProperties_Power">
+                <compClass>CompPowerTrader</compClass>
+                <startElectricalFires>true</startElectricalFires>
+                <basePowerConsumption>500</basePowerConsumption>
+            </li>
+            <li Class="CompProperties_Flickable"/>
+            <li Class="CompProperties_Breakdownable"/>
+            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                <idlePowerFactor>0.1</idlePowerFactor>
+                <operationalMode>WhenNear</operationalMode>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
+                <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_AutomatedFactory">
+                <compClass>CommunityCoreLibrary.CompAutomatedFactory</compClass>
+                <outputVector>DirectToPawn</outputVector>
+                <productionMode>PawnInteractionOnly</productionMode>
+            </li>
+        </comps>
+        <size>(3,4)</size>
+        <costList>
+            <Steel>90</Steel>
+        </costList>
+        <socialPropernessMatters>true</socialPropernessMatters>
+        <interactionCellOffset>(0,0,3)</interactionCellOffset>
+        <hasInteractionCell>true</hasInteractionCell>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+        <designationCategory>Production</designationCategory>
+        <constructEffect>ConstructMetal</constructEffect>
+        <placeWorkers>
+            <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
+        </placeWorkers>
+        <recipes>
+            <li>MakeBeer</li>
+            <li>MakeLuciferium</li>
+            <li>MakeFlake</li>
+            <li>MakeYayo</li>
+            <li>MakeMealLavish</li>
+        </recipes>
+        <inspectorTabs>
+            <li>CommunityCoreLibrary.ITab_AutomatedFactory</li>
+        </inspectorTabs>
+    </ThingDef>
+
+</Defs>
