@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RecipeDefs>
+
+    <!--<RecipeDef Abstract="true" Name="SynthesizedMealBase">-->
+        <!--<allowMixingIngredients>true</allowMixingIngredients>-->
+        <!--<ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>-->
+        <!--<fixedIngredientFilter>-->
+            <!--<categories>-->
+                <!--<li>FoodRaw</li>-->
+            <!--</categories>-->
+            <!--<disallowedSpecialFilters>-->
+                <!--<li>AllowPlantFood</li>-->
+            <!--</disallowedSpecialFilters>-->
+        <!--</fixedIngredientFilter>-->
+        <!--<defaultIngredientFilter>-->
+            <!--<categories>-->
+                <!--<li>FoodRaw</li>-->
+            <!--</categories>-->
+            <!--<exceptedCategories>-->
+                <!--<li>EggsFertilized</li>-->
+            <!--</exceptedCategories>-->
+            <!--<exceptedThingDefs>-->
+                <!--<li>Human_Meat</li>-->
+                <!--<li>Hay</li>-->
+            <!--</exceptedThingDefs>-->
+        <!--</defaultIngredientFilter>-->
+    <!--</RecipeDef>-->
+
+    <RecipeDef>
+        <defName>MakeYayo</defName>
+        <label>MakeYayo</label>
+        <description>MakeYayo</description>
+        <jobString>MakeYayo</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <categories>
+                        <li>PlantMatter</li>
+                    </categories>
+                </filter>
+                <count>10</count>
+            </li>
+        </ingredients>
+        <products>
+            <Yayo>1</Yayo>
+        </products>
+        <workAmount>200</workAmount>
+    </RecipeDef>
+</RecipeDefs>

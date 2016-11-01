@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -13,8 +12,6 @@ namespace CommunityCoreLibrary.Detour
 
     internal class _JoyGiver_SocialRelax : JoyGiver_SocialRelax
     {
-
-        /* TODO:  Investigate and expand drug system to use factories
 
         #region Helper Methods
 
@@ -110,16 +107,38 @@ namespace CommunityCoreLibrary.Detour
                 }
             }
             nurseableDrugs.Shuffle();
+            //Not using a where clause so that I can cast the building to Building_AutomatedFactory.
+            List<Building_AutomatedFactory> listOfFactories = new List<Building_AutomatedFactory>();
+            foreach (Thing thing in Find.ListerBuildings.allBuildingsColonist)
+            {
+                if (thing is Building_AutomatedFactory)
+                {
+                    listOfFactories.Add((Building_AutomatedFactory) thing);
+                }
+            }
             for( int index = 0; index < nurseableDrugs.Count; ++index )
             {
-                var listOfDrugs = Find.ListerThings.ThingsOfDef( nurseableDrugs[ index ] );
+                var currentDrug = nurseableDrugs[index];
+                var listOfDrugs = Find.ListerThings.ThingsOfDef( currentDrug );
+                //Find factories that can dispense drug. Select upcasts them to Thing.
+                var listOfFactoriesCanProduce = listOfFactories.Where(f => f.CanDispenseNow( currentDrug )).Select(t => (Thing)t).ToList();
+                List<Thing> allThings = new List<Thing>();
+                foreach (var factory in listOfFactoriesCanProduce)
+                {
+                    allThings.Add(factory);
+                }
+                foreach (var drug in listOfDrugs)
+                {
+                    allThings.Add(drug);
+                }
+//                listOfDrugs.AddRange(listOfFactoriesCanProduce);
                 // TODO:  Add checks for synthesizers that can produce drugs
-                if( listOfDrugs.Count > 0 )
+                if( allThings.Count > 0 )
                 {
                     ingestible = GenClosest.ClosestThing_Global_Reachable(
                         center,
-                        listOfDrugs,
-                        PathEndMode.OnCell,
+                        allThings,
+                        PathEndMode.InteractionCell,
                         TraverseParms.For(
                             ingester,
                             Danger.Deadly,
@@ -127,16 +146,20 @@ namespace CommunityCoreLibrary.Detour
                             false ),
                         40f,
                         (drug) =>
-                    {
-                        if( ingester.CanReserve( drug, 1 ) )
                         {
-                            return !drug.IsForbidden( ingester );
-                        }
-                        return false;
-                    },
+                            if( drug.IsForbidden( ingester ) )
+                            {
+                                return false;
+                            }
+                            return ingester.CanReserve( drug, 1 );
+                        },
                         null );
                     if( ingestible != null )
                     {
+                        if (ingestible is Building_AutomatedFactory)
+                        {
+                            ingestible = new FactoryWithProduct((Building_AutomatedFactory) ingestible, currentDrug);
+                        }
                         return true;
                     }
                 }
@@ -220,46 +243,25 @@ namespace CommunityCoreLibrary.Detour
                         )
                     )
                     {
-                        List<Thing> list = Find.ListerThings.AllThings.Where( t => (
-                            ( t.def.IsDrug ) ||
-                            ( t is Building_AutomatedFactory )
-                        ) ).ToList();
-                        if( list.Count > 0 )
+                        Thing thing;
+                        if( TryFindIngestibleToNurse(compGatherSpot.parent.Position, pawn, out thing)
+                            && thing != null)
                         {
-                            Thing thing = GenClosest.ClosestThing_Global_Reachable(
-                                compGatherSpot.parent.Position,
-                                list,
-                                PathEndMode.OnCell,
-                                TraverseParms.For(
-                                    pawn,
-                                    pawn.NormalMaxDanger() ),
-                                40f,
-                                ( t ) =>
+                            FactoryWithProduct factoryWithProduct = thing as FactoryWithProduct;
+                            if (factoryWithProduct == null)
                             {
-                                if( t.IsForbidden( pawn ) )
-                                {
-                                    return false;
-                                }
-
-                                if( t is Building_AutomatedFactory )
-                                {
-                                    var FS = t as Building_AutomatedFactory;
-                                    if(
-                                        ( !FS.InteractionCell.Standable() ) ||
-                                        ( !FS.CompPowerTrader.PowerOn ) ||
-                                        ( FS.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) == null )
-                                    )
-                                    {
-                                        return false;
-                                    }
-                                }
-                                return pawn.CanReserve( t, 1 );
-                            } );
-                            if( thing != null )
-                            {
-                                job.targetC = (TargetInfo)thing;
-                                job.maxNumToCarry = Mathf.Min( thing.stackCount, thing.def.ingestible.maxNumToIngestAtOnce );
+                                job.targetC = (TargetInfo) thing;
+                                job.maxNumToCarry = Mathf.Min(thing.stackCount,
+                                    thing.def.ingestible.maxNumToIngestAtOnce);
                             }
+                            else
+                            {
+                                job.targetC = (TargetInfo) factoryWithProduct.Factory;
+                                job.plantDefToSow = factoryWithProduct.ThingToProduce;
+                                job.maxNumToCarry = Mathf.Min(factoryWithProduct.AmmountCanProduce(),
+                                    factoryWithProduct.ThingToProduce.ingestible.maxNumToIngestAtOnce);
+                            }
+
                         }
                     }
                     return job;
@@ -269,8 +271,6 @@ namespace CommunityCoreLibrary.Detour
         }
 
         #endregion
-
-        */
 
     }
 

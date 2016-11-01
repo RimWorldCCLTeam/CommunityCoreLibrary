@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RecipeDefs>
+
+    <!--<RecipeDef Abstract="true" Name="SynthesizedMealBase">-->
+        <!--<allowMixingIngredients>true</allowMixingIngredients>-->
+        <!--<ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>-->
+        <!--<fixedIngredientFilter>-->
+            <!--<categories>-->
+                <!--<li>FoodRaw</li>-->
+            <!--</categories>-->
+            <!--<disallowedSpecialFilters>-->
+                <!--<li>AllowPlantFood</li>-->
+            <!--</disallowedSpecialFilters>-->
+        <!--</fixedIngredientFilter>-->
+        <!--<defaultIngredientFilter>-->
+            <!--<categories>-->
+                <!--<li>FoodRaw</li>-->
+            <!--</categories>-->
+            <!--<exceptedCategories>-->
+                <!--<li>EggsFertilized</li>-->
+            <!--</exceptedCategories>-->
+            <!--<exceptedThingDefs>-->
+                <!--<li>Human_Meat</li>-->
+                <!--<li>Hay</li>-->
+            <!--</exceptedThingDefs>-->
+        <!--</defaultIngredientFilter>-->
+    <!--</RecipeDef>-->
+
+    <RecipeDef>
+        <defName>MakeMealLavish</defName>
+        <label>MakeMealLavish</label>
+        <description>MakeMealLavish</description>
+        <jobString>MakeMealLavish</jobString>
+        <ingredients>
+            <li>
+                <filter>
+                    <categories>
+                        <li>PlantMatter</li>
+                    </categories>
+                </filter>
+                <count>14</count>
+            </li>
+        </ingredients>
+        <products>
+            <MealLavish>1</MealLavish>
+        </products>
+        <workAmount>200</workAmount>
+    </RecipeDef>
+</RecipeDefs>

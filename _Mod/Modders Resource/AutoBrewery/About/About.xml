@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+
+    <name>Test factory</name>
+
+    <author>Kelnor</author>
+
+    <targetVersion>0.15.1273</targetVersion>
+
+    <description>v0.15.0
+
+Test only
+</description>
+
+</ModMetaData>
