@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CommunityCoreLibrary
+﻿namespace CommunityCoreLibrary
 {
     
     public enum InjectionSequence

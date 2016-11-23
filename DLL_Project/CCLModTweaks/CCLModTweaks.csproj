@@ -63,6 +63,8 @@
     <Compile Include="DefInjectionQualifiers\QualifyHopperUserCompFoodDispenser.cs" />
     <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompRefrigerator.cs" />
     <Compile Include="DefInjectionQualifiers\QualifyLowPowerRareTickerRefrigerator.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerCompDeepDrill.cs" />
+    <Compile Include="DefInjectionQualifiers\QualifyLowPowerNormalTickerDeepDrill.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

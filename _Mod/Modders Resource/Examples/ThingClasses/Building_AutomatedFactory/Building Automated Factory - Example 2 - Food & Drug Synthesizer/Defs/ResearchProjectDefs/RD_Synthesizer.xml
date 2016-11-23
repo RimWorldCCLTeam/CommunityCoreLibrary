@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResearchProjectDefs>
+
+    <!-- Tier 1 research -->
+
+    <ResearchProjectDef Abstract="True" Name="SynthesisResearchBase">
+        <techLevel>Spacer</techLevel>
+        <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef ParentName="SynthesisResearchBase">
+        <defName>MealSynthesis</defName>
+        <label>meal synthesis</label>
+        <description>Synthesizers can be built which can create actual meals instead of just disgusting paste.</description>
+        <baseCost>1000</baseCost>
+        <prerequisites>
+            <li>MicroelectronicsBasics</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <!-- Tier 1.5 - Meal research -->
+
+    <ResearchProjectDef ParentName="SynthesisResearchBase">
+        <defName>FineMealSynthesis</defName>
+        <label>fine meal synthesis</label>
+        <description>Fine meals can be synthesized at synthesizers.</description>
+        <baseCost>2000</baseCost>
+        <prerequisites>
+            <li>MealSynthesis</li>
+            <li>MultiAnalyzer</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <!-- Tier 2 - Drug and meal research -->
+
+    <ResearchProjectDef Abstract="True" Name="DrugSynthesisResearchBase" ParentName="SynthesisResearchBase">
+        <requiredResearchFacilities>
+            <li>MultiAnalyzer</li>
+        </requiredResearchFacilities>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef ParentName="DrugSynthesisResearchBase">
+        <defName>LavishMealSynthesis</defName>
+        <label>lavish meal synthesis</label>
+        <description>Lavish meals can be synthesized at synthesizers.</description>
+        <baseCost>3000</baseCost>
+        <prerequisites>
+            <li>FineMealSynthesis</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+    <ResearchProjectDef ParentName="DrugSynthesisResearchBase">
+        <defName>DrugSynthesis</defName>
+        <label>drug synthesis</label>
+        <description>Synthesizers will be able to also synthesize drugs from the simple to the complex.</description>
+        <baseCost>2500</baseCost>
+        <prerequisites>
+            <li>MealSynthesis</li>
+            <li>DrugProduction</li>
+            <li>MultiAnalyzer</li>
+        </prerequisites>
+    </ResearchProjectDef>
+
+</ResearchProjectDefs>

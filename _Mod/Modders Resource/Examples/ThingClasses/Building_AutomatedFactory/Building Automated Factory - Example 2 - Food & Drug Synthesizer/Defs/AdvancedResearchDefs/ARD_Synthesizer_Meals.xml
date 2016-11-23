@@ -15,7 +15,7 @@
         </recipeDefs>
 
         <thingDefs>
-            <li>FoodSynthesizer</li>
+            <li>Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
@@ -34,7 +34,7 @@
         </recipeDefs>
 
         <thingDefs>
-            <li>FoodSynthesizer</li>
+            <li>Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>

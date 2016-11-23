@@ -16,7 +16,8 @@
         Default         = Validation
 #else
     #if                 DEVELOPER
-        Default         = AutoGenCreation
+        //Default         = AutoGenCreation
+        Default         = Stack
     #else
         //              DEBUG
         Default         = Injections

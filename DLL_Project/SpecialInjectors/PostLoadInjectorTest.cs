@@ -1,10 +1,12 @@
-﻿using RimWorld;
+﻿#if DEVELOPER
+using RimWorld;
 using Verse;
 
 
 namespace CommunityCoreLibrary
 {
     
+    [SpecialInjectorSequencer( InjectionSequence.GameLoad, InjectionTiming.SpecialInjectors )]
     public class PostLoadInjectorTest : SpecialInjector
     {
         
@@ -17,3 +19,4 @@ namespace CommunityCoreLibrary
     }
 
 }
+#endif

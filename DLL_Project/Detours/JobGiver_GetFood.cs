@@ -40,6 +40,7 @@ namespace CommunityCoreLibrary.Detour
                 true )
             )
             {
+                //CCL_Log.Message( "Nothing found to eat" );
                 return null;
             }
 
@@ -49,6 +50,7 @@ namespace CommunityCoreLibrary.Detour
             var prey = foodSource as Pawn;
             if( prey != null )
             {
+                //CCL_Log.Message( "Returning prey for predator" );
                 var hunterJob = new Job( JobDefOf.PredatorHunt, prey );
                 hunterJob.killIncappedTarget = true;
                 return hunterJob;
@@ -71,15 +73,12 @@ namespace CommunityCoreLibrary.Detour
                 }
                 if( foodSource is Building_AutomatedFactory )
                 {
-                    //Fixed the exepction from passing a Factory into the WillIngestStackCountOf function.
-                    //However, truely fixing this will require detouring FoodUtilities to get proper functionality.
-                    var FS = foodSource as Building_AutomatedFactory;
-                    foodDef = FS.BestProduct(FoodSynthesis.IsMeal, FoodSynthesis.SortMeal);
-                    if( !FS.HasEnoughResourcesInHoppersFor(foodDef) )
+                    var synthesizer = foodSource as Building_AutomatedFactory;
+                    if( !synthesizer.IsConsidering( pawn ) )
                     {
                         //CCL_Log.Message( string.Format( "Hopper for {0} needs filling", foodSource.ThingID ) );
                         hopperNeedsFilling = true;
-                        hopper = FS.AdjacentReachableHopper( pawn );
+                        hopper = synthesizer.AdjacentReachableHopper( pawn );
                     }
                 }
                 if( hopperNeedsFilling )
@@ -110,6 +109,27 @@ namespace CommunityCoreLibrary.Detour
                         foodDef = foodSource.def;
                     }
                 }
+            }
+
+            if( foodSource is Building_AutomatedFactory )
+            {
+                //CCL_Log.Message( "Attempting to reserve synthesizer" );
+                var synthesizer = foodSource as Building_AutomatedFactory;
+                if(
+                    ( !synthesizer.IsConsidering( pawn ) )||
+                    ( !synthesizer.ReserveForUseBy( pawn, synthesizer.ConsideredProduct ) )
+                )
+                {   // Couldn't reserve the synthesizer for production
+#if DEVELOPER
+                    CCL_Log.Trace(
+                        Verbosity.NonFatalErrors,
+                        string.Format( "{0} is not considering or could not reserve {1} for {2}", pawn.LabelShort, synthesizer.ThingID, synthesizer.ConsideredProduct == null ? "nothing" : synthesizer.ConsideredProduct.defName ),
+                        "Detour.JobGiver_GetFood.TryGiveJob"
+                    );
+#endif
+                    return null;
+                }
+                foodDef = synthesizer.ReservedThingDef;
             }
 
             //CCL_Log.Message( string.Format( "Giving JobDriver_Ingest to {0} using {1}", pawn.LabelShort, foodSource.ThingID ) );

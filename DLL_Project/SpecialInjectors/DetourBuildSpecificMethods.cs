@@ -11,16 +11,11 @@ namespace CommunityCoreLibrary
 {
 
     [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.SpecialInjectors )]
-    public class DetourInjector : SpecialInjector
+    public class DetourBuildSpecificMethods : SpecialInjector
     {
 
         public override bool                Inject()
         {
-            // Change CompGlower into CompGlowerToggleable
-            FixGlowers();
-
-            // Change Building_NutrientPasteDispenser into Building_AdvancedPasteDispenser
-            UpgradeNutrientPasteDispensers();
 
             // Detour RimWorld.MainTabWindow_Research.DrawLeftRect "NotFinished" predicate function
             // Use build number to get the correct predicate function
@@ -58,27 +53,6 @@ namespace CommunityCoreLibrary
             */
 
             return true;
-        }
-
-        private void                        FixGlowers()
-        {
-            foreach( var def in DefDatabase<ThingDef>.AllDefs.Where( def => (
-                ( def != null )&&
-                ( def.comps != null )&&
-                ( def.HasComp( typeof( CompGlower ) ) )
-            ) ) )
-            {
-                var compGlower = def.GetCompProperties<CompProperties_Glower>();
-                compGlower.compClass = typeof( CompGlowerToggleable );
-            }
-        }
-
-        private void                        UpgradeNutrientPasteDispensers()
-        {
-            foreach( var def in DefDatabase<ThingDef>.AllDefs.Where( def => def.thingClass == typeof( Building_NutrientPasteDispenser ) ) )
-            {
-                def.thingClass = typeof( Building_AdvancedPasteDispenser );
-            }
         }
 
     }

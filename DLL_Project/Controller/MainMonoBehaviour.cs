@@ -33,12 +33,16 @@ namespace CommunityCoreLibrary.Controller
 
         public void                         Start()
         {
-            enabled = Controller.Library.IsInGoodState;
+            enabled = true;
+            //CCL_Log.Message( "MainMonoBehaviour.OnLevelWasLoaded() - enabled = " + enabled );
         }
 
         public void                         FixedUpdate()
         {
+            //CCL_Log.Message( "MainMonoBehaviour.FixedUpdate() - Library.IsInGoodState = " + Controller.Library.IsInGoodState );
+
             Controller.Data.LibraryTicks++;
+
             if(
                 ( !Controller.Library.IsInGoodState )||
                 ( Current.ProgramState != ProgramState.MapPlaying )||
@@ -61,11 +65,6 @@ namespace CommunityCoreLibrary.Controller
             }
 
             LongEventHandler.ExecuteWhenFinished( Controller.SubControllers.Update );
-        }
-
-        public void                         OnLevelWasLoaded( int level )
-        {
-            enabled = Controller.Library.IsInGoodState;
         }
 
         #endregion

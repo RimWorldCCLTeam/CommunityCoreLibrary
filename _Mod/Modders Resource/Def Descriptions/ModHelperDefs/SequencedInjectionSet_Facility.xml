@@ -12,6 +12,9 @@
 
         <facility>ThingDef</facility>   [required] Facility to inject into buildings
 
+        <overrideBedOnly>bool</overrideBedOnly>
+                                        [optional] If the CompProperties_AffectedByFacilities on the target is CommunityCoreLibrary.CompProperties_AffectedByFacilities then set overrideBedOnly to the value supplied
+
     </li>
 
     -->

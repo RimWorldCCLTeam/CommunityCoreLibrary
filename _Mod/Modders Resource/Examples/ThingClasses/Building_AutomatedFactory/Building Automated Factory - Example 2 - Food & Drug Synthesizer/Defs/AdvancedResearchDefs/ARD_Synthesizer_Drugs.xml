@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+
+        <defName>AdvancedDrugSynthesis</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>DrugSynthesis</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeSmokeleafJoint</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>Synthesizer</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+
+        <defName>AdvancedDrugSynthesisBeer</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>DrugSynthesis</li>
+            <li>Brewing</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeBeer</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>Synthesizer</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+
+        <defName>AdvancedDrugSynthesisMalariBlock</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>DrugSynthesis</li>
+            <li>MalariBlockProduction</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeMalariBlock</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>Synthesizer</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+
+        <defName>AdvancedDrugSynthesisPsychite</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>DrugSynthesis</li>
+            <li>PsychiteRefining</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeFlake</li>
+            <li>SynthesizeYayo</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>Synthesizer</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+
+        <defName>AdvancedDrugSynthesisGoJuice</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>DrugSynthesis</li>
+            <li>GoJuiceProduction</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeGoJuice</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>Synthesizer</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+
+        <defName>AdvancedDrugSynthesisWakeUp</defName>
+        <Priority>0</Priority>
+
+        <researchDefs>
+            <li>DrugSynthesis</li>
+            <li>WakeUpProduction</li>
+        </researchDefs>
+
+        <recipeDefs>
+            <li>SynthesizeWakeUp</li>
+        </recipeDefs>
+
+        <thingDefs>
+            <li>Synthesizer</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+</Defs>

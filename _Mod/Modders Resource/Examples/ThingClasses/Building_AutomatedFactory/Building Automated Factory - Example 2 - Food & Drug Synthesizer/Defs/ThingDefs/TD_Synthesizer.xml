@@ -13,8 +13,8 @@
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
-        <defName>FoodSynthesizer</defName>
-        <label>food synthesizer</label>
+        <defName>Synthesizer</defName>
+        <label>synthesizer</label>
         <thingClass>CommunityCoreLibrary.Building_AutomatedFactory</thingClass>
         <graphicData>
             <texPath>Things/Building/Production/NutrientDispenser</texPath>
@@ -34,7 +34,7 @@
             <MaxHitPoints>350</MaxHitPoints>
             <Flammability>1.0</Flammability>
         </statBases>
-        <description>Synthesizes actual meals from organic feedstocks. It consumes the same amount of ingredients as actual cooking but takes less time. Accepts raw food, but not rough plant matter like hay.</description>
+        <description>Synthesizes actual meals from organic feedstocks. It consumes the same amount of ingredients as actual cooking but takes less time. Accepts raw food, but not rough plant matter like hay.  When additional research is complete, this machine can also synthesize drugs from their raw ingredients.</description>
         <building>
             <isMealSource>true</isMealSource>
             <wantsHopperAdjacent>true</wantsHopperAdjacent>
@@ -48,11 +48,6 @@
             </li>
             <li Class="CompProperties_Flickable"/>
             <li Class="CompProperties_Breakdownable"/>
-            <li Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
-                <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
-                <idlePowerFactor>0.1</idlePowerFactor>
-                <operationalMode>WhenNear</operationalMode>
-            </li>
             <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
                 <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
             </li>
@@ -60,6 +55,14 @@
                 <compClass>CommunityCoreLibrary.CompAutomatedFactory</compClass>
                 <outputVector>DirectToPawn</outputVector>
                 <productionMode>PawnInteractionOnly</productionMode>
+            </li>
+            <li Class="CommunityCoreLibrary.CompProperties_AffectedByFacilities">
+                <!-- This must be set true to connect this building to facilities flagged as canLinkToMedBedsOnly (Vitals Monitor) -->
+                <overrideBedOnly>true</overrideBedOnly>
+                <linkableFacilities>
+                    <li>MultiAnalyzer</li>
+                    <li>VitalsMonitor</li>
+                </linkableFacilities>
             </li>
         </comps>
         <size>(3,4)</size>

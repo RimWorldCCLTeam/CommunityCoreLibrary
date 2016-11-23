@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Collections.Generic;
 
+using RimWorld;
 using Verse;
 
 namespace CommunityCoreLibrary
@@ -21,6 +22,46 @@ namespace CommunityCoreLibrary
                     "Unable to get field 'comps' in 'ThingWithComps'",
                     "ThingWithComps_Extensions" );
             }
+        }
+
+        internal static bool                HasConnectedFacilityFast( CompAffectedByFacilities compAffected, ThingDef facility )
+        {
+            return( compAffected.LinkedFacilitiesListForReading.Any( thing => thing.def == facility ) );
+        }
+
+        public static bool                  HasConnectedFacility( this ThingWithComps thingWithComps, ThingDef facility )
+        {
+            var compAffected = thingWithComps.GetComp<CompAffectedByFacilities>();
+            if(
+                ( facility == null )||
+                ( compAffected == null )||
+                ( compAffected.LinkedFacilitiesListForReading.NullOrEmpty() )
+            )
+            {
+                return false;
+            }
+            return HasConnectedFacilityFast( compAffected, facility );
+        }
+
+        public static bool                  HasConnectedFacilities( this ThingWithComps thingWithComps, List<ThingDef> facilities )
+        {
+            var compAffected = thingWithComps.GetComp<CompAffectedByFacilities>();
+            if(
+                ( facilities.NullOrEmpty() )||
+                ( compAffected == null )||
+                ( compAffected.LinkedFacilitiesListForReading.NullOrEmpty() )
+            )
+            {
+                return false;
+            }
+            foreach( var facility in facilities )
+            {
+                if( !HasConnectedFacilityFast( compAffected, facility ) )
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         #region Comps Getter & Setter

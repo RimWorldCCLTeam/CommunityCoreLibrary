@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" Abstract="true" Name="SynthesizedDrugBase">
+        <allowMixingIngredients>false</allowMixingIngredients>
+        <requiredFacilities>
+            <li>MultiAnalyzer</li>
+        </requiredFacilities>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeBeer</defName>
+        <label>synthesize beer</label>
+        <description>synthesizes beer from hops.</description>
+        <jobString>Synthesizing beer.</jobString>
+        <workAmount>100</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>RawHops</li>
+                    </thingDefs>
+                </filter>
+                <count>5</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>RawHops</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <Beer>1</Beer>
+        </products>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeFlake</defName>
+        <label>synthesize flake</label>
+        <description>synthesizes flake from psychoid leaves.</description>
+        <jobString>Synthesizing flake.</jobString>
+        <workAmount>250</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>PsychoidLeaves</li>
+                    </thingDefs>
+                </filter>
+                <count>7</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>PsychoidLeaves</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <Flake>1</Flake>
+        </products>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeYayo</defName>
+        <label>synthesize yayo</label>
+        <description>synthesizes yayo from psychoid leaves.</description>
+        <jobString>Synthesizing yayo.</jobString>
+        <workAmount>450</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>PsychoidLeaves</li>
+                    </thingDefs>
+                </filter>
+                <count>14</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>PsychoidLeaves</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <Yayo>1</Yayo>
+        </products>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeGoJuice</defName>
+        <label>synthesize go-juice</label>
+        <description>synthesizes go-juice from neutroamine and psychoid leaves.</description>
+        <jobString>Synthesizing go-juice.</jobString>
+        <workAmount>500</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>Neutroamine</li>
+                    </thingDefs>
+                </filter>
+                <count>5</count>
+            </li>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>PsychoidLeaves</li>
+                    </thingDefs>
+                </filter>
+                <count>14</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>Neutroamine</li>
+                <li>PsychoidLeaves</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <GoJuice>1</GoJuice>
+        </products>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeMalariBlock</defName>
+        <label>synthesize malari-block</label>
+        <description>synthesizes malari-block from neutroamine.</description>
+        <jobString>Synthesizing malari-block.</jobString>
+        <workAmount>450</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>Neutroamine</li>
+                    </thingDefs>
+                </filter>
+                <count>3</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>Neutroamine</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <MalariBlock>1</MalariBlock>
+        </products>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeSmokeleafJoint</defName>
+        <label>synthesize smokeleaf joint</label>
+        <description>synthesizes smokeleaf joint from smokeleaf leaves.</description>
+        <jobString>Synthesizing smokeleaf joint.</jobString>
+        <workAmount>100</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>SmokeleafLeaves</li>
+                    </thingDefs>
+                </filter>
+                <count>8</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>SmokeleafLeaves</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <SmokeleafJoint>1</SmokeleafJoint>
+        </products>
+    </RecipeDef>
+
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
+        <defName>SynthesizeWakeUp</defName>
+        <label>synthesize wake-up</label>
+        <description>synthesizes wake-up from neutroamine.</description>
+        <jobString>Synthesizing wake-up.</jobString>
+        <workAmount>700</workAmount>
+        <ingredients>
+            <li>
+                <filter>
+                    <thingDefs>
+                        <li>Neutroamine</li>
+                    </thingDefs>
+                </filter>
+                <count>2</count>
+            </li>
+        </ingredients>
+        <fixedIngredientFilter>
+            <thingDefs>
+                <li>Neutroamine</li>
+            </thingDefs>
+        </fixedIngredientFilter>
+        <products>
+            <WakeUp>1</WakeUp>
+        </products>
+    </RecipeDef>
+
+</Defs>

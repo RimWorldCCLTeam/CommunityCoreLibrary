@@ -243,7 +243,7 @@ namespace CommunityCoreLibrary
 
         public void                         ResetResourceSettings()
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.ResetResourceSettings()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.ResetResourceSettings()", this.parent.ThingID ) );
             recipeFilter.Clear();
             hopperSettings.Clear();
             resourceSettings = null;
@@ -312,7 +312,7 @@ namespace CommunityCoreLibrary
         {
             get
             {
-                //Log.Message( string.Format( "{0}.CompHopperUser.Resources", this.parent.ThingID ) );
+                //CCL_Log.Message( string.Format( "{0}.CompHopperUser.Resources", this.parent.ThingID ) );
                 if( xmlResources == null )
                 {
                     if( HopperProperties != null )
@@ -334,7 +334,7 @@ namespace CommunityCoreLibrary
 
         private void                        MergeIngredientIntoFilter( ThingFilter filter, IngredientCount ingredient )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.MergeIngredientIntoFilter( ThingFilter, IngredientCount )", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.MergeIngredientIntoFilter( ThingFilter, IngredientCount )", this.parent.ThingID ) );
             if( ingredient.filter != null )
             {
                 if( !ingredient.filter.Categories().NullOrEmpty() )
@@ -357,7 +357,7 @@ namespace CommunityCoreLibrary
 
         private void                        MergeExceptionsIntoFilter( ThingFilter filter, ThingFilter exceptionFilter )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.MergeExceptionsIntoFilter( ThingFilter, ThingFilter )", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.MergeExceptionsIntoFilter( ThingFilter, ThingFilter )", this.parent.ThingID ) );
             if( !exceptionFilter.ExceptedCategories().NullOrEmpty() )
             {
                 foreach( var category in exceptionFilter.ExceptedCategories() )
@@ -377,13 +377,13 @@ namespace CommunityCoreLibrary
 
         public bool                         IsRecipeInFilter( RecipeDef recipe )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.IsRecipeInFilter( {1} )", this.parent.ThingID, recipe == null ? "null" : recipe.defName ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.IsRecipeInFilter( {1} )", this.parent.ThingID, recipe == null ? "null" : recipe.defName ) );
             return recipeFilter.Contains( recipe );
         }
 
         public void                         MergeRecipeIntoFilter( ThingFilter filter, RecipeDef recipe )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.MergeRecipeInfoFilter( ThingFilter, {1} )", this.parent.ThingID, recipe == null ? "null" : recipe.defName ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.MergeRecipeInfoFilter( ThingFilter, {1} )", this.parent.ThingID, recipe == null ? "null" : recipe.defName ) );
             if( recipeFilter.Contains( recipe ) )
             {
                 return;
@@ -408,7 +408,7 @@ namespace CommunityCoreLibrary
 
         private void                        MergeIngredientIntoHopperSettings( IngredientCount ingredient, RecipeDef recipe )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.MergeIngredientIntoHopperSettings( IngredientCount, {1} )", this.parent.ThingID, recipe == null ? "null" : recipe.defName ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.MergeIngredientIntoHopperSettings( IngredientCount, {1} )", this.parent.ThingID, recipe == null ? "null" : recipe.defName ) );
             if( ingredient.filter != null )
             {
                 if( !ingredient.filter.Categories().NullOrEmpty() )
@@ -431,7 +431,7 @@ namespace CommunityCoreLibrary
 
         private void                        MergeExceptionsIntoHopperSettings( ThingFilter exceptionFilter )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.MergeExceptionsIntoHopperSettings( ThingFilter )", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.MergeExceptionsIntoHopperSettings( ThingFilter )", this.parent.ThingID ) );
             if( !exceptionFilter.ExceptedCategories().NullOrEmpty() )
             {
                 foreach( var category in exceptionFilter.ExceptedCategories() )
@@ -457,7 +457,7 @@ namespace CommunityCoreLibrary
 
         private void                        BuildHopperSettings()
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.BuildHopperSettings()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.BuildHopperSettings()", this.parent.ThingID ) );
             // Create initial list of hopper settings from recipe ingredients
             foreach( var recipe in recipeFilter )
             {
@@ -581,7 +581,7 @@ namespace CommunityCoreLibrary
 
         private void                        ProgramHoppersSimple( List<CompHopper> hoppers )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.ProgramHoppersSimple( List<CompHopper> )", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.ProgramHoppersSimple( List<CompHopper> )", this.parent.ThingID ) );
             // Blanket all hoppers with the main filter
             foreach( var hopper in hoppers )
             {
@@ -591,7 +591,7 @@ namespace CommunityCoreLibrary
 
         private void                        ProgramHoppersIndividual( List<CompHopper> hoppers )
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.ProgramHoppersIndividual( List<CompHopper> )", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.ProgramHoppersIndividual( List<CompHopper> )", this.parent.ThingID ) );
             // Try to find hoppers which match already
             var freeHoppers = new List<CompHopper>();
             foreach( var hopper in hoppers )
@@ -742,7 +742,7 @@ namespace CommunityCoreLibrary
 
         public void                         FindAndProgramHoppers()
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.FindAndProgramHoppers()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.FindAndProgramHoppers()", this.parent.ThingID ) );
             if( ResourceSettings == null )
             {
                 // No xml or IHopperUser settings
@@ -781,7 +781,7 @@ namespace CommunityCoreLibrary
 
         public void                         FindAndDeprogramHoppers()
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.FindAndDeprogramHoppers()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.FindAndDeprogramHoppers()", this.parent.ThingID ) );
             var hoppers = FindHoppers();
             if( hoppers.NullOrEmpty() )
             {
@@ -796,14 +796,14 @@ namespace CommunityCoreLibrary
 
         public void                         NotifyHopperAttached()
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.NotifyHopperAttached()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.NotifyHopperAttached()", this.parent.ThingID ) );
             FindAndDeprogramHoppers();
             FindAndProgramHoppers();
         }
 
         public void                         NotifyHopperDetached()
         {
-            //Log.Message( string.Format( "{0}.CompHopperUser.NotifyHopperDetached()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopperUser.NotifyHopperDetached()", this.parent.ThingID ) );
             FindAndDeprogramHoppers();
             FindAndProgramHoppers();
         }

@@ -7,7 +7,7 @@ using Verse;
 namespace CCLModTweaks
 {
     
-    public class QualifyLowPowerCompWorkTable : DefInjectionQualifier
+    public class QualifyLowPowerCompDeepDrill : DefInjectionQualifier
     {
 
         public override bool DefIsUsable( Def def )
@@ -21,7 +21,7 @@ namespace CCLModTweaks
             {
                 return false;
             }
-            if( !typeof( Building_WorkTable ).IsAssignableFrom( thingDef.thingClass ) )
+            if( !thingDef.HasComp( typeof( CompDeepDrill ) ) )
             {
                 return false;
             }

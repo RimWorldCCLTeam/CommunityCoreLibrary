@@ -37,7 +37,7 @@ namespace CommunityCoreLibrary.MiniMap
         public static void DrawThing( Texture2D texture, Thing thing, Color color )
 		{
 #if DEVELOPER
-            CCL_Log.Message( "Painting cells for " + thing.LabelCap + thing.Position + color );
+            //CCL_Log.Message( "Painting cells for " + thing.LabelCap + thing.Position + color );
 #endif
 
 			// check if this makes sense

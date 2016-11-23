@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <CommunityCoreLibrary.ModHelperDef>
+        <defName>MHDSynthesizer</defName>
+
+        <ModName>Building Automated Factory - Example 1 - Food &amp; Drug Synthesizer</ModName>
+
+        <minCCLVersion>0.15.0</minCCLVersion>
+
+        <SequencedInjectionSets>
+
+            <!-- Enable generic hoppers -->
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingDefAvailability">
+                <menuHidden>false</menuHidden>
+                <designationCategory>Production</designationCategory>
+                <targetDefs>
+                    <li>GenericHopper</li>
+                    <li>RefrigeratedHopper</li>
+                </targetDefs>
+            </li>
+
+            <!-- Link the multi-analyser to the synthesizer -->
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_Facility">
+                <facility>MultiAnalyzer</facility>
+                <targetDefs>
+                    <li>Synthesizer</li>
+                </targetDefs>
+            </li>
+
+        </SequencedInjectionSets>
+
+    </CommunityCoreLibrary.ModHelperDef>
+
+</Defs>

@@ -34,7 +34,14 @@ namespace CommunityCoreLibrary.Detour
 
             yield return Toils_Reserve.Reserve( DelivereeInd, 1 );
 
-            if( foodThing is Building )
+            if(
+                ( this.pawn.inventory != null )&&
+                ( this.pawn.inventory.Contains( foodThing ) )
+            )
+            {
+                yield return Toils_Misc.TakeItemFromInventoryToCarrier( this.pawn, DelivereeInd );
+            }
+            else if( foodThing is Building )
             {
                 yield return Toils_Reserve.Reserve( FoodInd, 1 );
                 this.AddFinishAction( () =>
@@ -51,19 +58,14 @@ namespace CommunityCoreLibrary.Detour
                 }
                 else if( foodThing is Building_AutomatedFactory )
                 {
-                    yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodInd, this.pawn );
+                    // CALLER MUST USE Building_AutomatedFactory.ReserveForUseBy() BEFORE USING THIS METHOD!
+                    //yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( FoodInd, this.pawn );
+                    yield return Toils_FoodSynthesizer.TakeFromSynthesier( FoodInd, this.pawn );
                 }
                 else // Unknown building
                 {
                     throw new Exception( "Food target for JobDriver_FoodDeliver is a building but not Building_NutrientPasteDispenser or Building_AutomatedFactory!" );
                 }
-            }
-            else if(
-                ( this.pawn.inventory != null )&&
-                ( this.pawn.inventory.Contains( foodThing ) )
-            )
-            {
-                yield return Toils_Misc.TakeItemFromInventoryToCarrier( this.pawn, FoodInd );
             }
             else
             {
@@ -82,6 +84,7 @@ namespace CommunityCoreLibrary.Detour
             yield return Toils_Goto.GotoThing( DelivereeInd, PathEndMode.Touch );
             yield return Toils_Ingest.ChewIngestible( deliveree, FeedDurationMultiplier, FoodInd );
             yield return Toils_Ingest.FinalizeIngest( deliveree, FoodInd );
+            yield break;
         }
 
     }

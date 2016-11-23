@@ -67,18 +67,7 @@ namespace CommunityCoreLibrary.Detour
         {
             get
             {
-                var thing = this.CurJob.GetTarget(TargetIndex.C).Thing;
-                if( thing == null )
-                {
-                    CCL_Log.Message("Thing is null");
-                    return false;
-                }
-                CCL_Log.Message("is ingestible? thing: " + thing.def.label);
-                if( thing.def.IsIngestible )
-                {
-                    return true;
-                }
-                return thing.def.IsDrug;
+                return this.TargetThing( OptionalIngestibleInd ) != null;
             }
         }
 
@@ -95,19 +84,19 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal bool HasIngestibleOrDispenser
-        {
-            get
-            {
-                return this.TargetThing( OptionalIngestibleInd ) != null;
-            }
-        }
-
         internal Thing Drug
         {
             get
             {
-                return this.TargetThing( OptionalIngestibleInd );
+                var thing = this.TargetThing( OptionalIngestibleInd );
+                if(
+                    ( thing == null )||
+                    ( !thing.IngestibleNow )
+                )
+                {
+                    return null;
+                }
+                return thing;
             }
         }
 
@@ -134,15 +123,16 @@ namespace CommunityCoreLibrary.Detour
             }
             yield return Toils_Reserve.Reserve( ChairOrSpotInd, 1 );
 
-            if( this.HasIngestibleOrDispenser )
+            if( this.HasIngestible )
             {
                 this.FailOnDestroyedNullOrForbidden( OptionalIngestibleInd );
                 yield return Toils_Reserve.Reserve( OptionalIngestibleInd, 1 );
                 if( this.IsDispenser )
-                {   // TODO:  Investigate and expand drug system to use factories
-                    // This should never be executed as the underlying methods to return factories for drugs should not currently return factories
+                {
                     yield return Toils_Goto.GotoThing( OptionalIngestibleInd, PathEndMode.InteractionCell );
-                    yield return Toils_FoodSynthesizer.TakeDrugFromSynthesizer( OptionalIngestibleInd, this.pawn );
+                    // CALLER MUST USE Building_AutomatedFactory.ReserveForUseBy() BEFORE USING THIS METHOD!
+                    //yield return Toils_FoodSynthesizer.TakeDrugFromSynthesizer( OptionalIngestibleInd, this.pawn );
+                    yield return Toils_FoodSynthesizer.TakeFromSynthesier( OptionalIngestibleInd, this.pawn );
                 }
                 else
                 {
@@ -173,10 +163,11 @@ namespace CommunityCoreLibrary.Detour
             relax.socialMode = RandomSocialMode.SuperActive;
             Toils_Ingest.AddIngestionEffects( relax, this.pawn, OptionalIngestibleInd, GatherSpotParentInd );
             yield return relax;
-            if( this.HasIngestibleOrDispenser )
+            if( this.HasIngestible )
             {
                 yield return Toils_Ingest.FinalizeIngest( this.pawn, OptionalIngestibleInd );
             }
+            yield break;
         }
 
         #endregion

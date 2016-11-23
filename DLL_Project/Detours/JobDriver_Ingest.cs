@@ -40,11 +40,11 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal ThingDef FoodDefFromSource( Thing foodSource )
+        internal ThingDef IngestibleDefFromSource( Thing foodSource )
         {
             if( foodSource is Building_AutomatedFactory )
             {   // JobGivers will check for OutputToPawnsDirectly
-                return ((Building_AutomatedFactory)foodSource).BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
+                return ((Building_AutomatedFactory)foodSource).ReservedThingDef;
             }
             if( foodSource is Building_NutrientPasteDispenser )
             {
@@ -73,7 +73,7 @@ namespace CommunityCoreLibrary.Detour
             var foodSource = IngestibleSource;
             if( foodSource == null )
 			{
-				return this.ReportStringProcessed(this.CurJob.def.reportString);
+				return this.ReportStringProcessed( this.CurJob.def.reportString );
 			}
             var foodDef = FoodUtility.GetFinalIngestibleDef( foodSource );
             if(
@@ -81,9 +81,9 @@ namespace CommunityCoreLibrary.Detour
                 ( string.IsNullOrEmpty( foodDef.ingestible.ingestReportString ) )
             )
 			{
-				return this.ReportStringProcessed(this.CurJob.def.reportString);
+				return this.ReportStringProcessed( this.CurJob.def.reportString );
 			}
-            return string.Format( foodDef.ingestible.ingestReportString, foodSource.LabelShort );
+            return string.Format( foodDef.ingestible.ingestReportString, foodDef.label );
         }
 
         [DetourClassMethod( typeof( JobDriver_Ingest ), "PrepareToIngestToils_Dispenser" )]
@@ -92,9 +92,6 @@ namespace CommunityCoreLibrary.Detour
             var ingestibleSource = IngestibleSource;
 
             yield return Toils_Reserve.Reserve( IngestibleInd, 1 );
-            yield return Toils_Goto.GotoThing( IngestibleInd, PathEndMode.InteractionCell )
-                                   .FailOnDespawnedNullOrForbidden( IngestibleInd );
-
             this.AddFinishAction( () =>
             {   // Release on early exit
                 if( Find.Reservations.ReservedBy( ingestibleSource, pawn ) )
@@ -103,12 +100,18 @@ namespace CommunityCoreLibrary.Detour
                 }
             } );
 
+            yield return Toils_Goto.GotoThing( IngestibleInd, PathEndMode.InteractionCell )
+                                   .FailOnDespawnedNullOrForbidden( IngestibleInd );
+
             if( ingestibleSource is Building_NutrientPasteDispenser )
             {
                 yield return Toils_Ingest.TakeMealFromDispenser( IngestibleInd, this.pawn );
             }
             else if( ingestibleSource is Building_AutomatedFactory )
             {
+                // CALLER MUST USE Building_AutomatedFactory.ReserveForUseBy() BEFORE USING THIS METHOD!
+                yield return Toils_FoodSynthesizer.TakeFromSynthesier( IngestibleInd, this.pawn );
+                /*
                 if( !IsUsingDrugs )
                 {
                     yield return Toils_FoodSynthesizer.TakeMealFromSynthesizer( IngestibleInd, this.pawn );
@@ -117,10 +120,12 @@ namespace CommunityCoreLibrary.Detour
                 {
                     yield return Toils_FoodSynthesizer.TakeDrugFromSynthesizer( IngestibleInd, this.pawn );
                 }
+                */
             }
             yield return Toils_Ingest.CarryIngestibleToChewSpot( this.pawn, IngestibleInd )
                                      .FailOnDestroyedNullOrForbidden( IngestibleInd );
             yield return Toils_Ingest.FindAdjacentEatSurface( TableCellInd, IngestibleInd );
+            yield break;
         }
 
         #endregion

@@ -1,11 +1,13 @@
-﻿using System;
+﻿#if DEVELOPER
+using System;
 using System.IO;
 using System.Reflection;
 using Verse;
 
 namespace CommunityCoreLibrary
 {
-#if DEBUG
+
+    [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.SpecialInjectors )]
     public class AssemblyDumper : SpecialInjector
     {
 
@@ -53,7 +55,7 @@ namespace CommunityCoreLibrary
                         CCL_Log.Write( "Type: " + type.FullName, stream );
                         CCL_Log.IndentStream( stream );
                         {
-#region Fields
+                            #region Fields
                             var fields = type.GetFields( Controller.Data.UniversalBindingFlags );
                             if( !fields.NullOrEmpty() )
                             {
@@ -75,8 +77,8 @@ namespace CommunityCoreLibrary
                                 }
                                 CCL_Log.IndentStream( stream, -1 );
                             }
-#endregion
-#region Properties
+                            #endregion
+                            #region Properties
                             var properties = type.GetProperties( Controller.Data.UniversalBindingFlags );
                             if( !properties.NullOrEmpty() )
                             {
@@ -112,8 +114,8 @@ namespace CommunityCoreLibrary
                                 }
                                 CCL_Log.IndentStream( stream, -1 );
                             }
-#endregion
-#region Methods
+                            #endregion
+                            #region Methods
                             var methods = type.GetMethods( Controller.Data.UniversalBindingFlags );
                             if( !methods.NullOrEmpty() )
                             {
@@ -192,7 +194,7 @@ namespace CommunityCoreLibrary
                                 }
                                 CCL_Log.IndentStream( stream, -1 );
                             }
-#endregion
+                            #endregion
                         }
                         CCL_Log.IndentStream( stream, -1 );
                         CCL_Log.Write( "\n", stream );
@@ -205,5 +207,6 @@ namespace CommunityCoreLibrary
         }
 
     }
-#endif
+    
 }
+#endif

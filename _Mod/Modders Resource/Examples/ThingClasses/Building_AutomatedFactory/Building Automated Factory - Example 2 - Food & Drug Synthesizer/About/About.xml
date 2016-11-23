@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>Building Automated Factory - Example 1 - Food &amp; Drug Synthesizer</name>
+    <author>RimWorld CCL Team</author>
+    <url>n/a</url>
+    <targetVersion>0.15.1284</targetVersion>
+    <description>
+This is an example of a food and drug synthesizer.
+
+Demonstrates:
+	AdvancedRecipeDef
+	AdvancedResearchDef
+	Building_AutomatedFactory
+	CompAutomatedFactory
+	CompHopperUser
+	CompProperties_AffectedByFacilities
+	CompProperties_AutomatedFactory
+	IHopperUser (Building_AutomatedFactory)
+	ITab_AutomatedFactory
+	ModHelperDef
+	PlaceWorker_HopperMagnifier
+	SequencedInjectionSet_ThingDefAvailability
+	SequencedInjectionSet_Facility
+</description>
+
+</ModMetaData>

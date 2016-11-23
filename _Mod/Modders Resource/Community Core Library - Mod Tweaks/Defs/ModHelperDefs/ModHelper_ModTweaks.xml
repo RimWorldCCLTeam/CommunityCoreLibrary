@@ -37,6 +37,15 @@
                 <qualifier>CCLModTweaks.QualifyLowPowerCompFacility</qualifier>
             </li>
 
+            <!-- Add CompPowerLowIdleDraw to Deep Drills -->
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
+                <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
+                    <compClass>CommunityCoreLibrary.CompPowerLowIdleDraw</compClass>
+                    <!-- 0 watts when not in use -->
+                </compProps>
+                <qualifier>CCLModTweaks.QualifyLowPowerCompDeepDrill</qualifier>
+            </li>
+
             <!-- Add CompPowerLowIdleDraw to Watchable Buildings (TVs, etc) -->
             <li Class="CommunityCoreLibrary.SequencedInjectionSet_ThingComp">
                 <compProps Class="CommunityCoreLibrary.CompProperties_LowIdleDraw">
@@ -141,6 +150,12 @@
             <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
                 <tickerType>Normal</tickerType>
                 <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerFacility</qualifier>
+            </li>
+
+            <!-- Switch to Normal ticker on Deep Drills -->
+            <li Class="CommunityCoreLibrary.SequencedInjectionSet_TickerSwitcher">
+                <tickerType>Normal</tickerType>
+                <qualifier>CCLModTweaks.QualifyLowPowerNormalTickerDeepDrill</qualifier>
             </li>
 
             <!-- Switch to Normal ticker on Watchable Buildings (TVs, etc) -->

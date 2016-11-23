@@ -12,11 +12,23 @@ namespace CommunityCoreLibrary
     {
 
         public string                       facility;
+        public string                       overrideBedOnly = string.Empty;
+        public string                       overrideMaxSimultaneous = string.Empty;
 
         [Unsaved]
         private ThingDef                    facilityDef;
         [Unsaved]
         private CompProperties_Facility     facilityComp;
+
+        [Unsaved]
+        private bool                        setoverrideBedOnly = false;
+        [Unsaved]
+        private bool                        setoverrideBedOnlyValue;
+
+        [Unsaved]
+        private bool                        setoverrideMaxSimultaneous = false;
+        [Unsaved]
+        private int                         setoverrideMaxSimultaneousValue;
 
         public                              SequencedInjectionSet_Facility()
         {
@@ -68,7 +80,58 @@ namespace CommunityCoreLibrary
                 }
             }
 
+            if( !string.IsNullOrEmpty( overrideBedOnly ) )
+            {
+                var overrideBedOnlyValid = overrideBedOnly.ToLower();
+                if(
+                    ( overrideBedOnlyValid != "true" )&&
+                    ( overrideBedOnlyValid != "false" )
+                )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.Validation,
+                        string.Format( "overrideBedOnly value of '{0}' is invalid", overrideBedOnly ),
+                        Name
+                    );
+                    isValid = false;
+                }
+                else
+                {
+                    setoverrideBedOnly = true;
+                    setoverrideBedOnlyValue = overrideBedOnly.ToLower() == "true";
+                }
+            }
+
+            if( !string.IsNullOrEmpty( overrideMaxSimultaneous ) )
+            {
+                var overrideMaxSimultaneousValid = Convert.ToInt32( overrideMaxSimultaneous );
+                if( overrideMaxSimultaneousValid < 1 )
+                {
+                    CCL_Log.Trace(
+                        Verbosity.Validation,
+                        string.Format( "overrideMaxSimultaneous value of '{0}' is invalid", overrideMaxSimultaneous ),
+                        Name
+                    );
+                    isValid = false;
+                }
+                else
+                {
+                    setoverrideMaxSimultaneous = true;
+                    setoverrideMaxSimultaneousValue = overrideMaxSimultaneousValid;
+                }
+            }
+
             return isValid;
+        }
+
+        private static RimWorld.CompProperties_AffectedByFacilities GetAffectedPropeties( ThingDef thingDef )
+        {
+            var compProps = thingDef.GetCompProperties<RimWorld.CompProperties_AffectedByFacilities>();
+            if( compProps == null )
+            {   // Try get CCL's properties
+                compProps = (RimWorld.CompProperties_AffectedByFacilities) thingDef.GetCompProperties<CommunityCoreLibrary.CompProperties_AffectedByFacilities>();
+            }
+            return compProps;
         }
 
         public override bool                TargetIsValid( Def target )
@@ -85,7 +148,7 @@ namespace CommunityCoreLibrary
                 return false;
             }
 #endif
-            if( thingDef.GetCompProperties<CompProperties_AffectedByFacilities>() == null )
+            if( GetAffectedPropeties( thingDef ) == null )
             {   // Applied to an invald def
 #if DEBUG
                 CCL_Log.Trace(
@@ -114,10 +177,10 @@ namespace CommunityCoreLibrary
             }
 #endif
 
-            // Get comps
-            var targetComp = thingDef.GetCompProperties<CompProperties_AffectedByFacilities>();
+            // Get affected properties
+            var propsAffected = GetAffectedPropeties( thingDef );
 #if DEBUG
-            if( targetComp == null )
+            if( propsAffected == null )
             {   // Should never happen
                 CCL_Log.Trace(
                     Verbosity.Injections,
@@ -129,11 +192,39 @@ namespace CommunityCoreLibrary
 #endif
 
             // Add the facility to the building
-            targetComp.linkableFacilities.AddUnique( facilityDef );
+            propsAffected.linkableFacilities.AddUnique( facilityDef );
+
+            // Set new max simultaneous if present and larger
+            if( setoverrideMaxSimultaneous )
+            {
+                var propsFacility = facilityDef.GetCompProperties<CompProperties_Facility>();
+#if DEBUG
+                if( propsFacility == null )
+                {   // Should never happen
+                    CCL_Log.Trace(
+                        Verbosity.Injections,
+                        string.Format( "ThingDef '{0}' requires CompFacility", facility ),
+                        Name
+                    );
+                    return false;
+                }
+#endif
+                propsFacility.maxSimultaneous = Math.Max( propsFacility.maxSimultaneous, setoverrideMaxSimultaneousValue );
+            }
+
+            // Update overrides on extended comp
+            var cclProps = propsAffected as CommunityCoreLibrary.CompProperties_AffectedByFacilities;
+            if( cclProps != null )
+            {
+                if( setoverrideBedOnly )
+                {
+                    cclProps.overrideBedOnly = setoverrideBedOnlyValue;
+                }
+            }
 
             // Building is [now] linked to the facility
 #if DEBUG
-            return targetComp.linkableFacilities.Contains( facilityDef );
+            return propsAffected.linkableFacilities.Contains( facilityDef );
 #else
             return true;
 #endif
@@ -155,7 +246,7 @@ namespace CommunityCoreLibrary
             {
                 CCL_Log.Trace(
                     Verbosity.Injections,
-                    string.Format( "An exception was thrown while trying to re-resolve ThingDef '{0}'\n{1}", facility, e.ToString() ),
+                    string.Format( "An exception was thrown while trying to re-resolve CompProperties_Facility on ThingDef '{0}'\n{1}", facility, e.ToString() ),
                     Name
                 );
                 reresolved = false;

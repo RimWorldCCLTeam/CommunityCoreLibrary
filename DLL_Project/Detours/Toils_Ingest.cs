@@ -28,7 +28,10 @@ namespace CommunityCoreLibrary.Detour
                 var pawn = toil.actor;
                 var NPD = pawn.jobs.curJob.GetTarget( ind ).Thing as Building_NutrientPasteDispenser;
                 var meal = NPD.TryDispenseFood();
-                Find.Reservations.Release( NPD, pawn );
+                if( Find.Reservations.ReservedBy( NPD, pawn ) )
+                {
+                    Find.Reservations.Release( NPD, pawn );
+                }
                 if( meal == null )
                 {
                     pawn.jobs.curDriver.EndJobWith( JobCondition.Incompletable );

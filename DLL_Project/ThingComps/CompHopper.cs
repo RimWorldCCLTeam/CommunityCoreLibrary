@@ -104,7 +104,7 @@ namespace CommunityCoreLibrary
 
         public void                         DeprogramHopper()
         {
-            //Log.Message( string.Format( "{0}.CompHopper.DeprogramHopper()", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopper.DeprogramHopper()", this.parent.ThingID ) );
             if( !WasProgrammed )
             {
                 return;
@@ -125,7 +125,7 @@ namespace CommunityCoreLibrary
 
         public void                         ProgramHopper( StorageSettings HopperUserSettings )
         {
-            //Log.Message( string.Format( "{0}.CompHopper.ProgramHopper( StorageSettings )", this.parent.ThingID ) );
+            //CCL_Log.Message( string.Format( "{0}.CompHopper.ProgramHopper( StorageSettings )", this.parent.ThingID ) );
             if(
                 ( WasProgrammed )||
                 ( Building == null )||

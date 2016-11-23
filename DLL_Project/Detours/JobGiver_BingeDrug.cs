@@ -13,46 +13,67 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobGiver_BingeDrug : JobGiver_BingeDrug
     {
 
-        /* TODO:  Investigate and expand drug system to use factories
-        
-        internal static bool                        IsValidDrugFor( Thing drugSource, ThingDef drugDef, ChemicalDef chemical, Hediff overdose, Pawn pawn )
+        internal static MethodInfo                  _GetChemical;
+
+        static                                      _JobGiver_BingeDrug()
         {
-            var props = drugDef.GetCompProperty<CompProperties_Drug>();
-            if( props == null )
+            _GetChemical = typeof( JobGiver_BingeDrug ).GetMethod( "GetChemical", Controller.Data.UniversalBindingFlags );
+            if( _GetChemical == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get method 'GetChemical' in 'JobGiver_BingeDrug'",
+                    "Detour.JobGiver_BingeDrug" );
+            }
+        }
+
+        #region Reflected Methods
+
+        internal ChemicalDef                        GetChemical( Pawn pawn )
+        {
+            return (ChemicalDef) _GetChemical.Invoke( this, new object[] { pawn } );
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        internal bool                               DrugIsUsableBy( Thing drugSource, ThingDef drugDef, ChemicalDef chemical, Hediff overdose, Pawn pawn )
+        {
+            var drugProps = drugDef.GetCompProperties<CompProperties_Drug>();
+            if( drugProps == null ) // This check should never fail
             {
                 return false;
             }
             return(
-                ( props.chemical == chemical )&&
-                (
-                    ( drugSource is Building_AutomatedFactory )||
-                    ( drugSource.def == drugDef )
-                )&&
+                ( drugProps.chemical == chemical )&&
                 (
                     ( overdose == null )||
-                    ( !props.CanCauseOverdose )||
-                    ( (double) overdose.Severity + (double) props.overdoseSeverityOffset.max < 0.78600001335144 )
+                    ( !drugProps.CanCauseOverdose )||
+                    ( overdose.Severity + drugProps.overdoseSeverityOffset.max < 0.786f )
                 )&&
                 (
                     ( pawn.Position.InHorDistOf( drugSource.Position, 60f ) )||
                     ( drugSource.Position.Roofed() )||
-                    (
-                        ( Find.AreaHome[ drugSource.Position ] )||
-                        ( drugSource.Position.GetSlotGroup() != null )
-                    )
+                    ( Find.AreaHome[ drugSource.Position ] )||
+                    ( drugSource.Position.GetSlotGroup() != null )
                 )
             );
         }
 
+        #endregion
+
+        #region Detoured Methods
+
         [DetourClassMethod( typeof( JobGiver_BingeDrug ), "BestIngestTarget" )]
         protected override Thing                    BestIngestTarget( Pawn pawn )
         {
-            var chemical = ((MentalState_BingingDrug) pawn.MentalState).chemical;
+            var chemical = GetChemical( pawn );
             var overdose = pawn.health.hediffSet.GetFirstHediffOfDef( HediffDefOf.DrugOverdose );
             var ingestibleThing = GenClosest.ClosestThingReachable(
                 pawn.Position,
                 ThingRequest.ForGroup( ThingRequestGroup.Drug ),
-                PathEndMode.OnCell,
+                PathEndMode.InteractionCell,
                 TraverseParms.For(
                     pawn,
                     pawn.NormalMaxDanger(),
@@ -62,38 +83,40 @@ namespace CommunityCoreLibrary.Detour
                 (thing) =>
             {
                 if(
-                    ( !this.IgnoreForbid( pawn ) )&&
-                    ( thing.IsForbidden( pawn) )||
+                    (
+                        ( !this.IgnoreForbid( pawn ) )&&
+                        ( thing.IsForbidden( pawn) )
+                    )||
                     ( !pawn.CanReserve( thing, 1 ) )
                 )
                 {
                     return false;
                 }
-                var factory = thing as Building_AutomatedFactory;
-                if( factory != null )
+                var synthesizer = thing as Building_AutomatedFactory;
+                if( synthesizer != null )
                 {
-                    var products = factory.AllProducts();
+                    var products = synthesizer.AllProductionReadyRecipes( FoodSynthesis.IsDrug, FoodSynthesis.SortJoy );
                     foreach( var product in products )
                     {
-                        if(
-                            ( product.IsDrug )&&
-                            ( factory.CanProduce( product ) )
-                        )
+                        if( DrugIsUsableBy( synthesizer, product, chemical, overdose, pawn ) )
                         {
-                            if( IsValidDrugFor( factory, product, chemical, overdose, pawn ) )
+                            if( synthesizer.ConsiderFor( product, pawn ) )
                             {
-                                // Set flag to let FoodUtility.GetFinalIngestibleDef() know we are looking for drugs, not food
-                                _FoodUtility._GetSynthesizedDrug = true;
-                                _FoodUtility._GetSpecificSynthesizedProduct = product;
+#if DEVELOPER
+                                CCL_Log.Message(
+                                    string.Format( "{0} is considering {1} for {2}", pawn.LabelShort, synthesizer.ThingID, product.defName ),
+                                    "Detour.JobGiver_BingDrug.BestIngestTarget"
+                                );
+#endif
                                 return true;
                             }
                         }
                     }
-
+                    return false;
                 }
                 else if( thing.def.IsDrug )
                 {
-                    return IsValidDrugFor( thing, thing.def, chemical, overdose, pawn );
+                    return DrugIsUsableBy( thing, thing.def, chemical, overdose, pawn );
                 }
                 return false;
             },
@@ -101,10 +124,24 @@ namespace CommunityCoreLibrary.Detour
                 -1,
                 false
             );
+            if(
+                ( ingestibleThing != null )&&
+                ( ingestibleThing is Building_AutomatedFactory )
+            )
+            {
+                var synthesizer = ingestibleThing as Building_AutomatedFactory;
+                if(
+                    ( !synthesizer.IsConsidering( pawn ) )||
+                    ( !synthesizer.ReserveForUseBy( pawn, synthesizer.ConsideredProduct ) )
+                )
+                {   // Couldn't reserve the synthesizer for production
+                    return null;
+                }
+            }
             return ingestibleThing;
         }
 
-        */
+        #endregion
 
     }
 

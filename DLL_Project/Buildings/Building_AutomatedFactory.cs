@@ -29,8 +29,73 @@ namespace CommunityCoreLibrary
 
         }
 
+        private class Consideration
+        {
+            private readonly Pawn           pawn;
+            private readonly ThingDef       product;
+            private readonly int            tickStamp;
+            private readonly bool           reserved;
+
+            public                          Consideration( Pawn pawn, ThingDef product, bool reserved = false )
+            {
+                this.pawn = pawn;
+                this.product = product;
+                this.tickStamp = Find.TickManager.TicksGame;
+                this.reserved = reserved;
+            }
+
+            public bool                     Reserved
+            {
+                get
+                {
+                    return reserved;
+                }
+            }
+
+            public bool                     Valid
+            {
+                get
+                {
+                    if( tickStamp == Find.TickManager.TicksGame )
+                    {
+                        return true;
+                    }
+                    return reserved;
+                }
+            }
+
+            public Pawn                     ConsideredBy
+            {
+                get
+                {
+                    if( !Valid )
+                    {
+                        return null;
+                    }
+                    return pawn;
+                }
+            }
+
+            public ThingDef                 ConsideredFor
+            {
+                get
+                {
+                    if( !Valid )
+                    {
+                        return null;
+                    }
+                    return product;
+                }
+            }
+
+        }
+
+        public const int                    ERROR_PRODUCTION_TICKS = 500;
+
         private Dictionary<ThingDef,Allowances> productionAllowances;
         private Dictionary<RecipeDef, bool>     recipeAllowances;
+
+        private Consideration               consideration;
 
         private RecipeDef                   currentRecipe;
 
@@ -39,6 +104,7 @@ namespace CommunityCoreLibrary
 
         private int                         nextProductIndex;
         private int                         currentRecipeCount = -1;
+        private int                         currentFacilityCount = -1;
 
         private List<IntVec3>               _adjacentNeighbouringCells;
 
@@ -64,8 +130,6 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Properties
-
-
 
         public RecipeDef                    CurrentRecipe
         {
@@ -113,6 +177,10 @@ namespace CommunityCoreLibrary
 
         public static bool                  DefOutputToPawnsDirectly( ThingDef thingDef )
         {
+            if( !thingDef.hasInteractionCell )
+            {
+                return false;
+            }
             var compAutomatedFactory = thingDef.GetCompProperty<CompProperties_AutomatedFactory>();
             if( compAutomatedFactory == null )
             {
@@ -131,6 +199,19 @@ namespace CommunityCoreLibrary
             {
                 return DefOutputToPawnsDirectly( this.def );
             }
+        }
+
+        private int                         ConnectedFacilityCount()
+        {
+            var compFacility = this.GetComp<CompAffectedByFacilities>();
+            if(
+                ( compFacility == null )||
+                ( compFacility.LinkedFacilitiesListForReading.NullOrEmpty() )
+            )
+            {
+                return 0;
+            }
+            return compFacility.LinkedFacilitiesListForReading.Count;
         }
 
         #endregion
@@ -164,7 +245,6 @@ namespace CommunityCoreLibrary
                     "Requires CompAutomatedFactory",
                     "Building_AutomatedFactory"
                 );
-                return;
             }
             if( CompAutomatedFactory.Properties == null )
             {
@@ -172,74 +252,126 @@ namespace CommunityCoreLibrary
                     this.def,
                     Verbosity.FatalErrors,
                     "Requires CompProperties_AutomatedFactory",
-                    "CompAutomatedFactory"
+                    "Building_AutomatedFactory"
                 );
-                return;
             }
-            if( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.Invalid )
+            else
             {
-                CCL_Log.TraceMod(
-                    this.def,
-                    Verbosity.FatalErrors,
-                    "outputVector is Invalid",
-                    "CompAutomatedFactory"
-                );
-                return;
-            }
-            if( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.None )
-            {
-                CCL_Log.TraceMod(
-                    this.def,
-                    Verbosity.FatalErrors,
-                    "productionMode is None",
-                    "CompAutomatedFactory"
-                );
-                return;
-            }
-            if(
-                ( CompAutomatedFactory.Properties.productionMode != FactoryProductionMode.PawnInteractionOnly )&&
-                ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )
-            )
-            {
-                CCL_Log.TraceMod(
-                    this.def,
-                    Verbosity.FatalErrors,
-                    "productionMode is PawnInteractionOnly but outputVector is not DirectToPawn",
-                    "CompAutomatedFactory"
-                );
-                return;
-            }
-            if(
-                ( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.Automatic )&&
-                (
-                    ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.Ground )&&
-                    ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.InteractionCell )
+                if( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.Invalid )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "outputVector is Invalid",
+                        "Building_AutomatedFactory"
+                    );
+                }
+                if( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.None )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "productionMode is None",
+                        "Building_AutomatedFactory"
+                    );
+                }
+                if(
+                    ( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.PawnInteractionOnly )&&
+                    ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.DirectToPawn )
                 )
-            )
-            {
-                CCL_Log.TraceMod(
-                    this.def,
-                    Verbosity.FatalErrors,
-                    "productionMode is Automatic but outputVector is not Ground or InteractionCell",
-                    "CompAutomatedFactory"
-                );
-                return;
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "productionMode is PawnInteractionOnly but outputVector is not DirectToPawn",
+                        "Building_AutomatedFactory"
+                    );
+                }
+                if(
+                    ( CompAutomatedFactory.Properties.productionMode != FactoryProductionMode.PawnInteractionOnly )&&
+                    ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )
+                )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "outputVector is DirectToPawn but productionMode is not PawnInteractionOnly",
+                        "Building_AutomatedFactory"
+                    );
+                }
+                if(
+                    ( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.PawnInteractionOnly )&&
+                    ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.DirectToPawn )&&
+                    ( !this.def.hasInteractionCell )
+                )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "outputVector is DirectToPawn and productionMode is PawnInteractionOnly but there is no interaction cell",
+                        "Building_AutomatedFactory"
+                    );
+                }
+                if(
+                    ( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.InteractionCell )&&
+                    ( !this.def.hasInteractionCell )
+                )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "outputVector is InteractionCell but there is no interaction cell",
+                        "Building_AutomatedFactory"
+                    );
+                }
+                if(
+                    ( CompAutomatedFactory.Properties.productionMode == FactoryProductionMode.Automatic )&&
+                    (
+                        ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.Ground )&&
+                        ( CompAutomatedFactory.Properties.outputVector != FactoryOutputVector.InteractionCell )
+                    )
+                )
+                {
+                    CCL_Log.TraceMod(
+                        this.def,
+                        Verbosity.FatalErrors,
+                        "productionMode is Automatic but outputVector is not Ground or InteractionCell",
+                        "Building_AutomatedFactory"
+                    );
+                }
             }
         }
 #endif
 
+        private Pawn                        _expose_Considered_User;
+        private string                      _expose_Considered_Product;
+        private string                      _expose_Production_RecipeDef;
         public override void                ExposeData()
         {
             //Log.Message( string.Format( "Building_AutomatedFactory.ExposeData( {0} )", Scribe.mode.ToString() ) );
             // Scribe base data
             base.ExposeData();
 
-            string recipe = string.Empty;
+            if(
+                ( Scribe.mode == LoadSaveMode.Saving )||
+                ( Scribe.mode == LoadSaveMode.LoadingVars )
+            )
+            {
+                _expose_Considered_User = null;
+                _expose_Considered_Product = string.Empty;
+                _expose_Production_RecipeDef = string.Empty;
+            }
+
             if( Scribe.mode == LoadSaveMode.Saving )
             {
                 if( currentRecipe != null )
                 {
-                    recipe = currentRecipe.defName;
+                    _expose_Production_RecipeDef = currentRecipe.defName;
+                }
+                if( IsReserved )
+                {
+                    _expose_Considered_User = ConsideredPawn;
+                    _expose_Considered_Product = ConsideredProduct.defName;
                 }
                 foreach( var entry in productionAllowances )
                 {
@@ -251,17 +383,34 @@ namespace CommunityCoreLibrary
             }
 
             // Scribe data
-            Scribe_Values.LookValue<string>( ref recipe, "currentRecipe", string.Empty );
+            Scribe_Values.LookValue<string>( ref _expose_Production_RecipeDef, "currentRecipe", string.Empty );
             Scribe_Values.LookValue<int>( ref currentProductionTick, "currentProductionTick", 0 );
+            Scribe_Values.LookValue<string>( ref _expose_Considered_Product, "currentUserThingDef", string.Empty );
+            Scribe_References.LookReference( ref _expose_Considered_User, "currentUser", false );
             Scribe_Collections.LookDictionary<RecipeDef,bool>( ref recipeAllowances, "productionAllowances", LookMode.DefReference, LookMode.Value );
             Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
 
             // Resolve cross-references
             if( Scribe.mode == LoadSaveMode.ResolvingCrossRefs )
             {
-                if( !recipe.NullOrEmpty() )
+                if( !string.IsNullOrEmpty( _expose_Production_RecipeDef ) )
                 {
-                    currentRecipe = DefDatabase<RecipeDef>.GetNamed( recipe, true );
+                    currentRecipe = DefDatabase<RecipeDef>.GetNamed( _expose_Production_RecipeDef, true );
+                }
+                if(
+                    ( _expose_Considered_User != null )&&
+                    ( !string.IsNullOrEmpty( _expose_Considered_Product ) )
+                )
+                {
+                    var consideredProduct = DefDatabase<ThingDef>.GetNamed( _expose_Considered_Product, true );
+                    if( !ReserveForUseBy( _expose_Considered_User, consideredProduct ) )
+                    {
+                        CCL_Log.Trace(
+                            Verbosity.FatalErrors,
+                            string.Format( "Unable to reserve {0} for use by {1} to produce {2}", this.ThingID, _expose_Considered_User.LabelShort, _expose_Considered_Product ),
+                            "Building_AutomatedFactory.ExposeData"
+                        );
+                    }
                 }
                 foreach( var pair in recipeAllowances )
                 {
@@ -322,7 +471,16 @@ namespace CommunityCoreLibrary
             {
                 return;
             }
-            currentProductionTick -= ticks;
+            var advancedRecipe = currentRecipe as AdvancedRecipeDef;
+            if(
+                ( currentThing == null )||
+                ( advancedRecipe == null )||
+                ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+            )
+            {
+                currentProductionTick -= ticks;
+            }
             if( currentProductionTick > 0 )
             {
                 return;
@@ -384,7 +542,10 @@ namespace CommunityCoreLibrary
         private void                        RescanTick()
         {
             //Log.Message( string.Format( "{0}.RescanTick()", this.ThingID ) );
-            if( currentRecipeCount != this.def.AllRecipes.Count )
+            if(
+                ( currentRecipeCount != this.def.AllRecipes.Count )||
+                ( currentFacilityCount != this.ConnectedFacilityCount() )
+            )
             {
                 ResetAndReprogramHoppers();
             }
@@ -398,7 +559,12 @@ namespace CommunityCoreLibrary
 
         public void                         ResetAndReprogramHoppers()
         {
-            //Log.Message( string.Format( "{0}.ResetAndReprogramHoppers()", this.ThingID ) );
+#if DEVELOPER
+            CCL_Log.Message(
+                string.Format( "{0}\n{1}", this.ThingID, Environment.StackTrace ),
+                "Building_AutomatedFactory.ResetAndReprogramHoppers()"
+            );
+#endif
             resourceFilter = null;
             CompHopperUser.ResetResourceSettings();
             CompHopperUser.FindAndProgramHoppers();
@@ -438,33 +604,42 @@ namespace CommunityCoreLibrary
                         }
                         else
                         {
-                            var product = recipe.products[ 0 ].thingDef;
-                            Allowances allowance;
-                            if( productionAllowances.TryGetValue( product, out allowance ) )
+                            var advancedRecipe = recipe as AdvancedRecipeDef;
+                            if(
+                                ( advancedRecipe == null )||
+                                ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                                ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+                            )
                             {
-                                if( allowance.recipe != recipe )
+                                var product = recipe.products[ 0 ].thingDef;
+                                Allowances allowance;
+                                if( productionAllowances.TryGetValue( product, out allowance ) )
                                 {
-                                    // Different recipe for same product
-                                    CCL_Log.TraceMod(
-                                        def,
-                                        Verbosity.NonFatalErrors,
-                                        "Building_AutomatedFactory can not have multiple recipes producing the same thing :: A recipe which produces '" + product.defName + "' already exists!" );
+                                    if( allowance.recipe != recipe )
+                                    {
+                                        // Different recipe for same product
+                                        CCL_Log.TraceMod(
+                                            def,
+                                            Verbosity.NonFatalErrors,
+                                            "Building_AutomatedFactory can not have multiple recipes producing the same thing :: A recipe which produces '" + product.defName + "' already exists!" );
+                                    }
+                                    else if( !CompHopperUser.IsRecipeInFilter( recipe ) )
+                                    {
+                                        // Same recipe for product (may happen immediately after loading a save game
+                                        // or a recipe is unlocked via research as the dictionary is not cleared)
+                                        CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
+                                    }
                                 }
-                                else if( !CompHopperUser.IsRecipeInFilter( recipe ) )
+                                else
                                 {
-                                    // Same recipe for product (may happen immediately after loading a save game
-                                    // or a recipe is unlocked via research as the dictionary is not cleared)
+                                    productionAllowances.Add( product, new Allowances( recipe, true ) );
                                     CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
                                 }
-                            }
-                            else
-                            {
-                                productionAllowances.Add( product, new Allowances( recipe, true ) );
-                                CompHopperUser.MergeRecipeIntoFilter( resourceFilter, recipe );
                             }
                         }
                     }
                     currentRecipeCount = this.def.AllRecipes.Count;
+                    currentFacilityCount = this.ConnectedFacilityCount();
                 }
                 return resourceFilter;
             }
@@ -480,6 +655,7 @@ namespace CommunityCoreLibrary
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
+                var advancedRecipe = allowance.recipe as AdvancedRecipeDef;
                 allowed &= (
                     ( allowance.recipe.researchPrerequisite == null )||
                     ( allowance.recipe.researchPrerequisite.IsFinished )
@@ -736,11 +912,17 @@ namespace CommunityCoreLibrary
             Allowances allowance;
             if( productionAllowances.TryGetValue( thingDef, out allowance ) )
             {
+                var advancedRecipe = allowance.recipe as AdvancedRecipeDef;
                 if(
                     ( allowance.allowed )&&
                     (
                         ( allowance.recipe.researchPrerequisite == null )||
                         ( allowance.recipe.researchPrerequisite.IsFinished )
+                    )&&
+                    (
+                        ( advancedRecipe == null )||
+                        ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                        ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
                     )&&
                     ( HasEnoughResourcesInHoppersFor( thingDef ) )
                 )
@@ -778,7 +960,7 @@ namespace CommunityCoreLibrary
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
             {
-                return 50;
+                return ERROR_PRODUCTION_TICKS;
             }
             return (int) recipe.workAmount;
         }
@@ -856,17 +1038,79 @@ namespace CommunityCoreLibrary
             var products = new List<ThingDef>();
             foreach( var pair in productionAllowances )
             {
+                var advancedRecipe = pair.Value.recipe as AdvancedRecipeDef;
                 if(
                     (
                         ( pair.Value.recipe.researchPrerequisite == null )||
                         ( pair.Value.recipe.researchPrerequisite.IsFinished )
                     )&&
-                    ( pair.Value.allowed )
+                    ( pair.Value.allowed )&&
+                    (
+                        ( advancedRecipe == null )||
+                        ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                        ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+                    )
                 )
                 {
                     products.Add( pair.Value.recipe.products[ 0 ].thingDef );
                 }
             }
+            return products;
+        }
+
+        public List<ThingDef>               AllProductionReadyRecipes()
+        {
+            //Log.Message( string.Format( "{0}.AllProductionReadyRecipes()", this.ThingID ) );
+            var products = new List<ThingDef>();
+            foreach( var pair in productionAllowances )
+            {
+                var advancedRecipe = pair.Value.recipe as AdvancedRecipeDef;
+                if(
+                    (
+                        ( pair.Value.recipe.researchPrerequisite == null )||
+                        ( pair.Value.recipe.researchPrerequisite.IsFinished )
+                    )&&
+                    ( pair.Value.allowed )&&
+                    (
+                        ( advancedRecipe == null )||
+                        ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                        ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+                    )&&
+                    ( CompHopperUser.EnoughResourcesInHoppers( pair.Value.recipe ) )
+                )
+                {
+                    products.Add( pair.Value.recipe.products[ 0 ].thingDef );
+                }
+            }
+            return products;
+        }
+
+        public List<ThingDef>               AllProductionReadyRecipes( Func<ThingDef,bool> where, Func<ThingDef,ThingDef,int> sort )
+        {
+            //Log.Message( string.Format( "{0}.AllProductionReadyRecipes()", this.ThingID ) );
+            var products = new List<ThingDef>();
+            foreach( var pair in productionAllowances )
+            {
+                var advancedRecipe = pair.Value.recipe as AdvancedRecipeDef;
+                if(
+                    (
+                        ( pair.Value.recipe.researchPrerequisite == null )||
+                        ( pair.Value.recipe.researchPrerequisite.IsFinished )
+                    )&&
+                    ( pair.Value.allowed )&&
+                    (
+                        ( advancedRecipe == null )||
+                        ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                        ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+                    )&&
+                    ( where.Invoke( pair.Key ) )&&
+                    ( CompHopperUser.EnoughResourcesInHoppers( pair.Value.recipe ) )
+                )
+                {
+                    products.Add( pair.Value.recipe.products[ 0 ].thingDef );
+                }
+            }
+            products.Sort( sort.Invoke );
             return products;
         }
 
@@ -880,7 +1124,15 @@ namespace CommunityCoreLibrary
             foreach( var thingDef in thingDefs )
             {
                 var recipe = FindRecipeForProduct( thingDef );
-                if( CompHopperUser.EnoughResourcesInHoppers( recipe ) )
+                var advancedRecipe = recipe as AdvancedRecipeDef;
+                if(
+                    (
+                        ( advancedRecipe == null )||
+                        ( advancedRecipe.requiredFacilities.NullOrEmpty() )||
+                        ( this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+                    )&&
+                    ( CompHopperUser.EnoughResourcesInHoppers( recipe ) )
+                )
                 {
                     return thingDef;
                 }
@@ -888,11 +1140,20 @@ namespace CommunityCoreLibrary
             return (ThingDef) null;
         }
 
-        public Thing                        TryProduceThingDef( ThingDef thingDef )
+        private Thing                       TryProduceThingDef( ThingDef thingDef )
         {
             //Log.Message( string.Format( "{0}.TryProduceThingDef( {1} )", this.ThingID, thingDef == null ? "null" : thingDef.defName ) );
             var recipe = FindRecipeForProduct( thingDef );
             if( recipe == null )
+            {
+                return (Thing) null;
+            }
+            var advancedRecipe = recipe as AdvancedRecipeDef;
+            if(
+                ( advancedRecipe != null )&&
+                ( !advancedRecipe.requiredFacilities.NullOrEmpty() )&&
+                ( !this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+            )
             {
                 return (Thing) null;
             }
@@ -913,6 +1174,295 @@ namespace CommunityCoreLibrary
             }
             return thing;
         }
+
+        #endregion
+
+        #region Pawn AI Interface
+
+        #region Consideration API
+
+        public bool                         IsConsideringAnyPawn
+        {
+            get
+            {
+                if(
+                    ( consideration == null )||
+                    ( !consideration.Valid )
+                )
+                {
+                    return false;
+                }
+                return( consideration.ConsideredBy != null );
+            }
+        }
+
+        public bool                         IsConsidering( Pawn user )
+        {
+            if( consideration == null )
+            {
+                return false;
+            }
+            return( consideration.ConsideredBy == user );
+        }
+
+        public Pawn                         ConsideredPawn
+        {
+            get
+            {
+                if( consideration == null )
+                {
+                    return null;
+                }
+                return consideration.ConsideredBy;
+            }
+        }
+
+        public ThingDef                      ConsideredProduct
+        {
+            get
+            {
+                if( consideration == null )
+                {
+                    return null;
+                }
+                return consideration.ConsideredFor;
+            }
+        }
+
+        public bool                         ConsiderFor( ThingDef product, Pawn pawn )
+        {
+            if(
+                ( consideration != null )&&
+                ( consideration.Reserved )
+            )
+            {
+                if( consideration.ConsideredBy != pawn )
+                {
+#if DEVELOPER
+                    CCL_Log.Message(
+                        string.Format(
+                            "{0} could not consider {1} for {2} because it is already reserved by {3} for {4}\n{5}",
+                            pawn.LabelShort,
+                            this.ThingID,
+                            product.defName,
+                            consideration.ConsideredBy.LabelShort,
+                            consideration.ConsideredFor.defName,
+                            Environment.StackTrace
+                        ),
+                        "Building_AutomatedFactory.ConsiderFor"
+                    );
+#endif
+                    return false;
+                }
+            }
+            consideration = new Consideration( pawn, product );
+#if DEVELOPER
+            CCL_Log.Message(
+                string.Format( "{0} is now considering {1} for {2}\n{3}", pawn.LabelShort, this.ThingID, product.defName, Environment.StackTrace ),
+                "Building_AutomatedFactory.ConsiderFor"
+            );
+#endif
+            return(
+                ( consideration != null )&&
+                ( consideration.Valid )
+            );
+        }
+
+        #endregion
+
+        #region Reservation API
+
+        public bool                         IsReserved
+        {
+            get
+            {
+                if( consideration == null )
+                {
+                    return false;
+                }
+                return consideration.Reserved;
+            }
+        }
+
+        public bool                         IsReservedBy( Pawn pawn )
+        {
+            if( !IsReserved )
+            {
+                return false;
+            }
+            return( consideration.ConsideredBy == pawn );
+        }
+
+        public int                          ReservedProductionTicks
+        {
+            get
+            {
+                if( !IsReserved )
+                {
+                    return ERROR_PRODUCTION_TICKS;
+                }
+                return ProductionTicks( consideration.ConsideredFor );
+            }
+        }
+
+        public ThingDef                     ReservedThingDef
+        {
+            get
+            {
+                if( !IsReserved )
+                {
+                    return null;
+                }
+                return consideration.ConsideredFor;
+            }
+        }
+
+        public RecipeDef                    ReservedRecipeDef
+        {
+            get
+            {
+                if( !IsReserved )
+                {
+                    return null;
+                }
+                return this.FindRecipeForProduct( consideration.ConsideredFor );
+            }
+        }
+
+        public bool                         ReserveForUseBy( Pawn pawn, ThingDef product )
+        {
+            if( IsReserved )
+            {
+                if( consideration.ConsideredBy != pawn )
+                {
+#if DEVELOPER
+                    CCL_Log.Message(
+                        string.Format(
+                            "{0} could not reserve {1} for {2} because it is already reserved by {3} for {4}\n{5}",
+                            pawn.LabelShort,
+                            this.ThingID,
+                            product.defName,
+                            consideration.ConsideredBy.LabelShort,
+                            consideration.ConsideredFor.defName,
+                            Environment.StackTrace
+                        ),
+                        "Building_AutomatedFactory.ReserveForUseBy"
+                    );
+#endif
+                    return false;
+                }
+            }
+            consideration = new Consideration( pawn, product, true );
+#if DEVELOPER
+            CCL_Log.Message(
+                string.Format( "{0} has now reserved {1} for {2}\n{3}", pawn.LabelShort, this.ThingID, product.defName, Environment.StackTrace ),
+                "Building_AutomatedFactory.ReserveForUseBy"
+            );
+#endif
+            return(
+                ( consideration != null )&&
+                ( consideration.Valid )
+            );
+        }
+
+        private void                        ReleaseFromUseByInt( Pawn pawn, bool releaseFromManager = false )
+        {
+#if DEVELOPER
+            CCL_Log.Message(
+                string.Format(
+                    "{0} is no longer reserving {1} for {2}\n{3}",
+                    pawn.LabelShort,
+                    this.ThingID,
+                    consideration == null ? "nothing" : consideration.ConsideredFor.defName,
+                    Environment.StackTrace
+                ),
+                "Building_AutomatedFactory.ReleaseFromUseByInt"
+            );
+#endif
+            consideration = null;
+            if(
+                ( releaseFromManager )&&
+                ( Find.Reservations.ReservedBy( this, pawn ) )
+            )
+            {
+                Find.Reservations.Release( this, pawn );
+            }
+        }
+
+        public void                         ReleaseFromUseBy( Pawn pawn, bool releaseFromManager = false )
+        {
+            if( !IsReservedBy( pawn ) )
+            {
+#if DEVELOPER
+                CCL_Log.Message(
+                    string.Format(
+                        "{0} could not release {1} because it is reserved by {2}\n{3}",
+                        pawn.LabelShort,
+                        this.ThingID,
+                        consideration.ConsideredBy.LabelShort,
+                        Environment.StackTrace
+                    ),
+                    "Building_AutomatedFactory.ReleaseFromUseBy"
+                );
+#endif
+                return;
+            }
+            ReleaseFromUseByInt( pawn, releaseFromManager );
+        }
+
+        public Thing                        TryProduceAndReleaseFor( Pawn pawn, bool releaseFromManager = false )
+        {
+            //Log.Message( string.Format( "{0}.TryProduceAndReleaseBy( {1} )", this.ThingID, pawn == null ? "null" : pawn.NameStringShort ) );
+            if( !IsReservedBy( pawn ) )
+            {
+#if DEVELOPER
+                CCL_Log.Message(
+                    string.Format(
+                        "{0} could not take from and release {1} because it is reserved by {2}\n{3}",
+                        pawn.LabelShort,
+                        this.ThingID,
+                        consideration.ConsideredBy.LabelShort,
+                        Environment.StackTrace
+                    ),
+                    "Building_AutomatedFactory.TryProduceAndReleaseFor"
+                );
+#endif
+                return null;
+            }
+            var recipe = FindRecipeForProduct( consideration.ConsideredFor );
+            if( recipe == null )
+            {
+                return (Thing) null;
+            }
+            var advancedRecipe = recipe as AdvancedRecipeDef;
+            if(
+                ( advancedRecipe != null )&&
+                ( !advancedRecipe.requiredFacilities.NullOrEmpty() )&&
+                ( !this.HasConnectedFacilities( advancedRecipe.requiredFacilities ) )
+            )
+            {
+                return (Thing) null;
+            }
+            var chosen = new List<ThingAmount>();
+            if( !CompHopperUser.RemoveResourcesFromHoppers( recipe, chosen ) )
+            {
+                return null;
+            }
+            var thing = ThingMaker.MakeThing( consideration.ConsideredFor );
+            thing.stackCount = recipe.products[0].count;
+            var ingredients = thing.TryGetComp<CompIngredients>();
+            if ( ingredients != null )
+            {
+                foreach( var ingredient in chosen )
+                {
+                    ingredients.RegisterIngredient( ingredient.thing.def );
+                }
+            }
+            ReleaseFromUseByInt( pawn, releaseFromManager );
+            return thing;
+        }
+
+        #endregion
 
         #endregion
 

@@ -44,6 +44,22 @@ namespace CommunityCoreLibrary
             }
         }
 
+        private static Func<ThingDef,bool>          _IsJoy;
+        public static Func<ThingDef,bool>           IsJoy
+        {
+            get
+            {
+                if( _IsJoy == null )
+                {
+                    _IsJoy = new Func<ThingDef,bool>( def =>
+                        ( def.IsIngestible )&&
+                        ( def.ingestible.joy > 0f )
+                    );
+                }
+                return _IsJoy;
+            }
+        }
+
         private static Func<ThingDef,bool>          _IsDrug;
         public static Func<ThingDef,bool>           IsDrug
         {
@@ -59,18 +75,18 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private static Func<ThingDef,ThingDef,int>  _SortDrug;
-        public static Func<ThingDef,ThingDef,int>   SortDrug
+        private static Func<ThingDef,ThingDef,int>  _SortJoy;
+        public static Func<ThingDef,ThingDef,int>   SortJoy
         {
             get
             {
-                if( _SortDrug == null )
+                if( _SortJoy == null )
                 {
-                    _SortDrug = new Func<ThingDef, ThingDef, int>( ( x, y ) =>
+                    _SortJoy = new Func<ThingDef, ThingDef, int>( ( x, y ) =>
                         ( x.ingestible.joy > y.ingestible.joy ) ? -1 : 1
                     );
                 }
-                return _SortDrug;
+                return _SortJoy;
             }
         }
 

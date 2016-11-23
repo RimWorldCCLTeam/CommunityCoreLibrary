@@ -173,7 +173,7 @@
     <Compile Include="ThingComps\CompAutomatedFactory.cs" />
     <Compile Include="CompProperties\CompProperties_AutomatedFactory.cs" />
     <Compile Include="ITabs\ITab_AutomatedFactory.cs" />
-    <Compile Include="SpecialInjectors\DetourInjector.cs" />
+    <Compile Include="SpecialInjectors\DetourBuildSpecificMethods.cs" />
     <Compile Include="Detours\MainMenuDrawer.cs" />
     <Compile Include="Windows\Window_ModConfigurationMenu.cs" />
     <Compile Include="Extensions\GenTemperature_Extensions.cs" />
@@ -325,6 +325,19 @@
     <Compile Include="Controller\SubControllers\SequencedInjectors\SequencedInjectionSets\SequencedInjectionSet_ThingDefAvailability.cs" />
     <Compile Include="Controller\SubControllers\SequencedInjectors\SequencedInjector_MapComponents.cs" />
     <Compile Include="MapComponents\MapComponentInjectionTest.cs" />
+    <Compile Include="Defs\AdvancedRecipeDef.cs" />
+    <Compile Include="Detours\WorkGiver_DoBill.cs" />
+    <Compile Include="CompProperties\CompProperties_AffectedByFacilities.cs" />
+    <Compile Include="Detours\CompAffectedByFacilities.cs" />
+    <Compile Include="SpecialInjectors\UpgradeBuildingNutrientPasteDispenser.cs" />
+    <Compile Include="SpecialInjectors\UpgradeCompGlower.cs" />
+    <Compile Include="SpecialInjectors\UpgradeCompProperties_AffectedByFacilities.cs" />
+    <Compile Include="Classes\Static\DrugUtility.cs" />
+    <Compile Include="Detours\JoyGiver_Ingest.cs" />
+    <Compile Include="Detours\JoyGiver_TakeDrug.cs" />
+    <Compile Include="Extensions\JoyGiver_TakeDrug_Extensions.cs" />
+    <Compile Include="Detours\DrugAIUtility.cs" />
+    <Compile Include="Detours\JoyGiver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
