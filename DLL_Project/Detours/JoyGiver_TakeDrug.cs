@@ -15,8 +15,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( JoyGiver_TakeDrug ), "BestIngestItem" )]
-        internal Thing                              _BestIngestItem( Pawn pawn, Predicate<Thing> extraValidator )
+        [DetourMember]
+        internal Thing                      _BestIngestItem( Pawn pawn, Predicate<Thing> extraValidator )
         {
             Predicate<Thing> validator = (Thing t) => (
                 ( this.CanUseIngestItemForJoy( pawn, t ) )&&

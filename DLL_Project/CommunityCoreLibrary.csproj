@@ -286,8 +286,7 @@
     <Compile Include="ToggleSettings\ToggleSetting_ResourceReadoutCategorized.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_ShowMiniMap.cs" />
     <Compile Include="MainMenus\MainMenu_QuickStart.cs" />
-    <Compile Include="Classes\Attributes\DetourClassMethod.cs" />
-    <Compile Include="Classes\Attributes\DetourClassProperty.cs" />
+    <Compile Include="Classes\Attributes\DetourMember.cs" />
     <Compile Include="Enumerations\InjectionTiming.cs" />
     <Compile Include="Detours\ThingDef.cs" />
     <Compile Include="Extensions\GenFilePaths_Extensions.cs" />

@@ -7,8 +7,8 @@ namespace CommunityCoreLibrary.Detour
     internal class _ThingDef : ThingDef
     {
 
-        [DetourClassProperty( typeof( ThingDef ), "IsFoodDispenser" )]
-        internal bool                       IsFoodMachine
+        [DetourMember]
+        internal bool                       _IsFoodDispenser
         {
             get
             {

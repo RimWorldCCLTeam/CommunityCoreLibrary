@@ -8,7 +8,7 @@ namespace CommunityCoreLibrary.Detour
     internal static class _PreLoadUtility
     {
 
-        [DetourClassMethod( typeof( PreLoadUtility ), "CheckVersionAndLoad" )]
+        [DetourMember( typeof( PreLoadUtility ) )]
         internal static void                _CheckVersionAndLoad( string path, ScribeMetaHeaderUtility.ScribeHeaderMode mode, Action loadAct )
         {
             bool mismatchWarnings;

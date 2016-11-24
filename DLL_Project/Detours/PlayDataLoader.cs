@@ -44,8 +44,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( Verse.PlayDataLoader ), "ClearAllPlayData", InjectionSequence.DLLLoad )]
-        internal static void _ClearAllPlayData()
+        [DetourMember( typeof( Verse.PlayDataLoader ), InjectionSequence.DLLLoad )]
+        internal static void                _ClearAllPlayData()
         {
             Controller.Data.RequireRestart = true;
 #if DEBUG
@@ -74,8 +74,8 @@ namespace CommunityCoreLibrary.Detour
 #endif
         }
 
-        [DetourClassMethod( typeof( Verse.PlayDataLoader ), "LoadAllPlayData", InjectionSequence.DLLLoad )]
-        internal static void _LoadAllPlayData( bool recovering = false )
+        [DetourMember( typeof( Verse.PlayDataLoader ), InjectionSequence.DLLLoad )]
+        internal static void                _LoadAllPlayData( bool recovering = false )
         {
             if( Controller.Data.RestartWarningIsOpen )
             {
@@ -87,7 +87,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Internal Methods
 
-        internal static void ClearAllPlayDataInt()
+        internal static void                ClearAllPlayDataInt()
         {
             LanguageDatabase.Clear();
             // A14 - ModContentPackManager was removed?
@@ -103,18 +103,18 @@ namespace CommunityCoreLibrary.Detour
             PlayDataLoader_loaded.SetValue( null, false );
         }
 
-        internal static void QueueLoadAllPlayDataInt( bool recovering = false )
+        internal static void                QueueLoadAllPlayDataInt( bool recovering = false )
         {
             queueRecovering = recovering;
             queueLoadAllPlayData = true;
         }
 
-        private static void DoPlayLoadInt()
+        private static void                 DoPlayLoadInt()
         {
             _DoPlayLoad.Invoke( null, null );
         }
 
-        internal static void LoadAllPlayDataInt( bool recovering = false )
+        internal static void                LoadAllPlayDataInt( bool recovering = false )
         {
             if( Verse.PlayDataLoader.Loaded )
             {

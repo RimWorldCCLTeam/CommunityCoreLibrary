@@ -20,7 +20,7 @@ namespace CommunityCoreLibrary.Detour
             toggleSettingDefs.Sort( (x, y) => x.order > y.order ? 1 : -1 );
         }
 
-        [DetourClassMethod( typeof( PlaySettings ), "ExposeData" )]
+        [DetourMember( typeof( PlaySettings ) )]
         internal static void                _ExposeData( this PlaySettings _this )
         {
             foreach( var toggleSetting in toggleSettingDefs )
@@ -38,7 +38,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        [DetourClassMethod( typeof( PlaySettings ), "DoPlaySettingsGlobalControls" )]
+        [DetourMember( typeof( PlaySettings ) )]
         internal static void                _DoPlaySettingsGlobalControls( this PlaySettings _this, WidgetRow row )
         {
             foreach( var toggleSetting in toggleSettingDefs )

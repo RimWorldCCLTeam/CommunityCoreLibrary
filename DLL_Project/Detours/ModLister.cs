@@ -30,8 +30,8 @@ namespace CommunityCoreLibrary.Detour
             return (List<ModMetaData>)_mods.GetValue( null );
         }
 
-        [DetourClassMethod( typeof( ModLister ), "InstalledModsListHash" )]
-        internal static int _InstalledModsListHash( bool activeOnly )
+        [DetourMember( typeof( ModLister ) )]
+        internal static int                 _InstalledModsListHash( bool activeOnly )
         {
             int num = 0;
             List<ModMetaData> mods;

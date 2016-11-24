@@ -13,8 +13,8 @@ namespace CommunityCoreLibrary.Detour
         
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( DrugAIUtility ), "IngestAndTakeToInventoryJob" )]
-        internal static Job                         IngestAndTakeToInventoryJob( Thing drug, Pawn pawn, int maxNumToCarry = 9999 )
+        [DetourMember( typeof( DrugAIUtility ) )]
+        internal static Job                 _IngestAndTakeToInventoryJob( Thing drug, Pawn pawn, int maxNumToCarry = 9999 )
         {
             var synthesizer = drug as Building_AutomatedFactory;
             if( synthesizer != null )

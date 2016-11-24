@@ -40,8 +40,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( CompAffectedByFacilities ), "IsPotentiallyValidFacilityForMe" )]
-        internal bool _IsPotentiallyValidFacilityForMe( ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot )
+        [DetourMember]
+        internal bool                       _IsPotentiallyValidFacilityForMe( ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot )
         {
             if( !IsPotentiallyValidFacilityForMe_Static( facilityDef, facilityPos, facilityRot, this.parent.def, this.parent.Position, this.parent.Rotation ) )
             {

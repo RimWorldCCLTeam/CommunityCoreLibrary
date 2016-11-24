@@ -182,8 +182,8 @@ namespace CommunityCoreLibrary
                 toTypes = toAssembly
                     .GetTypes()
                     .Where( toType => (
-                        ( toType.GetMethods(    Controller.Data.UniversalBindingFlags ).Any( toMethod   => toMethod  .HasAttribute<DetourClassMethod>()   ) )||
-                        ( toType.GetProperties( Controller.Data.UniversalBindingFlags ).Any( toProperty => toProperty.HasAttribute<DetourClassProperty>() ) )
+                        ( toType.GetMethods(    Controller.Data.UniversalBindingFlags ).Any( toMethod   => toMethod  .HasAttribute<DetourMember>() ) )||
+                        ( toType.GetProperties( Controller.Data.UniversalBindingFlags ).Any( toProperty => toProperty.HasAttribute<DetourMember>() ) )
                     ) )
                     .ToList();
                 // Add the type list to the assembly cache
@@ -221,11 +221,79 @@ namespace CommunityCoreLibrary
             return detours;
         }
 
+        private static Type                 GetFixedTargetClass( Type fromClass, Type toType )
+        {
+            if( fromClass != DetourMember.DefaultFromClass )
+            {
+                return fromClass;
+            }
+            return toType.BaseType;
+        }
+
+        private static string               GetFixedMemberName( string memberName )
+        {
+            if( memberName[ 0 ] == "_"[ 0 ] )
+            {
+                return memberName.Substring( 1, memberName.Length - 1 );
+            }
+            return memberName;
+        }
+
+        private static MethodInfo           GetTimedDetouredMethodInt( Type fromClass, string fromMember, MethodInfo toMethod )
+        {
+            if( fromMember == DetourMember.DefaultMemberName )
+            {
+                fromMember = toMethod.Name;
+            }
+            MethodInfo methodInfo = null;
+            try
+            {   // Try to get method direct
+                methodInfo = fromClass.GetMethod( fromMember, Controller.Data.UniversalBindingFlags );
+            }
+            catch
+            {   // May be ambiguous, try from parameter types (thanks Zhentar for the change from count to types)
+                methodInfo = fromClass.GetMethods( Controller.Data.UniversalBindingFlags )
+                                              .FirstOrDefault( checkMethod =>
+                                                              (
+                                                                  ( checkMethod.Name == fromMember )&&
+                                                                  ( checkMethod.ReturnType == toMethod.ReturnType )&&
+                                                                  ( checkMethod.GetParameters().Select( checkParameter => checkParameter.ParameterType ).SequenceEqual( toMethod.GetParameters().Select( toParameter => toParameter.ParameterType ) ) )
+                                                                 ) );
+            }
+            var fixedName = GetFixedMemberName( fromMember );
+            if(
+                ( methodInfo == null )&&
+                ( fromMember != fixedName )
+            )
+            {
+                return GetTimedDetouredMethodInt( fromClass, fixedName, toMethod );
+            }
+            return methodInfo;
+        }
+
+        private static PropertyInfo         GetTimedDetouredPropertyInt( Type fromClass, string fromMember, PropertyInfo toProperty )
+        {
+            if( fromMember == DetourMember.DefaultMemberName )
+            {
+                fromMember = toProperty.Name;
+            }
+            var propertyInfo = fromClass.GetProperty( fromMember, Controller.Data.UniversalBindingFlags );
+            var fixedName = GetFixedMemberName( fromMember );
+            if(
+                ( propertyInfo == null )&&
+                ( fromMember != fixedName )
+            )
+            {
+                return GetTimedDetouredPropertyInt( fromClass, fixedName, toProperty );
+            }
+            return propertyInfo;
+        }
+
         private static void                 GetTimedDetouredMethods( ref List<DetourPair> detours, Type toType, InjectionSequence sequence, InjectionTiming timing )
         {
             var toMethods = toType
                 .GetMethods( Controller.Data.UniversalBindingFlags )
-                .Where( toMethod => toMethod.HasAttribute<DetourClassMethod>() )
+                .Where( toMethod => toMethod.HasAttribute<DetourMember>() )
                 .ToList();
             if( toMethods.NullOrEmpty() )
             {   // No methods to detour
@@ -233,8 +301,8 @@ namespace CommunityCoreLibrary
             }
             foreach( var toMethod in toMethods )
             {
-                DetourClassMethod attribute = null;
-                if( toMethod.TryGetAttribute<DetourClassMethod>( out attribute ) )
+                DetourMember attribute = null;
+                if( toMethod.TryGetAttribute<DetourMember>( out attribute ) )
                 {
                     if(
                         ( attribute.injectionSequence != sequence )||
@@ -246,35 +314,22 @@ namespace CommunityCoreLibrary
                     {   // Ignore any detours which timing doesn't match
                         continue;
                     }
-                    if( attribute.fromClass == null )
+                    var fromClass = GetFixedTargetClass( attribute.fromClass, toType );
+                    if( fromClass == null )
                     {   // Report and ignore any missing classes
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "fromClass is null for '{0}.{1}'", toType.FullName, toMethod.Name ),
+                            string.Format( "fromClass resolved to null for '{0}.{1}'", toType.FullName, toMethod.Name ),
                             "Detour"
                         );
                         continue;
                     }
-                    MethodInfo fromMethod;
-                    try
-                    {   // Try to get method direct
-                        fromMethod = attribute.fromClass.GetMethod( attribute.fromMethod, Controller.Data.UniversalBindingFlags );
-                    }
-                    catch
-                    {   // May be ambiguous, try from parameter count
-                        fromMethod = attribute.fromClass.GetMethods( Controller.Data.UniversalBindingFlags )
-                                                  .FirstOrDefault( checkMethod =>
-                                                                  (
-                                                                      ( checkMethod.Name == attribute.fromMethod )&&
-                                                                      ( checkMethod.ReturnType == toMethod.ReturnType )&&
-                                                                      ( checkMethod.GetParameters().Count() == toMethod.GetParameters().Count() )
-                                                                     ) );
-                    }
+                    var fromMethod = GetTimedDetouredMethodInt( fromClass, attribute.fromMember, toMethod );
                     if( fromMethod == null )
                     {   // Report and ignore any missing methods
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "fromMethod is null for '{0}.{1}'", toType.FullName, toMethod.Name ),
+                            string.Format( "fromMember resolved to null for '{0}.{1}'", toType.FullName, toMethod.Name ),
                             "Detour"
                         );
                         continue;
@@ -289,7 +344,7 @@ namespace CommunityCoreLibrary
         {
             var toProperties = toType
                 .GetProperties( Controller.Data.UniversalBindingFlags )
-                .Where( toProperty => toProperty.HasAttribute<DetourClassProperty>() )
+                .Where( toProperty => toProperty.HasAttribute<DetourMember>() )
                 .ToList();
             if( toProperties.NullOrEmpty() )
             {   // No properties to detour
@@ -297,8 +352,8 @@ namespace CommunityCoreLibrary
             }
             foreach( var toProperty in toProperties )
             {
-                DetourClassProperty attribute = null;
-                if( toProperty.TryGetAttribute<DetourClassProperty>( out attribute ) )
+                DetourMember attribute = null;
+                if( toProperty.TryGetAttribute<DetourMember>( out attribute ) )
                 {
                     if(
                         ( attribute.injectionSequence != sequence )||
@@ -310,21 +365,22 @@ namespace CommunityCoreLibrary
                     {   // Ignore any detours which timing doesn't match
                         continue;
                     }
-                    if( attribute.fromClass == null )
+                    var fromClass = GetFixedTargetClass( attribute.fromClass, toType );
+                    if( fromClass == null )
                     {   // Report and ignore any missing classes
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "fromClass is null for '{0}.{1}'", toType.FullName, toProperty.Name ),
+                            string.Format( "fromClass resolved to null for '{0}.{1}'", toType.FullName, toProperty.Name ),
                             "Detour"
                         );
                         continue;
                     }
-                    var fromProperty = attribute.fromClass.GetProperty( attribute.fromProperty, Controller.Data.UniversalBindingFlags );
+                    var fromProperty = GetTimedDetouredPropertyInt( fromClass, attribute.fromMember, toProperty );
                     if( fromProperty == null )
                     {   // Report and ignore any missing properties
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "fromProperty is null for '{0}.{1}'", toType.FullName, toProperty.Name ),
+                            string.Format( "fromMember resolved to null for '{0}.{1}'", toType.FullName, toProperty.Name ),
                             "Detour"
                         );
                         continue;

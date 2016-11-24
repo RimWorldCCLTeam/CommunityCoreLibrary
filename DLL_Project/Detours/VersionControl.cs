@@ -49,7 +49,7 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
-        [DetourClassMethod( typeof( VersionControl ), "DrawInfoInCorner" )]
+        [DetourMember( typeof( VersionControl ) )]
         internal static void                _DrawInfoInCorner()
         {
             if( Current.ProgramState != ProgramState.Entry )

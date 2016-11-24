@@ -97,8 +97,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Method Detours
 
-        [DetourClassMethod( typeof( CompRottable ), "CompTickRare" )]
-        public override void                CompTickRare()
+        [DetourMember]
+        internal void                       _CompTickRare()
         {
             if( this.IsInRefrigerator )
             {
@@ -141,8 +141,8 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        [DetourClassMethod( typeof( CompRottable ), "CompInspectStringExtra" )]
-        public override string              CompInspectStringExtra()
+        [DetourMember]
+        internal string                     _CompInspectStringExtra()
         {
             var stringBuilder = new StringBuilder();
             switch( this.Stage )

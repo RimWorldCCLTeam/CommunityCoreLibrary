@@ -61,17 +61,28 @@ namespace CommunityCoreLibrary.MiniMap
 
 		public override void Update()
 		{
-			// get list of pawns
-			var pawns = GetPawns();
+            try
+            {
+    			// get list of pawns
+    			var pawns = GetPawns();
 
-            // clear texture
-            ClearTexture();
+                // clear texture
+                ClearTexture();
 
-			// create a marker for each pawn
-			foreach( var pawn in pawns )
-			{
-				CreateMarker( pawn );
-			}
+    			// create a marker for each pawn
+    			foreach( var pawn in pawns )
+    			{
+    				CreateMarker( pawn );
+    			}
+            }
+            catch( Exception e )
+            {
+                CCL_Log.Trace(
+                    Verbosity.NonFatalErrors,
+                    string.Format( "An error has occured in '{0}'\nError message:\n{1}\nStack Trace:\n{2}", this.GetType().Name, e.ToString(), Environment.StackTrace ),
+                    "MiniMapOverlay_Pawns.Update"
+                );
+            }
 		}
 
 		#endregion Methods

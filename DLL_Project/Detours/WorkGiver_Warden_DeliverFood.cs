@@ -51,7 +51,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( WorkGiver_Warden_DeliverFood ), "FoodAvailableInRoomTo" )]
+        [DetourMember]
         internal static bool                _FoodAvailableInRoomTo( Pawn prisoner )
         {
             if(

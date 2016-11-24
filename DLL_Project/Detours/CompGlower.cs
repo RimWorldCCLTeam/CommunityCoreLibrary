@@ -55,8 +55,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassProperty( typeof( CompGlower ), "ShouldBeLitNow" )]
-        internal bool _ShouldBeLitNow
+        [DetourMember]
+        internal bool                       _ShouldBeLitNow
         {
             get
             {

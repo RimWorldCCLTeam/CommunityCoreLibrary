@@ -9,8 +9,8 @@ namespace CommunityCoreLibrary.Detour
     internal static class _ThingSelectionUtility
     {
         
-        [DetourClassMethod( typeof( ThingSelectionUtility ), "SelectableNow" )]
-        internal static bool _SelectableNow( this Thing t )
+        [DetourMember( typeof( ThingSelectionUtility ) )]
+        internal static bool                _SelectableNow( this Thing t )
         {
             // If it's not selectable,
             // not spawned, or;

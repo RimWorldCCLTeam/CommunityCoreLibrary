@@ -13,11 +13,11 @@ namespace CommunityCoreLibrary.Detour
     internal class _JoyGiver_SocialRelax : JoyGiver_SocialRelax
     {
 
-        internal static MethodInfo                  _TryFindChairBesideTable;
-        internal static MethodInfo                  _TryFindChairNear;
-        internal static MethodInfo                  _TryFindSitSpotOnGroundNear;
+        internal static MethodInfo          _TryFindChairBesideTable;
+        internal static MethodInfo          _TryFindChairNear;
+        internal static MethodInfo          _TryFindSitSpotOnGroundNear;
 
-        static                                      _JoyGiver_SocialRelax()
+        static                              _JoyGiver_SocialRelax()
         {
             _TryFindChairBesideTable = typeof( JoyGiver_SocialRelax ).GetMethod( "TryFindChairBesideTable", Controller.Data.UniversalBindingFlags );
             if( _TryFindChairBesideTable == null )
@@ -47,7 +47,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Reflected Methods
 
-        internal static bool                        TryFindChairBesideTable( Thing table, Pawn sitter, out Thing chair )
+        internal static bool                TryFindChairBesideTable( Thing table, Pawn sitter, out Thing chair )
         {
             chair = null;
             var args = new object[] { table, sitter, chair };
@@ -59,7 +59,7 @@ namespace CommunityCoreLibrary.Detour
             return false;
         }
 
-        internal static bool                        TryFindChairNear( IntVec3 center, Pawn sitter, out Thing chair )
+        internal static bool                TryFindChairNear( IntVec3 center, Pawn sitter, out Thing chair )
         {
             chair = null;
             var args = new object[] { center, sitter, chair };
@@ -71,7 +71,7 @@ namespace CommunityCoreLibrary.Detour
             return false;
         }
 
-        internal static bool                        TryFindSitSpotOnGroundNear( IntVec3 center, Pawn sitter, out IntVec3 result )
+        internal static bool                TryFindSitSpotOnGroundNear( IntVec3 center, Pawn sitter, out IntVec3 result )
         {
             result = IntVec3.Invalid;
             var args = new object[] { center, sitter, result };
@@ -87,8 +87,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( JoyGiver_SocialRelax ), "TryGiveJobInt" )]
-        internal Job                                TryGiveJobInt( Pawn pawn, Predicate<CompGatherSpot> gatherSpotValidator )
+        [DetourMember]
+        internal Job                        _TryGiveJobInt( Pawn pawn, Predicate<CompGatherSpot> gatherSpotValidator )
         {
             if( GatherSpotLister.activeSpots.NullOrEmpty() )
             {

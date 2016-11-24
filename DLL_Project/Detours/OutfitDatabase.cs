@@ -9,16 +9,16 @@ namespace CommunityCoreLibrary.Detour
     internal static class _OutfitDatabase
     {
 
-        private const string            OutfitLabelAnything = "Anything";
-        private const string            OutfitLabelNothing = "Nothing";
-        private const string            OutfitLabelWorker = "Worker";
-        private const string            OutfitLabelSoldier = "Soldier";
-        private const string            OutfitLabelNaked = "Nudist";
+        private const string                OutfitLabelAnything = "Anything";
+        private const string                OutfitLabelNothing = "Nothing";
+        private const string                OutfitLabelWorker = "Worker";
+        private const string                OutfitLabelSoldier = "Soldier";
+        private const string                OutfitLabelNaked = "Nudist";
 
-        internal static List<OutfitDef> OutfitDefs = new List<OutfitDef>();
+        internal static List<OutfitDef>     OutfitDefs = new List<OutfitDef>();
 
-        [DetourClassMethod( typeof( OutfitDatabase ), "GenerateStartingOutfits" )]
-        internal static void _GenerateStartingOutfits( this OutfitDatabase outfitDatabase )
+        [DetourMember( typeof( OutfitDatabase ) )]
+        internal static void                _GenerateStartingOutfits( this OutfitDatabase outfitDatabase )
         {
             outfitDatabase.MakeNewOutfit().label = OutfitLabelAnything;
 

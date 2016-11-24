@@ -16,12 +16,12 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobDriver_FoodDeliver : JobDriver_FoodDeliver
     {
 
-        internal const TargetIndex FoodInd = TargetIndex.A;
-        internal const TargetIndex DelivereeInd = TargetIndex.B;
-        internal const TargetIndex DeliverToInd = TargetIndex.C;
+        internal const TargetIndex          FoodInd = TargetIndex.A;
+        internal const TargetIndex          DelivereeInd = TargetIndex.B;
+        internal const TargetIndex          DeliverToInd = TargetIndex.C;
 
-        [DetourClassMethod( typeof( JobDriver_FoodDeliver ), "MakeNewToils" )]
-        protected override IEnumerable<Toil> MakeNewToils()
+        [DetourMember]
+        internal IEnumerable<Toil>          _MakeNewToils()
         {
             var foodThing = this.TargetThing( FoodInd );
             var deliveree = (Pawn) this.TargetThing( DelivereeInd );

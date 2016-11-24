@@ -11,8 +11,8 @@ namespace CommunityCoreLibrary.Detour
     internal static class _ThingListGroupHelper
     {
 
-        [DetourClassMethod( typeof( ThingListGroupHelper ), "Includes" )]
-        internal static bool _Includes( this ThingRequestGroup group, ThingDef def )
+        [DetourMember( typeof( ThingListGroupHelper ) )]
+        internal static bool                _Includes( this ThingRequestGroup group, ThingDef def )
         {
             switch( group )
             {

@@ -148,8 +148,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( WorkGiver_DoBill ), "StartOrResumeBillJob" )]
-        internal Job _StartOrResumeBillJob( Pawn pawn, IBillGiver giver )
+        [DetourMember]
+        internal Job                        _StartOrResumeBillJob( Pawn pawn, IBillGiver giver )
         {
             var giverThing = giver as Thing;
             var giverThingWithComps = giverThing as ThingWithComps;

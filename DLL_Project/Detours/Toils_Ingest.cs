@@ -17,8 +17,8 @@ namespace CommunityCoreLibrary.Detour
     internal static class _Toils_Ingest
     {
 
-        [DetourClassMethod( typeof( Toils_Ingest ), "TakeMealFromDispenser" )]
-        internal static Toil _TakeMealFromDispenser( TargetIndex ind, Pawn eater )
+        [DetourMember( typeof( Toils_Ingest ) )]
+        internal static Toil                _TakeMealFromDispenser( TargetIndex ind, Pawn eater )
         {
             var toil = new Toil();
             toil.defaultCompleteMode = ToilCompleteMode.Delay;

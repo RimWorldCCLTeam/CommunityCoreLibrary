@@ -17,13 +17,13 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobDriver_SocialRelax : JobDriver_SocialRelax
     {
         
-        internal const TargetIndex GatherSpotParentInd = TargetIndex.A;
-        internal const TargetIndex ChairOrSpotInd = TargetIndex.B;
-        internal const TargetIndex OptionalIngestibleInd = TargetIndex.C;
+        internal const TargetIndex          GatherSpotParentInd = TargetIndex.A;
+        internal const TargetIndex          ChairOrSpotInd = TargetIndex.B;
+        internal const TargetIndex          OptionalIngestibleInd = TargetIndex.C;
 
         #region Helper Methods
 
-        internal Thing GatherSpotParent
+        internal Thing                      GatherSpotParent
         {
             get
             {
@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal IntVec3 ClosestGatherSpotParentCell
+        internal IntVec3                    ClosestGatherSpotParentCell
         {
             get
             {
@@ -39,7 +39,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal bool HasChair
+        internal bool                       HasChair
         {
             get
             {
@@ -47,7 +47,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal IntVec3 OccupySpot
+        internal IntVec3                    OccupySpot
         {
             get
             {
@@ -55,7 +55,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal Thing OccupyThing
+        internal Thing                      OccupyThing
         {
             get
             {
@@ -63,7 +63,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal bool HasIngestible
+        internal bool                       HasIngestible
         {
             get
             {
@@ -71,7 +71,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal bool IsDispenser
+        internal bool                       IsDispenser
         {
             get
             {
@@ -84,7 +84,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal Thing Drug
+        internal Thing                      Drug
         {
             get
             {
@@ -100,7 +100,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal Building_AutomatedFactory Dispenser
+        internal Building_AutomatedFactory  Dispenser
         {
             get
             {
@@ -112,8 +112,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( JobDriver_SocialRelax ), "MakeNewToils" )]
-        protected override IEnumerable<Toil> MakeNewToils()
+        [DetourMember]
+        internal IEnumerable<Toil>          _MakeNewToils()
         {
             this.EndOnDespawnedOrNull( GatherSpotParentInd, JobCondition.Incompletable );
 

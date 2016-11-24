@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary.Detour
     internal class _JoyGiver_Ingest : JoyGiver_Ingest
     {
 
-        internal static bool                        ThisDefIsValid( Pawn pawn, ThingDef thingDef )
+        internal static bool                ThisDefIsValid( Pawn pawn, ThingDef thingDef )
         {
             if(
                 ( thingDef.ingestible == null )||
@@ -44,8 +44,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( JoyGiver_Ingest ), "BestIngestItem" )]
-        internal Thing                              _BestIngestItem( Pawn pawn, Predicate<Thing> extraValidator )
+        [DetourMember]
+        internal Thing                      _BestIngestItem( Pawn pawn, Predicate<Thing> extraValidator )
         {
             Predicate<Thing> validator = (Thing t) =>
             (
@@ -87,8 +87,8 @@ namespace CommunityCoreLibrary.Detour
                 null );
         }
 
-        [DetourClassMethod( typeof( JoyGiver_Ingest ), "CanUseIngestItemForJoy" )]
-        internal bool                               _CanUseIngestItemForJoy( Pawn pawn, Thing t )
+        [DetourMember]
+        internal bool                       _CanUseIngestItemForJoy( Pawn pawn, Thing t )
         {
             if(
                 ( t.Spawned )&&
@@ -124,8 +124,8 @@ namespace CommunityCoreLibrary.Detour
             return false;
         }
 
-        [DetourClassMethod( typeof( JoyGiver_Ingest ), "CreateIngestJob" )]
-        internal Job                                _CreateIngestJob( Thing ingestible, Pawn pawn )
+        [DetourMember]
+        internal Job                        _CreateIngestJob( Thing ingestible, Pawn pawn )
         {
             var synthesizer = ingestible as Building_AutomatedFactory;
             if( synthesizer != null )
@@ -152,6 +152,7 @@ namespace CommunityCoreLibrary.Detour
             }
             return job;
         }
+
         #endregion
 
     }

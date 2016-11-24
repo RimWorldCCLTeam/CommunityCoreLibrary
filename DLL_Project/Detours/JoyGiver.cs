@@ -13,9 +13,9 @@ namespace CommunityCoreLibrary.Detour
     internal class _JoyGiver : JoyGiver
     {
 
-        internal static FieldInfo                   _tmpCandidates;
+        internal static FieldInfo           _tmpCandidates;
 
-        static                                      _JoyGiver()
+        static                              _JoyGiver()
         {
             _tmpCandidates = typeof( JoyGiver ).GetField( "tmpCandidates", Controller.Data.UniversalBindingFlags );
             if( _tmpCandidates == null )
@@ -27,7 +27,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal static List<Thing>                 tmpCandidates
+        internal static List<Thing>         tmpCandidates
         {
             get
             {
@@ -35,8 +35,8 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        [DetourClassProperty( typeof( JoyGiver ), "SearchSet" )]
-        internal List<Thing>                        _SearchSet
+        [DetourMember]
+        internal List<Thing>                _SearchSet
         {
             get
             {
@@ -63,7 +63,7 @@ namespace CommunityCoreLibrary.Detour
         }
 
         // This method must be implemented as the base class is abstract
-        public override Job                         TryGiveJob( Pawn pawn )
+        public override Job                 TryGiveJob( Pawn pawn )
         {
             throw new NotImplementedException();
         }

@@ -14,15 +14,15 @@ namespace CommunityCoreLibrary.Detour
     internal class _ModAssemblyHandler : ModAssemblyHandler
     {
 
-        internal static MethodInfo                  _AssemblyIsUsable;
-        internal static FieldInfo                   _globalResolverIsSet;
-        internal static FieldInfo                   _mod;
+        internal static MethodInfo          _AssemblyIsUsable;
+        internal static FieldInfo           _globalResolverIsSet;
+        internal static FieldInfo           _mod;
 
-        public                                      _ModAssemblyHandler( ModContentPack mod ) : base( mod )
+        public                              _ModAssemblyHandler( ModContentPack mod ) : base( mod )
         {   // Required because C# is dumb
         }
 
-        static                                      _ModAssemblyHandler()
+        static                              _ModAssemblyHandler()
         {
             _AssemblyIsUsable = typeof( ModAssemblyHandler ).GetMethod( "AssemblyIsUsable", Controller.Data.UniversalBindingFlags );
             if( _AssemblyIsUsable == null )
@@ -52,12 +52,12 @@ namespace CommunityCoreLibrary.Detour
 
         #region Reflected Methods
 
-        private bool                                AssemblyIsUsable( Assembly assembly )
+        private bool                        AssemblyIsUsable( Assembly assembly )
         {
             return (bool)_AssemblyIsUsable.Invoke( this, new object[] { assembly } );
         }
 
-        static bool                                 GlobalResolverIsSet
+        static bool                         GlobalResolverIsSet
         {
             get
             {
@@ -69,7 +69,7 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        private ModContentPack                      ContentPack
+        private ModContentPack              ContentPack
         {
             get
             {
@@ -85,8 +85,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( ModAssemblyHandler ), "ReloadAll", InjectionSequence.DLLLoad )]
-        internal void                               _ReloadAll()
+        [DetourMember( InjectionSequence.DLLLoad )]
+        internal void                       _ReloadAll()
         {
             if( !GlobalResolverIsSet )
             {

@@ -17,13 +17,13 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobDriver_Ingest : JobDriver_Ingest
     {
 
-        internal const TargetIndex IngestibleInd = TargetIndex.A;
-        internal const TargetIndex TableCellInd = TargetIndex.B;
-        internal const TargetIndex ExtraIngestiblesToCollectInd = TargetIndex.C;
+        internal const TargetIndex          IngestibleInd = TargetIndex.A;
+        internal const TargetIndex          TableCellInd = TargetIndex.B;
+        internal const TargetIndex          ExtraIngestiblesToCollectInd = TargetIndex.C;
 
         #region Helper Methods
 
-        internal Thing IngestibleSource
+        internal Thing                      IngestibleSource
         {
             get
             {
@@ -31,16 +31,16 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        internal bool IsUsingDrugs
+        internal bool                       IsUsingDrugs
         {
             get
             {
-                // TODO:  Investigate and expand drug system to use factories
+                // TODO:  Resolve factories
                 return false;
             }
         }
 
-        internal ThingDef IngestibleDefFromSource( Thing foodSource )
+        internal ThingDef                   IngestibleDefFromSource( Thing foodSource )
         {
             if( foodSource is Building_AutomatedFactory )
             {   // JobGivers will check for OutputToPawnsDirectly
@@ -57,8 +57,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassProperty( typeof( JobDriver_Ingest ), "UsingNutrientPasteDispenser" )]
-        internal bool UsingFoodMachine
+        [DetourMember]
+        internal bool                       _UsingNutrientPasteDispenser
         {
             get
             {
@@ -66,8 +66,8 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
-        [DetourClassMethod( typeof( JobDriver_Ingest ), "GetReport" )]
-        public override string GetReport()
+        [DetourMember]
+        internal string                     _GetReport()
         {
             var curJob = this.pawn.jobs.curJob;
             var foodSource = IngestibleSource;
@@ -86,8 +86,8 @@ namespace CommunityCoreLibrary.Detour
             return string.Format( foodDef.ingestible.ingestReportString, foodDef.label );
         }
 
-        [DetourClassMethod( typeof( JobDriver_Ingest ), "PrepareToIngestToils_Dispenser" )]
-        internal IEnumerable<Toil> _PrepareToIngestToils_Dispenser()
+        [DetourMember]
+        internal IEnumerable<Toil>          _PrepareToIngestToils_Dispenser()
         {
             var ingestibleSource = IngestibleSource;
 

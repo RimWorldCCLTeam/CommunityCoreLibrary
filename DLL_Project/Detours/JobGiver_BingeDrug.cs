@@ -13,9 +13,9 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobGiver_BingeDrug : JobGiver_BingeDrug
     {
 
-        internal static MethodInfo                  _GetChemical;
+        internal static MethodInfo          _GetChemical;
 
-        static                                      _JobGiver_BingeDrug()
+        static                              _JobGiver_BingeDrug()
         {
             _GetChemical = typeof( JobGiver_BingeDrug ).GetMethod( "GetChemical", Controller.Data.UniversalBindingFlags );
             if( _GetChemical == null )
@@ -29,7 +29,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Reflected Methods
 
-        internal ChemicalDef                        GetChemical( Pawn pawn )
+        internal ChemicalDef                GetChemical( Pawn pawn )
         {
             return (ChemicalDef) _GetChemical.Invoke( this, new object[] { pawn } );
         }
@@ -38,7 +38,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Helper Methods
 
-        internal bool                               DrugIsUsableBy( Thing drugSource, ThingDef drugDef, ChemicalDef chemical, Hediff overdose, Pawn pawn )
+        internal bool                       DrugIsUsableBy( Thing drugSource, ThingDef drugDef, ChemicalDef chemical, Hediff overdose, Pawn pawn )
         {
             var drugProps = drugDef.GetCompProperties<CompProperties_Drug>();
             if( drugProps == null ) // This check should never fail
@@ -65,8 +65,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( JobGiver_BingeDrug ), "BestIngestTarget" )]
-        protected override Thing                    BestIngestTarget( Pawn pawn )
+        [DetourMember]
+        internal Thing                      _BestIngestTarget( Pawn pawn )
         {
             var chemical = GetChemical( pawn );
             var overdose = pawn.health.hediffSet.GetFirstHediffOfDef( HediffDefOf.DrugOverdose );

@@ -17,8 +17,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassProperty( typeof( UIRoot_Entry ), "ShouldDoMainMenu" )]
-        internal static bool        _ShouldDoMainMenu
+        [DetourMember]
+        internal static bool                _ShouldDoMainMenu
         {
             get
             {

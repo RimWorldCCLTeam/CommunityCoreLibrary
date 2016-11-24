@@ -14,8 +14,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassMethod( typeof( AddictionUtility ), "CanBingeOnNow" )]
-        internal static bool                        _CanBingeOnNow( Pawn pawn, ChemicalDef chemical, DrugCategory drugCategory )
+        [DetourMember( typeof( AddictionUtility ) )]
+        internal static bool                _CanBingeOnNow( Pawn pawn, ChemicalDef chemical, DrugCategory drugCategory )
         {
             if( !chemical.canBinge )
             {

@@ -79,7 +79,7 @@ namespace CommunityCoreLibrary.Detour
 #endif
 
 
-        [DetourClassMethod( typeof( FoodUtility ), "GetFinalIngestibleDef" )]
+        [DetourMember( typeof( FoodUtility ) )]
         internal static ThingDef            _GetFinalIngestibleDef( Thing foodSource )
         {
             //CCL_Log.Message( string.Format( "GetFinalIngestibleDef( {0} )", foodSource.ThingID ) );
@@ -118,7 +118,7 @@ namespace CommunityCoreLibrary.Detour
             return foodSource.def;
         }
 
-        [DetourClassMethod( typeof( FoodUtility ), "FoodSourceOptimality" )]
+        [DetourMember( typeof( FoodUtility ) )]
         internal static float               _FoodSourceOptimality( Pawn eater, Thing t, float dist )
         {
             var mealDef = t.def;
@@ -226,7 +226,7 @@ namespace CommunityCoreLibrary.Detour
             return num;
         }
 
-        [DetourClassMethod( typeof( FoodUtility ), "ThoughtsFromIngesting" )]
+        [DetourMember( typeof( FoodUtility ) )]
         internal static List<ThoughtDef>    _ThoughtsFromIngesting( Pawn ingester, Thing t )
         {
             var ingestThoughts = IngestThoughts();
@@ -322,7 +322,7 @@ namespace CommunityCoreLibrary.Detour
             return ingestThoughts;
         }
 
-        [DetourClassMethod( typeof( FoodUtility ), "BestFoodSourceOnMap" )]
+        [DetourMember( typeof( FoodUtility ) )]
         internal static Thing               _BestFoodSourceOnMap( Pawn getter, Pawn eater, bool desperate, FoodPreferability maxPref = FoodPreferability.MealLavish, bool allowPlant = true, bool allowDrug = true, bool allowCorpse = true, bool allowDispenserFull = true, bool allowDispenserEmpty = true, bool allowForbidden = false )
         {
 #if DEVELOPER

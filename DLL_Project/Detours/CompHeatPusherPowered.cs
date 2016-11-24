@@ -26,8 +26,8 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
-        [DetourClassProperty( typeof( CompHeatPusherPowered ), "ShouldPushHeatNow" )]
-        protected override bool ShouldPushHeatNow
+        [DetourMember]
+        internal bool                       _ShouldPushHeatNow
         {
             get
             {

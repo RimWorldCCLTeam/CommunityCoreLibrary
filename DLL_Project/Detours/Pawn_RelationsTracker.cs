@@ -79,7 +79,7 @@ namespace CommunityCoreLibrary.Detour
             return true;
         }
 
-        [DetourClassMethod( typeof( Pawn_RelationsTracker ), "CompatibilityWith" )]
+        [DetourMember]
         internal float                      _CompatibilityWith( Pawn otherPawn )
         {
             var pawn = this.GetPawn();
@@ -90,7 +90,7 @@ namespace CommunityCoreLibrary.Detour
             return Mathf.Clamp( GenMath.LerpDouble( 0.0f, 20f, 0.45f, -0.45f, Mathf.Abs( pawn.ageTracker.AgeBiologicalYearsFloat - otherPawn.ageTracker.AgeBiologicalYearsFloat ) ), -0.45f, 0.45f) + this.ConstantPerPawnsPairCompatibilityOffset( otherPawn.thingIDNumber );
         }
 
-        [DetourClassMethod( typeof( Pawn_RelationsTracker ), "AttractionTo" )]
+        [DetourMember]
         internal float                      _AttractionTo( Pawn otherPawn )
         {
             var pawn = this.GetPawn();

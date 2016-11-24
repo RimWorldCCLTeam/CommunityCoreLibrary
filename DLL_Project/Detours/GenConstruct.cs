@@ -12,8 +12,8 @@ namespace CommunityCoreLibrary.Detour
     internal static class _GenConstruct
     {
 
-        [DetourClassMethod( typeof( GenConstruct ), "CanBuildOnTerrain" )]
-        internal static bool _CanBuildOnTerrain( BuildableDef entDef, IntVec3 c, Rot4 rot, Thing thingToIgnore = null )
+        [DetourMember( typeof( GenConstruct ) )]
+        internal static bool                _CanBuildOnTerrain( BuildableDef entDef, IntVec3 c, Rot4 rot, Thing thingToIgnore = null )
         {
 
             CompProperties_RestrictedPlacement Restrictions = null;

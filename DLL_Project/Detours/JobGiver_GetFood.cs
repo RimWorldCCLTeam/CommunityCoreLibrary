@@ -18,8 +18,8 @@ namespace CommunityCoreLibrary.Detour
     internal class _JobGiver_GetFood : JobGiver_GetFood
     {
 
-        [DetourClassMethod( typeof( JobGiver_GetFood ), "TryGiveJob" )]
-        protected override Job TryGiveJob( Pawn pawn )
+        [DetourMember]
+        internal Job                        _TryGiveJob( Pawn pawn )
         {
             bool desperate = pawn.needs.food.CurCategory == HungerCategory.Starving;
             Thing foodSource;
@@ -140,7 +140,7 @@ namespace CommunityCoreLibrary.Detour
         }
 
 
-        internal static Job HopperFillFoodJob( Pawn pawn, Building hopper, Thing parent )
+        internal static Job                 HopperFillFoodJob( Pawn pawn, Building hopper, Thing parent )
         {
             var hopperSgp = hopper as ISlotGroupParent;
             if(
