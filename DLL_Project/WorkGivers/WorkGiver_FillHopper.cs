@@ -41,13 +41,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public WorkGiver_FillHopper()
-        {
-        }
-
         public override Job                 JobOnThing( Pawn pawn, Thing t )
         {
-            if( !pawn.CanReserveAndReach( ( TargetInfo )t.Position, PathEndMode.Touch, DangerUtility.NormalMaxDanger( pawn ), 1 ) )
+            if( !pawn.CanReserveAndReach( ( TargetInfo )t.Position, PathEndMode.Touch, pawn.NormalMaxDanger(), 1 ) )
             {
                 return (Job) null;
             }

@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary.ColorPicker
         /// <param name="H"></param>
         /// <param name="S"></param>
         /// <param name="V"></param>
-        /// <param name="a"></param>
+        /// <param name="A"></param>
         /// <returns></returns>
         public static Color HSVtoRGB( float H, float S, float V, float A = 1f )
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using RimWorld;
 using Verse;
@@ -11,12 +12,17 @@ namespace CommunityCoreLibrary
     public class SequencedInjectionSet_Designator : SequencedInjectionSet
     {
 
-        public Type                         designatorClass;
+        public string                       designatorClass;
 
         public string                       designationCategoryDef;
-        public Type                         designatorNextTo;
+        public string                       designatorNextTo;
 
         public bool                         reverseDesignator;
+
+        [Unsaved]
+        public Type                         designatorClassInt;
+        [Unsaved]
+        public Type                         designatorNextToInt;
 
         public                              SequencedInjectionSet_Designator()
         {
@@ -31,14 +37,18 @@ namespace CommunityCoreLibrary
         {
             bool valid = true;
 
+            if( !string.IsNullOrEmpty( designatorClass ) )
+            {
+                designatorClassInt = GenTypes.GetTypeInAnyAssembly( designatorClass );
+            }
             if(
-                ( designatorClass == null )||
-                ( !designatorClass.IsSubclassOf( typeof( Designator ) ) )
+                ( designatorClassInt == null )||
+                ( !designatorClassInt.IsSubclassOf( typeof( Designator ) ) )
             )
             {
                 CCL_Log.Trace(
                     Verbosity.Validation,
-                    string.Format( "Unable to resolve designatorClass '{0}'", designatorClass.FullName ),
+                    string.Format( "Unable to resolve designatorClass '{0}'", designatorClass ),
                     Name
                 );
                 valid = false;
@@ -67,10 +77,14 @@ namespace CommunityCoreLibrary
                 );
                 valid = false;
             }
+            if( !string.IsNullOrEmpty( designatorNextTo ) )
+            {
+                designatorNextToInt = GenTypes.GetTypeInAnyAssembly( designatorNextTo );
+            }
             if(
                 ( !string.IsNullOrEmpty( designationCategoryDef ) )&&
-                ( designatorNextTo != null )&&
-                ( !designatorNextTo.IsSubclassOf( typeof( Designator ) ) )
+                ( designatorNextToInt != null )&&
+                ( !designatorNextToInt.IsSubclassOf( typeof( Designator ) ) )
             )
             {
                 CCL_Log.Trace(
@@ -100,7 +114,7 @@ namespace CommunityCoreLibrary
                 // Get the category
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designationCategoryDef, false );
                     
-                if( designatorNextTo == null )
+                if( designatorNextToInt == null )
                 {
                     // Inject the designator
                     designationCategory.ResolvedDesignators().Add( designator );
@@ -109,7 +123,7 @@ namespace CommunityCoreLibrary
                 {
                     // Prefers to be beside a specific designator
                     var designatorIndex = designationCategory.ResolvedDesignators().FindIndex( d => (
-                        ( d.GetType() == designatorNextTo )
+                        ( d.GetType() == designatorNextToInt )
                     ) );
 
                     if( designatorIndex < 0 )
@@ -126,28 +140,28 @@ namespace CommunityCoreLibrary
                 }
             
                 // Now inject the designator class into the list of classes as a saftey net for another mod resolving the category
-                if( !designationCategory.specialDesignatorClasses.Exists( s => s == designatorClass ) )
+                if( !designationCategory.specialDesignatorClasses.Exists( s => s == designatorClassInt ) )
                 {
                     if( designatorNextTo == null )
                     {
                         // Inject the designator class at the end of the list
-                        designationCategory.specialDesignatorClasses.Add( designatorClass );
+                        designationCategory.specialDesignatorClasses.Add( designatorClassInt );
                     }
                     else
                     {
                         // Prefers to be beside a specific designator
-                        var designatorIndex = designationCategory.specialDesignatorClasses.FindIndex( s => s == designatorNextTo );
+                        var designatorIndex = designationCategory.specialDesignatorClasses.FindIndex( s => s == designatorNextToInt );
 
                         if( designatorIndex < 0 )
                         {
                             // Can't find desired designator class
                             // Inject the designator at the end
-                            designationCategory.specialDesignatorClasses.Add( designatorClass );
+                            designationCategory.specialDesignatorClasses.Add( designatorClassInt );
                         }
                         else
                         {
                             // Inject beside desired designator class
-                            designationCategory.specialDesignatorClasses.Insert( designatorIndex + 1, designatorClass );
+                            designationCategory.specialDesignatorClasses.Insert( designatorIndex + 1, designatorClassInt );
                         }
                     }
                 }
@@ -156,7 +170,7 @@ namespace CommunityCoreLibrary
             // Add a reverse designator for it
             if( reverseDesignator )
             {
-                if( ReverseDesignatorDatabase_Extensions.Find( designatorClass ) == null )
+                if( ReverseDesignatorDatabase_Extensions.Find( designatorClassInt ) == null )
                 {
                     ReverseDesignatorDatabase.AllDesignators.Add( designator );
                 }
@@ -172,7 +186,7 @@ namespace CommunityCoreLibrary
             {
                 var designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed( designationCategoryDef, false );
                 var designators = designationCategory.ResolvedDesignators();
-                designator = designators.FirstOrDefault( d => d.GetType() == designatorClass );
+                designator = designators.FirstOrDefault( d => d.GetType() == designatorClassInt );
                 if( designator != null )
                 {
                     return designator;
@@ -180,20 +194,20 @@ namespace CommunityCoreLibrary
             }
             if( reverseDesignator )
             {
-                designator = ReverseDesignatorDatabase_Extensions.Find( designatorClass );
+                designator = ReverseDesignatorDatabase_Extensions.Find( designatorClassInt );
                 if( designator != null )
                 {
                     return designator;
                 }
             }
             // If no designator, instatiate a new one
-            designator = (Designator) Activator.CreateInstance( designatorClass );
+            designator = (Designator) Activator.CreateInstance( designatorClassInt );
 #if DEBUG
             if( designator == null )
             {
                 CCL_Log.Trace(
                     Verbosity.Injections,
-                    string.Format( "Unable to create instance of '{0}'", designatorClass.FullName ),
+                    string.Format( "Unable to create instance of '{0}'", designatorClass ),
                     Name
                 );
             }

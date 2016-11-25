@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using RimWorld;
 using Verse;
-using UnityEngine;
 
 namespace CommunityCoreLibrary
 {
@@ -80,7 +78,7 @@ namespace CommunityCoreLibrary
                 .Where( t =>
                     ( t != thing )&&
                     ( t.def == thing.def )
-                ).ToList< Thing >();
+                ).ToList();
         }
 
         // Returns a list of things in the cell with the same graphic linker
@@ -96,7 +94,7 @@ namespace CommunityCoreLibrary
                     ( t != thing )&&
                     ( t.def.graphicData != null )&&
                     ( t.def.graphicData.linkFlags == thing.def.graphicData.linkFlags )
-                ).ToList< Thing >();
+                ).ToList();
         }
 
         // Returns a list of things in the cell with the same thing comp
@@ -115,7 +113,7 @@ namespace CommunityCoreLibrary
                         .Any( tc =>
                             ( tc.GetType() == MatchingComp )
                         ) )
-                ).ToList< Thing >();
+                ).ToList();
         }
 
         #endregion
@@ -267,7 +265,7 @@ namespace CommunityCoreLibrary
         public static bool                  IsSameThingDefTouching( this Thing thing )
         {
             // Get adjacent cells
-            var cells = GenAdj.CellsAdjacentCardinal( thing ).ToList< IntVec3 >();
+            var cells = GenAdj.CellsAdjacentCardinal( thing ).ToList();
 
             // Scan cells
             foreach( var cell in cells )
@@ -287,7 +285,7 @@ namespace CommunityCoreLibrary
         public static bool                  IsSameGraphicLinkerTouching( this Thing thing )
         {
             // Get adjacent cells
-            var cells = GenAdj.CellsAdjacentCardinal( thing ).ToList< IntVec3 >();
+            var cells = GenAdj.CellsAdjacentCardinal( thing ).ToList();
 
             // Scan cells
             foreach( var cell in cells )
@@ -307,7 +305,7 @@ namespace CommunityCoreLibrary
         public static bool                  IsSameThingCompTouching( this Thing thing, Type MatchingComp )
         {
             // Get adjacent cells
-            var cells = GenAdj.CellsAdjacentCardinal( thing ).ToList< IntVec3 >();
+            var cells = GenAdj.CellsAdjacentCardinal( thing ).ToList();
 
             // Scan cells
             foreach( var cell in cells )
@@ -354,13 +352,13 @@ namespace CommunityCoreLibrary
                     .Where( c =>
                         ( c.GetRoom() == thing.GetRoom() )
                     )
-                    .ToList< IntVec3 >();
+                    .ToList();
             }
             else
             {
                 // Get all adjacent cells
                 cells = GenAdj.CellsAdjacentCardinal( thing )
-                    .ToList< IntVec3 >();
+                    .ToList();
             }
 
             // Scan cells
@@ -408,13 +406,13 @@ namespace CommunityCoreLibrary
                     .Where( c =>
                         ( c.GetRoom() == thing.GetRoom() )
                     )
-                    .ToList< IntVec3 >();
+                    .ToList();
             }
             else
             {
                 // Get all adjacent cells
                 cells = GenAdj.CellsAdjacentCardinal( thing )
-                    .ToList< IntVec3 >();
+                    .ToList();
             }
 
             // Scan cells
@@ -462,13 +460,13 @@ namespace CommunityCoreLibrary
                     .Where( c =>
                         ( c.GetRoom() == thing.GetRoom() )
                     )
-                    .ToList< IntVec3 >();
+                    .ToList();
             }
             else
             {
                 // Get all adjacent cells
                 cells = GenAdj.CellsAdjacentCardinal( thing )
-                    .ToList< IntVec3 >();
+                    .ToList();
             }
 
             // Scan cells
@@ -515,8 +513,8 @@ namespace CommunityCoreLibrary
                 return true;
             }
             if(
-                ( pawn.CurJob.targetB != null ) &&
-                ( pawn.CurJob.targetB.Thing == thing )
+                ( pawn.CurJob.targetC != null ) &&
+                ( pawn.CurJob.targetC.Thing == thing )
             )
             {
                 return true;

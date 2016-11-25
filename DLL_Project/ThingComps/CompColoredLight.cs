@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 using RimWorld;
@@ -74,7 +73,7 @@ namespace CommunityCoreLibrary
                         "CommandChangeRoommateColorLabel".Translate(),
                         Icon.ShareLightColor
                     );
-                    _GizmoDefOrThingCompInRoom.LabelByDef = Translator.Translate( "CommandChangeRoommateColorLClick", parent.def.label );
+                    _GizmoDefOrThingCompInRoom.LabelByDef = "CommandChangeRoommateColorLClick".Translate( parent.def.label );
                     _GizmoDefOrThingCompInRoom.ClickByDef = GroupColorChange;
                     _GizmoDefOrThingCompInRoom.LabelByThingComp = "CommandChangeRoommateColorRClick".Translate();
                     _GizmoDefOrThingCompInRoom.ClickByThingComp = GroupColorChange;

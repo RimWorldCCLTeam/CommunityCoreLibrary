@@ -257,17 +257,17 @@ namespace CommunityCoreLibrary
 
         #region OTab Rendering
 
-        public override void DoWindowContents( Rect rect )
+        public override void DoWindowContents( Rect inRect )
         {
             Text.Font = GameFont.Small;
 
-            GUI.BeginGroup( rect );
+            GUI.BeginGroup( inRect );
 
             float selectionWidth = TabDef != null ? ( TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth ) : MinListWidth;
-            SelectionRect = new Rect( 0f, 0f, selectionWidth, rect.height );
+            SelectionRect = new Rect( 0f, 0f, selectionWidth, inRect.height );
             DisplayRect = new Rect(
                 SelectionRect.width + WindowMargin, 0f,
-                rect.width - SelectionRect.width - WindowMargin, rect.height
+                inRect.width - SelectionRect.width - WindowMargin, inRect.height
             );
 
             DrawSelectionArea( SelectionRect );
@@ -335,8 +335,8 @@ namespace CommunityCoreLibrary
             Widgets.DrawMenuSection( rect );
 
             _filterUpdate();
-            Rect filterRect = new Rect( rect.xMin + WindowMargin, rect.yMin + WindowMargin, rect.width - 3 * WindowMargin - 30f, 30f );
-            Rect clearRect = new Rect( filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f );
+            var filterRect = new Rect( rect.xMin + WindowMargin, rect.yMin + WindowMargin, rect.width - 3 * WindowMargin - 30f, 30f );
+            var clearRect = new Rect( filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f );
             _filterString = Widgets.TextField( filterRect, _filterString );
             if( _filterString != "" )
             {
@@ -431,18 +431,18 @@ namespace CommunityCoreLibrary
             if( Text.CalcHeight( label, width ) > EntryHeight )
             {
                 Text.Font = GameFont.Tiny;
-                float height2 = Text.CalcHeight(label, width);
+                var height2 = Text.CalcHeight( label, width );
                 height = Mathf.Max( height, height2 );
             }
 
             if( state != State.Leaf )
             {
-                Rect iconRect = new Rect(cur.x + WindowMargin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y);
+                var iconRect = new Rect( cur.x + WindowMargin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y );
                 GUI.DrawTexture( iconRect, state == State.Expanded ? Icon.HelpMenuArrowDown : Icon.HelpMenuArrowRight );
             }
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            Rect labelRect = new Rect(cur.x + iconOffset, cur.y, width, height);
+            var labelRect = new Rect( cur.x + iconOffset, cur.y, width, height );
             Widgets.Label( labelRect, label );
             Text.Anchor = TextAnchor.UpperLeft;
             Text.Font = GameFont.Small;

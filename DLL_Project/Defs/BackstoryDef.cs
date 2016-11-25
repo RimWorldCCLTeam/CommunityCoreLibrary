@@ -30,116 +30,151 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public static BackstoryDef Named(string defName)
+        public static BackstoryDef Named( string defName )
         {
-            return DefDatabase<BackstoryDef>.GetNamed(defName);
+            return DefDatabase<BackstoryDef>.GetNamed( defName );
         }
 
         public override void ResolveReferences()
         {
             base.ResolveReferences();
 
-            if (!this.addToDatabase) return;
-            if (BackstoryDatabase.allBackstories.ContainsKey(this.UniqueSaveKey())) return;
+            #region Error Checking
 
-            Backstory b = new Backstory();
-            if (!this.title.NullOrEmpty())
-                b.title = this.title;
-            else
+            if( !this.addToDatabase )
             {
-                CCL_Log.Error(defName + " backstory has empty title. Skipping...", "Backstories");
                 return;
             }
-            if (!titleShort.NullOrEmpty())
-                b.titleShort = titleShort;
-            else
-                b.titleShort = b.title;
-
-            if (!baseDescription.NullOrEmpty())
-                b.baseDesc = baseDescription;
-            else
+            if( BackstoryDatabase.allBackstories.ContainsKey( this.UniqueSaveKey() ) )
             {
-                CCL_Log.Message(defName + " backstory has empty description.", "Backstories");
-                b.baseDesc = "Empty.";
-            }
-
-            b.bodyTypeGlobal        = bodyTypeGlobal;
-            b.bodyTypeMale          = bodyTypeMale;
-            b.bodyTypeFemale        = bodyTypeFemale;
-
-            b.slot = slot;
-
-            b.shuffleable = shuffleable;
-            if (spawnCategories.NullOrEmpty())
-            {
-                CCL_Log.Error(defName + " backstory doesn't have any spawn categories defined. Skipping...", "Backstories");
                 return;
             }
-            else
-                b.spawnCategories = spawnCategories;
 
-            if (workAllows.Count > 0)
+            if( this.title.NullOrEmpty() )
             {
-                foreach (WorkTags current in Enum.GetValues(typeof(WorkTags)))
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' has an empty title.", this.defName ),
+                    "BackstoryDef"
+                );
+                return;
+            }
+
+            if( spawnCategories.NullOrEmpty() )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' doesn't have any spawn categories defined.", this.defName ),
+                    "BackstoryDef"
+                );
+                return;
+            }
+
+            #endregion
+
+            var backStory = new Backstory();
+
+            backStory.title = this.title;
+
+            if( !titleShort.NullOrEmpty() )
+            {
+                backStory.titleShort = titleShort;
+            }
+            else
+            {
+                backStory.titleShort = backStory.title;
+            }
+
+            if( !baseDescription.NullOrEmpty() )
+            {
+                backStory.baseDesc = baseDescription;
+            }
+            else
+            {
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' has an empty description.", this.defName ),
+                    "BackstoryDef"
+                );
+                backStory.baseDesc = "Empty.";
+            }
+
+            backStory.bodyTypeGlobal        = bodyTypeGlobal;
+            backStory.bodyTypeMale          = bodyTypeMale;
+            backStory.bodyTypeFemale        = bodyTypeFemale;
+
+            backStory.slot                  = slot;
+
+            backStory.shuffleable           = shuffleable;
+            backStory.spawnCategories       = spawnCategories;
+
+            if( workAllows.Count > 0 )
+            {
+                foreach( WorkTags current in Enum.GetValues( typeof( WorkTags ) ) )
                 {
-                    if (!workAllows.Contains(current))
+                    if( !workAllows.Contains( current ) )
                     {
-                        b.workDisables |= current;
+                        backStory.workDisables |= current;
                     }
                 }
             }
-            else if (workDisables.Count > 0)
+            else if( workDisables.Count > 0 )
             {
-                foreach (var tag in workDisables)
+                foreach( var tag in workDisables )
                 {
-                    b.workDisables |= tag;
+                    backStory.workDisables |= tag;
                 }
             }
             else
             {
-                b.workDisables = WorkTags.None;
+                backStory.workDisables = WorkTags.None;
             }
-            b.skillGains = skillGains.ToDictionary(i => i.defName, i => i.amount);
+
+            backStory.skillGains = skillGains.ToDictionary( i => i.defName, i => i.amount );
 
             if( forcedTraits.Count > 0 )
             {
-                b.forcedTraits = new List<TraitEntry>();
+                backStory.forcedTraits = new List<TraitEntry>();
                 foreach( var trait in forcedTraits )
                 {
                     var newTrait = new TraitEntry( trait.def, trait.degree );
-                    b.forcedTraits.Add( newTrait );
+                    backStory.forcedTraits.Add( newTrait );
                 }
             }
 
             if( disallowedTraits.Count > 0 )
             {
-                b.disallowedTraits = new List<TraitEntry>();
+                backStory.disallowedTraits = new List<TraitEntry>();
                 foreach( var trait in disallowedTraits )
                 {
                     var newTrait = new TraitEntry( trait.def, trait.degree );
-                    b.disallowedTraits.Add( newTrait );
+                    backStory.disallowedTraits.Add( newTrait );
                 }
             }
 
-            b.ResolveReferences();
-            b.PostLoad();
-            b.uniqueSaveKey = this.UniqueSaveKey();
+            backStory.ResolveReferences();
+            backStory.PostLoad();
+            backStory.uniqueSaveKey = this.UniqueSaveKey();
 
-            bool flag = false;
-            foreach (var s in b.ConfigErrors(false))
+            bool configErrors = false;
+            string configErrorList = string.Empty;
+            foreach( var s in backStory.ConfigErrors( false ) )
             {
-                if (!flag)
-                {
-                    flag = true;
-                    CCL_Log.Error("Errors in custom backstory with defName: " + defName + ", backstory will be skipped.", "Backstories");
-                }
-                CCL_Log.Error(defName + " error: " + s, "Backstories");
+                configErrorList += string.Format( "\n\t{0}", s );
+                configErrors = true;
             }
-            if (!flag)
+            if( configErrors )
             {
-                BackstoryDatabase.AddBackstory(b);
-                //CCL_Log.Message("Added " + this.UniqueSaveKey() + " backstory", "Backstories");
+                CCL_Log.Trace(
+                    Verbosity.Injections,
+                    string.Format( "{0} has error(s):{1}", this.defName, configErrorList ),
+                    "BackstoryDef"
+                );
+                return;
             }
+
+            BackstoryDatabase.AddBackstory( backStory );
+            //CCL_Log.Message("Added " + this.UniqueSaveKey() + " backstory", "BackstoryDef");
 
         }
     }

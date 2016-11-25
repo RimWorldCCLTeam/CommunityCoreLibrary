@@ -166,21 +166,21 @@ namespace CommunityCoreLibrary
 
 		#region Comp Properties
 
-		public static CommunityCoreLibrary.CompProperties_RestrictedPlacement RestrictedPlacement_Properties( this BuildableDef buildableDef )
+		public static CompProperties_RestrictedPlacement RestrictedPlacement_Properties( this BuildableDef buildableDef )
 		{
 			if( buildableDef is TerrainWithComps )
 			{
 				// Terrain with comps
                 return ( (TerrainWithComps)buildableDef ).GetCompProperties( typeof( CompRestrictedPlacement ) ) as CompProperties_RestrictedPlacement;
 			}
-			else if( buildableDef is ThingDef )
+			if( buildableDef is ThingDef )
 			{
 				// Thing with comps
 				return ( (ThingDef)buildableDef ).GetCompProperties<CompProperties_RestrictedPlacement>();
 			}
 
 			// Something else
-			return (CompProperties_RestrictedPlacement)null;
+			return null;
 		}
 
 		#endregion

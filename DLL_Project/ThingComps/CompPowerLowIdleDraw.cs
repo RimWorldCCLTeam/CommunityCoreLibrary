@@ -15,24 +15,24 @@ namespace CommunityCoreLibrary
 
 		#region Instance Data
 
-		List<IntVec3> scanPosition;
-		Pawn curUser;
-		Job curJob;
+		List<IntVec3>                       scanPosition;
+		Pawn                                curUser;
+		Job                                 curJob;
 		// minIdleDraw is to prevent idlePower from being 0.0f
 		// This is important so that the device stays connected to the
 		// power net without actually drawing off of it when not in use.
-		public const float MinIdleDraw = -0.01f;
-		public float IdlePower;
-		float curPower = 1f;
-		bool onIfOn;
+		public const float                  MinIdleDraw = -0.01f;
+		public float                        IdlePower;
+		float                               curPower = 1f;
+		bool                                onIfOn;
 
-		int keepOnTicks;
+		int                                 keepOnTicks;
 
-		public CompProperties_LowIdleDraw IdleProps;
+		public CompProperties_LowIdleDraw   IdleProps;
 
-        private CompGlower                  _CompGlower;
-        private CompPowerTrader             _CompPower;
-        private CompFacility                _CompFacility;
+        CompGlower                          _CompGlower;
+        CompPowerTrader                     _CompPower;
+        CompFacility                        _CompFacility;
 
 		#endregion
 
@@ -309,11 +309,7 @@ namespace CommunityCoreLibrary
                             else
                             {
                                 // look for a user at any occupied cell
-                                if( !linked.GetOccupyingPawnsUsing().NullOrEmpty() )
-                                {
-                                    // A pawn is here using linked building!
-                                    turnItOn = true;
-                                }
+                                turnItOn |= !linked.GetOccupyingPawnsUsing().NullOrEmpty();
                             }
                             if( turnItOn )
                             {
@@ -365,20 +361,15 @@ namespace CommunityCoreLibrary
 					break;
 				case LowIdleDrawMode.Cycle:
 					// Power cycler
+				    turnItOn |= LowPowerMode;
 
-					if( LowPowerMode )
-					{
-						// Going to full power cycle
-						turnItOn = true;
-					}
-					break;
+                    break;
 				case LowIdleDrawMode.Factory:
 					// Automated Factory production
-					if( AutomatedFactory.CurrentRecipe != null )
-					{
-						turnItOn = true;
-					}
+					turnItOn |= AutomatedFactory.CurrentRecipe != null;
+
 					break;
+                        
 				}
 			}
 			else
@@ -509,7 +500,7 @@ namespace CommunityCoreLibrary
 
 				return;
 			}
-			else if( IdleProps.operationalMode == LowIdleDrawMode.Factory )
+			if( IdleProps.operationalMode == LowIdleDrawMode.Factory )
 			{
 				// Set default scan tick intervals
 				if( IdleProps.cycleLowTicks < 0 )

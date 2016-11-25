@@ -215,10 +215,7 @@ namespace CommunityCoreLibrary
         public override void                PostExposeData()
         {
             base.PostExposeData();
-            if( Scribe.mode == LoadSaveMode.PostLoadInit )
-            {
-                gameWasJustLoaded = true;
-            }
+            gameWasJustLoaded |= ( Scribe.mode == LoadSaveMode.PostLoadInit );
         }
 
         public override void                PostDeSpawn()
@@ -719,10 +716,7 @@ namespace CommunityCoreLibrary
                         {
                             settingIndex++;
                             settingIndex %= hopperSettings.Count;
-                            if( settingIndex == nextSetting )
-                            {
-                                matchRefrigeration = false;
-                            }
+                            matchRefrigeration &= ( settingIndex != nextSetting );
                         }
                     } while ( !found );
                     nextSetting++;
@@ -980,11 +974,8 @@ namespace CommunityCoreLibrary
                         resource.SplitOff( resourceCount );
                         return true;
                     }
-                    else
-                    {
-                        resourceCount -= resource.stackCount;
-                        resource.SplitOff( resource.stackCount );
-                    }
+                    resourceCount -= resource.stackCount;
+                    resource.SplitOff( resource.stackCount );
                 }
             }
             // Should always be true...
@@ -1016,11 +1007,8 @@ namespace CommunityCoreLibrary
                             resource.SplitOff( resourceCount );
                             return true;
                         }
-                        else
-                        {
-                            resourceCount -= resource.stackCount;
-                            resource.SplitOff( resource.stackCount );
-                        }
+                        resourceCount -= resource.stackCount;
+                        resource.SplitOff( resource.stackCount );
                     }
                 }
             }

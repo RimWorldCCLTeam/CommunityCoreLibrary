@@ -120,7 +120,7 @@ namespace CommunityCoreLibrary
                 {
                     return VersionCompare.LessThanMin;
                 }
-                else if(
+                if(
                     ( v.Major > Version.Current.Major )||
                     ( v.Minor > Version.Current.Minor )||
                     ( v.Build > Version.Current.Build )
@@ -128,7 +128,7 @@ namespace CommunityCoreLibrary
                 {
                     return VersionCompare.GreaterThanMax;
                 }
-                else if(
+                if(
                     ( v.Major == Version.Current.Major )&&
                     ( v.Minor == Version.Current.Minor )&&
                     ( v.Build == Version.Current.Build )
@@ -138,7 +138,7 @@ namespace CommunityCoreLibrary
                     {
                         return VersionCompare.WithinRange;
                     }
-                    else if( v.Revision > Version.Current.Revision )
+                    if( v.Revision > Version.Current.Revision )
                     {
                         return VersionCompare.GreaterThanMax;
                     }
@@ -156,7 +156,7 @@ namespace CommunityCoreLibrary
                 {
                     return VersionCompare.LessThanMin;
                 }
-                else if(
+                if(
                     ( v.Major > Version.Current.Major )||
                     ( v.Minor > Version.Current.Minor )||
                     ( v.Build > Version.Current.Build )
@@ -164,7 +164,7 @@ namespace CommunityCoreLibrary
                 {
                     return VersionCompare.GreaterThanMax;
                 }
-                else if(
+                if(
                     ( v.Major == Version.Current.Major )&&
                     ( v.Minor == Version.Current.Minor )&&
                     ( v.Build == Version.Current.Build )

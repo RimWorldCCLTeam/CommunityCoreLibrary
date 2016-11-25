@@ -21,64 +21,103 @@ namespace CommunityCoreLibrary
         {
             base.ResolveReferences();
 
-            PawnBio bio = new PawnBio();
-            bio.gender = this.gender;
+            #region Error Checking
 
-            if (!firstName.NullOrEmpty() && !lastName.NullOrEmpty())
+            if( string.IsNullOrEmpty( firstName ) )
             {
-                bio.name = new NameTriple(firstName, nickName, lastName);
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' has null or empty firstname", this.defName ),
+                    "PawnBioDef"
+                );
+                return;
             }
-            else
+            if( !string.IsNullOrEmpty( lastName ) )
             {
-                CCL_Log.Error("PawnBio with defName: " + defName + " has empty first or last name. It will not be added.", "Backstories");
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' has null or empty lastname", this.defName ),
+                    "PawnBioDef"
+                );
+                return;
+            }
+            if( childhoodDef == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' has null or empty childhoodDef", this.defName ),
+                    "PawnBioDef"
+                );
+                return;
+            }
+            if( adulthoodDef == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "'{0}' has null or empty adulthoodDef", this.defName ),
+                    "PawnBioDef"
+                );
                 return;
             }
 
-            Backstory childhood = BackstoryDatabase.GetWithKey(this.childhoodDef.UniqueSaveKey());
-            if (childhood != null)
+            var childBackstory = BackstoryDatabase.GetWithKey( this.childhoodDef.UniqueSaveKey() );
+            if( childBackstory != null )
             {
-                bio.childhood = childhood;
-                bio.childhood.shuffleable = false;
-                bio.childhood.slot = BackstorySlot.Childhood;
-            }
-            else
-            {
-                CCL_Log.Error("PawnBio with defName: " + defName + " has null childhood. It will not be added.", "Backstories");
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "Could not resolve childhoodDef '{0}' in '{1}'", childhoodDef.defName, this.defName ),
+                    "PawnBioDef"
+                );
                 return;
             }
 
-            Backstory adulthood = BackstoryDatabase.GetWithKey(this.adulthoodDef.UniqueSaveKey());
-            if (adulthood != null)
+            var adultBackstory = BackstoryDatabase.GetWithKey( this.adulthoodDef.UniqueSaveKey() );
+            if( adultBackstory != null )
             {
-                bio.adulthood = adulthood;
-                bio.adulthood.shuffleable = false;
-                bio.adulthood.slot = BackstorySlot.Adulthood;
+                CCL_Log.Trace(
+                    Verbosity.Validation,
+                    string.Format( "Could not resolve adulthoodDef '{0}' in '{1}'", adulthoodDef.defName, this.defName ),
+                    "PawnBioDef"
+                );
+                return;
             }
-            else
+            #endregion
+
+            var pawnBio = new PawnBio();
+            pawnBio.gender                  = this.gender;
+            pawnBio.name                    = new NameTriple( firstName, nickName, lastName );
+
+            pawnBio.childhood               = childBackstory;
+            pawnBio.childhood.shuffleable   = false;
+            pawnBio.childhood.slot          = BackstorySlot.Childhood;
+
+            pawnBio.adulthood               = adultBackstory;
+            pawnBio.adulthood.shuffleable   = false;
+            pawnBio.adulthood.slot          = BackstorySlot.Adulthood;
+
+            pawnBio.name.ResolveMissingPieces();
+
+            bool configErrors = false;
+            string configErrorList = string.Empty;
+            foreach( var s in pawnBio.ConfigErrors() )
             {
-                CCL_Log.Error("PawnBio with defName: " + defName + " has null adulthood. It will not be added.", "Backstories");
+                configErrorList += string.Format( "\n\t{0}", s );
+                configErrors = true;
+            }
+            if( configErrors )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Injections,
+                    string.Format( "{0} has error(s):{1}", this.defName, configErrorList ),
+                    "PawnBioDef"
+                );
                 return;
             }
 
-            bio.name.ResolveMissingPieces();
-
-            bool flag = false;
-            foreach (var error in bio.ConfigErrors())
+            if( !SolidBioDatabase.allBios.Contains( pawnBio ) )
             {
-                if (!flag)
-                {
-                    flag = true;
-                    CCL_Log.Error("Config error(s) in PawnBioDef " + this.defName + ". Skipping...", "Backstories");
-                }
-                CCL_Log.Error(error, "Backstories");
+                SolidBioDatabase.allBios.Add( pawnBio );
             }
-            if (flag)
-            {
-                return;
-            }
-
-            if (!SolidBioDatabase.allBios.Contains(bio))
-                SolidBioDatabase.allBios.Add(bio);
         }
     }
 }
