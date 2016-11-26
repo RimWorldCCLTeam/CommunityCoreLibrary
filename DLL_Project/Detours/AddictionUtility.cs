@@ -12,6 +12,42 @@ namespace CommunityCoreLibrary.Detour
     internal class _AddictionUtility
     {
 
+        #region Helper Methods
+
+        private static bool                 CanBingeOnNowInt( ThingDef thingDef, ChemicalDef chemical, DrugCategory drugCategory )
+        {
+            if(
+                ( thingDef == null )||
+                ( thingDef.ingestible == null )
+            )
+            {
+                return false;
+            }
+            if(
+                ( drugCategory == DrugCategory.Any )||
+                ( thingDef.ingestible.drugCategory == drugCategory )
+            )
+            {
+                var drugProps = thingDef.GetCompProperty<CompProperties_Drug>();
+                if( drugProps != null )
+                {
+                    return( drugProps.chemical == chemical );
+                    // Core empty check???
+                    /*
+                    if(
+                        ( list[ index ].Position.Roofed() )||
+                        ( list[ index ].Position.InHorDistOf( pawn.Position, 45f ) )
+                    )
+                    {
+                    }
+                    */
+                }
+            }
+            return false;
+        }
+
+        #endregion
+
         #region Detoured Methods
 
         [DetourMember( typeof( AddictionUtility ) )]
@@ -25,56 +61,36 @@ namespace CommunityCoreLibrary.Detour
             var listOfSpawnedDrugs = Find.ListerThings.ThingsInGroup( ThingRequestGroup.Drug );
             for( int index = 0; index < listOfSpawnedDrugs.Count; ++index )
             {
-                if(
-                    ( !listOfSpawnedDrugs[ index ].Position.Fogged() )&&
-                    (
-                        ( drugCategory == DrugCategory.Any )||
-                        ( listOfSpawnedDrugs[ index ].def.ingestible.drugCategory == drugCategory )
-                    )
-                )
+                var thing = listOfSpawnedDrugs[ index ];
+                if( !thing.Position.Fogged() )
                 {
-                    if( listOfSpawnedDrugs[ index ].TryGetComp<CompDrug>().Props.chemical == chemical )
+                    var synthesizer = thing as Building_AutomatedFactory;
+                    if( synthesizer != null )
+                    {
+                        var products = synthesizer.AllProductionReadyRecipes();
+                        if( products.NullOrEmpty() )
+                        {   // Nothing ready for production
+                            return false;
+                        }
+                        foreach( var product in products )
+                        {
+                            if( product.IsDrug )
+                            {
+                                if( CanBingeOnNowInt( product, chemical, drugCategory ) )
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        // No drugs or none that can be binged on can be produced
+                        return false;
+                    }
+                    if( CanBingeOnNowInt( thing.def, chemical, drugCategory ) )
                     {
                         return true;
                     }
-                    // Core empty check???
-                    /*
-                    if(
-                        ( list[ index ].Position.Roofed() )||
-                        ( list[ index ].Position.InHorDistOf( pawn.Position, 45f ) )
-                    )
-                    {
-                    }
-                    */
                 }
             }
-            // Check synthesizers for drug production
-            /* TODO:  Investigate and expand drug system to use factories
-            var listOfDrugSynthesizers = Find.ListerBuildings.AllBuildingsColonistOfClass<Building_AutomatedFactory>().Where( building => (
-                ( building.BestProduct( FoodSynthesis.IsDrug, FoodSynthesis.SortDrug ) != null )
-            ) ).ToList();
-            if( !listOfDrugSynthesizers.NullOrEmpty() )
-            {
-                foreach( var synthesizer in listOfDrugSynthesizers )
-                {
-                    var products = synthesizer.AllProducts();
-                    foreach( var product in products )
-                    {
-                        if(
-                            ( product.IsDrug )&&
-                            ( synthesizer.CanProduce( product ) )&&
-                            (
-                                ( drugCategory == DrugCategory.Any )||
-                                ( product.ingestible.drugCategory == drugCategory )
-                            )
-                        )
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            */
             return false;
         }
 
