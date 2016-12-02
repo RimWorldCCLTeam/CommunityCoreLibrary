@@ -54,10 +54,6 @@ namespace CommunityCoreLibrary.Controller
                 return;
             }
 
-            if( Scribe.mode == LoadSaveMode.LoadingVars )
-            {
-                LongEventHandler.QueueLongEvent( Controller.Library.Restart, "Initializing", true, null );
-            }
             if( Scribe.mode != LoadSaveMode.Inactive )
             {
                 // Do nothing while a save/load sequence is happening

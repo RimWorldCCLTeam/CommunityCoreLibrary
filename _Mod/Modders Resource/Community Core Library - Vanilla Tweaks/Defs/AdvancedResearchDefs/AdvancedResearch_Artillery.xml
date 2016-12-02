@@ -24,7 +24,7 @@
     <CommunityCoreLibrary.AdvancedResearchDef>
 
         <defName>MakeArtilleryShellsMachiningTable</defName>
-        <Priority>0</Priority>
+        <Priority>1</Priority>
 
         <researchDefs>
             <li>Mortars</li>

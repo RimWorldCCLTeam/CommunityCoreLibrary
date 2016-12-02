@@ -166,43 +166,6 @@ namespace CommunityCoreLibrary.Controller
             }
         }
 
-        internal static void                Restart()
-        {
-            if( !IsInGoodState )
-            {
-                CCL_Log.Error( "Library is not in a valid state but 'Library.Restart' was called!" );
-                return;
-            }
-
-            // Call controller Initialize() on game load
-            var subControllers = Controller.Data.SubControllers.ToList();
-            subControllers.Sort( (x,y) => ( x.InitializationPriority > y.InitializationPriority ) ? -1 : 1 );
-
-            foreach( var subsys in subControllers )
-            {
-                if( subsys.InitializationPriority != SubController.DontProcessThisPhase )
-                {
-                    if(
-                        ( subsys.State >= SubControllerState._BaseOk )&&
-                        ( subsys.ReinitializeOnGameLoad )
-                    )
-                    {
-                        if( !subsys.Initialize() )
-                        {
-                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: Reinitialization" );
-                            Controller.Data.LibraryOk = false;
-                            return;
-                        }
-                        if( subsys.strReturn != string.Empty )
-                        {
-                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: Reinitialization" );
-                        }
-                    }
-                }
-            }
-            Controller.Data.LibraryTicks = 0;
-        }
-
     }
 
 }

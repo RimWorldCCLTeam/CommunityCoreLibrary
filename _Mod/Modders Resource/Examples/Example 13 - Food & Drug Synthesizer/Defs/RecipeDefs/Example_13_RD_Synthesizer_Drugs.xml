@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" Abstract="true" Name="SynthesizedDrugBase">
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" Abstract="true" Name="Example_13_SynthesizedDrugBase">
         <allowMixingIngredients>false</allowMixingIngredients>
         <requiredFacilities>
             <li>MultiAnalyzer</li>
         </requiredFacilities>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeBeer</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeBeer</defName>
         <label>synthesize beer</label>
-        <description>synthesizes beer from hops.</description>
-        <jobString>Synthesizing beer.</jobString>
+        <description>synthesizes a beer from hops.</description>
+        <jobString>Synthesizing a beer.</jobString>
         <workAmount>100</workAmount>
         <ingredients>
             <li>
@@ -34,8 +34,8 @@
         </products>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeFlake</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeFlake</defName>
         <label>synthesize flake</label>
         <description>synthesizes flake from psychoid leaves.</description>
         <jobString>Synthesizing flake.</jobString>
@@ -60,8 +60,8 @@
         </products>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeYayo</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeYayo</defName>
         <label>synthesize yayo</label>
         <description>synthesizes yayo from psychoid leaves.</description>
         <jobString>Synthesizing yayo.</jobString>
@@ -86,8 +86,8 @@
         </products>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeGoJuice</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeGoJuice</defName>
         <label>synthesize go-juice</label>
         <description>synthesizes go-juice from neutroamine and psychoid leaves.</description>
         <jobString>Synthesizing go-juice.</jobString>
@@ -121,8 +121,8 @@
         </products>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeMalariBlock</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeMalariBlock</defName>
         <label>synthesize malari-block</label>
         <description>synthesizes malari-block from neutroamine.</description>
         <jobString>Synthesizing malari-block.</jobString>
@@ -147,11 +147,11 @@
         </products>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeSmokeleafJoint</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeSmokeleafJoint</defName>
         <label>synthesize smokeleaf joint</label>
-        <description>synthesizes smokeleaf joint from smokeleaf leaves.</description>
-        <jobString>Synthesizing smokeleaf joint.</jobString>
+        <description>synthesizes a smokeleaf joint from smokeleaf leaves.</description>
+        <jobString>Synthesizing a smokeleaf joint.</jobString>
         <workAmount>100</workAmount>
         <ingredients>
             <li>
@@ -173,8 +173,8 @@
         </products>
     </RecipeDef>
 
-    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="SynthesizedDrugBase">
-        <defName>SynthesizeWakeUp</defName>
+    <RecipeDef Class="CommunityCoreLibrary.AdvancedRecipeDef" ParentName="Example_13_SynthesizedDrugBase">
+        <defName>Example_13_SynthesizeWakeUp</defName>
         <label>synthesize wake-up</label>
         <description>synthesizes wake-up from neutroamine.</description>
         <jobString>Synthesizing wake-up.</jobString>

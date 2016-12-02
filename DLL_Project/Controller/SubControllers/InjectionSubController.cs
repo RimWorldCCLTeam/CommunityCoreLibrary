@@ -43,7 +43,7 @@ namespace CommunityCoreLibrary.Controller
         // Override sequence priorities
         public override int                 ValidationPriority      =>  90;
         public override int                 InitializationPriority  => 100;
-        public override int                 UpdatePriority          => 100;
+        public override int                 GameLoadPriority        => 100;
 
         public override bool                Validate()
         {
@@ -100,6 +100,7 @@ namespace CommunityCoreLibrary.Controller
                 );
                 strReturn = stringBuilder.ToString();
                 State = SubControllerState.InitializationError;
+                return false;
             }
 
             // Everything's ok for updates
@@ -108,14 +109,14 @@ namespace CommunityCoreLibrary.Controller
                 "Initialized"
             );
             strReturn = stringBuilder.ToString();
-            State = SubControllerState.Ok;
+            State = SubControllerState.Hybernating;
 
             LongEventHandler.SetCurrentEventText( "Initializing".Translate() );
 
             return true;
         }
 
-        public override bool                Update()
+        public override bool                PreThingLoad()
         {
             var stringBuilder = new StringBuilder();
             CCL_Log.CaptureBegin( stringBuilder );
@@ -129,6 +130,7 @@ namespace CommunityCoreLibrary.Controller
                 );
                 strReturn = stringBuilder.ToString();
                 State = SubControllerState.RuntimeError;
+                return false;
             }
 
             // Post-load injections complete, stop calling this

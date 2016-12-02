@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>Example 5 - Ancient Cryptosleep</name>
+    <author>RimWorld CCL Team</author>
+    <url>n/a</url>
+    <targetVersion>0.15.1284</targetVersion>
+    <description>
+This is an example of how to lock and unlock buildings as research is completed.
+
+Demonstrates:
+	Locking and unlocking buildings in the architect menu requiring multiple research projects (AdvancedResearchDef)
+	Creating automatic help menu entries for groups of research (AdvancedResearchDef)
+	Changing the designation category of a ThingDef (ModHelperDef; SequencedInjectionSet_ThingDefAvailability)
+</description>
+</ModMetaData>

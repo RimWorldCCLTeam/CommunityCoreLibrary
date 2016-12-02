@@ -1,9 +1,18 @@
-﻿using System;
+﻿#if DEVELOPER
+// Enable this define for a whole bunch of debug logging
+//#define _I_AM_A_POTATO_
+// Enable this define to target only a specific def, see MonitorForDef below
+#define _I_AM_WATCHING_YOU_
+#endif
+
+using System;
 using System.Collections.Generic;
 
 using RimWorld;
 using Verse;
 using Verse.AI;
+
+using CommunityCoreLibrary;
 
 namespace CommunityCoreLibrary.Detour
 {
@@ -11,9 +20,35 @@ namespace CommunityCoreLibrary.Detour
     internal static class _ThingListGroupHelper
     {
 
+#if _I_AM_A_POTATO_
+#if _I_AM_WATCHING_YOU_
+        private const string                MonitorForDef = "Synthesizer";
+#endif
+#endif
+
         [DetourMember( typeof( ThingListGroupHelper ) )]
         internal static bool                _Includes( this ThingRequestGroup group, ThingDef def )
         {
+#if _I_AM_A_POTATO_
+            var rVal = _IncludesInt( group, def );
+#if _I_AM_WATCHING_YOU_
+            if( def.defName == MonitorForDef )
+            {
+#endif
+                CCL_Log.Trace(
+                    Verbosity.Default,
+                    string.Format( "Group '{0}' includes Def '{1}' = '{2}'", group, def.defName, rVal ),
+                    "Detour.ThingListGroupHelper.Includes"
+                );
+#if _I_AM_WATCHING_YOU_
+            }
+#endif
+            return rVal;
+        }
+
+        internal static bool                _IncludesInt( ThingRequestGroup group, ThingDef def )
+        {
+#endif
             switch( group )
             {
             case ThingRequestGroup.Undefined:
@@ -121,8 +156,11 @@ namespace CommunityCoreLibrary.Detour
                 
             case ThingRequestGroup.Drug:
                 // Catch Automated Factories that can be drug synthesizers
-                if( def.IsFoodDispenser )
-                {
+                if(
+                    ( typeof( Building_AutomatedFactory ).IsAssignableFrom( def.thingClass ) )&&
+                    ( Building_AutomatedFactory.DefOutputToPawnsDirectly( def ) )
+                )
+                {   // Since nutrient paste dispensers are also food dispensers, we need to check this way instead of IsFoodDispenser
                     var products = def.AllRecipes;
                     if( products.NullOrEmpty() )
                     {
@@ -170,9 +208,9 @@ namespace CommunityCoreLibrary.Detour
                     return typeof( DropPodIncoming ).IsAssignableFrom( def.thingClass );
                 }
                 return true;
-                
+
             default:
-                throw new ArgumentException("group");
+                throw new ArgumentException( "group" );
             }
         }
 

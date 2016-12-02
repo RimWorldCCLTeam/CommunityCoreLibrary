@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 using System.Text;
 using Verse;
@@ -17,6 +18,13 @@ namespace CommunityCoreLibrary
             public string                   fileName;
             public FileStream               stream;
             public int                      indent;
+        }
+
+        private enum MessageClass
+        {
+            Message,
+            Warning,
+            Error
         }
 
         public const string                 cclLogFileName = "ccl_log.txt";
@@ -105,9 +113,9 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-        public static bool                  AppendSection( ref StringBuilder s, string str, bool addSectionDivider = true )
+        public static bool                  AppendSection( ref StringBuilder s, string str, bool prependSectionDivider = true )
         {
-            if( addSectionDivider )
+            if( prependSectionDivider )
             {
                 s.Append( " :: " );
             }
@@ -115,9 +123,9 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        public static bool                  AppendSectionNewLine( ref StringBuilder s, string str, bool addSectionDivider = true )
+        public static bool                  AppendSectionNewLine( ref StringBuilder s, string str, bool prependSectionDivider = true )
         {
-            if( addSectionDivider )
+            if( prependSectionDivider )
             {
                 s.Append( " :: " );
             }
@@ -165,14 +173,31 @@ namespace CommunityCoreLibrary
         }
         */
 
-        public static StringBuilder         BaseMessage( string content = null, string category = null )
+        private static StringBuilder         BaseMessage( string content = null, string category = null, MessageClass messageClass = MessageClass.Message )
         {
             var s = new StringBuilder();
             s.Append( Controller.Data.UnityObjectName );
 
+            if(
+                ( Current.Game != null )&&
+                ( Find.TickManager != null )
+            )
+            {
+                AppendSection( ref s, string.Format( "TicksGame = {0}", Find.TickManager.TicksGame ) );
+            }
+
             if( category != null )
             {
                 AppendSection( ref s, category );
+            }
+
+            if( messageClass == MessageClass.Error )
+            {
+                AppendSection( ref s, "(Error)" );
+            }
+            if( messageClass == MessageClass.Warning )
+            {
+                AppendSection( ref s, "(Warning)" );
             }
 
             if( content != null )
@@ -183,33 +208,38 @@ namespace CommunityCoreLibrary
             return s;
         }
 
+        private static List<StringBuilder>  captureStack = new List<StringBuilder>();
         private static StringBuilder        captureTarget = null;
         private static Verbosity            captureVerbosity = Verbosity.Default;
 
         public static bool                  CaptureBegin( StringBuilder target )
         {
-            if( captureTarget == null )
+            if( target == null )
+            {
+                CCL_Log.Error( "Cannot set CaptureBegin( target ) to null", "Log Capture" );
+                return false;
+            }
+            if( captureStack.Contains( target ) )
             {
                 captureTarget = target;
-                captureVerbosity = Verbosity.Default;
                 return true;
             }
-            if( captureTarget == target )
-            {
-                CCL_Log.Error( "Already capturing log", "Log Capture" );
-                return true;
-            }
-            return false;
+            captureStack.Insert( 0, target );
+            captureTarget = captureStack[ 0 ];
+            return true;
         }
 
         public static bool                  CaptureEnd( StringBuilder target, string status = "" )
         {
-            if( captureTarget == null )
+            if( captureStack.NullOrEmpty() )
             {
                 CCL_Log.Error( "Log isn't being captured, no need to end capture", "Log Capture" );
-                return true;
+                return false;
             }
-            if( captureTarget != target )
+            if(
+                ( captureStack[ 0 ] != target )&&
+                ( captureTarget != target )
+            )
             {
                 CCL_Log.Error( "Cannot end a capture on a different object", "Log Capture" );
                 return false;
@@ -217,7 +247,14 @@ namespace CommunityCoreLibrary
             var captureStatus = status + "\n";
             captureTarget.Insert( 0, captureStatus );
             captureVerbosity = Verbosity.Default;
-            captureTarget = null;
+            if( captureStack[ 0 ] == target )
+            {
+                captureStack.RemoveAt( 0 );
+            }
+            if( captureTarget == target )
+            {
+                captureTarget = captureStack.Count > 0 ? captureStack[ 0 ] : null;
+            }
             return true;
         }
 
@@ -241,7 +278,7 @@ namespace CommunityCoreLibrary
                 bool prefixNext = false;
                 if( category != null )
                 {
-                    prefixNext = AppendSection( ref s, category, false );
+                    prefixNext = AppendSection( ref s, category, prefixNext );
                 }
                 AppendSectionNewLine( ref s, content, prefixNext );
             }
@@ -255,7 +292,7 @@ namespace CommunityCoreLibrary
             var s = captureTarget;
             if( s == null )
             {
-                s = BaseMessage( content, category );
+                s = BaseMessage( content, category, MessageClass.Error );
                 Verse.Log.Error( s.ToString() );
 #if DEBUG
                 Write( s.ToString() );
@@ -264,10 +301,36 @@ namespace CommunityCoreLibrary
             else
             {
                 s.Append( "\t" );
-                bool prefixNext = false;
+                bool prefixNext = AppendSection( ref s, "(Error)", false );
                 if( category != null )
                 {
-                    prefixNext = AppendSection( ref s, category, false );
+                    prefixNext = AppendSection( ref s, category, prefixNext );
+                }
+                AppendSectionNewLine( ref s, content, prefixNext );
+            }
+        }
+
+        /// <summary>
+        /// Write a warning => Community Core Library :: category(nullable) :: content
+        /// </summary>
+        public static void                  Warning( string content, string category = null )
+        {
+            var s = captureTarget;
+            if( s == null )
+            {
+                s = BaseMessage( content, category, MessageClass.Warning );
+                Verse.Log.Warning( s.ToString() );
+#if DEBUG
+                Write( s.ToString() );
+    #endif
+            }
+            else
+            {
+                s.Append( "\t" );
+                bool prefixNext = AppendSection( ref s, "(Warning)", false );
+                if( category != null )
+                {
+                    prefixNext = AppendSection( ref s, category, prefixNext );
                 }
                 AppendSectionNewLine( ref s, content, prefixNext );
             }

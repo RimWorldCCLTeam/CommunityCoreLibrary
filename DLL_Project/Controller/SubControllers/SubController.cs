@@ -61,12 +61,10 @@ namespace CommunityCoreLibrary.Controller
         public virtual int                  ValidationPriority      => DontProcessThisPhase;
         public virtual int                  InitializationPriority  => DontProcessThisPhase;
         public virtual int                  UpdatePriority          => DontProcessThisPhase;
+        public virtual int                  GameLoadPriority        => DontProcessThisPhase;
 
         // Default update rate is every 30 ticks
         public virtual int                  UpdateTicks             => 30;
-
-        // If the controller Initialize() method should be called on game load return true
-        public virtual bool                 ReinitializeOnGameLoad  => false;
 
         // Entry with controller state Uninitialized
         // Exit with ValidationError (false) on error
@@ -88,6 +86,39 @@ namespace CommunityCoreLibrary.Controller
             // Default class method for sub-classes which don't require initialization
             strReturn = string.Empty;
             State = SubControllerState.Ok;
+            return true;
+        }
+
+        // Entry with controller state Ok or Hybernating, only called during a game load after the small components, 'world' and, 'map' are loaded but before compressed and uncompressed things are loaded
+        // Exit with InitializationError (false) on error
+        // Ok (true) if ready for game play
+        // Hybernating (true) if system is ok and no frame updates are required
+        public virtual bool                 PreThingLoad()
+        {
+            // Default class method for sub-classes which don't require game load events
+            strReturn = string.Empty;
+            return true;
+        }
+
+        // Entry with controller state Ok or Hybernating, only called immediately before a game load or new game
+        // Exit with InitializationError (false) on error
+        // Ok (true) if ready for game play
+        // Hybernating (true) if system is ok and no frame updates are required
+        public virtual bool                 PreLoad()
+        {
+            // Default class method for sub-classes which don't require game load events
+            strReturn = string.Empty;
+            return true;
+        }
+
+        // Entry with controller state Ok or Hybernating, only called immediately after a game load or new game
+        // Exit with InitializationError (false) on error
+        // Ok (true) if ready for game play
+        // Hybernating (true) if system is ok and no frame updates are required
+        public virtual bool                 PostLoad()
+        {
+            // Default class method for sub-classes which don't require game load events
+            strReturn = string.Empty;
             return true;
         }
 

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+        <!--
+            This def disables the normal crypto sleep
+        -->
+
+        <defName>Example_5_HideCryptosleep</defName>
+        
+        <!--
+            Flagging the Priority as -1 tells the library that any HelpDef to be generated
+            based on matching researchDefs should use this def as the parent.
+        -->
+        <Priority>-1</Priority>
+
+        <!--
+            The list or "group" of research projects which must be complete for this def to trigger.
+        -->
+        <researchDefs>
+            <li>Cryptosleep</li>
+            <li>Example_5_AncientTechnology</li>
+        </researchDefs>
+
+        <!--
+            Disable the normal cryptosleep
+        -->
+        <HideDefs>true</HideDefs>
+
+        <!--
+            Generate a HelpDef with the supplied label and description for this def and
+            consolidate all defs with the same researchDefs to use this def as their parent.
+        -->
+        <ConsolidateHelp>true</ConsolidateHelp>
+        <label>Ancient Cryptosleep</label>
+        <description>Completion of this project allows you to build the ancient crytosleep casket which will replace the regular one.</description>
+
+        <!--
+            And finally the list of things it's actually effecting.
+        -->
+        <thingDefs>
+            <li>CryptosleepCasket</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+    <CommunityCoreLibrary.AdvancedResearchDef>
+        <!--
+            This def enables the ancient crypto sleep
+        -->
+
+        <defName>Example_5_BuildAncientCryptoSleep</defName>
+
+        <!--
+            Make sure no other def with a matching researchDefs list doesn't have the same
+            priority as any other.  The priority is the order which the defs are processed
+            and the library will throw an error if you use two defs with matching researchDefs
+            with the same priority.
+        -->
+        <Priority>0</Priority>
+
+        <!--
+            The order of the researchDefs doesn't have to match element-for-element.  Every
+            item in each list is checked against the other defs researchDefs and vice versa.
+        -->
+        <researchDefs>
+            <li>Example_5_AncientTechnology</li>
+            <li>Cryptosleep</li>
+        </researchDefs>
+
+        <!--
+            The default nature is to enable stuff so this def doesn't specifically need to
+            say what it's doing to the list of things.
+        -->
+        <thingDefs>
+            <li>AncientCryptosleepCasket</li>
+        </thingDefs>
+
+    </CommunityCoreLibrary.AdvancedResearchDef>
+
+</Defs>

@@ -446,7 +446,7 @@ namespace CommunityCoreLibrary
             // Get advanced research database
             var advancedResearchDefs =
                 Controller.Data.AdvancedResearchDefs.Where( a => (
-                    ( a.ResearchConsolidator == a )&&
+                    ( a.HelpConsolidator == a )&&
                     ( a.HasHelp )
                 ) ).ToList();
 

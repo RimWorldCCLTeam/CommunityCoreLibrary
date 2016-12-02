@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <ThingDef Name="BuildingBase" Abstract="True">
+    <ThingDef Name="Example_13_BuildingBase" Abstract="True">
         <category>Building</category>
         <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
         <selectable>true</selectable>
@@ -12,8 +12,8 @@
         <filthLeaving>BuildingRubble</filthLeaving>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
-        <defName>Synthesizer</defName>
+    <ThingDef ParentName="Example_13_BuildingBase">
+        <defName>Example_13_Synthesizer</defName>
         <label>synthesizer</label>
         <thingClass>CommunityCoreLibrary.Building_AutomatedFactory</thingClass>
         <graphicData>
@@ -48,6 +48,11 @@
             </li>
             <li Class="CompProperties_Flickable"/>
             <li Class="CompProperties_Breakdownable"/>
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>MultiAnalyzer</li>
+                </linkableFacilities>
+            </li>
             <li Class="CommunityCoreLibrary.CompProperties_HopperUser">
                 <compClass>CommunityCoreLibrary.CompHopperUser</compClass>
             </li>
@@ -55,14 +60,6 @@
                 <compClass>CommunityCoreLibrary.CompAutomatedFactory</compClass>
                 <outputVector>DirectToPawn</outputVector>
                 <productionMode>PawnInteractionOnly</productionMode>
-            </li>
-            <li Class="CommunityCoreLibrary.CompProperties_AffectedByFacilities">
-                <!-- This must be set true to connect this building to facilities flagged as canLinkToMedBedsOnly (Vitals Monitor) -->
-                <overrideBedOnly>true</overrideBedOnly>
-                <linkableFacilities>
-                    <li>MultiAnalyzer</li>
-                    <li>VitalsMonitor</li>
-                </linkableFacilities>
             </li>
         </comps>
         <size>(3,4)</size>
@@ -79,10 +76,10 @@
             <li>CommunityCoreLibrary.PlaceWorker_HopperMagnifier</li>
         </placeWorkers>
         <recipes>
-            <li>SynthesizeMealSimple</li>
+            <li>Example_13_SynthesizeMealSimple</li>
         </recipes>
         <researchPrerequisites>
-            <li>MealSynthesis</li>
+            <li>Example_13_MealSynthesis</li>
         </researchPrerequisites>
         <inspectorTabs>
             <li>CommunityCoreLibrary.ITab_AutomatedFactory</li>

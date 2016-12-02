@@ -28,7 +28,7 @@ namespace CommunityCoreLibrary.Detour
                 CCL_Log.Trace(
                     Verbosity.FatalErrors,
                     "Unable to get field 'loadedInt' in 'PlayDataLoader'",
-                    "Detour.PlatDataLoader" );
+                    "Detour.PlayDataLoader" );
             }
             _DoPlayLoad = typeof( Verse.PlayDataLoader ).GetMethod( "DoPlayLoad", Controller.Data.UniversalBindingFlags );
             if( _DoPlayLoad == null )
@@ -36,7 +36,7 @@ namespace CommunityCoreLibrary.Detour
                 CCL_Log.Trace(
                     Verbosity.FatalErrors,
                     "Unable to get method 'DoPlayLoad' in 'PlayDataLoader'",
-                    "Detour.PlatDataLoader" );
+                    "Detour.PlayDataLoader" );
             }
         }
 

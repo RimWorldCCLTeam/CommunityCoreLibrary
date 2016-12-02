@@ -18,14 +18,20 @@ namespace CommunityCoreLibrary
 
 		public override void ClickAction()
 		{
-			Find.WindowStack.Add( (Window)new Dialog_Confirm(
-				"ConfirmQuit".Translate(),
-				() =>
-        			{
-        				Application.LoadLevel( "Entry" );
-        			},
-				false
-			) );
+            if( GameDataSaveLoader.CurrentMapStateIsValuable )
+            {
+    			Find.WindowStack.Add( (Window)new Dialog_Confirm(
+    				"ConfirmQuit".Translate(),
+    				RootMap.GoToMainMenu,
+    				true,
+                    null,
+                    true
+    			) );
+            }
+            else
+            {
+                RootMap.GoToMainMenu();
+            }
 		}
 
 	}

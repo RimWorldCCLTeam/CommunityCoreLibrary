@@ -142,6 +142,100 @@ namespace CommunityCoreLibrary.Controller
 
         }
 
+        internal static void                PreLoad()
+        {
+            CCL_Log.Trace(
+                Verbosity.Injections,
+                "PreLoad()",
+                "SubControllers" );
+            // Call controller PreLoad() on game load
+            var subControllers = Controller.Data.SubControllers.ToList();
+            subControllers.Sort( (x,y) => ( x.GameLoadPriority > y.GameLoadPriority ) ? -1 : 1 );
+
+            foreach( var subsys in subControllers )
+            {
+                if( subsys.GameLoadPriority != SubController.DontProcessThisPhase )
+                {
+                    if( subsys.State >= SubControllerState._BaseOk )
+                    {
+                        if( !subsys.PreLoad() )
+                        {
+                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: PreLoad" );
+                            Controller.Data.LibraryOk = false;
+                            return;
+                        }
+                        if( subsys.strReturn != string.Empty )
+                        {
+                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: PreLoad" );
+                        }
+                    }
+                }
+            }
+            Controller.Data.LibraryTicks = 0;
+        }
+
+        internal static void                PreThingLoad()
+        {
+            CCL_Log.Trace(
+                Verbosity.Injections,
+                "PreThingLoad()",
+                "SubControllers" );
+            // Call controller PostSmallComponentExposeData() on game load
+            var subControllers = Controller.Data.SubControllers.ToList();
+            subControllers.Sort( (x,y) => ( x.GameLoadPriority > y.GameLoadPriority ) ? -1 : 1 );
+
+            foreach( var subsys in subControllers )
+            {
+                if( subsys.GameLoadPriority != SubController.DontProcessThisPhase )
+                {
+                    if( subsys.State >= SubControllerState._BaseOk )
+                    {
+                        if( !subsys.PreThingLoad() )
+                        {
+                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: PreThingLoad" );
+                            Controller.Data.LibraryOk = false;
+                            return;
+                        }
+                        if( subsys.strReturn != string.Empty )
+                        {
+                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: PreThingLoad" );
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static void                PostLoad()
+        {
+            CCL_Log.Trace(
+                Verbosity.Injections,
+                "PostLoad()",
+                "SubControllers" );
+            // Call controller PostLoad() on game load
+            var subControllers = Controller.Data.SubControllers.ToList();
+            subControllers.Sort( (x,y) => ( x.GameLoadPriority > y.GameLoadPriority ) ? -1 : 1 );
+
+            foreach( var subsys in subControllers )
+            {
+                if( subsys.GameLoadPriority != SubController.DontProcessThisPhase )
+                {
+                    if( subsys.State >= SubControllerState._BaseOk )
+                    {
+                        if( !subsys.PostLoad() )
+                        {
+                            CCL_Log.Error( subsys.strReturn, subsys.Name + " :: PostLoad" );
+                            Controller.Data.LibraryOk = false;
+                            return;
+                        }
+                        if( subsys.strReturn != string.Empty )
+                        {
+                            CCL_Log.Message( subsys.strReturn, subsys.Name + " :: PostLoad" );
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }

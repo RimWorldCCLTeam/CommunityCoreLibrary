@@ -9,7 +9,7 @@ using Verse;
 namespace CommunityCoreLibrary.Detour
 {
     
-    internal class _AddictionUtility
+    internal static class _AddictionUtility
     {
 
         #region Helper Methods

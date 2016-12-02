@@ -2,9 +2,9 @@
 <Defs>
 
     <CommunityCoreLibrary.ModHelperDef>
-        <defName>AdvancedResearchBuildingExample</defName>
+        <defName>Example_5_MHD_AncientCryptosleep</defName>
 
-        <ModName>Advanced Research Building Example</ModName>
+        <ModName>Example 5 - Ancient Cryptosleep</ModName>
 
         <minCCLVersion>0.15.0</minCCLVersion>
 

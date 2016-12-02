@@ -3,120 +3,120 @@
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedDrugSynthesis</defName>
+        <defName>Example_13_AdvancedDrugSynthesis</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>DrugSynthesis</li>
+            <li>Example_13_DrugSynthesis</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeSmokeleafJoint</li>
+            <li>Example_13_SynthesizeSmokeleafJoint</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedDrugSynthesisBeer</defName>
+        <defName>Example_13_AdvancedDrugSynthesisBeer</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>DrugSynthesis</li>
+            <li>Example_13_DrugSynthesis</li>
             <li>Brewing</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeBeer</li>
+            <li>Example_13_SynthesizeBeer</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedDrugSynthesisMalariBlock</defName>
+        <defName>Example_13_AdvancedDrugSynthesisMalariBlock</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>DrugSynthesis</li>
+            <li>Example_13_DrugSynthesis</li>
             <li>MalariBlockProduction</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeMalariBlock</li>
+            <li>Example_13_SynthesizeMalariBlock</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedDrugSynthesisPsychite</defName>
+        <defName>Example_13_AdvancedDrugSynthesisPsychite</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>DrugSynthesis</li>
+            <li>Example_13_DrugSynthesis</li>
             <li>PsychiteRefining</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeFlake</li>
-            <li>SynthesizeYayo</li>
+            <li>Example_13_SynthesizeFlake</li>
+            <li>Example_13_SynthesizeYayo</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedDrugSynthesisGoJuice</defName>
+        <defName>Example_13_AdvancedDrugSynthesisGoJuice</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>DrugSynthesis</li>
+            <li>Example_13_DrugSynthesis</li>
             <li>GoJuiceProduction</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeGoJuice</li>
+            <li>Example_13_SynthesizeGoJuice</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedDrugSynthesisWakeUp</defName>
+        <defName>Example_13_AdvancedDrugSynthesisWakeUp</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>DrugSynthesis</li>
+            <li>Example_13_DrugSynthesis</li>
             <li>WakeUpProduction</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeWakeUp</li>
+            <li>Example_13_SynthesizeWakeUp</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>

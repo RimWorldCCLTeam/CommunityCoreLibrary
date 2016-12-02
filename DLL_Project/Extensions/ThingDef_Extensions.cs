@@ -270,10 +270,10 @@ namespace CommunityCoreLibrary
                         // If it's a single research project, add that
                         researchDefs.AddUnique( a.researchDefs[ 0 ] );
                     }
-                    else if( a.ResearchConsolidator != null )
+                    else if( a.HelpConsolidator != null )
                     {
                         // Add the advanced project instead
-                        researchDefs.AddUnique( a.ResearchConsolidator );
+                        researchDefs.AddUnique( a.HelpConsolidator );
                     }
                 }
             }
@@ -358,6 +358,12 @@ namespace CommunityCoreLibrary
         }
 
         #endregion
+
+        public static List<Thing>           ListOfThingsByDef( this ThingDef thingDef )
+        {
+            var listsByDef = Find.ListerThings.ListsByDef();
+            return listsByDef[ thingDef ];
+        }
 
     }
 

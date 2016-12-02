@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RecipeDefs>
 
-    <RecipeDef Abstract="true" Name="SynthesizedMealBase">
+    <RecipeDef Abstract="true" Name="Example_13_SynthesizedMealBase">
         <allowMixingIngredients>true</allowMixingIngredients>
         <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
         <fixedIngredientFilter>
@@ -22,12 +22,13 @@
             <exceptedThingDefs>
                 <li>Human_Meat</li>
                 <li>Hay</li>
+                <li>InsectMeat</li>
             </exceptedThingDefs>
         </defaultIngredientFilter>
     </RecipeDef>
 
-    <RecipeDef ParentName="SynthesizedMealBase">
-        <defName>SynthesizeMealSimple</defName>
+    <RecipeDef ParentName="Example_13_SynthesizedMealBase">
+        <defName>Example_13_SynthesizeMealSimple</defName>
         <label>synthesize simple meal</label>
         <description>Synthesizes a straightforward meal from one ingredient.</description>
         <jobString>Synthesizing simple meal.</jobString>
@@ -47,8 +48,8 @@
         <workAmount>200</workAmount>
     </RecipeDef>
 
-    <RecipeDef ParentName="SynthesizedMealBase">
-        <defName>SynthesizeMealFine</defName>
+    <RecipeDef ParentName="Example_13_SynthesizedMealBase">
+        <defName>Example_13_SynthesizeMealFine</defName>
         <label>synthesize fine meal</label>
         <description>Synthesizes a somewhat complex meal from a combination of raw meat and raw plant ingredients.</description>
         <jobString>Synthesizing fine meal.</jobString>
@@ -77,8 +78,8 @@
         <workAmount>275</workAmount>
     </RecipeDef>
 
-    <RecipeDef ParentName="SynthesizedMealBase">
-        <defName>SynthesizeMealLavish</defName>
+    <RecipeDef ParentName="Example_13_SynthesizedMealBase">
+        <defName>Example_13_SynthesizeMealLavish</defName>
         <label>synthesize lavish meal</label>
         <description>Synthesizes a very complex meal from a combination of raw meat and raw plant ingredients. Unlike a cooked meal, none of the ingredients are wasted but it still requires more ingredients than a fine meal.</description>
         <jobString>Synthesizing lavish meal.</jobString>

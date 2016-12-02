@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Enable this define to do a whole bunch of debug logging
+#if DEVELOPER
+//#define _I_AM_A_POTATO_
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -559,7 +564,7 @@ namespace CommunityCoreLibrary
 
         public void                         ResetAndReprogramHoppers()
         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
             CCL_Log.Message(
                 string.Format( "{0}\n{1}", this.ThingID, Environment.StackTrace ),
                 "Building_AutomatedFactory.ResetAndReprogramHoppers()"
@@ -1238,7 +1243,7 @@ namespace CommunityCoreLibrary
             {
                 if( consideration.ConsideredBy != pawn )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         string.Format(
                             "{0} could not consider {1} for {2} because it is already reserved by {3} for {4}\n{5}",
@@ -1256,7 +1261,7 @@ namespace CommunityCoreLibrary
                 }
             }
             consideration = new Consideration( pawn, product );
-#if DEVELOPER
+#if _I_AM_A_POTATO_
             CCL_Log.Message(
                 string.Format( "{0} is now considering {1} for {2}\n{3}", pawn.LabelShort, this.ThingID, product.defName, Environment.StackTrace ),
                 "Building_AutomatedFactory.ConsiderFor"
@@ -1335,7 +1340,7 @@ namespace CommunityCoreLibrary
             {
                 if( consideration.ConsideredBy != pawn )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         string.Format(
                             "{0} could not reserve {1} for {2} because it is already reserved by {3} for {4}\n{5}",
@@ -1353,7 +1358,7 @@ namespace CommunityCoreLibrary
                 }
             }
             consideration = new Consideration( pawn, product, true );
-#if DEVELOPER
+#if _I_AM_A_POTATO_
             CCL_Log.Message(
                 string.Format( "{0} has now reserved {1} for {2}\n{3}", pawn.LabelShort, this.ThingID, product.defName, Environment.StackTrace ),
                 "Building_AutomatedFactory.ReserveForUseBy"
@@ -1367,7 +1372,7 @@ namespace CommunityCoreLibrary
 
         private void                        ReleaseFromUseByInt( Pawn pawn, bool releaseFromManager = false )
         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
             CCL_Log.Message(
                 string.Format(
                     "{0} is no longer reserving {1} for {2}\n{3}",
@@ -1393,7 +1398,7 @@ namespace CommunityCoreLibrary
         {
             if( !IsReservedBy( pawn ) )
             {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 CCL_Log.Message(
                     string.Format(
                         "{0} could not release {1} because it is reserved by {2}\n{3}",
@@ -1415,7 +1420,7 @@ namespace CommunityCoreLibrary
             //Log.Message( string.Format( "{0}.TryProduceAndReleaseBy( {1} )", this.ThingID, pawn == null ? "null" : pawn.NameStringShort ) );
             if( !IsReservedBy( pawn ) )
             {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 CCL_Log.Message(
                     string.Format(
                         "{0} could not take from and release {1} because it is reserved by {2}\n{3}",

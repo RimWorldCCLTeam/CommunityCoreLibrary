@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Enable this define to do a whole bunch of debug logging
+#if DEVELOPER
+//#define _I_AM_A_POTATO_
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -66,7 +71,7 @@ namespace CommunityCoreLibrary.Detour
 
         #endregion
 
-#if DEVELOPER
+#if _I_AM_A_POTATO_
         internal static void                DumpThingsRequestedForGroup( ThingRequest thingRequest, List<Thing> thingsRequested )
         {
             var str = string.Format( "ListerThings.ThingsMatching( {0} ) ::\n", thingRequest );
@@ -82,12 +87,16 @@ namespace CommunityCoreLibrary.Detour
         [DetourMember( typeof( FoodUtility ) )]
         internal static ThingDef            _GetFinalIngestibleDef( Thing foodSource )
         {
-            //CCL_Log.Message( string.Format( "GetFinalIngestibleDef( {0} )", foodSource.ThingID ) );
+#if _I_AM_A_POTATO_
+            CCL_Log.Message( string.Format( "GetFinalIngestibleDef( {0} )", foodSource.ThingID ) );
+#endif
 
             var nutrientPasteDispenser = foodSource as Building_NutrientPasteDispenser;
             if( nutrientPasteDispenser != null )
             {
-                //CCL_Log.Message( string.Format( "GetFinalIngestibleDef( {0} ) - {1}", foodSource.ThingID, nutrientPasteDispenser.DispensableDef.defName ) );
+#if _I_AM_A_POTATO_
+                CCL_Log.Message( string.Format( "GetFinalIngestibleDef( {0} ) - {1}", foodSource.ThingID, nutrientPasteDispenser.DispensableDef.defName ) );
+#endif
                 return nutrientPasteDispenser.DispensableDef;
             }
 
@@ -95,7 +104,7 @@ namespace CommunityCoreLibrary.Detour
             if( synthesizer != null )
             {
                 var synthesizedDef = synthesizer.ConsideredProduct;
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 if( synthesizedDef == null )
                 {
                     CCL_Log.Trace(
@@ -104,6 +113,7 @@ namespace CommunityCoreLibrary.Detour
                         "Detour.FoodUtility.GetFinalIngestibleDef"
                     );
                 }
+                CCL_Log.Message( string.Format( "GetFinalIngestibleDef( {0} ) - {1}", foodSource.ThingID, synthesizedDef.defName ) );
 #endif
                 return synthesizedDef;
             }
@@ -111,10 +121,14 @@ namespace CommunityCoreLibrary.Detour
             var prey = foodSource as Pawn;
             if( prey != null )
             {
-                //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, prey.RaceProps.corpseDef.defName ) );
+#if _I_AM_A_POTATO_
+                CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, prey.RaceProps.corpseDef.defName ) );
+#endif
                 return prey.RaceProps.corpseDef;
             }
-            //CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, foodSource.def.defName ) );
+#if _I_AM_A_POTATO_
+            CCL_Log.Message( string.Format( "GetFoodDef( {0} ) - {1}", foodSource.ThingID, foodSource.def.defName ) );
+#endif
             return foodSource.def;
         }
 
@@ -133,7 +147,7 @@ namespace CommunityCoreLibrary.Detour
                 }
                 else if( synthesizer.IsReserved )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         string.Format( "{0} cannot be used by {1} as it has been reserved by {2}", t.ThingID, eater.LabelShort, synthesizer.ConsideredPawn.LabelShort ),
                         "Detour.FoodUtility.FoodSourceOptimality"
@@ -146,7 +160,7 @@ namespace CommunityCoreLibrary.Detour
                     mealDef = synthesizer.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                     if( mealDef == null )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} does not have enough resources to produce anything for {1}", t.ThingID, eater.LabelShort ),
                             "Detour.FoodUtility.FoodSourceOptimality"
@@ -156,7 +170,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !synthesizer.ConsiderFor( mealDef, eater ) )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Trace(
                             Verbosity.NonFatalErrors,
                             string.Format( "{0} cannot be considered by {1} for {2}", t.ThingID, eater.LabelShort, mealDef.defName ),
@@ -168,7 +182,7 @@ namespace CommunityCoreLibrary.Detour
                 }
                 if( mealDef == null )
                 {   // This should never happen, why is it?
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Trace(
                         Verbosity.NonFatalErrors,
                         string.Format( "{0} has not or cannot been considered by {1}", t.ThingID, eater.LabelShort ),
@@ -182,7 +196,9 @@ namespace CommunityCoreLibrary.Detour
             {
                 mealDef = ((Building_NutrientPasteDispenser)t).DispensableDef;
             }
-            //CCL_Log.Message( string.Format( "FoodSourceOptimality for {0} eating {1} from {2}", eater.LabelShort, def.defName, t.ThingID ) );
+#if _I_AM_A_POTATO_
+            CCL_Log.Message( string.Format( "FoodSourceOptimality for {0} eating {1} from {2}", eater.LabelShort, def.defName, t.ThingID ) );
+#endif
             switch( mealDef.ingestible.preferability )
             {
             case FoodPreferability.NeverForNutrition:
@@ -206,7 +222,9 @@ namespace CommunityCoreLibrary.Detour
                     num += 12f;
                 }
             }
-            //CCL_Log.Message( string.Format( "FoodSourceOptimality for {0} eating {1} from {2} = {3}", eater.LabelShort, def.defName, t.ThingID, num ) );
+#if _I_AM_A_POTATO_
+            CCL_Log.Message( string.Format( "FoodSourceOptimality for {0} eating {1} from {2} = {3}", eater.LabelShort, def.defName, t.ThingID, num ) );
+#endif
             if(
                 ( eater.needs != null )&&
                 ( eater.needs.mood != null )
@@ -244,12 +262,6 @@ namespace CommunityCoreLibrary.Detour
             if( t is Building_AutomatedFactory )
             {
                 mealDef = ((Building_AutomatedFactory)t).ConsideredProduct;
-                /*
-                if( mealDef == null )
-                {
-                    mealDef = ((Building_AutomatedFactory)t).BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
-                }
-                */
             }
             else if( t is Building_NutrientPasteDispenser )
             {
@@ -325,7 +337,7 @@ namespace CommunityCoreLibrary.Detour
         [DetourMember( typeof( FoodUtility ) )]
         internal static Thing               _BestFoodSourceOnMap( Pawn getter, Pawn eater, bool desperate, FoodPreferability maxPref = FoodPreferability.MealLavish, bool allowPlant = true, bool allowDrug = true, bool allowCorpse = true, bool allowDispenserFull = true, bool allowDispenserEmpty = true, bool allowForbidden = false )
         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
             CCL_Log.Message(
                 string.Format( "{0} fetching for {1} ", getter.LabelShort, eater.LabelShort ),
                 "Detour.FoodUtility.BestFoodSourceOnMap"
@@ -340,7 +352,7 @@ namespace CommunityCoreLibrary.Detour
                 ( getter != eater )
             )
             {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 CCL_Log.Trace(
                     Verbosity.NonFatalErrors,
                     string.Format( "{0} tried to find food to bring to {1} but {0} is incapable of Manipulation.", getter.LabelShort, eater.LabelShort ),
@@ -386,7 +398,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 var thingsRequested = Find.ListerThings.ThingsMatching( thingRequest );
 
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 DumpThingsRequestedForGroup( thingRequest, thingsRequested );
 
 
@@ -410,7 +422,7 @@ namespace CommunityCoreLibrary.Detour
             }
             else
             {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 CCL_Log.Message(
                     "Non-humanlike closest reachable...",
                     "Detour.FoodUtility.BestFoodSourceOnMap"
@@ -437,7 +449,7 @@ namespace CommunityCoreLibrary.Detour
                     false );
                 if( potentialFoodSource == null )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         "Non-humanlike closest reachable desperate...",
                         "Detour.FoodUtility.BestFoodSourceOnMap"
@@ -466,7 +478,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 mealDef = synthesizer.ConsideredProduct;
             }
-#if DEVELOPER
+#if _I_AM_A_POTATO_
             CCL_Log.Message(
                 string.Format(
                     "{0} picked {1} ({3}) for {2}",
@@ -509,7 +521,7 @@ namespace CommunityCoreLibrary.Detour
                     ( t.IsForbidden( getter ) )
                 )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         string.Format( "{0} cannot use {1} because it is forbidden", getter.LabelShort, t.ThingID ),
                         "Detour.FoodUtility.DispenserValidator"
@@ -523,7 +535,7 @@ namespace CommunityCoreLibrary.Detour
                     ( t.Faction != getter.HostFaction )
                 )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         string.Format( "{0} cannot use {1} because it is the wrong faction - Faction for {1} is {2} - Faction for {0} is {3}, host is {4}", getter.LabelShort, t.ThingID, t.Faction?.Name, getter.Faction?.Name, getter.HostFaction?.Name ),
                         "Detour.FoodUtility.DispenserValidator"
@@ -533,7 +545,7 @@ namespace CommunityCoreLibrary.Detour
                 }
                 if( !t.IsSociallyProper( getter ) )
                 {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                     CCL_Log.Message(
                         string.Format( "{0} cannot use {1} because it is socially improper", getter.LabelShort, t.ThingID ),
                         "Detour.FoodUtility.DispenserValidator"
@@ -547,7 +559,7 @@ namespace CommunityCoreLibrary.Detour
                     // Common checks for all machines
                     if( !allowDispenserFull )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because cannot use full dispensers", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -557,7 +569,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !getterCanManipulate )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because {0} cannot manipulate", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -571,7 +583,7 @@ namespace CommunityCoreLibrary.Detour
                         ( !compPower.PowerOn )
                     )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is unpowered", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -581,7 +593,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !t.InteractionCell.Standable() )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because the interaction cell is unstandable", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -600,7 +612,7 @@ namespace CommunityCoreLibrary.Detour
                             false )
                     ) )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is unreachable", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -610,7 +622,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !getter.CanReserve( t, 1 ) )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is unreservable", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -627,7 +639,7 @@ namespace CommunityCoreLibrary.Detour
                             ( NPD.DispensableDef.ingestible.preferability > maxPref )
                         )
                         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                             CCL_Log.Message(
                                 string.Format( "{0} cannot use {1} because it is not preferable", getter.LabelShort, t.ThingID ),
                                 "Detour.FoodUtility.DispenserValidator"
@@ -640,7 +652,7 @@ namespace CommunityCoreLibrary.Detour
                             ( !NPD.HasEnoughFeedstockInHoppers() )
                         )
                         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                             CCL_Log.Message(
                                 string.Format( "{0} cannot use {1} because it is empty", getter.LabelShort, t.ThingID ),
                                 "Detour.FoodUtility.DispenserValidator"
@@ -655,7 +667,7 @@ namespace CommunityCoreLibrary.Detour
                     {
                         if( synthesizer.IsReserved )
                         {   // Already in use
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                             CCL_Log.Message(
                                 string.Format( "{0} cannot use {1} because it has been reserved by {2}", getter.LabelShort, t.ThingID, synthesizer.ConsideredPawn.LabelShort ),
                                 "Detour.FoodUtility.DispenserValidator"
@@ -663,7 +675,7 @@ namespace CommunityCoreLibrary.Detour
 #endif
                             return false;
                         }
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} might use {1}", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -672,7 +684,7 @@ namespace CommunityCoreLibrary.Detour
                         var mealDef = synthesizer.BestProduct( FoodSynthesis.IsMeal, FoodSynthesis.SortMeal );
                         if( mealDef == null )
                         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                             CCL_Log.Message(
                                 string.Format( "{0} cannot use {1} because it is empty", getter.LabelShort, t.ThingID ),
                                 "Detour.FoodUtility.DispenserValidator"
@@ -685,7 +697,7 @@ namespace CommunityCoreLibrary.Detour
                             ( mealDef.ingestible.preferability > maxPref )
                         )
                         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                             CCL_Log.Message(
                                 string.Format( "{0} cannot use {1} for {2} because it is not preferable", getter.LabelShort, t.ThingID, mealDef.defName ),
                                 "Detour.FoodUtility.DispenserValidator"
@@ -695,7 +707,7 @@ namespace CommunityCoreLibrary.Detour
                         }
                         if( !synthesizer.ConsiderFor( mealDef, getter ) )
                         {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                             CCL_Log.Message(
                                 string.Format( "{0} cannot consider {1} for {2}", getter.LabelShort, t.ThingID, mealDef.defName ),
                                 "Detour.FoodUtility.DispenserValidator"
@@ -703,7 +715,7 @@ namespace CommunityCoreLibrary.Detour
 #endif
                             return false;
                         }
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} considered {1} for {2}", getter.LabelShort, t.ThingID, mealDef.defName ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -719,7 +731,7 @@ namespace CommunityCoreLibrary.Detour
                         ( t.def.ingestible.preferability > maxPref )
                     )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is not preferable", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -729,7 +741,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !t.IngestibleNow )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is not ingestible now", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -742,7 +754,7 @@ namespace CommunityCoreLibrary.Detour
                         ( t is Corpse )
                     )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is a corpse", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -755,7 +767,7 @@ namespace CommunityCoreLibrary.Detour
                         ( t.def.IsDrug )
                     )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is liquor", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -771,7 +783,7 @@ namespace CommunityCoreLibrary.Detour
                         )
                     )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is not fresh or it's dessicated", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -781,7 +793,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !eater.RaceProps.WillAutomaticallyEat( t ) )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it will not automatically eat it", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -791,7 +803,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !getter.AnimalAwareOf( t ) )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it is not aware of it", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -801,7 +813,7 @@ namespace CommunityCoreLibrary.Detour
                     }
                     if( !getter.CanReserve( t, 1 ) )
                     {
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                         CCL_Log.Message(
                             string.Format( "{0} cannot use {1} because it cannot reserve it", getter.LabelShort, t.ThingID ),
                             "Detour.FoodUtility.DispenserValidator"
@@ -810,7 +822,7 @@ namespace CommunityCoreLibrary.Detour
                         return false;
                     }
                 }
-#if DEVELOPER
+#if _I_AM_A_POTATO_
                 CCL_Log.Message(
                     string.Format( "{0} can use {1}", getter.LabelShort, t.ThingID ),
                     "Detour.FoodUtility.DispenserValidator"

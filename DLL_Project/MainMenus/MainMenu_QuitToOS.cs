@@ -29,15 +29,20 @@ namespace CommunityCoreLibrary
 
 		public override void ClickAction()
 		{
-			if( Current.ProgramState == ProgramState.MapPlaying )
-			{
+			if(
+                ( Current.ProgramState == ProgramState.MapPlaying )&&
+			( GameDataSaveLoader.CurrentMapStateIsValuable )
+            )
+            {
 				Find.WindowStack.Add( (Window)new Dialog_Confirm(
 					"ConfirmQuit".Translate(),
 					Root.Shutdown,
-					false
+					true,
+                    null,
+                    true
 				) );
-			}
-			else
+            }
+            else
 			{
 				Root.Shutdown();
 			}

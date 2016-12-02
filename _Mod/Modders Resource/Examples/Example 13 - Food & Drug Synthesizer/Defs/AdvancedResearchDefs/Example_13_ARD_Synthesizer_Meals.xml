@@ -3,38 +3,38 @@
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedFineMealSynthesis</defName>
+        <defName>Example_13_AdvancedFineMealSynthesis</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>FineMealSynthesis</li>
+            <li>Example_13_FineMealSynthesis</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeMealFine</li>
+            <li>Example_13_SynthesizeMealFine</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>
 
     <CommunityCoreLibrary.AdvancedResearchDef>
 
-        <defName>AdvancedLavishMealSynthesis</defName>
+        <defName>Example_13_AdvancedLavishMealSynthesis</defName>
         <Priority>0</Priority>
 
         <researchDefs>
-            <li>LavishMealSynthesis</li>
+            <li>Example_13_LavishMealSynthesis</li>
         </researchDefs>
 
         <recipeDefs>
-            <li>SynthesizeMealLavish</li>
+            <li>Example_13_SynthesizeMealLavish</li>
         </recipeDefs>
 
         <thingDefs>
-            <li>Synthesizer</li>
+            <li>Example_13_Synthesizer</li>
         </thingDefs>
 
     </CommunityCoreLibrary.AdvancedResearchDef>

@@ -12,6 +12,7 @@ namespace CommunityCoreLibrary
     {
 
         private static FieldInfo            _listsByGroup;
+        private static FieldInfo            _listsByDef;
 
         static                              ListerThings_Extensions()
         {
@@ -23,12 +24,24 @@ namespace CommunityCoreLibrary
                     "Unable to get field 'listsByGroup' in 'ListerThings'",
                     "ListerThings_Extensions" );
             }
+            _listsByDef = typeof( ListerThings ).GetField( "listsByDef", Controller.Data.UniversalBindingFlags );
+            if( _listsByDef == null )
+            {
+                CCL_Log.Trace(
+                    Verbosity.FatalErrors,
+                    "Unable to get field 'listsByDef' in 'ListerThings'",
+                    "ListerThings_Extensions" );
+            }
         }
 
-        public static List<Thing>           ListsByGroup( this ThingRequestGroup group )
+        public static List<Thing>[]         ListsByGroup( this ListerThings listerThings )
         {
-            var listsByGroup = _listsByGroup.GetValue( Find.ListerThings ) as List<Thing>[];
-            return listsByGroup[ (int) group ];
+            return _listsByGroup.GetValue( listerThings ) as List<Thing>[];
+        }
+
+        public static Dictionary<ThingDef,List<Thing>> ListsByDef( this ListerThings listerThings )
+        {
+            return _listsByDef.GetValue( listerThings ) as Dictionary<ThingDef,List<Thing>>;
         }
 
     }
