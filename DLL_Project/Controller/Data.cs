@@ -165,32 +165,6 @@ namespace CommunityCoreLibrary.Controller
             }
         }
 
-        internal static void                ResetInjectionSubController()
-        {
-            var injectionSubController = GetController( typeof( InjectionSubController ) );
-            if( injectionSubController == null )
-            {
-                CCL_Log.Error( "Unable to get InjectionSubController!" );
-                return;
-            }
-            if( injectionSubController.State == SubControllerState.Hybernating )
-            {   // Only reset it if it's hybernating
-                injectionSubController.State = SubControllerState.Ok;
-            }
-        }
-
-        internal static SubController       GetController( Type type )
-        {
-            foreach( var subController in SubControllers )
-            {
-                if( subController.GetType() == type )
-                {
-                    return subController;
-                }
-            }
-            return null;
-        }
-
         #endregion
 
     }
