@@ -94,6 +94,21 @@ namespace CommunityCoreLibrary
                                     {
                                         var str = entity.PropertyType.Name;
                                         str += " " + entity.Name;
+                                        if( !entity.GetCustomAttributes( true ).NullOrEmpty() )
+                                        {
+                                            var attributes = entity.GetCustomAttributes( true );
+                                            str += " Attributes: (";
+                                            for( int i = 0; i < attributes.Length; ++i )
+                                            {
+                                                var attribute = attributes[ i ];
+                                                str += " " + attribute.GetType().Name;
+                                                if( i < attributes.Length - 1 )
+                                                {
+                                                    str += ",";
+                                                }
+                                            }
+                                            str += " )";
+                                        }
                                         var method = entity.GetGetMethod();
                                         if( method != null )
                                         {

@@ -16,20 +16,17 @@ namespace CommunityCoreLibrary
 
     public class DetourPair
     {
-        public Type                         targetClass;
+        public Type                         sourceMethodTarget;
         public MethodInfo                   sourceMethod;
+        public Type                         destinationMethodTarget;
         public MethodInfo                   destinationMethod;
 
-        public                              DetourPair( Type targetClass, MethodInfo sourceMethod, MethodInfo destinationMethod )
+        public                              DetourPair( Type sourceMethodTarget, MethodInfo sourceMethod, Type destinationMethodTarget, MethodInfo destinationMethod )
         {
-            this.targetClass                  = targetClass;
-            this.sourceMethod                 = sourceMethod;
-            this.destinationMethod            = destinationMethod;
-        }
-
-        public bool                         TryDetour()
-        {
-            return Detours.TryDetourFromTo( targetClass, sourceMethod, destinationMethod );
+            this.sourceMethodTarget         = sourceMethodTarget;
+            this.sourceMethod               = sourceMethod;
+            this.destinationMethodTarget    = destinationMethodTarget;
+            this.destinationMethod          = destinationMethod;
         }
 
     }
@@ -58,10 +55,9 @@ namespace CommunityCoreLibrary
         /// Tries to detour one method to another.  Both methods must have matching return type and parameters.
         /// </summary>
         /// <returns>True on success; False on failure (with log message)</returns>
-        /// <param name="targetClass">Target class of detour</param>
         /// <param name="sourceMethod">Source method to detour from</param>
         /// <param name="destinationMethod">Destination method to detour to</param>
-        public static bool                  TryDetourFromTo( Type targetClass, MethodInfo sourceMethod, MethodInfo destinationMethod )
+        public static bool                  TryDetourFromTo( MethodInfo sourceMethod, MethodInfo destinationMethod )
         {
 #if DEBUG
             // Error out on null arguments
@@ -86,47 +82,48 @@ namespace CommunityCoreLibrary
             }
 #endif
 
-            // Create strings with the fullname and address of the methods
-            var sourceFullDescription      = FullMethodName( sourceMethod     , true );
-            var destinationFullDescription = FullMethodName( destinationMethod, true );
-
 #if DEBUG
             // Make sure the two methods are call compatible
             var reason = string.Empty;
-            if( !MethodsAreCallCompatible( targetClass, sourceMethod, destinationMethod, out reason ) )
+            if( !MethodsAreCallCompatible( GetMethodTargetClass( sourceMethod ), sourceMethod, GetMethodTargetClass( destinationMethod ), destinationMethod, out reason ) )
             {
                 CCL_Log.Trace(
                     Verbosity.NonFatalErrors,
-                    string.Format( "Methods are not call compatible when trying to detour '{0}' to '{1}' :: {2}", sourceFullDescription, destinationFullDescription, reason ),
+                    string.Format( "Methods are not call compatible when trying to detour '{0}' to '{1}' :: {2}", FullMethodName( sourceMethod ), FullMethodName( destinationMethod ), reason ),
                     "Detour"
                 );
                 return false;
             }
 #endif
 
-            // Warn if already detoured
-            if( detouredMethods.ContainsKey( sourceFullDescription ) )
+            TryDetourFromToInt( sourceMethod, destinationMethod );
+
+            // Method is now detoured, we are doneski!
+            return true;
+        }
+
+        /// <summary>
+        /// Process a single detour pair.
+        /// </summary>
+        /// <returns>True on success; False on failure (with log message)</returns>
+        /// <param name="pair">DetourPair to process</param>
+        public static bool                  TryDetourFromTo( DetourPair pair )
+        {
+#if DEBUG
+            // Make sure the two methods are call compatible
+            var reason = string.Empty;
+            if( !PairIsCallCompatible( pair, out reason ) )
             {
                 CCL_Log.Trace(
-                    Verbosity.Warnings,
-                    string.Format( "'{0}' has already been detoured to '{1}'", sourceFullDescription, detouredMethods[ sourceFullDescription ] ),
+                    Verbosity.NonFatalErrors,
+                    string.Format( "Methods are not call compatible when trying to detour '{0}' to '{1}' :: {2}", FullMethodName( pair.sourceMethod ), FullMethodName( pair.destinationMethod ), reason ),
                     "Detour"
                 );
-            } 
-
-#if DEBUG
-            // Log the detour about to happen
-            CCL_Log.Trace(
-                Verbosity.Injections,
-                string.Format( "'{0}' to '{1}'", sourceFullDescription, destinationFullDescription ),
-                "Detour"
-            );
+                return false;
+            }
 #endif
 
-            // Add the detour to the list of already detoured methods
-            detouredMethods[ sourceFullDescription ] = destinationFullDescription;
-
-            TryDetourFromToInt( sourceMethod, destinationMethod );
+            TryDetourFromToInt( pair.sourceMethod, pair.destinationMethod );
 
             // Method is now detoured, we are doneski!
             return true;
@@ -156,7 +153,7 @@ namespace CommunityCoreLibrary
             var rVal = true;
             foreach( var detour in detours )
             {
-                rVal &= detour.TryDetour();
+                rVal &= TryDetourFromTo( detour );
             }
             return rVal;
         }
@@ -243,6 +240,32 @@ namespace CommunityCoreLibrary
 
         private static unsafe void          TryDetourFromToInt( MethodInfo sourceMethod, MethodInfo destinationMethod )
         {
+            // Create strings with the fullname and address of the methods
+            var sourceFullDescription      = FullMethodName( sourceMethod     , true );
+            var destinationFullDescription = FullMethodName( destinationMethod, true );
+
+            // Warn if already detoured
+            if( detouredMethods.ContainsKey( sourceFullDescription ) )
+            {
+                CCL_Log.Trace(
+                    Verbosity.Warnings,
+                    string.Format( "'{0}' has already been detoured to '{1}'", sourceFullDescription, detouredMethods[ sourceFullDescription ] ),
+                    "Detour"
+                );
+            } 
+
+#if DEBUG
+            // Log the detour about to happen
+            CCL_Log.Trace(
+                Verbosity.Injections,
+                string.Format( "'{0}' to '{1}'", sourceFullDescription, destinationFullDescription ),
+                "Detour"
+            );
+#endif
+
+            // Add the detour to the list of already detoured methods
+            detouredMethods[ sourceFullDescription ] = destinationFullDescription;
+
             // Now the meat!  Do the machine-word size appropriate detour (32/64-bit)
             if( IntPtr.Size == sizeof( Int64 ) )
             {
@@ -330,16 +353,34 @@ namespace CommunityCoreLibrary
             return MethodType.Static;
         }
 
-        private static Type                 GetMethodTargetClass( MethodInfo info )
+        private static Type                 GetMethodTargetClass( MethodInfo info, DetourMember attribute = null )
         {
 #if _I_AM_A_POTATO_
             var fullMethodName = FullMethodName( info );
 #endif
 
             var methodType = GetMethodType( info );
-            DetourMember attribute = null;
 
-            if( info.TryGetAttribute( out attribute ) )
+            if( methodType == MethodType.Static )
+            {   // Pure static methods don't have a target class
+#if _I_AM_A_POTATO_
+                CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: Static = null", fullMethodName ), "Detour" );
+#endif
+                return null;
+            }
+            if( methodType == MethodType.Extension )
+            {   // Regardless of whether this is the detour method or the method to be detoured, for extension methods we take the target class from the first parameter
+#if _I_AM_A_POTATO_
+                CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: Parameters[ 0 ].ParameterType = '{1}'", fullMethodName, FullNameOfType( info.GetParameters()[ 0 ].ParameterType ) ), "Detour" );
+#endif
+                return info.GetParameters()[ 0 ].ParameterType;
+            }
+
+            if( attribute == null )
+            {
+                info.TryGetAttribute( out attribute );
+            }
+            if( attribute != null )
             {
                 if( attribute.targetClass != DetourMember.DefaultTargetClass )
                 {
@@ -348,56 +389,34 @@ namespace CommunityCoreLibrary
 #endif
                     return attribute.targetClass;
                 }
-                if(
-                    ( methodType == MethodType.Instance )||
-                    ( methodType == MethodType.Static )
-                )
-                {
 #if _I_AM_A_POTATO_
-                    CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: DeclaringType.BaseType = '{1}'", fullMethodName, FullNameOfType( info.DeclaringType.BaseType ) ), "Detour" );
+                CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: DeclaringType.BaseType = '{1}'", fullMethodName, FullNameOfType( info.DeclaringType.BaseType ) ), "Detour" );
 #endif
-                    return info.DeclaringType.BaseType;
-                }
-                if( methodType == MethodType.Extension )
-                {
-#if _I_AM_A_POTATO_
-                    CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: Parameters[ 0 ].ParameterType = '{1}'", fullMethodName, FullNameOfType( info.GetParameters()[ 0 ].ParameterType ) ), "Detour" );
-#endif
-                    return info.GetParameters()[ 0 ].ParameterType;
-                }
+                return info.DeclaringType.BaseType;
             }
 
-            if(
-                ( methodType == MethodType.Instance )||
-                ( methodType == MethodType.Static )
-            )
-            {
 #if _I_AM_A_POTATO_
-                CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: DeclaringType = '{1}'", fullMethodName, FullNameOfType( info.DeclaringType ) ), "Detour" );
+            CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: DeclaringType = '{1}'", fullMethodName, FullNameOfType( info.DeclaringType ) ), "Detour" );
 #endif
-                return info.DeclaringType;
-            }
-            if( methodType == MethodType.Extension )
-            {
-#if _I_AM_A_POTATO_
-                CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) :: Parameters[ 0 ].ParameterType = '{1}'", fullMethodName, FullNameOfType( info.GetParameters()[ 0 ].ParameterType ) ), "Detour" );
-#endif
-                return info.GetParameters()[ 0 ].ParameterType;
-            }
-#if _I_AM_A_POTATO_
-            CCL_Log.Message( string.Format( "GetMethodTargetClass( {0} ) = null", fullMethodName ), "Detour" );
-#endif
-            return null;
+            return info.DeclaringType;
         }
 
-        private static Type                 GetPropertyTargetClass( PropertyInfo info )
+        private static Type                 GetDetourTargetClass( MemberInfo info, DetourMember attribute )
         {
-            DetourMember attribute = null;
-            if( info.TryGetAttribute( out attribute ) )
+            if( attribute != null )
             {
                 if( attribute.targetClass != DetourMember.DefaultTargetClass )
                 {
                     return attribute.targetClass;
+                }
+                var methodInfo = info as MethodInfo;
+                if(
+                    ( info.DeclaringType.BaseType == typeof( System.Object ) )&&
+                    ( methodInfo != null )&&
+                    ( GetMethodType( methodInfo ) == MethodType.Extension )
+                )
+                {
+                    return methodInfo.GetParameters()[ 0 ].ParameterType;
                 }
                 return info.DeclaringType.BaseType;
             }
@@ -414,7 +433,7 @@ namespace CommunityCoreLibrary
             return memberName;
         }
 
-        private static MethodInfo           GetTimedDetouredMethodInt( Type targetClass, string sourceMember, MethodInfo destinationMethod )
+        private static MethodInfo           GetTimedDetouredMethodInt( Type sourceClass, string sourceMember, MethodInfo destinationMethod )
         {
             if( sourceMember == DetourMember.DefaultTargetMemberName )
             {
@@ -423,11 +442,11 @@ namespace CommunityCoreLibrary
             MethodInfo sourceMethod = null;
             try
             {   // Try to get method direct
-                sourceMethod = targetClass.GetMethod( sourceMember, Controller.Data.UniversalBindingFlags );
+                sourceMethod = sourceClass.GetMethod( sourceMember, Controller.Data.UniversalBindingFlags );
             }
             catch
             {   // May be ambiguous, try from parameter types (thanks Zhentar for the change from count to types)
-                sourceMethod = targetClass.GetMethods( Controller.Data.UniversalBindingFlags )
+                sourceMethod = sourceClass.GetMethods( Controller.Data.UniversalBindingFlags )
                                           .FirstOrDefault( checkMethod => (
                                               ( checkMethod.Name == sourceMember )&&
                                               ( checkMethod.ReturnType == destinationMethod.ReturnType )&&
@@ -440,25 +459,25 @@ namespace CommunityCoreLibrary
                 ( sourceMember != fixedName )
             )
             {
-                return GetTimedDetouredMethodInt( targetClass, fixedName, destinationMethod );
+                return GetTimedDetouredMethodInt( sourceClass, fixedName, destinationMethod );
             }
             return sourceMethod;
         }
 
-        private static PropertyInfo         GetTimedDetouredPropertyInt( Type targetClass, string sourceMember, PropertyInfo destinationProperty )
+        private static PropertyInfo         GetTimedDetouredPropertyInt( Type sourceClass, string sourceMember, PropertyInfo destinationProperty )
         {
             if( sourceMember == DetourMember.DefaultTargetMemberName )
             {
                 sourceMember = destinationProperty.Name;
             }
-            var sourceProperty = targetClass.GetProperty( sourceMember, Controller.Data.UniversalBindingFlags );
+            var sourceProperty = sourceClass.GetProperty( sourceMember, Controller.Data.UniversalBindingFlags );
             var fixedName = GetFixedMemberName( sourceMember );
             if(
                 ( sourceProperty == null )&&
                 ( sourceMember != fixedName )
             )
             {
-                return GetTimedDetouredPropertyInt( targetClass, fixedName, destinationProperty );
+                return GetTimedDetouredPropertyInt( sourceClass, fixedName, destinationProperty );
             }
             return sourceProperty;
         }
@@ -488,28 +507,28 @@ namespace CommunityCoreLibrary
                     {   // Ignore any detours which timing doesn't match
                         continue;
                     }
-                    var targetClass = GetMethodTargetClass( destinationMethod );
-                    if( targetClass == null )
+                    var memberClass = GetDetourTargetClass( destinationMethod, attribute );
+                    if( memberClass == null )
                     {   // Report and ignore any missing classes
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "TargetClass '{2}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationMethod.Name, FullNameOfType( attribute.targetClass ) ),
+                            string.Format( "MemberClass '{2}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationMethod.Name, FullNameOfType( attribute.targetClass ) ),
                             "Detour"
                         );
                         continue;
                     }
-                    var sourceMethod = GetTimedDetouredMethodInt( targetClass, attribute.targetMember, destinationMethod );
+                    var sourceMethod = GetTimedDetouredMethodInt( memberClass, attribute.targetMember, destinationMethod );
                     if( sourceMethod == null )
                     {   // Report and ignore any missing methods
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "TargetMember '{2}.{3}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationMethod.Name, targetClass.FullName, attribute.targetMember ),
+                            string.Format( "TargetMember '{2}.{3}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationMethod.Name, memberClass.FullName, attribute.targetMember ),
                             "Detour"
                         );
                         continue;
                     }
                     // Add detour for method
-                    detours.Add( new DetourPair( targetClass, sourceMethod, destinationMethod ) );
+                    detours.Add( new DetourPair( GetMethodTargetClass( sourceMethod, null ), sourceMethod, GetMethodTargetClass( destinationMethod, attribute ), destinationMethod ) );
                 }
             }
         }
@@ -539,22 +558,22 @@ namespace CommunityCoreLibrary
                     {   // Ignore any detours which timing doesn't match
                         continue;
                     }
-                    var targetClass = GetPropertyTargetClass( destinationProperty );
-                    if( targetClass == null )
+                    var memberClass = GetDetourTargetClass( destinationProperty, attribute );
+                    if( memberClass == null )
                     {   // Report and ignore any missing classes
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "TargetClass '{2}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, FullNameOfType( attribute.targetClass ) ),
+                            string.Format( "MemberClass '{2}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, FullNameOfType( attribute.targetClass ) ),
                             "Detour"
                         );
                         continue;
                     }
-                    var sourceProperty = GetTimedDetouredPropertyInt( targetClass, attribute.targetMember, destinationProperty );
+                    var sourceProperty = GetTimedDetouredPropertyInt( memberClass, attribute.targetMember, destinationProperty );
                     if( sourceProperty == null )
                     {   // Report and ignore any missing properties
                         CCL_Log.Trace(
                             Verbosity.Injections,
-                            string.Format( "TargetMember '{2}.{3}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, targetClass.FullName, attribute.targetMember ),
+                            string.Format( "TargetMember '{2}.{3}' resolved to null for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, memberClass.FullName, attribute.targetMember ),
                             "Detour"
                         );
                         continue;
@@ -567,13 +586,13 @@ namespace CommunityCoreLibrary
                         {   // Report and ignore missing get method
                             CCL_Log.Trace(
                                 Verbosity.Injections,
-                                string.Format( "TargetMember '{2}.{3}' has no get method for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, targetClass.FullName, attribute.targetMember ),
+                                string.Format( "TargetMember '{2}.{3}' has no get method for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, memberClass.FullName, attribute.targetMember ),
                                 "Detour"
                             );
                         }
                         else
                         {   // Add detour for get method
-                            detours.Add( new DetourPair( targetClass, sourceMethod, destinationMethod ) );
+                            detours.Add( new DetourPair( GetMethodTargetClass( sourceMethod, null ), sourceMethod, GetMethodTargetClass( destinationMethod, attribute ), destinationMethod ) );
                         }
                     }
                     destinationMethod = destinationProperty.GetSetMethod( true );
@@ -584,13 +603,13 @@ namespace CommunityCoreLibrary
                         {   // Report and ignore missing set method
                             CCL_Log.Trace(
                                 Verbosity.Injections,
-                                string.Format( "TargetMember '{2}.{3}' has no set method for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, targetClass.FullName, attribute.targetMember ),
+                                string.Format( "TargetMember '{2}.{3}' has no set method for '{0}.{1}'", destinationType.FullName, destinationProperty.Name, memberClass.FullName, attribute.targetMember ),
                                 "Detour"
                             );
                         }
                         else
                         {   // Add detour for set method
-                            detours.Add( new DetourPair( targetClass, sourceMethod, destinationMethod ) );
+                            detours.Add( new DetourPair( GetMethodTargetClass( sourceMethod, null ), sourceMethod, GetMethodTargetClass( destinationMethod, attribute ), destinationMethod ) );
                         }
                     }
                 }
@@ -638,7 +657,17 @@ namespace CommunityCoreLibrary
             return true;
         }
 
-        private static bool                 MethodsAreCallCompatible( Type targetClass, MethodInfo sourceMethod, MethodInfo destinationMethod, out string reason )
+        private static bool                 PairIsCallCompatible( DetourPair pair, out string reason )
+        {
+            return MethodsAreCallCompatible(
+                pair.sourceMethodTarget,
+                pair.sourceMethod,
+                pair.destinationMethodTarget,
+                pair.destinationMethod,
+                out reason );
+        }
+
+        private static bool                 MethodsAreCallCompatible( Type sourceTargetClass, MethodInfo sourceMethod, Type destinationTargetClass, MethodInfo destinationMethod, out string reason )
         {
             reason = string.Empty;
             if( sourceMethod.ReturnType != destinationMethod.ReturnType )
@@ -655,17 +684,6 @@ namespace CommunityCoreLibrary
             var sourceMethodType      = GetMethodType( sourceMethod );
             var destinationMethodType = GetMethodType( destinationMethod );
 
-            // Do basic parameter matching
-            if(
-                ( sourceMethodType == destinationMethodType )&&
-                ( sourceMethod.GetParameters().Select( sourceParameter => sourceParameter.ParameterType ).SequenceEqual( destinationMethod.GetParameters().Select( destinationParameter => destinationParameter.ParameterType ) ) )
-            )
-            {   // This will catch 99% of detours
-                return true;
-            }
-
-            // The other 1% needs to do some deeper analysis
-
             // Make sure neither method is invalid
             if( sourceMethodType == MethodType.Invalid )
             {
@@ -678,15 +696,11 @@ namespace CommunityCoreLibrary
                 return false;
             }
 
-            // Get the actual target classes
-            var sourceTargetClass      = GetMethodTargetClass( sourceMethod );
-            var destinationTargetClass = GetMethodTargetClass( destinationMethod );
-
             // Check validity of target classes
             if( !DetourTargetsAreValid(
-                    sourceTargetClass     , sourceMethodType     , FullMethodName( sourceMethod ),
-                    destinationTargetClass, destinationMethodType, FullMethodName( destinationMethod ),
-                    out reason ) )
+                sourceTargetClass     , sourceMethodType     , FullMethodName( sourceMethod ),
+                destinationTargetClass, destinationMethodType, FullMethodName( destinationMethod ),
+                out reason ) )
             {
                 return false;
             }
