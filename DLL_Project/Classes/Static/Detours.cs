@@ -431,7 +431,7 @@ namespace CommunityCoreLibrary
                                           .FirstOrDefault( checkMethod => (
                                               ( checkMethod.Name == sourceMember )&&
                                               ( checkMethod.ReturnType == destinationMethod.ReturnType )&&
-                                              ( checkMethod.GetParameters().Select( checkParameter => checkParameter.ParameterType ).SequenceEqual( destinationMethod.GetParameters().Select( toParameter => toParameter.ParameterType ) ) )
+                                              ( checkMethod.GetParameters().Select( checkParameter => checkParameter.ParameterType ).SequenceEqual( destinationMethod.GetParameters().Select( destinationParameter => destinationParameter.ParameterType ) ) )
                                              ) );
             }
             var fixedName = GetFixedMemberName( sourceMember );
@@ -627,9 +627,9 @@ namespace CommunityCoreLibrary
                     reason = string.Format(
                         "Target classes do not match :: '{0}' target is '{1}'; '{2}' target is '{3}'",
                         nameA,
-                        targetA == null ? "null" : targetA.Name,
+                        FullNameOfType( targetA ),
                         nameB,
-                        targetB == null ? "null" : targetB.Name
+                        FullNameOfType( targetB )
                     );
                     return false;
                 }
