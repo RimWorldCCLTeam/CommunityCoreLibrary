@@ -20,13 +20,6 @@ namespace CommunityCoreLibrary
             public int                      indent;
         }
 
-        private enum MessageClass
-        {
-            Message,
-            Warning,
-            Error
-        }
-
         public const string                 cclLogFileName = "ccl_log.txt";
         private static LogStream            cclStream;
 
@@ -112,6 +105,13 @@ namespace CommunityCoreLibrary
             stream.stream.Flush();
         }
 #endif
+
+        private enum MessageClass
+        {
+            Message,
+            Warning,
+            Error
+        }
 
         public static bool                  AppendSection( ref StringBuilder s, string str, bool prependSectionDivider = true )
         {

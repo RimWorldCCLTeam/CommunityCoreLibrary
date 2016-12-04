@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary.Detour
         #region Detoured Methods
 
         [DetourMember]
-        internal static bool                _ShouldDoMainMenu
+        internal bool                       _ShouldDoMainMenu
         {
             get
             {

@@ -7,48 +7,48 @@ namespace CommunityCoreLibrary
     public class DetourMember : SequencedInjectorAttribute
     {
 
-        public const Type                   DefaultFromClass = null;
-        public const string                 DefaultMemberName = "";
+        public const Type                   DefaultTargetClass = null;
+        public const string                 DefaultTargetMemberName = "";
         public const InjectionSequence      DefaultSequence = InjectionSequence.MainLoad;
         public const InjectionTiming        DefaultTiming = InjectionTiming.Detours;
 
-        public Type                         fromClass;
-        public string                       fromMember;
+        public Type                         targetClass;
+        public string                       targetMember;
 
-        public                              DetourMember( Type fromClass, string fromMember, InjectionSequence sequence = DefaultSequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
+        public                              DetourMember( Type targetClass, string targetMember, InjectionSequence sequence = DefaultSequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
         {
-            this.fromClass                  = fromClass;
-            this.fromMember                 = fromMember;
+            this.targetClass                = targetClass;
+            this.targetMember               = targetMember;
         }
 
-        public                              DetourMember( Type fromClass, InjectionSequence sequence = DefaultSequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
+        public                              DetourMember( Type targetClass, InjectionSequence sequence = DefaultSequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
         {
-            this.fromClass                  = fromClass;
-            this.fromMember                 = DefaultMemberName;
+            this.targetClass                = targetClass;
+            this.targetMember               = DefaultTargetMemberName;
         }
 
-        public                              DetourMember( string fromMember, InjectionSequence sequence = DefaultSequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
+        public                              DetourMember( string targetMember, InjectionSequence sequence = DefaultSequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
         {
-            this.fromClass                  = DefaultFromClass;
-            this.fromMember                 = fromMember;
+            this.targetClass                = DefaultTargetClass;
+            this.targetMember               = targetMember;
         }
 
         public                              DetourMember( InjectionSequence sequence, InjectionTiming timing = DefaultTiming ) : base( sequence, timing )
         {
-            this.fromClass                  = DefaultFromClass;
-            this.fromMember                 = DefaultMemberName;
+            this.targetClass                = DefaultTargetClass;
+            this.targetMember               = DefaultTargetMemberName;
         }
 
         public                              DetourMember( InjectionTiming timing ) : base( DefaultSequence, timing )
         {
-            this.fromClass                  = DefaultFromClass;
-            this.fromMember                 = DefaultMemberName;
+            this.targetClass                = DefaultTargetClass;
+            this.targetMember               = DefaultTargetMemberName;
         }
 
         public                              DetourMember() : base( DefaultSequence, DefaultTiming )
         {
-            this.fromClass                  = DefaultFromClass;
-            this.fromMember                 = DefaultMemberName;
+            this.targetClass                = DefaultTargetClass;
+            this.targetMember               = DefaultTargetMemberName;
         }
 
     }

@@ -10,7 +10,7 @@ using Verse.AI;
 namespace CommunityCoreLibrary
 {
 
-    [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.SpecialInjectors )]
+    [SpecialInjectorSequencer]
     public class DetourBuildSpecificMethods : SpecialInjector
     {
 
@@ -39,8 +39,10 @@ namespace CommunityCoreLibrary
             {
                 MethodInfo RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished = typeof( RimWorld.MainTabWindow_Research ).GetMethod( RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished_Name, Controller.Data.UniversalBindingFlags );
                 MethodInfo CCL_MainTabWindow_Research_DrawLeftRect_NotFinishedNotLockedOut = typeof( Detour._MainTabWindow_Research ).GetMethod( "_NotFinishedNotLockedOut", Controller.Data.UniversalBindingFlags );
-                if( !Detours.TryDetourFromTo( RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished, CCL_MainTabWindow_Research_DrawLeftRect_NotFinishedNotLockedOut ) )
+                if( !Detours.TryDetourFromTo( typeof( RimWorld.MainTabWindow_Research ), RimWorld_MainTabWindow_Research_DrawLeftRect_NotFinished, CCL_MainTabWindow_Research_DrawLeftRect_NotFinishedNotLockedOut ) )
+                {
                     return false;
+                }
             }
 
             /*

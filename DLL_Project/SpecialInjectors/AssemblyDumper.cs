@@ -1,4 +1,8 @@
 ﻿#if DEVELOPER
+//#define _I_AM_A_POTATO_
+#endif
+
+#if _I_AM_A_POTATO_
 using System;
 using System.IO;
 using System.Reflection;
@@ -7,7 +11,8 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.SpecialInjectors )]
+    // Do this injector during the main sequence at the highest priority level
+    [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.Priority_25 )]
     public class AssemblyDumper : SpecialInjector
     {
 
@@ -132,6 +137,21 @@ namespace CommunityCoreLibrary
                                             str += " (Instance)";
                                         if( entity.IsPrivate ) str += " (NonPublic)";
                                         if( entity.IsPublic ) str += " (Public)";
+                                        if( !entity.GetCustomAttributes( true ).NullOrEmpty() )
+                                        {
+                                            var attributes = entity.GetCustomAttributes( true );
+                                            str += " Attributes: (";
+                                            for( int i = 0; i < attributes.Length; ++i )
+                                            {
+                                                var attribute = attributes[ i ];
+                                                str += " " + attribute.GetType().Name;
+                                                if( i < attributes.Length - 1 )
+                                                {
+                                                    str += ",";
+                                                }
+                                            }
+                                            str += " )";
+                                        }
                                         if( !entity.GetParameters().NullOrEmpty() )
                                         {
                                             var parameters = entity.GetParameters();
@@ -140,6 +160,9 @@ namespace CommunityCoreLibrary
                                             {
                                                 var optional = false;
                                                 var pi = parameters[ i ];
+                                                if( pi.IsOptional ) str += " (optional)";
+                                                if( pi.IsLcid ) str += " (Lcid)";
+                                                if( pi.IsIn ) str += " (in)";
                                                 if( pi.IsOut ) str += " (out)";
                                                 if( pi.IsRetval ) str += " (ret)";
                                                 if( !pi.GetCustomAttributes( true ).NullOrEmpty() )
@@ -174,12 +197,7 @@ namespace CommunityCoreLibrary
                                                     str += " = ";
                                                     if( pi.DefaultValue is string )
                                                     {
-                                                        str += "\"";
-                                                    }
-                                                    str += pi.DefaultValue.ToString();
-                                                    if( pi.DefaultValue is string )
-                                                    {
-                                                        str += "\"";
+                                                        str += string.Format( "\"{0}\"", pi.DefaultValue.ToString() );
                                                     }
                                                 }
                                                 if( i < parameters.Length - 1 )

@@ -10,7 +10,7 @@ using Verse.AI;
 namespace CommunityCoreLibrary
 {
 
-    [SpecialInjectorSequencer( InjectionSequence.MainLoad, InjectionTiming.SpecialInjectors )]
+    [SpecialInjectorSequencer]
     public class UpgradeCompProperties_AffectedByFacilities : SpecialInjector
     {
 

@@ -6,7 +6,7 @@ using Verse;
 namespace CommunityCoreLibrary
 {
     
-    [SpecialInjectorSequencer( InjectionSequence.GameLoad, InjectionTiming.SpecialInjectors )]
+    [SpecialInjectorSequencer( InjectionSequence.GameLoad )]
     public class PostLoadInjectorTest : SpecialInjector
     {
         
