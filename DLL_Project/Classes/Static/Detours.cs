@@ -38,6 +38,8 @@ namespace CommunityCoreLibrary
         Additional implementation features (64-bit, error checking, method gathering, method validation, etc)
         are coded by and based on research done by 1000101.
 
+        Basic method parameter list matching for initial gathering purposes supplied by Zhentar.
+
         Performs detours, spits out basic logs and warns if a method is detoured multiple times.
 
         Remember when stealing...err...copying code to make sure the proper people get proper credit.
