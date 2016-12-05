@@ -86,11 +86,25 @@ namespace CommunityCoreLibrary
                 );
                 return false;
             }
-#endif
 
-#if DEBUG
-            // Make sure the two methods are call compatible
+            // Used for deeper method checks to return failure string
             var reason = string.Empty;
+
+            // Make sure the class containing the detour doesn't contain instance fields
+            if( !DetourContainerClassIsFieldSafe( destinationMethod.DeclaringType ) )
+            {
+                CCL_Log.Trace(
+                    Verbosity.NonFatalErrors,
+                    string.Format(
+                        "'{0}' contains fields which are not static!  Detours can not be defined in classes which have instance fields!",
+                        FullNameOfType( destinationMethod.DeclaringType )
+                    ),
+                    "Detour"
+                );
+                return false;
+            }
+
+            // Make sure the two methods are call compatible
             if( !MethodsAreCallCompatible( GetMethodTargetClass( sourceMethod ), sourceMethod, GetMethodTargetClass( destinationMethod ), destinationMethod, out reason ) )
             {
                 CCL_Log.Trace(
@@ -723,6 +737,31 @@ namespace CommunityCoreLibrary
         #region Debug Methods
 
 #if DEBUG
+        /// <summary>
+        /// Checks that the class containing a detour does not contain instance fields.
+        /// </summary>
+        /// <returns>True if there are no instance fields; False if any instance field is contained in the class</returns>
+        /// <param name="detourContainerClass">Detour container class</param>
+        private static bool                 DetourContainerClassIsFieldSafe( Type detourContainerClass )
+        {
+            var fields = detourContainerClass.GetFields( Controller.Data.UniversalBindingFlags );
+            if( fields.NullOrEmpty() )
+            {   // No fields, no worries
+                return true;
+            }
+
+            // Check that each field is static
+            foreach( var field in fields )
+            {
+                if( !field.IsStatic )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Checks that B is a valid detour for A based on method types and class context (targets)
         /// </summary>
