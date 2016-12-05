@@ -1,4 +1,18 @@
-﻿#if DEVELOPER
+﻿/*
+    The basic implementation of the IL method 'hooks' (detours) made possible by RawCode's work (32-bit);
+    https://ludeon.com/forums/index.php?topic=17143.0
+
+    Additional implementation features (64-bit, error checking, method gathering, method validation, etc)
+    are coded by and based on research done by 1000101.
+
+    Method parameter list matching for initial gathering purposes supplied by Zhentar.
+
+    Performs detours, spits out basic logs and warns if a method is detoured multiple times.
+
+    Remember when stealing...err...copying free code to make sure the proper people get proper credit.
+*/
+
+#if DEVELOPER
 // Enable this define for a whole bunch of debug logging
 //#define _I_AM_A_POTATO_
 #endif
@@ -14,6 +28,9 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
+    /// <summary>
+    /// This is a helper class for batch processing of detours.
+    /// </summary>
     public class DetourPair
     {
         public Type                         sourceMethodTarget;
@@ -31,19 +48,6 @@ namespace CommunityCoreLibrary
 
     }
 
-    /*
-        The basic implementation of the IL method 'hooks' (detours) made possible by RawCode's work (32-bit);
-        https://ludeon.com/forums/index.php?topic=17143.0
-
-        Additional implementation features (64-bit, error checking, method gathering, method validation, etc)
-        are coded by and based on research done by 1000101.
-
-        Basic method parameter list matching for initial gathering purposes supplied by Zhentar.
-
-        Performs detours, spits out basic logs and warns if a method is detoured multiple times.
-
-        Remember when stealing...err...copying code to make sure the proper people get proper credit.
-    */
     public static class Detours
     {
 
@@ -132,12 +136,15 @@ namespace CommunityCoreLibrary
         }
 
         /// <summary>
-        /// Takes a list and processes an entire list of detour as a batch.
+        /// Takes and processes an entire list of detours as a batch.
         /// </summary>
         /// <returns>True on success; False on failure (with log message)</returns>
         /// <param name="detours">List of DetourPairs to process</param>
         public static bool                  TryDetourFromTo( List<DetourPair> detours )
         {
+#if DEBUG
+            // These checks should never cause failure.  If it does they the
+            // gather method is broken as it should never add a null to the list.
             if( detours.NullOrEmpty() )
             {
                 return true;
@@ -152,6 +159,7 @@ namespace CommunityCoreLibrary
                     return false;
                 }
             }
+#endif
             var rVal = true;
             foreach( var detour in detours )
             {
@@ -161,7 +169,7 @@ namespace CommunityCoreLibrary
         }
 
         /// <summary>
-        /// Detour methods in an assembly with matching sequence and timing parameters.
+        /// Try to detour methods in an assembly with matching sequence and timing parameters.
         /// </summary>
         /// <returns>True on success; False on failure (with log message)</returns>
         /// <param name="assembly">Assembly to get detours from</param>
@@ -179,9 +187,9 @@ namespace CommunityCoreLibrary
         }
 
         /// <summary>
-        /// Gets the list detour methods in an assembly with matching sequence and timing parameters.
+        /// Gets a list detours in an assembly with matching sequence and timing parameters.
         /// </summary>
-        /// <returns>The list of detours with matching sequence and timing.</returns>
+        /// <returns>The list of detours with matching sequence and timing</returns>
         /// <param name="assembly">Assembly to get detours from</param>
         /// <param name="sequence">Injection sequence</param>
         /// <param name="timing">Injection timing</param>
@@ -240,6 +248,18 @@ namespace CommunityCoreLibrary
 
         #region Actual detour method
 
+        /// <summary>
+        /// This method performs the actual detour.  This method is destructive (5-byte on
+        /// 32-bit systems, 12-byte on 64-bit systems) to the sourceMethod as it overwrites
+        /// the machine code with new machine code.
+        /// USE THE PUBLIC API WHICH WILL VALIDATE DETOURS BEFORE EXECUTING THEM!
+        /// DO NOT CALL THIS METHOD DIRECTLY!
+        /// DO NOT DETOUR METHODS IF YOU DON'T FULLY UNDERSTAND EVERY ASPECT OF WHAT IS HAPPENING, WHY, HOW, AND CONSEQUENCES OF DOING SO!
+        /// THIS IS NOT FOR SCRUBS/NEWBS/BEGINNERS!
+        /// THIS IS FOR ADVANCED CODERS ONLY!
+        /// </summary>
+        /// <param name="sourceMethod">Source method to overwrite with a jump to the destination method</param>
+        /// <param name="destinationMethod">Destination method to target for the jump from the source method</param>
         private static unsafe void          TryDetourFromToInt( MethodInfo sourceMethod, MethodInfo destinationMethod )
         {
             // Create strings with the fullname and address of the methods
@@ -322,6 +342,13 @@ namespace CommunityCoreLibrary
 
         #region Internal class helper methods
 
+        /// <summary>
+        /// This classification is used to validate detours and to get the appropriate
+        /// operating context of methods.
+        /// A method should never be classed as "invalid", this classification only happens
+        /// when a method has the "ExtensionAttribute" but no parameters and therefore no
+        /// "this" parameter.
+        /// </summary>
         private enum MethodType
         {
             Invalid,
@@ -330,6 +357,12 @@ namespace CommunityCoreLibrary
             Static
         }
 
+        /// <summary>
+        /// Return the full class and method name with optional method address
+        /// </summary>
+        /// <returns>Full class and name</returns>
+        /// <param name="methodInfo">MethodInfo of method</param>
+        /// <param name="withAddress">Optional bool flag to add the address</param>
         private static string               FullMethodName( MethodInfo methodInfo, bool withAddress = false )
         {
             var rVal = methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
@@ -340,6 +373,35 @@ namespace CommunityCoreLibrary
             return rVal;
         }
 
+        /// <summary>
+        /// null safe method to get the full name of a type for debugging
+        /// </summary>
+        /// <returns>The name of type or "null"</returns>
+        /// <param name="type">Type to get the full name of</param>
+        private static string               FullNameOfType( Type type )
+        {
+            return type == null ? "null" : type.FullName;
+        }
+
+        /// <summary>
+        /// Trims underscores one at a time from the begining of a member name
+        /// </summary>
+        /// <returns>The fixed member name</returns>
+        /// <param name="memberName">Member name</param>
+        private static string               GetFixedMemberName( string memberName )
+        {
+            if( memberName[ 0 ] == "_"[ 0 ] )
+            {
+                return memberName.Substring( 1, memberName.Length - 1 );
+            }
+            return memberName;
+        }
+
+        /// <summary>
+        /// Return the type of method from the MethodInfo
+        /// </summary>
+        /// <returns>MethodType of method</returns>
+        /// <param name="methodInfo">MethodInfo of method</param>
         private static MethodType           GetMethodType( MethodInfo methodInfo )
         {
             if( !methodInfo.IsStatic )
@@ -355,6 +417,19 @@ namespace CommunityCoreLibrary
             return MethodType.Static;
         }
 
+        /// <summary>
+        /// Gets the class that the method will operate in the context of.
+        /// This is NOT necessarily the class that the method exists in.
+        /// For extension methods the "this" parameter (first) will be returned
+        /// regardless of whether it is a detour or not, pure static methods
+        /// will return null (again, regardless of being a detour) as they
+        /// don't operate in the context of class.  Instance methods will
+        /// return the defining class for non-detours and the class being
+        /// injected into for detours.
+        /// </summary>
+        /// <returns>The method target class</returns>
+        /// <param name="info">MethodInfo of the method to check</param>
+        /// <param name="attribute">DetourMember attribute</param>
         private static Type                 GetMethodTargetClass( MethodInfo info, DetourMember attribute = null )
         {
 #if _I_AM_A_POTATO_
@@ -403,6 +478,12 @@ namespace CommunityCoreLibrary
             return info.DeclaringType;
         }
 
+        /// <summary>
+        /// Gets the class that a detour will be injected into.
+        /// </summary>
+        /// <returns>The detour target class</returns>
+        /// <param name="info">MemberInfo of the member to check</param>
+        /// <param name="attribute">DetourMember attribute</param>
         private static Type                 GetDetourTargetClass( MemberInfo info, DetourMember attribute )
         {
             if( attribute != null )
@@ -426,64 +507,13 @@ namespace CommunityCoreLibrary
             return info.DeclaringType;
         }
 
-        private static string               GetFixedMemberName( string memberName )
-        {
-            if( memberName[ 0 ] == "_"[ 0 ] )
-            {
-                return memberName.Substring( 1, memberName.Length - 1 );
-            }
-            return memberName;
-        }
-
-        private static MethodInfo           GetTimedDetouredMethodInt( Type sourceClass, string sourceMember, MethodInfo destinationMethod )
-        {
-            if( sourceMember == DetourMember.DefaultTargetMemberName )
-            {
-                sourceMember = destinationMethod.Name;
-            }
-            MethodInfo sourceMethod = null;
-            try
-            {   // Try to get method direct
-                sourceMethod = sourceClass.GetMethod( sourceMember, Controller.Data.UniversalBindingFlags );
-            }
-            catch
-            {   // May be ambiguous, try from parameter types (thanks Zhentar for the change from count to types)
-                sourceMethod = sourceClass.GetMethods( Controller.Data.UniversalBindingFlags )
-                                          .FirstOrDefault( checkMethod => (
-                                              ( checkMethod.Name == sourceMember )&&
-                                              ( checkMethod.ReturnType == destinationMethod.ReturnType )&&
-                                              ( checkMethod.GetParameters().Select( checkParameter => checkParameter.ParameterType ).SequenceEqual( destinationMethod.GetParameters().Select( destinationParameter => destinationParameter.ParameterType ) ) )
-                                             ) );
-            }
-            var fixedName = GetFixedMemberName( sourceMember );
-            if(
-                ( sourceMethod == null )&&
-                ( sourceMember != fixedName )
-            )
-            {
-                return GetTimedDetouredMethodInt( sourceClass, fixedName, destinationMethod );
-            }
-            return sourceMethod;
-        }
-
-        private static PropertyInfo         GetTimedDetouredPropertyInt( Type sourceClass, string sourceMember, PropertyInfo destinationProperty )
-        {
-            if( sourceMember == DetourMember.DefaultTargetMemberName )
-            {
-                sourceMember = destinationProperty.Name;
-            }
-            var sourceProperty = sourceClass.GetProperty( sourceMember, Controller.Data.UniversalBindingFlags );
-            var fixedName = GetFixedMemberName( sourceMember );
-            if(
-                ( sourceProperty == null )&&
-                ( sourceMember != fixedName )
-            )
-            {
-                return GetTimedDetouredPropertyInt( sourceClass, fixedName, destinationProperty );
-            }
-            return sourceProperty;
-        }
-
+        /// <summary>
+        /// Returns a list of timed detour methods with matching sequence and timing from a class.
+        /// </summary>
+        /// <param name="detours">List to add the detours from this class to</param>
+        /// <param name="destinationType">The class to check for detour methods</param>
+        /// <param name="sequence">Injection sequence</param>
+        /// <param name="timing">Injection timing</param>
         private static void                 GetTimedDetouredMethods( ref List<DetourPair> detours, Type destinationType, InjectionSequence sequence, InjectionTiming timing )
         {
             var destinationMethods = destinationType
@@ -535,6 +565,13 @@ namespace CommunityCoreLibrary
             }
         }
 
+        /// <summary>
+        /// Returns a list of timed detour property methods (get/set) with matching sequence and timing from a class.
+        /// </summary>
+        /// <param name="detours">List to add the detours from this class to</param>
+        /// <param name="destinationType">The class to check for detour properties</param>
+        /// <param name="sequence">Injection sequence</param>
+        /// <param name="timing">Injection timing</param>
         private static void                 GetTimedDetouredProperties( ref List<DetourPair> detours, Type destinationType, InjectionSequence sequence, InjectionTiming timing  )
         {
             var destinationProperties = destinationType
@@ -618,9 +655,67 @@ namespace CommunityCoreLibrary
             }
         }
 
-        private static string               FullNameOfType( Type type )
+        /// <summary>
+        /// Gets the specific method that is detoured.
+        /// </summary>
+        /// <returns>The MethodInfo of the method to be detoured or null on failure</returns>
+        /// <param name="sourceClass">Class that contains the expected method to be detoured</param>
+        /// <param name="sourceMember">Name of the expected method to be detoured</param>
+        /// <param name="destinationMethod">MethodInfo of the detour</param>
+        private static MethodInfo           GetTimedDetouredMethodInt( Type sourceClass, string sourceMember, MethodInfo destinationMethod )
         {
-            return type == null ? "null" : type.FullName;
+            if( sourceMember == DetourMember.DefaultTargetMemberName )
+            {
+                sourceMember = destinationMethod.Name;
+            }
+            MethodInfo sourceMethod = null;
+            try
+            {   // Try to get method direct
+                sourceMethod = sourceClass.GetMethod( sourceMember, Controller.Data.UniversalBindingFlags );
+            }
+            catch
+            {   // May be ambiguous, try from parameter types (thanks Zhentar for the change from count to types)
+                sourceMethod = sourceClass.GetMethods( Controller.Data.UniversalBindingFlags )
+                                          .FirstOrDefault( checkMethod => (
+                                              ( checkMethod.Name == sourceMember )&&
+                                              ( checkMethod.ReturnType == destinationMethod.ReturnType )&&
+                                              ( checkMethod.GetParameters().Select( checkParameter => checkParameter.ParameterType ).SequenceEqual( destinationMethod.GetParameters().Select( destinationParameter => destinationParameter.ParameterType ) ) )
+                                             ) );
+            }
+            var fixedName = GetFixedMemberName( sourceMember );
+            if(
+                ( sourceMethod == null )&&
+                ( sourceMember != fixedName )
+            )
+            {
+                return GetTimedDetouredMethodInt( sourceClass, fixedName, destinationMethod );
+            }
+            return sourceMethod;
+        }
+
+        /// <summary>
+        /// Gets the specific property that is detoured.
+        /// </summary>
+        /// <returns>The PropertyInfo of the method to be detoured or null on failure</returns>
+        /// <param name="sourceClass">Class that contains the expected property to be detoured</param>
+        /// <param name="sourceMember">Name of the expected property to be detoured</param>
+        /// <param name="destinationProperty">PropertyInfo of the detour</param>
+        private static PropertyInfo         GetTimedDetouredPropertyInt( Type sourceClass, string sourceMember, PropertyInfo destinationProperty )
+        {
+            if( sourceMember == DetourMember.DefaultTargetMemberName )
+            {
+                sourceMember = destinationProperty.Name;
+            }
+            var sourceProperty = sourceClass.GetProperty( sourceMember, Controller.Data.UniversalBindingFlags );
+            var fixedName = GetFixedMemberName( sourceMember );
+            if(
+                ( sourceProperty == null )&&
+                ( sourceMember != fixedName )
+            )
+            {
+                return GetTimedDetouredPropertyInt( sourceClass, fixedName, destinationProperty );
+            }
+            return sourceProperty;
         }
 
         #endregion
@@ -628,6 +723,17 @@ namespace CommunityCoreLibrary
         #region Debug Methods
 
 #if DEBUG
+        /// <summary>
+        /// Checks that B is a valid detour for A based on method types and class context (targets)
+        /// </summary>
+        /// <returns>True if B is a valid detour for A; False and reason string set otherwise</returns>
+        /// <param name="targetA">Target class of A</param>
+        /// <param name="typeA">MethodType of A</param>
+        /// <param name="nameA">Method name of A</param>
+        /// <param name="targetB">Target class of B</param>
+        /// <param name="typeB">MethodType of B</param>
+        /// <param name="nameB">Method name of B</param>
+        /// <param name="reason">Return string with reason for failure</param>
         private static bool                 DetourTargetsAreValid( Type targetA, MethodType typeA, string nameA, Type targetB, MethodType typeB, string nameB, out string reason )
         {
             if(
@@ -659,6 +765,12 @@ namespace CommunityCoreLibrary
             return true;
         }
 
+        /// <summary>
+        /// Validates that a DetourPair is call compatible
+        /// </summary>
+        /// <returns>True if the pair is call compatible; False and reason string set otherwise</returns>
+        /// <param name="pair">DetourPair to check</param>
+        /// <param name="reason">Return string with reason for failure</param>
         private static bool                 PairIsCallCompatible( DetourPair pair, out string reason )
         {
             return MethodsAreCallCompatible(
@@ -669,6 +781,15 @@ namespace CommunityCoreLibrary
                 out reason );
         }
 
+        /// <summary>
+        /// Validates that two methods are call compatible
+        /// </summary>
+        /// <returns>True if the methods are call compatible; False and reason string set otherwise</returns>
+        /// <param name="sourceTargetClass">Source method target class</param>
+        /// <param name="sourceMethod">Source method</param>
+        /// <param name="destinationTargetClass">Destination method target class</param>
+        /// <param name="destinationMethod">Destination method</param>
+        /// <param name="reason">Return string with reason for failure</param>
         private static bool                 MethodsAreCallCompatible( Type sourceTargetClass, MethodInfo sourceMethod, Type destinationTargetClass, MethodInfo destinationMethod, out string reason )
         {
             reason = string.Empty;
