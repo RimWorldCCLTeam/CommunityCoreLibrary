@@ -22,7 +22,8 @@
             <exceptedThingDefs>
                 <li>Human_Meat</li>
                 <li>Hay</li>
-                <li>InsectMeat</li>
+                <li>InsectJelly</li>
+                <li>Megaspider_Meat</li>
             </exceptedThingDefs>
         </defaultIngredientFilter>
     </RecipeDef>
