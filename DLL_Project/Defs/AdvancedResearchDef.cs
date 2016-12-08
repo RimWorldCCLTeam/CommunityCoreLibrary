@@ -214,7 +214,10 @@ namespace CommunityCoreLibrary
                     }
 
                     // Get the help consolidator
-                    if( HelpConsolidator == null )
+                    if(
+                        ( HelpConsolidator == null )&&
+                        ( MatchingAdvancedResearch.Count > 1 )
+                    )
                     {
                         // Error processing data
                         isValid = false;
@@ -260,7 +263,7 @@ namespace CommunityCoreLibrary
                     CCL_Log.TraceMod(
                         this,
                         Verbosity.FatalErrors,
-                        string.Format( "Defs with a single researchDef cannot be help consolidators, Priority = '{0}', ConsolidateHelp = '{1}'", Priority, ConsolidateHelp )
+                        string.Format( "Defs with a single researchDef cannot be help consolidators.  The information for this def will be added to the help for the single research prerequisite, Priority = '{0}', ConsolidateHelp = '{1}'", Priority, ConsolidateHelp )
                     );
                 }
 

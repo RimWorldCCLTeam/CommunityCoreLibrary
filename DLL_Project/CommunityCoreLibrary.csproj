@@ -337,12 +337,12 @@
     <Compile Include="Extensions\JoyGiver_TakeDrug_Extensions.cs" />
     <Compile Include="Detours\DrugAIUtility.cs" />
     <Compile Include="Detours\JoyGiver.cs" />
-    <Compile Include="Detours\Debug\MapPawns.cs" />
-    <Compile Include="Detours\Debug\ListerThings.cs" />
+    <Compile Include="Detours\Developer\MapPawns.cs" />
+    <Compile Include="Detours\Developer\ListerThings.cs" />
     <Compile Include="Extensions\ThingRequestGroup_Extensions.cs" />
     <Compile Include="Detours\Game.cs" />
-    <Compile Include="Detours\Debug\IntentionallyBad.cs" />
-    <Compile Include="Detours\Debug\IntentionallyGood.cs" />
+    <Compile Include="Detours\Developer\IntentionallyBad.cs" />
+    <Compile Include="Detours\Developer\IntentionallyGood.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -362,6 +362,6 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
-    <Folder Include="Detours\Debug\" />
+    <Folder Include="Detours\Developer\" />
   </ItemGroup>
 </Project>
