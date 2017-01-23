@@ -55,8 +55,8 @@ namespace CommunityCoreLibrary.Detour
         internal static bool                _FoodAvailableInRoomTo( Pawn prisoner )
         {
             if(
-                ( prisoner.carrier.CarriedThing != null )&&
-                ( NutritionAvailableForFrom( prisoner, prisoner.carrier.CarriedThing ) > 0.0f )
+                ( prisoner.carryTracker.CarriedThing != null )&&
+                ( NutritionAvailableForFrom( prisoner, prisoner.carryTracker.CarriedThing ) > 0.0f )
             )
             {
                 //Log.Message( "Prisoner is carrying food" );
@@ -64,7 +64,7 @@ namespace CommunityCoreLibrary.Detour
             }
             var neededNutrition = 0.0f;
             var foodNutrition = 0.0f;
-            var room = prisoner.Position.GetRoom();
+            var room = prisoner.Position.GetRoom( prisoner.Map );
             if( room == null )
             {   // This should never actually happen...
                 //Log.Message( "Prisoner is not in a room!" );
@@ -124,8 +124,8 @@ namespace CommunityCoreLibrary.Detour
                         ( pawn.IsPrisonerOfColony )&&
                         ( pawn.needs.food.CurLevelPercentage < ( pawn.needs.food.PercentageThreshHungry + 0.0199999995529652 ) )&&
                         (
-                            ( pawn.carrier.CarriedThing == null )||
-                            ( !pawn.RaceProps.WillAutomaticallyEat( pawn.carrier.CarriedThing ) )
+                            ( pawn.carryTracker.CarriedThing == null )||
+                            ( !pawn.RaceProps.WillAutomaticallyEat( pawn.carryTracker.CarriedThing ) )
                         )
                     )
                     {

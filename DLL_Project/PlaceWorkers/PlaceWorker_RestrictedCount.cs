@@ -6,7 +6,7 @@ namespace CommunityCoreLibrary
     public class PlaceWorker_RestrictedCount : PlaceWorker
     {
 
-        public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Thing thingToIgnore = null )
         {
             var Restrictions = checkingDef.RestrictedPlacement_Properties();
 #if DEBUG
@@ -26,8 +26,8 @@ namespace CommunityCoreLibrary
 #endif
 
             // Get the current count of instances and blueprints of
-            int count = Find.ListerThings.ThingsOfDef( thingDef ).Count
-                + Find.ListerThings.ThingsOfDef( thingDef.blueprintDef ).Count;
+            int count = this.Map.listerThings.ThingsOfDef( thingDef ).Count
+                + this.Map.listerThings.ThingsOfDef( thingDef.blueprintDef ).Count;
 
             return count < Restrictions.MaxCount
                 ? AcceptanceReport.WasAccepted

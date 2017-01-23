@@ -43,7 +43,7 @@ namespace CommunityCoreLibrary
 
         public override Job                 JobOnThing( Pawn pawn, Thing t )
         {
-            if( !pawn.CanReserveAndReach( ( TargetInfo )t.Position, PathEndMode.Touch, pawn.NormalMaxDanger(), 1 ) )
+            if( !pawn.CanReserveAndReach( t.Position, PathEndMode.Touch, pawn.NormalMaxDanger(), 1 ) )
             {
                 return (Job) null;
             }
@@ -69,7 +69,7 @@ namespace CommunityCoreLibrary
 
         private static Thing                HopperGetCurrentResource( IntVec3 position, ISlotGroupParent hopperSgp )
         {
-            var list = Find.ThingGrid.ThingsListAt( position ).Where( t => (
+            var list = hopperSgp.Map.thingGrid.ThingsListAt( position ).Where( t => (
                 ( !HopperDefs.Contains( t.def ) )&&
                 ( hopperSgp.GetStoreSettings().AllowedToAccept( t ) )
             ) ).ToList();
@@ -90,7 +90,7 @@ namespace CommunityCoreLibrary
 
             if( resource != null )
             {
-                resources = Find.Map.listerThings.ThingsOfDef( resource.def )
+                resources = pawn.Map.listerThings.ThingsOfDef( resource.def )
                     .Where( t => (
                         ( HaulAIUtility.PawnCanAutomaticallyHaul( pawn, t ) )&&
                         ( hopperSgp.GetStoreSettings().AllowedToAccept( t ) )&&
@@ -99,7 +99,7 @@ namespace CommunityCoreLibrary
             }
             else
             {
-                resources = Find.Map.listerThings.AllThings
+                resources = pawn.Map.listerThings.AllThings
                     .Where( t => (
                         ( HaulAIUtility.PawnCanAutomaticallyHaul( pawn, t ) )&&
                         ( hopperSgp.GetStoreSettings().AllowedToAccept( t ) )&&

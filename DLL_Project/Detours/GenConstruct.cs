@@ -12,10 +12,11 @@ namespace CommunityCoreLibrary.Detour
     internal static class _GenConstruct
     {
 
+        // HARMONY CANDIDATE: prefix
         [DetourMember( typeof( GenConstruct ) )]
-        internal static bool                _CanBuildOnTerrain( BuildableDef entDef, IntVec3 c, Rot4 rot, Thing thingToIgnore = null )
+        internal static bool                _CanBuildOnTerrain( BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null )
         {
-
+            // changed (processing restrictions, if any) {
             CompProperties_RestrictedPlacement Restrictions = null;
             if( entDef is TerrainWithComps )
             {
@@ -42,14 +43,14 @@ namespace CommunityCoreLibrary.Detour
             if( Restrictions != null )
             {
                 var cellRect = GenAdj.OccupiedRect( c, rot, entDef.Size );
-                cellRect.ClipInsideMap();
+                cellRect.ClipInsideMap( map );
                 foreach( var cell in cellRect )
                 {
-                    if( !Restrictions.RestrictedTerrain.Contains( cell.GetTerrain() ) )
+                    if( !Restrictions.RestrictedTerrain.Contains( map.terrainGrid.TerrainAt( cell ) ) )
                     {
                         return false;
                     }
-                    var thingList = cell.GetThingList();
+                    var thingList = cell.GetThingList( map );
                     for( int index = 0; index < thingList.Count; ++index )
                     {
                         if( thingList[ index ] != thingToIgnore )
@@ -66,25 +67,25 @@ namespace CommunityCoreLibrary.Detour
                     }
                 }
             }
-            else
+            else // } changed
             {
                 // Use the vanilla method to check
                 if(
                     ( entDef is TerrainDef ) &&
-                    ( !c.GetTerrain().changeable )
+                    ( !c.GetTerrain( map ).changeable )
                 )
                 {
                     return false;
                 }
                 var cellRect = GenAdj.OccupiedRect( c, rot, entDef.Size );
-                cellRect.ClipInsideMap();
+                cellRect.ClipInsideMap( map );
                 foreach( var cell in cellRect )
                 {
-                    if( !cell.GetTerrain().affordances.Contains( entDef.terrainAffordanceNeeded ) )
+                    if( !map.terrainGrid.TerrainAt( cell ).affordances.Contains( entDef.terrainAffordanceNeeded ) )
                     {
                         return false;
                     }
-                    var thingList = cell.GetThingList();
+                    var thingList = cell.GetThingList( map );
                     for( int index = 0; index < thingList.Count; ++index )
                     {
                         if( thingList[ index ] != thingToIgnore )

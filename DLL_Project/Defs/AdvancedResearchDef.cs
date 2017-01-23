@@ -330,8 +330,8 @@ namespace CommunityCoreLibrary
                     // Make sure thingDefs are of the appropriate type (has proper designationCategory)
                     foreach( var thingDef in thingDefs )
                     {
-                        if( ( thingDef.designationCategory.NullOrEmpty() )||
-                            ( thingDef.designationCategory.ToLower() == "none" ) )
+                        if( ( thingDef.designationCategory.defName.NullOrEmpty() )||
+                            ( thingDef.designationCategory.defName.ToLower() == "none" ) )
                         {
                             bool mhdUnlock = false;
                             foreach( var mhd in DefDatabase<ModHelperDef>.AllDefs )

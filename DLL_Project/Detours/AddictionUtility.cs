@@ -34,9 +34,10 @@ namespace CommunityCoreLibrary.Detour
                     return( drugProps.chemical == chemical );
                     // Core empty check???
                     /*
-                    if(
-                        ( list[ index ].Position.Roofed() )||
-                        ( list[ index ].Position.InHorDistOf( pawn.Position, 45f ) )
+                     * 
+                    if ( 
+                         ( list[ i ].Position.Roofed( list[ i ].Map )||
+                         ( !list[ i ].Position.InHorDistOf( pawn.Position, 45f ) )
                     )
                     {
                     }
@@ -53,16 +54,19 @@ namespace CommunityCoreLibrary.Detour
         [DetourMember( typeof( AddictionUtility ) )]
         internal static bool                _CanBingeOnNow( Pawn pawn, ChemicalDef chemical, DrugCategory drugCategory )
         {
-            if( !chemical.canBinge )
+            if(
+                ( !chemical.canBinge )||
+                ( !pawn.Spawned )
+            )
             {
                 return false;
             }
             // Check all spawned drugs
-            var listOfSpawnedDrugs = Find.ListerThings.ThingsInGroup( ThingRequestGroup.Drug );
+            var listOfSpawnedDrugs = pawn.Map.listerThings.ThingsInGroup( ThingRequestGroup.Drug );
             for( int index = 0; index < listOfSpawnedDrugs.Count; ++index )
             {
                 var thing = listOfSpawnedDrugs[ index ];
-                if( !thing.Position.Fogged() )
+                if( !thing.Position.Fogged( thing.Map ) )
                 {
                     var synthesizer = thing as Building_AutomatedFactory;
                     if( synthesizer != null )

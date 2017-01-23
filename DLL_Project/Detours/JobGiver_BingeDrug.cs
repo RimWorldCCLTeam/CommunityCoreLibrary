@@ -54,9 +54,9 @@ namespace CommunityCoreLibrary.Detour
                 )&&
                 (
                     ( pawn.Position.InHorDistOf( drugSource.Position, 60f ) )||
-                    ( drugSource.Position.Roofed() )||
-                    ( Find.AreaHome[ drugSource.Position ] )||
-                    ( drugSource.Position.GetSlotGroup() != null )
+                    ( drugSource.Position.Roofed( drugSource.Map ) )||
+                    ( drugSource.Map.areaManager.Home[ drugSource.Position ] )||
+                    ( StoreUtility.GetSlotGroup( drugSource ) != null )
                 )
             );
         }
@@ -69,9 +69,15 @@ namespace CommunityCoreLibrary.Detour
         internal Thing                      _BestIngestTarget( Pawn pawn )
         {
             var chemical = GetChemical( pawn );
+            if( chemical == null )
+            {
+                Log.ErrorOnce( "Tried to binge on null chemical.", 1393746152 );
+                return null;
+            }
             var overdose = pawn.health.hediffSet.GetFirstHediffOfDef( HediffDefOf.DrugOverdose );
             var ingestibleThing = GenClosest.ClosestThingReachable(
                 pawn.Position,
+                pawn.Map,
                 ThingRequest.ForGroup( ThingRequestGroup.Drug ),
                 PathEndMode.InteractionCell,
                 TraverseParms.For(

@@ -5,8 +5,8 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_NewColony : MainMenu
-	{
+    public class MainMenu_NewColony : MainMenu
+    {
 
         public override Color               Color
         {
@@ -16,16 +16,16 @@ namespace CommunityCoreLibrary
             }
         }
 
-		public override bool                RenderNow( bool anyMapFiles )
-		{
-			return ( Current.ProgramState == ProgramState.Entry );
-		}
+        public override bool                RenderNow( bool anyMapFiles )
+        {
+            return ( Current.ProgramState == ProgramState.Entry );
+        }
 
-		public override void                ClickAction()
-		{
-			Find.WindowStack.Add( (Window)new Page_SelectScenario() );
-		}
+        public override void                ClickAction()
+        {
+            Find.WindowStack.Add( (Window)new Page_SelectScenario() );
+        }
 
-	}
+    }
 
 }

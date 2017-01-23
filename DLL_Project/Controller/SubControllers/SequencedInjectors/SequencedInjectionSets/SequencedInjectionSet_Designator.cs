@@ -170,9 +170,9 @@ namespace CommunityCoreLibrary
             // Add a reverse designator for it
             if( reverseDesignator )
             {
-                if( ReverseDesignatorDatabase_Extensions.Find( designatorClassInt ) == null )
+                if( Find.ReverseDesignatorDatabase.AllDesignators.Any( d => d.GetType() == designatorClassInt ) )
                 {
-                    ReverseDesignatorDatabase.AllDesignators.Add( designator );
+                    Find.ReverseDesignatorDatabase.AllDesignators.Add( designator );
                 }
             }
 
@@ -194,8 +194,8 @@ namespace CommunityCoreLibrary
             }
             if( reverseDesignator )
             {
-                designator = ReverseDesignatorDatabase_Extensions.Find( designatorClassInt );
-                if( designator != null )
+                designator = Find.ReverseDesignatorDatabase.AllDesignators.FirstOrDefault(d => d.GetType() == designatorClassInt);
+                if ( designator != null )
                 {
                     return designator;
                 }

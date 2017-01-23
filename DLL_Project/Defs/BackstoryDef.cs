@@ -15,8 +15,8 @@ namespace CommunityCoreLibrary
         public BodyType                             bodyTypeGlobal      = BodyType.Undefined;
         public BodyType                             bodyTypeMale        = BodyType.Male;
         public BodyType                             bodyTypeFemale      = BodyType.Female;
-        public string                               title;
-        public string                               titleShort;
+        public string                               Title;
+        public string                               TitleShort;
         public BackstorySlot                        slot                = BackstorySlot.Adulthood;
         public bool                                 shuffleable         = true;
         public bool                                 addToDatabase       = true;
@@ -50,11 +50,11 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            if( this.title.NullOrEmpty() )
+            if( this.Title.NullOrEmpty() )
             {
                 CCL_Log.Trace(
                     Verbosity.Validation,
-                    string.Format( "'{0}' has an empty title.", this.defName ),
+                    string.Format( "'{0}' has an empty Title.", this.defName ),
                     "BackstoryDef"
                 );
                 return;
@@ -74,15 +74,15 @@ namespace CommunityCoreLibrary
 
             var backStory = new Backstory();
 
-            backStory.title = this.title;
+            backStory.SetTitle( Title );
 
-            if( !titleShort.NullOrEmpty() )
+            if( !TitleShort.NullOrEmpty() )
             {
-                backStory.titleShort = titleShort;
+                backStory.SetTitleShort( TitleShort );
             }
             else
             {
-                backStory.titleShort = backStory.title;
+                backStory.SetTitleShort( backStory.Title );
             }
 
             if( !baseDescription.NullOrEmpty() )
@@ -154,7 +154,7 @@ namespace CommunityCoreLibrary
 
             backStory.ResolveReferences();
             backStory.PostLoad();
-            backStory.uniqueSaveKey = this.UniqueSaveKey();
+            backStory.identifier = this.UniqueSaveKey();
 
             bool configErrors = false;
             string configErrorList = string.Empty;

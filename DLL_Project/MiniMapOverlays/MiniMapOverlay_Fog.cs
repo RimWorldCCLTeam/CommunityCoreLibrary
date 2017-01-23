@@ -10,35 +10,35 @@ using Verse;
 namespace CommunityCoreLibrary.MiniMap
 {
 
-	public class MiniMapOverlay_Fog : MiniMapOverlay
-	{
+    public class MiniMapOverlay_Fog : MiniMapOverlay
+    {
 
-		#region Constructors
+        #region Constructors
 
-		public MiniMapOverlay_Fog( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
-		{
-		}
+        public MiniMapOverlay_Fog( MiniMap minimap, MiniMapOverlayDef overlayData ) : base( minimap, overlayData )
+        {
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		public override void Update()
-		{
-			// get the fog grid
-			var fog = Find.Map.fogGrid.fogGrid;
+        public override void Update()
+        {
+            // get the fog grid
+            var fog = Find.VisibleMap.fogGrid.fogGrid;
 
-			// loop over all cells
-			for( int i = 0; i < CellIndices.NumGridCells; i++ )
-			{
-				// set pixel color
-				var pos = CellIndices.IndexToCell( i );
-				texture.SetPixel( pos.x, pos.z, fog[ i ] ? Color.gray : Color.clear );
-			}
-		}
+            // loop over all cells
+            for( int i = 0; i < Find.VisibleMap.cellIndices.NumGridCells; i++ )
+            {
+                // set pixel color
+                var pos = Find.VisibleMap.cellIndices.IndexToCell( i );
+                texture.SetPixel( pos.x, pos.z, fog[ i ] ? Color.gray : Color.clear );
+            }
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-	}
+    }
 
 }

@@ -5,35 +5,34 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_QuitToMain : MainMenu
-	{
+    public class MainMenu_QuitToMain : MainMenu
+    {
 
-		public override bool RenderNow( bool anyMapFiles )
-		{
+        public override bool RenderNow( bool anyMapFiles )
+        {
             return(
-                ( Current.ProgramState == ProgramState.MapPlaying )&&
+                ( Current.ProgramState == ProgramState.Playing )&&
                 ( !Current.Game.Info.permadeathMode )
             );
-		}
+        }
 
-		public override void ClickAction()
-		{
-            if( GameDataSaveLoader.CurrentMapStateIsValuable )
+        public override void ClickAction()
+        {
+            if( GameDataSaveLoader.CurrentGameStateIsValuable )
             {
-    			Find.WindowStack.Add( (Window)new Dialog_Confirm(
-    				"ConfirmQuit".Translate(),
-    				RootMap.GoToMainMenu,
-    				true,
-                    null,
-                    true
-    			) );
+                Find.WindowStack.Add( Dialog_MessageBox.CreateConfirmation(
+                    "ConfirmQuit".Translate(),
+                    GenScene.GoToMainMenu,
+                    true,
+                    null
+                ) );
             }
             else
             {
-                RootMap.GoToMainMenu();
+                GenScene.GoToMainMenu();
             }
-		}
+        }
 
-	}
+    }
 
 }

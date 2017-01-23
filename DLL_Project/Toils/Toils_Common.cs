@@ -6,13 +6,13 @@ namespace CommunityCoreLibrary
     public static class Toils_Common
     {
 
-        public static Toil                  SpawnThingDefOfCountAt( ThingDef of, int count, IntVec3 at )
+        public static Toil                  SpawnThingDefOfCountAt( ThingDef of, int count, IntVec3 at, Map map )
         {
             return new Toil
             {
                 initAction = delegate
                 {
-                    Common.SpawnThingDefOfCountAt( of, count, at );
+                    Common.SpawnThingDefOfCountAt( of, count, at, map );
                 }
             };
         }
@@ -28,13 +28,13 @@ namespace CommunityCoreLibrary
             };
         }
 
-        public static Toil                  RemoveDesignationDefOfAt( DesignationDef of, IntVec3 at )
+        public static Toil                  RemoveDesignationDefOfAt( DesignationDef of, IntVec3 at, Map map )
         {
             return new Toil
             {
                 initAction = delegate
                 {
-                    Common.RemoveDesignationDefOfAt( of, at );
+                    Common.RemoveDesignationDefOfAt( of, at, map );
                 }
             };
         }

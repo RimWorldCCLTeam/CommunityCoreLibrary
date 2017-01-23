@@ -14,12 +14,12 @@ namespace CommunityCoreLibrary.Detour
                 () =>
             {
                 // TODO:  Detour different sequence for GameLoad injectors
-                //Controller.Data.ResetInjectionSubController();
-                MapIniter_NewGame.PrepForMapGen();
+                // Controller.Data.ResetInjectionSubController();
+                Find.GameInitData.PrepForMapGen();
                 Find.GameInitData.startedFromEntry = true;
                 Find.Scenario.PreMapGenerate();
             },
-                "Map",
+                "Play",
                 "GeneratingMap",
                 true,
                 null );

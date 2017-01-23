@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary.Detour
         {
             _IsPotentiallyValidFacilityForMe_Static = typeof( CompAffectedByFacilities ).GetMethods( Controller.Data.UniversalBindingFlags ).FirstOrDefault( methodInfo => (
                 ( methodInfo.Name == "IsPotentiallyValidFacilityForMe_Static" )&&
-                ( methodInfo.GetParameters().Count() == 6 )
+                ( methodInfo.GetParameters().Count() == 7 )
             ) );
             if( _IsPotentiallyValidFacilityForMe_Static == null )
             {
@@ -31,19 +31,20 @@ namespace CommunityCoreLibrary.Detour
 
         #region Reflected Methods
 
-        internal static bool                IsPotentiallyValidFacilityForMe_Static( ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot )
+        internal static bool                IsPotentiallyValidFacilityForMe_Static( ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot, Map map )
         {
-            return (bool) _IsPotentiallyValidFacilityForMe_Static.Invoke( null, new object[]{ facilityDef, facilityPos, facilityRot, myDef, myPos, myRot } );
+            return (bool) _IsPotentiallyValidFacilityForMe_Static.Invoke( null, new object[]{ facilityDef, facilityPos, facilityRot, myDef, myPos, myRot, map } );
         }
 
         #endregion
 
         #region Detoured Methods
 
+        // HARMONY CANDIDATE: postfix
         [DetourMember]
         internal bool                       _IsPotentiallyValidFacilityForMe( ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot )
         {
-            if( !IsPotentiallyValidFacilityForMe_Static( facilityDef, facilityPos, facilityRot, this.parent.def, this.parent.Position, this.parent.Rotation ) )
+            if( !IsPotentiallyValidFacilityForMe_Static( facilityDef, facilityPos, facilityRot, this.parent.def, this.parent.Position, this.parent.Rotation, this.parent.Map ) )
             {
                 return false;
             }
@@ -56,11 +57,12 @@ namespace CommunityCoreLibrary.Detour
                     ( !parentBed.Medical )
                 )
                 {
+                    // changed {
                     var propAffected = this.props as CommunityCoreLibrary.CompProperties_AffectedByFacilities;
                     if(
                         ( propAffected == null )||
                         ( !propAffected.overrideBedOnly )
-                    )
+                    ) // } changed
                     {
                         return false;
                     }

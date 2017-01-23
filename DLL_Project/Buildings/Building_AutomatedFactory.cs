@@ -238,10 +238,10 @@ namespace CommunityCoreLibrary
         #region Base Class Overrides
 
 #if DEBUG
-        public override void                SpawnSetup()
+        public override void                SpawnSetup( Map map )
         {
             //Log.Message( string.Format( "{0}.SpawnSetup()", this.ThingID ) );
-            base.SpawnSetup();
+            base.SpawnSetup( map );
             if( CompAutomatedFactory == null )
             {
                 CCL_Log.TraceMod(
@@ -392,7 +392,7 @@ namespace CommunityCoreLibrary
             Scribe_Values.LookValue<int>( ref currentProductionTick, "currentProductionTick", 0 );
             Scribe_Values.LookValue<string>( ref _expose_Considered_Product, "currentUserThingDef", string.Empty );
             Scribe_References.LookReference( ref _expose_Considered_User, "currentUser", false );
-            Scribe_Collections.LookDictionary<RecipeDef,bool>( ref recipeAllowances, "productionAllowances", LookMode.DefReference, LookMode.Value );
+            Scribe_Collections.LookDictionary<RecipeDef,bool>( ref recipeAllowances, "productionAllowances", LookMode.Def, LookMode.Value );
             Scribe_Deep.LookDeep<Thing>( ref currentThing, "currentThing", null );
 
             // Resolve cross-references
@@ -538,7 +538,7 @@ namespace CommunityCoreLibrary
                 ( currentThing.stackCount > 0 )
             )
             {
-                GenSpawn.Spawn( currentThing, useCell );
+                GenSpawn.Spawn( currentThing, useCell, Map );
                 currentThing = null;
                 currentProductionTick = 0;
             }
@@ -804,7 +804,7 @@ namespace CommunityCoreLibrary
                 {
                     bool addToUsable = true;
                     bool addToPrefered = false;
-                    foreach( var cellThing in cell.GetThingList() )
+                    foreach( var cellThing in cell.GetThingList( Map ) )
                     {
                         if( cellThing is IStoreSettingsParent )
                         {
@@ -848,7 +848,7 @@ namespace CommunityCoreLibrary
                     for( int index = 0; index < preferedCells.Count; ++index )
                     {
                         var cell = preferedCells[ index ];
-                        foreach( var cellThing in cell.GetThingList() )
+                        foreach( var cellThing in cell.GetThingList( Map ) )
                         {
                             if(
                                 ( cellThing.CanStackWith( currentThing ) )&&
@@ -875,7 +875,7 @@ namespace CommunityCoreLibrary
 
             if( CompAutomatedFactory.Properties.outputVector == FactoryOutputVector.InteractionCell )
             {
-                foreach( var cellThing in this.InteractionCell.GetThingList() )
+                foreach( var cellThing in this.InteractionCell.GetThingList( Map ) )
                 {
                     if(
                         ( cellThing.CanStackWith( currentThing ) )&&
@@ -996,7 +996,7 @@ namespace CommunityCoreLibrary
                 {
                     if(
                         reacher.CanReach(
-                            ( TargetInfo )( ( Thing )hopper.parent ),
+                            hopper.parent,
                             PathEndMode.Touch,
                             reacher.NormalMaxDanger(),
                             false )
@@ -1387,10 +1387,10 @@ namespace CommunityCoreLibrary
             consideration = null;
             if(
                 ( releaseFromManager )&&
-                ( Find.Reservations.ReservedBy( this, pawn ) )
+                ( pawn.Map.reservationManager.ReservedBy( this, pawn ) )
             )
             {
-                Find.Reservations.Release( this, pawn );
+                pawn.Map.reservationManager.Release( this, pawn );
             }
         }
 

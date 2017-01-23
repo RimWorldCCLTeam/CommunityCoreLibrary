@@ -13,7 +13,7 @@ namespace CommunityCoreLibrary
 
         #region General Targets by Index
 
-        public static TargetInfo Target( this JobDriver obj, TargetIndex Ind )
+        public static LocalTargetInfo Target( this JobDriver obj, TargetIndex Ind )
         {
             return obj.pawn.CurJob.GetTarget( Ind );
         }

@@ -46,7 +46,7 @@ namespace CommunityCoreLibrary
             drugDefs.Shuffle();
 
             // Get a list of all synthesizers which can produce any of the drugs
-            var synthesizers = Find.ListerBuildings.AllBuildingsColonistOfClass<Building_AutomatedFactory>().Where( factory => (
+            var synthesizers = ingester.Map.listerBuildings.AllBuildingsColonistOfClass<Building_AutomatedFactory>().Where( factory => (
                 ( factory.OutputToPawnsDirectly )&&
                 ( !factory.IsReserved )&&
                 ( factory.AllProductionReadyRecipes().Any( product => drugDefs.Contains( product ) ) )
@@ -57,7 +57,7 @@ namespace CommunityCoreLibrary
                 var currentDrug = drugDefs[ index ];
 
                 // Get all things that are this drug
-                var listOfDrugs = Find.ListerThings.ThingsOfDef( currentDrug );
+                var listOfDrugs = ingester.Map.listerThings.ThingsOfDef( currentDrug );
 
                 // Add all synthesizers that can produce this drug
                 listOfDrugs.AddRange( synthesizers.Where( synthesizer => ((Building_AutomatedFactory)synthesizer).CanDispenseNow( currentDrug ) ).ToList() );
@@ -67,6 +67,7 @@ namespace CommunityCoreLibrary
                 {
                     ingestible = GenClosest.ClosestThing_Global_Reachable(
                         center,
+                        ingester.Map,
                         listOfDrugs,
                         PathEndMode.InteractionCell,
                         TraverseParms.For(

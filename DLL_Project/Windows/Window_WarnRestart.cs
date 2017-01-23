@@ -7,10 +7,10 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class Window_WarnRestart : Window
-	{
+    public class Window_WarnRestart : Window
+    {
 
-		#region Instance Data
+        #region Instance Data
 
         public static string            messageKey = string.Empty;
         public static Action            callbackBeforeRestart = null;
@@ -19,30 +19,30 @@ namespace CommunityCoreLibrary
         private DateTime PlayWithoutRestartStart;
 #endif
 
-		#endregion
+        #endregion
 
-		public override Vector2 InitialSize
-		{
-			get
-			{
-				return new Vector2( 600f, 500f );
-			}
-		}
+        public override Vector2 InitialSize
+        {
+            get
+            {
+                return new Vector2( 600f, 500f );
+            }
+        }
 
-		#region Constructor
+        #region Constructor
 
-		public Window_WarnRestart()
-		{
-			layer = WindowLayer.GameUI;
+        public Window_WarnRestart()
+        {
+            layer = WindowLayer.GameUI;
             soundClose = SoundDefOf.MessageAlertNegative;
-			doCloseButton = false;
-			doCloseX = false;
-			closeOnEscapeKey = false;
-			forcePause = true;
+            doCloseButton = false;
+            doCloseX = false;
+            closeOnEscapeKey = false;
+            forcePause = true;
             absorbInputAroundWindow = true;
-		}
+        }
 
-		#endregion
+        #endregion
 
         #region PreOpen
 
@@ -70,7 +70,7 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-		#region Window Rendering
+        #region Window Rendering
 
 #if RELEASE
         private void DrawCountDownLabel( Rect localRect, double TimeLeft )
@@ -89,9 +89,9 @@ namespace CommunityCoreLibrary
         }
 #endif
 
-		public override void DoWindowContents( Rect inRect )
+        public override void DoWindowContents( Rect inRect )
         {
-			Text.Font = GameFont.Small;
+            Text.Font = GameFont.Small;
 
             var localRect = inRect.ContractedBy( 10f );
             GUI.BeginGroup( localRect );
@@ -161,9 +161,9 @@ namespace CommunityCoreLibrary
             {
                 this.Close();
             }
-		}
+        }
 
-		#endregion
+        #endregion
 
         private void RestartRimWorld()
         {
@@ -174,6 +174,6 @@ namespace CommunityCoreLibrary
             Controller.RimWorld.Restart();
         }
 
-	}
+    }
 
 }

@@ -131,8 +131,8 @@ namespace CommunityCoreLibrary.MiniMap
             // hostile
             if ( pawn.HostileTo( Faction.OfPlayer ) )
                 return hostileColor;
-
-            var designation = Find.DesignationManager.DesignationOn( pawn )?.def;
+            
+            var designation = Find.VisibleMap.designationManager.DesignationOn( pawn )?.def;
             // hunted
             if ( designation == DesignationDefOf.Hunt )
                 return huntingColor;
@@ -147,7 +147,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override IEnumerable<Pawn> GetPawns()
         {
-            return Find.MapPawns.AllPawns.Where( pawn => pawn.RaceProps.Animal );
+            return Find.VisibleMap.mapPawns.AllPawns.Where( pawn => pawn.RaceProps.Animal );
         }
 
         public override float GetRadius( Pawn pawn )
@@ -161,7 +161,7 @@ namespace CommunityCoreLibrary.MiniMap
                 return hostileRadius;
 
             // hunted
-            var designation = Find.DesignationManager.DesignationOn( pawn )?.def;
+            var designation = Find.VisibleMap.designationManager.DesignationOn( pawn )?.def;
             if ( designation == DesignationDefOf.Hunt )
                 return huntingRadius;
 

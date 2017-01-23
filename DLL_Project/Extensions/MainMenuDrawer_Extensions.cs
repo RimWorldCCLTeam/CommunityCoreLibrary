@@ -22,7 +22,7 @@ namespace CommunityCoreLibrary
         public const int            MinButCount = 3;
 
         public const float          TitleShift = 50f;
-        public const float          TitlePaneSpacing = 10f;
+        public const float          TitlePaneSpacing = 30f;  // changed from 10f to match A16 code (NuOfBelthasar)
 
         public const float          CreditHeight = 30f;
         public const float          CreditTitleSpacing = 3f;
@@ -436,7 +436,7 @@ namespace CommunityCoreLibrary
                                 Prefs.Save();
                             }
                         },
-                            MenuOptionPriority.Medium )
+                            MenuOptionPriority.Default )
                         );
                     }
                     Find.WindowStack.Add( new FloatMenu( languageOptions ) );

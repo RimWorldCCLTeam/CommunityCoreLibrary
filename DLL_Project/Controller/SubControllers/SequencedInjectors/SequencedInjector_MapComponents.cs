@@ -22,13 +22,15 @@ namespace CommunityCoreLibrary
             if(
                 ( sequence != InjectionSequence.GameLoad )||
                 ( timing != InjectionTiming.MapComponents )||
-                ( Find.Map == null )||
-                ( Find.Map.components == null )
+                ( Find.Maps == null )||
+                ( Find.Maps.Any( map => map.components == null ) ) // TODO: not sure if this should be "any" or "all"
             )
             {   // No error but only do it in the correct sequence and timing
                 return true;
             }
-            var existingComponents = Find.Map.components;
+            var existingComponents = ( from map in Find.Maps
+                                       from component in map.components
+                                       select component ).ToList();
             var injected = true;
             foreach( var mod in Controller.Data.Mods )
             {
@@ -39,7 +41,7 @@ namespace CommunityCoreLibrary
                     {
                         foreach( var mapComponent in mapComponentsForAssembly )
                         {
-                            if( !existingComponents.Exists( c => c.GetType() == mapComponent ) )
+                            if( !existingComponents.Any( c => c.GetType() == mapComponent ) )
                             {
                                 var componentObject = (MapComponent) Activator.CreateInstance( mapComponent );
                                 if( componentObject == null )

@@ -9,7 +9,7 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-    public class ITab_AutomatedFactory : ITab
+    public class InspectTabBase_AutomatedFactory : InspectTabBase
     {
 
         private static readonly Vector2         WinSize;
@@ -47,15 +47,15 @@ namespace CommunityCoreLibrary
 
         #region Constructors
 
-        static                                  ITab_AutomatedFactory()
+        static                                  InspectTabBase_AutomatedFactory()
         {
             WinSize = new Vector2( 400, 300 );
         }
 
-        public                                  ITab_AutomatedFactory()
+        public                                  InspectTabBase_AutomatedFactory()
         {
-            this.size = ITab_AutomatedFactory.WinSize;
-            this.labelKey = "ITab_AutomatedFactory";
+            this.size = InspectTabBase_AutomatedFactory.WinSize;
+            this.labelKey = "InspectTabBase_AutomatedFactory";
         }
 
         #endregion
@@ -101,7 +101,7 @@ namespace CommunityCoreLibrary
 
         protected override void                 FillTab()
         {
-            Rect rect1 = new Rect( 0.0f, 0.0f, ITab_AutomatedFactory.WinSize.x, ITab_AutomatedFactory.WinSize.y ).ContractedBy( 10f );
+            Rect rect1 = new Rect( 0.0f, 0.0f, InspectTabBase_AutomatedFactory.WinSize.x, InspectTabBase_AutomatedFactory.WinSize.y ).ContractedBy( 10f );
             Text.Font = GameFont.Medium;
             Widgets.Label( rect1, SelectedFactory.def.LabelCap );
             Rect rect2 = rect1;
@@ -128,6 +128,29 @@ namespace CommunityCoreLibrary
             for( int index = 0; index < products.Count; ++index )
             {
                 SelectedFactory.SetAllowed( products[ index ], allowed[ index ] );
+            }
+        }
+
+        // NuOfBelthasar: I don't know what these are supposed to do
+        
+        protected override void CloseTab()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override float PaneTopY
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override bool StillValid
+        {
+            get
+            {
+                throw new NotImplementedException();
             }
         }
 

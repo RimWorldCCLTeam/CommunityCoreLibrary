@@ -33,25 +33,35 @@ namespace CommunityCoreLibrary
         public static T                     MapComponent<T>() where T : MapComponent
         {
             if (
-                ( Find.Map == null )||
-                ( Find.Map.components.NullOrEmpty() )
+                ( Find.Maps == null )||
+                ( Find.Maps.All( map => map.components.NullOrEmpty() ) )
             )
             {
                 return null;
             }
-            return Find.Map.components.FirstOrDefault( c => c.GetType() == typeof( T ) ) as T;
+            return (from map in Find.Maps
+                    where map.components != null
+                    from component in map.components
+                    where component.GetType() == typeof(T)
+                    select component)
+                    .FirstOrDefault() as T;
         }
 
         public static MapComponent          MapComponent( Type t )
         {
             if (
-                ( Find.Map == null )||
-                ( Find.Map.components.NullOrEmpty() )
+                ( Find.Maps == null )||
+                ( Find.Maps.All( map => map.components.NullOrEmpty() ) )
             )
             {
                 return null;
             }
-            return Find.Map.components.FirstOrDefault( c => c.GetType() == t );
+            return (from map in Find.Maps
+                    where map.components != null
+                    from component in map.components
+                    where component.GetType() == t
+                    select component)
+                    .FirstOrDefault();
         }
 
         // Get the def set of a specific type for a specific mod

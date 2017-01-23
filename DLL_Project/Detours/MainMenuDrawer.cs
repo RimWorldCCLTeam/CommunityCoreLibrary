@@ -45,71 +45,86 @@ namespace CommunityCoreLibrary.Detour
             |                                                              |
         1.0 +--------------------------------------------------------------+
         */
-
+        
         [DetourMember( typeof( MainMenuDrawer ), InjectionSequence.DLLLoad )]
         internal static void                _MainMenuOnGUI()
         {
-            #region Version
             VersionControl.DrawInfoInCorner();
-            #endregion
 
             #region Compute Base Title Vector
-            var titleBaseVec = MainMenuDrawerExt.TitleSize;
-            if( titleBaseVec.x > (float) Screen.width )
+            var titleVec = MainMenuDrawerExt.TitleSize;
+            if (titleVec.x > (float) Verse.UI.screenWidth )
             {
-                titleBaseVec *= (float) Screen.width / titleBaseVec.x;
+                titleVec *= (float) Verse.UI.screenWidth / titleVec.x;
             }
-            var titleFinalVec = titleBaseVec * 0.7f;
+            titleVec *= 0.7f;
             #endregion
 
             #region Compute Main Buttons, Links and Language Rects
-            var currentMainMenuDefs = MainMenuDrawerExt.CurrentMainMenuDefs( MainMenuDrawerExt.AnyMapFiles );
-            var currentMainMenuButtonCount = currentMainMenuDefs.Count;
-            var currentMainMenuButtonHeight = MainMenuDrawerExt.OptionButtonSpacingFor( currentMainMenuButtonCount );
+            var menuButtonHeight = MainMenuDrawerExt.OptionButtonSpacingFor(
+                 MainMenuDrawerExt.CurrentMainMenuDefs( MainMenuDrawerExt.AnyMapFiles ).Count );
 
-            var PaneWidth = MainMenuDrawerExt.GameRectWidth * 2 + MainMenuDrawerExt.OptionListSpacing * 3;
+            var paneWidth = MainMenuDrawerExt.GameRectWidth * 2 + MainMenuDrawerExt.OptionListSpacing * 3;
 
-            var minPaneHeight = MainMenuDrawerExt.LinkOptionsHeight + MainMenuDrawerExt.LanguageOptionSpacing + MainMenuDrawerExt.LanguageOptionHeight;
-            var maxPaneHeight = Screen.height - titleFinalVec.y - MainMenuDrawerExt.TitlePaneSpacing - MainMenuDrawerExt.CreditHeight - MainMenuDrawerExt.CreditTitleSpacing - MainMenuDrawerExt.LudeonEdgeSpacing - MainMenuDrawerExt.LudeonLogoSize.y;
+            var minPaneHeight = (
+                MainMenuDrawerExt.LinkOptionsHeight +
+                MainMenuDrawerExt.LanguageOptionSpacing +
+                MainMenuDrawerExt.LanguageOptionHeight
+            );
+            var maxPaneHeight = (
+                Verse.UI.screenHeight -
+                titleVec.y -
+                MainMenuDrawerExt.TitlePaneSpacing -
+                MainMenuDrawerExt.CreditHeight -
+                MainMenuDrawerExt.CreditTitleSpacing -
+                MainMenuDrawerExt.LudeonEdgeSpacing -
+                MainMenuDrawerExt.LudeonLogoSize.y
+            );
 
-            var PaneHeight = Mathf.Max( Mathf.Min( currentMainMenuButtonHeight, maxPaneHeight ), minPaneHeight ) + MainMenuDrawerExt.OptionListSpacing * 2;
-            MainMenuDrawerExt.PaneSize = new Vector2( PaneWidth, PaneHeight );
+            var paneHeight = Mathf.Max(
+                Mathf.Min( menuButtonHeight, maxPaneHeight ),
+                minPaneHeight
+            ) + MainMenuDrawerExt.OptionListSpacing * 2;
+
+            MainMenuDrawerExt.PaneSize = new Vector2( paneWidth, paneHeight );
 
             var menuOptionsRect = new Rect(
-                ( (float) Screen.width  - MainMenuDrawerExt.PaneSize.x ) / 2f,
-                ( (float) Screen.height - MainMenuDrawerExt.PaneSize.y ) / 2f,
+                ( (float) Verse.UI.screenWidth -  MainMenuDrawerExt.PaneSize.x ) / 2f + MainMenuDrawerExt.TitleShift,
+                ( (float) Verse.UI.screenHeight - MainMenuDrawerExt.PaneSize.y ) / 2f,
                 MainMenuDrawerExt.PaneSize.x,
-                MainMenuDrawerExt.PaneSize.y );
-
-            menuOptionsRect.y += MainMenuDrawerExt.TitleShift;
-
-            menuOptionsRect.x = ( (float) Screen.width - menuOptionsRect.width - MainMenuDrawerExt.OptionsEdgeSpacing );
+                MainMenuDrawerExt.PaneSize.y
+            );
+            
+            menuOptionsRect.x = ( Verse.UI.screenWidth - menuOptionsRect.width - MainMenuDrawerExt.OptionsEdgeSpacing );
             #endregion
 
             #region Compute and Draw RimWorld Title
             var titleRect = new Rect(
-                ( (float) Screen.width - titleFinalVec.x ) / 2f,
-                ( menuOptionsRect.y - titleFinalVec.y - MainMenuDrawerExt.TitlePaneSpacing ),
-                titleFinalVec.x,
-                titleFinalVec.y );
-            titleRect.x = ( (float) Screen.width - titleFinalVec.x - MainMenuDrawerExt.TitleShift );
+                Verse.UI.screenWidth - titleVec.x - MainMenuDrawerExt.TitleShift,
+                menuOptionsRect.y -    titleVec.y - MainMenuDrawerExt.TitlePaneSpacing,
+                titleVec.x,
+                titleVec.y );
             GUI.DrawTexture(
                 titleRect,
-                (Texture) MainMenuDrawerExt.TexTitle,
+                MainMenuDrawerExt.TexTitle,
                 ScaleMode.StretchToFill,
                 true );
             #endregion
 
             #region Compute and Draw Credit to Tynan
-            var mainCreditRect = titleRect;
-            mainCreditRect.y += titleRect.height;
-            mainCreditRect.xMax -= 55f;
-            mainCreditRect.height = MainMenuDrawerExt.CreditHeight;
-            mainCreditRect.y += MainMenuDrawerExt.CreditTitleSpacing;
+
+            Rect mainCreditRect = new Rect(
+                0f,
+                menuOptionsRect.y - MainMenuDrawerExt.CreditHeight,
+                (float)Verse.UI.screenWidth - 85f,
+                MainMenuDrawerExt.CreditHeight
+            );
+
             var mainCreditText = "MainPageCredit".Translate();
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperRight;
-            if( Screen.width < 990 )
+
+            if( Verse.UI.screenWidth < 990 )
             {
                 var mainCreditBackRect = mainCreditRect;
                 mainCreditBackRect.xMin = mainCreditBackRect.xMax - Text.CalcSize( mainCreditText ).x;
@@ -121,16 +136,17 @@ namespace CommunityCoreLibrary.Detour
                     (Texture) BaseContent.WhiteTex );
                 GUI.color = Color.white;
             }
+
             Widgets.Label( mainCreditRect, mainCreditText );
             Text.Anchor = TextAnchor.UpperLeft;
             Text.Font = GameFont.Small;
             #endregion
-
+            
             #region Compute and Draw Ludeon Logo
             GUI.color = new Color( 1f, 1f, 1f, 0.5f );
             GUI.DrawTexture(
                 new Rect(
-                    (float) Screen.width - MainMenuDrawerExt.LudeonLogoSize.x - MainMenuDrawerExt.LudeonEdgeSpacing,
+                    (float) Verse.UI.screenWidth - MainMenuDrawerExt.LudeonLogoSize.x - MainMenuDrawerExt.LudeonEdgeSpacing,
                     MainMenuDrawerExt.LudeonEdgeSpacing,
                     MainMenuDrawerExt.LudeonLogoSize.x,
                     MainMenuDrawerExt.LudeonLogoSize.y ),
@@ -141,47 +157,46 @@ namespace CommunityCoreLibrary.Detour
             #endregion
 
             #region Draw Main Buttons, Links and Language Option
-            menuOptionsRect.y += MainMenuDrawerExt.OptionListSpacing;
-            GUI.BeginGroup( menuOptionsRect );
-            
+            menuOptionsRect.yMin += MainMenuDrawerExt.OptionListSpacing;
+            GUI.BeginGroup(menuOptionsRect);
+
             MainMenuDrawer.DoMainMenuControls(
                 menuOptionsRect,
-                MainMenuDrawerExt.AnyMapFiles );
-            
+                MainMenuDrawerExt.AnyMapFiles
+            );
+
             GUI.EndGroup();
             #endregion
+
         }
 
         [DetourMember( typeof( MainMenuDrawer ), InjectionSequence.DLLLoad ) ]
         internal static void                _DoMainMenuControls( Rect rect, bool anyMapFiles )
         {
             #region Set Single Column Rect
+
             var optionColumnRect = new Rect( 0.0f, 0.0f, MainMenuDrawerExt.GameRectWidth, rect.height );
             Text.Font = GameFont.Small;
+
             #endregion
 
             #region Main Buttons
 
             #region Get Defs and Make Buttons
 
-            var mainOptions = new List<ListableOption>();
-            var currentMainMenuDefs = MainMenuDrawerExt.CurrentMainMenuDefs( anyMapFiles );
+            var mainOptions = (
+                from def in MainMenuDrawerExt.CurrentMainMenuDefs( anyMapFiles )
+                select new ListableOption_MainMenu( def ) as ListableOption
+            ).ToList();
 
-            foreach( var menu in currentMainMenuDefs )
-            {
-                mainOptions.Add( new ListableOption_MainMenu( menu ) );
-            }
+            var buttonHeight = MainMenuDrawerExt.OptionButtonSpacingFor( mainOptions.Count );
 
-            #endregion
-
-            #region Calculate Height for Buttons
-            var currentMainMenuButtonCount = currentMainMenuDefs.Count;
-            var currentMainMenuButtonHeight = MainMenuDrawerExt.OptionButtonSpacingFor( currentMainMenuButtonCount );
             #endregion
 
             #region Handle Scroll Region Prefix
+
             Rect mainOptionsViewRect;
-            if( currentMainMenuButtonHeight > rect.y )
+            if( buttonHeight > rect.y )
             {
                 // More buttons than the area allows, begin a scroll area
                 var scrollRect = new Rect(
@@ -190,7 +205,8 @@ namespace CommunityCoreLibrary.Detour
                     MainMenuDrawerExt.GameRectWidth,
                     optionColumnRect.height - MainMenuDrawerExt.OptionListSpacing );
                 optionColumnRect.width -= MainMenuDrawerExt.OptionListSpacing;
-                optionColumnRect.height = currentMainMenuButtonHeight;
+                optionColumnRect.height = buttonHeight;
+
                 _optionsScroll = GUI.BeginScrollView( scrollRect, _optionsScroll, optionColumnRect );
                 mainOptionsViewRect = optionColumnRect;
             }
@@ -198,19 +214,24 @@ namespace CommunityCoreLibrary.Detour
             {
                 mainOptionsViewRect = optionColumnRect.ContractedBy( MainMenuDrawerExt.OptionListSpacing );
             }
+
             #endregion
 
             #region Draw Buttons
+
             var mainOptionsHeight = OptionListingUtility.DrawOptionListing( mainOptionsViewRect, mainOptions );
+
             #endregion
 
             #region Handle Scroll Region Suffix
-            if( currentMainMenuButtonHeight > rect.y )
+
+            if( buttonHeight > rect.y )
             {
                 // End the scroll area
                 GUI.EndScrollView();
                 optionColumnRect.xMax += MainMenuDrawerExt.OptionListSpacing;
             }
+
             #endregion
 
             #endregion
@@ -223,11 +244,14 @@ namespace CommunityCoreLibrary.Detour
             Text.Font = GameFont.Small;
 
             #region Draw Links
+
             var linkOptionRect = linkOptionAreaRect.ContractedBy( MainMenuDrawerExt.OptionListSpacing );
             var linkOptionHeight = OptionListingUtility.DrawOptionListing( linkOptionRect, MainMenuDrawerExt.LinkOptions );
+
             #endregion
 
             #region Draw Language Selection
+
             var languageRect = new Rect(
                 linkOptionRect.x,
                 linkOptionHeight + MainMenuDrawerExt.OptionSpacingDefault + MainMenuDrawerExt.LanguageOptionSpacing,
@@ -236,10 +260,10 @@ namespace CommunityCoreLibrary.Detour
             );
 
             MainMenuDrawerExt.DrawLanguageOption( languageRect );
-            #endregion
 
             #endregion
 
+            #endregion
         }
 
         #endregion

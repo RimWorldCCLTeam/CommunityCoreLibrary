@@ -30,10 +30,12 @@ namespace CommunityCoreLibrary.MiniMap
         {
             ClearTexture();
 
+            var manager = Find.VisibleMap.designationManager;
+
             // get the mining designators
-            var miningDesignators = Find.DesignationManager.allDesignations
-                                        .Where( d => d.def == DesignationDefOf.Mine )
-                                        .ToList();
+            var miningDesignators = manager.allDesignations
+                                           .Where( d => d.def == DesignationDefOf.Mine )
+                                           .ToList();
 
             // loop over all designators
             foreach( var miningDesignator in miningDesignators )

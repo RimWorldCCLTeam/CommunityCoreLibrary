@@ -5,8 +5,8 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_QuitToOS : MainMenu
-	{
+    public class MainMenu_QuitToOS : MainMenu
+    {
 
         public override Color               Color
         {
@@ -27,27 +27,26 @@ namespace CommunityCoreLibrary
             );
         }
 
-		public override void ClickAction()
-		{
-			if(
-                ( Current.ProgramState == ProgramState.MapPlaying )&&
-			( GameDataSaveLoader.CurrentMapStateIsValuable )
+        public override void ClickAction()
+        {
+            if(
+                ( Current.ProgramState == ProgramState.Playing )&&
+            ( GameDataSaveLoader.CurrentGameStateIsValuable )
             )
             {
-				Find.WindowStack.Add( (Window)new Dialog_Confirm(
-					"ConfirmQuit".Translate(),
-					Root.Shutdown,
-					true,
-                    null,
-                    true
-				) );
+                Find.WindowStack.Add( Dialog_MessageBox.CreateConfirmation(
+                    "ConfirmQuit".Translate(),
+                    Root.Shutdown,
+                    true,
+                    null
+                ) );
             }
             else
-			{
-				Root.Shutdown();
-			}
-		}
+            {
+                Root.Shutdown();
+            }
+        }
 
-	}
+    }
 
 }

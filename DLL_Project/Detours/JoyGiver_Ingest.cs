@@ -17,6 +17,7 @@ namespace CommunityCoreLibrary.Detour
         {
             if(
                 ( thingDef.ingestible == null )||
+                ( !thingDef.IsIngestible )||
                 ( thingDef.ingestible.joyKind == null )||
                 ( thingDef.ingestible.joy <= 0f )
             )
@@ -49,14 +50,14 @@ namespace CommunityCoreLibrary.Detour
         {
             Predicate<Thing> validator = (Thing t) =>
             (
-                ( this.CanUseIngestItemForJoy( pawn, t ) )&&
+                ( this.CanIngestForJoy( pawn, t ) )&&
                 (
                     ( extraValidator == null )||
                     ( extraValidator( t ) )
                 )
             );
             
-            var container = pawn.inventory.container;
+            var container = pawn.inventory.innerContainer;
             for( int index = 0; index < container.Count; index++ )
             {
                 var containerItem = container[ index ];
@@ -68,13 +69,14 @@ namespace CommunityCoreLibrary.Detour
                     return containerItem;
                 }
             }
-            var searchSet = this.SearchSet;
+            var searchSet = this.GetSearchSet( pawn );
             if( searchSet.Count < 1 )
             {
                 return null;
             }
             return GenClosest.ClosestThing_Global_Reachable(
                 pawn.Position,
+                pawn.Map,
                 searchSet,
                 PathEndMode.InteractionCell,
                 TraverseParms.For(
@@ -88,7 +90,7 @@ namespace CommunityCoreLibrary.Detour
         }
 
         [DetourMember]
-        internal bool                       _CanUseIngestItemForJoy( Pawn pawn, Thing t )
+        internal bool                       _CanIngestForJoy( Pawn pawn, Thing t )
         {
             if(
                 ( t.Spawned )&&
@@ -144,11 +146,11 @@ namespace CommunityCoreLibrary.Detour
             var job = new Job( JobDefOf.Ingest, ingestible );
             if( synthesizer == null )
             {
-                job.maxNumToCarry = Mathf.Min( ingestible.stackCount, ingestible.def.ingestible.maxNumToIngestAtOnce );
+                job.count = Mathf.Min( ingestible.stackCount, ingestible.def.ingestible.maxNumToIngestAtOnce );
             }
             else
             {
-                job.maxNumToCarry = 1;
+                job.count = 1;
             }
             return job;
         }

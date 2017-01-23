@@ -29,9 +29,9 @@ namespace CommunityCoreLibrary
         }
 
 #if DEBUG
-        public override void                SpawnSetup()
+        public override void                SpawnSetup( Map map )
         {
-            base.SpawnSetup();
+            base.SpawnSetup( map );
 
             // Validate power trade
             if( CompPowerTrader == null )
@@ -100,7 +100,7 @@ namespace CommunityCoreLibrary
             {
                 var TempControl = CompTempControl;
 
-                float temperature = Position.GetTemperature();
+                float temperature = Position.GetTemperature( this.Map );
                 float num;
                 if( temperature < 20f )
                 {
@@ -115,11 +115,11 @@ namespace CommunityCoreLibrary
                     num = Mathf.InverseLerp( 120f, 20f, temperature );
                 }
                 float energyLimit = TempControl.Props.energyPerSecond * num * 4.16666651f;
-                float num2 = GenTemperature.ControlTemperatureTempChange( Position, energyLimit, TempControl.targetTemperature );
+                float num2 = GenTemperature.ControlTemperatureTempChange( Position, this.Map, energyLimit, TempControl.targetTemperature );
                 bool flag = !Mathf.Approximately( num2, 0f );
                 if( flag )
                 {
-                    Position.GetRoom().Temperature += num2;
+                    Position.GetRoom( this.Map ).Temperature += num2;
                     PowerTrader.PowerOutput = -PowerTrader.Props.basePowerConsumption;
                 }
                 else

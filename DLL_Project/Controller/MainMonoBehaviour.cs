@@ -45,9 +45,9 @@ namespace CommunityCoreLibrary.Controller
 
             if(
                 ( !Controller.Library.IsInGoodState )||
-                ( Current.ProgramState != ProgramState.MapPlaying )||
-                ( Find.Map == null )||
-                ( Find.Map.components == null )
+                ( Current.ProgramState != ProgramState.Playing )||
+                ( Find.Maps == null )||
+                ( Find.Maps.Any( map => map.components == null ) )
             )
             {
                 // Do nothing until the game has fully loaded the map and is ready to play

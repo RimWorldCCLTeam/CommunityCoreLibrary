@@ -56,7 +56,7 @@ namespace CommunityCoreLibrary.MiniMap
             var edges = Find.CameraDriver.CurrentViewRect.EdgeCells;
             foreach ( var edge in edges )
             {
-                if ( edge.InBounds() )
+                if ( edge.InBounds( Find.VisibleMap ) )
                 {
                     texture.SetPixel( edge.x, edge.z, color );
                 }

@@ -94,7 +94,7 @@ namespace CommunityCoreLibrary
             {
                 i++;
             }
-            MoteMaker.MakeStaticMote( caster.Position, ThingDefOf.Mote_ShotFlash, 9f );
+            MoteMaker.MakeStaticMote( caster.Position, caster.Map, ThingDefOf.Mote_ShotFlash, 9f );
             return true;
         }
 

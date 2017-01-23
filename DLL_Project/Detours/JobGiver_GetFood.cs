@@ -22,6 +22,9 @@ namespace CommunityCoreLibrary.Detour
         internal Job                        _TryGiveJob( Pawn pawn )
         {
             bool desperate = pawn.needs.food.CurCategory == HungerCategory.Starving;
+            var firstHediffOfDef = pawn.health.hediffSet.GetFirstHediffOfDef( HediffDefOf.Malnutrition );
+            bool allowCorpse = pawn.RaceProps.Animal || ( firstHediffOfDef != null && firstHediffOfDef.Severity > 0.4f );
+
             Thing foodSource;
             ThingDef foodDef;
 
@@ -37,7 +40,7 @@ namespace CommunityCoreLibrary.Detour
                 true,
                 true,
                 false,
-                true )
+                allowCorpse )
             )
             {
                 //CCL_Log.Message( "Nothing found to eat" );
@@ -135,7 +138,7 @@ namespace CommunityCoreLibrary.Detour
             //CCL_Log.Message( string.Format( "Giving JobDriver_Ingest to {0} using {1}", pawn.LabelShort, foodSource.ThingID ) );
             // Ingest job for found food source
             var ingestJob = new Job( JobDefOf.Ingest, foodSource );
-            ingestJob.maxNumToCarry = FoodUtility.WillIngestStackCountOf( pawn, foodDef );
+            ingestJob.count = FoodUtility.WillIngestStackCountOf( pawn, foodDef );
             return ingestJob;
         }
 
@@ -155,7 +158,7 @@ namespace CommunityCoreLibrary.Detour
                 return null;
             }
             ThingDef resourceDef = null;
-            var firstItem = hopper.Position.GetFirstItem();
+            var firstItem = hopper.Position.GetFirstItem( hopper.Map );
             if( firstItem != null )
             {
                 if(
@@ -182,8 +185,8 @@ namespace CommunityCoreLibrary.Detour
             }
             List<Thing> list =
                 resourceDef != null
-                ? Find.Map.listerThings.ThingsOfDef( resourceDef )
-                : Find.Map.listerThings.ThingsInGroup( ThingRequestGroup.FoodSourceNotPlantOrTree );
+                ? hopper.Map.listerThings.ThingsOfDef( resourceDef )
+                : hopper.Map.listerThings.ThingsInGroup( ThingRequestGroup.FoodSourceNotPlantOrTree );
             for( int index = 0; index < list.Count; ++index )
             {
                 Thing t = list[ index ];
@@ -195,7 +198,7 @@ namespace CommunityCoreLibrary.Detour
                     )&&
                     ( HaulAIUtility.PawnCanAutomaticallyHaul( pawn, t ) )&&
                     (
-                        ( Find.SlotGroupManager.SlotGroupAt( hopper.Position ).Settings.AllowedToAccept( t ) )&&
+                        ( hopper.Map.slotGroupManager.SlotGroupAt( hopper.Position ).Settings.AllowedToAccept( t ) )&&
                         ( HaulAIUtility.StoragePriorityAtFor( t.Position, t ) < hopperSgp.GetSlotGroup().Settings.Priority )
                     )
                 )

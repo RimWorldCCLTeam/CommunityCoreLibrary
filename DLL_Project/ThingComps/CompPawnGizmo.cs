@@ -5,7 +5,7 @@ namespace CommunityCoreLibrary
 {
     public class CompPawnGizmo : ThingComp
     {
-        public override IEnumerable<Command> CompGetGizmosExtra()
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             var pawn = parent as Pawn;
             var equip = pawn != null

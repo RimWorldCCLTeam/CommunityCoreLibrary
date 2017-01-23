@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary
             set
             {
                 lit = value;
-                UpdateLit();
+                UpdateLit( parent.Map );
             }
         }
 

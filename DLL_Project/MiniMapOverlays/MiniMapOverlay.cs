@@ -99,7 +99,7 @@ namespace CommunityCoreLibrary.MiniMap
             {
                 if ( _texture == null )
                 {
-                    _texture = new Texture2D( Find.Map.Size.x, Find.Map.Size.z );
+                    _texture = new Texture2D( Find.VisibleMap.Size.x, Find.VisibleMap.Size.z );
 
                     // not sure clearing pixels is strictly necessary, but can't hurt much
                     _texture.SetPixels( MiniMap_Utilities.GetClearPixelArray );

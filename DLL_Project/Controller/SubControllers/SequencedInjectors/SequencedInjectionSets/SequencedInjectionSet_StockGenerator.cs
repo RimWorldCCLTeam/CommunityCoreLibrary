@@ -129,14 +129,7 @@ namespace CommunityCoreLibrary
 
         public override void                PostLoad()
         {
-            if( stockGenerators.NullOrEmpty() )
-            {
-                return;
-            }
-            foreach( var stockGenerator in stockGenerators )
-            {
-                stockGenerator.PostLoad();
-            }
+            // StockGenerator no longer implements this (it handles its logic during construction)
         }
 
     }

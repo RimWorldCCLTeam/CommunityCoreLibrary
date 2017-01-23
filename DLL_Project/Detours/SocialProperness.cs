@@ -23,8 +23,8 @@ namespace CommunityCoreLibrary.Detour
             {
                 return true;
             }
-            var thingPos = !t.def.hasInteractionCell ? t.Position : t.InteractionCell;
-            return( forPrisoner == thingPos.IsInPrisonCell() );
+            var thingPos = t.def.hasInteractionCell ? t.InteractionCell : t.Position;
+            return( forPrisoner == thingPos.IsInPrisonCell( t.Map ) );
         }
 
     }

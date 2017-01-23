@@ -13,11 +13,11 @@ using Verse;
 namespace CommunityCoreLibrary.Controller
 {
 
-	/// <summary>
-	/// This controller validates ModHelperDefs (one per mod, version, etc)
-	/// </summary>
-	internal class ModHelperSubController : SubController
-	{
+    /// <summary>
+    /// This controller validates ModHelperDefs (one per mod, version, etc)
+    /// </summary>
+    internal class ModHelperSubController : SubController
+    {
 
         private const int                   ModIndexInvalid = -1;
 
@@ -41,22 +41,22 @@ namespace CommunityCoreLibrary.Controller
 
         public override string              Name => "Mod Helper";
 
-		// Override sequence priorities
-		public override int                 ValidationPriority      => 100;
+        // Override sequence priorities
+        public override int                 ValidationPriority      => 100;
         public override int                 InitializationPriority  => 50;
 
-		// Validate ModHelperDefs, CCL load order, CCL versioning
-		public override bool                Validate()
-		{
-			// Hopefully...
-			var stringBuilder = new StringBuilder();
-			var rVal = true;
+        // Validate ModHelperDefs, CCL load order, CCL versioning
+        public override bool                Validate()
+        {
+            // Hopefully...
+            var stringBuilder = new StringBuilder();
+            var rVal = true;
 
-			CCL_Log.CaptureBegin( stringBuilder );
+            CCL_Log.CaptureBegin( stringBuilder );
 
-			// Limit one ModHelperDef per mod
-			// Create the ordered list by inserting dummies for mods which don't have one
-			//var allMods = LoadedModManager.RunningMods.ToList();
+            // Limit one ModHelperDef per mod
+            // Create the ordered list by inserting dummies for mods which don't have one
+            //var allMods = LoadedModManager.RunningMods.ToList();
             var allMods = ModsConfig.ActiveModsInLoadOrder.ToList();
 
 #if DEVELOPER
@@ -121,61 +121,61 @@ namespace CommunityCoreLibrary.Controller
             }
             if( rVal )
             {
-    			for( int i = 0; i < allMods.Count; i++ )
-    			{
-    				var modHelperDef = (ModHelperDef)null;
-    				var mod = allMods[ i ];
-    				var modHelperDefs = Find_Extensions.DefListOfTypeForMod<ModHelperDef>( mod );
-    				if( !modHelperDefs.NullOrEmpty() )
-    				{
-    					if( modHelperDefs.Count > 1 )
-    					{
+                for( int i = 0; i < allMods.Count; i++ )
+                {
+                    var modHelperDef = (ModHelperDef)null;
+                    var mod = allMods[ i ];
+                    var modHelperDefs = Find_Extensions.DefListOfTypeForMod<ModHelperDef>( mod );
+                    if( !modHelperDefs.NullOrEmpty() )
+                    {
+                        if( modHelperDefs.Count > 1 )
+                        {
                             CCL_Log.Error( string.Format( "'{0}' has multiple ModHelperDefs!", mod.Name ) );
-    						rVal = false;
-    					}
-    					else
-    					{
-    						// Validate the def
-    						modHelperDef = modHelperDefs.First();
-    						if( !modHelperDef.IsValid )
-    						{
-    							// Don't do anything special with broken mods
+                            rVal = false;
+                        }
+                        else
+                        {
+                            // Validate the def
+                            modHelperDef = modHelperDefs.First();
+                            if( !modHelperDef.IsValid )
+                            {
+                                // Don't do anything special with broken mods
                                 CCL_Log.Error( string.Format( "ModHelperDef for '{0}' is invalid!", mod.Name ) );
-    							rVal = false;
-    						}
-    						else if( !modHelperDef.dummy )
-    						{
-    							// Don't show validation message for dummy defs
+                                rVal = false;
+                            }
+                            else if( !modHelperDef.dummy )
+                            {
+                                // Don't show validation message for dummy defs
                                 CCL_Log.Message( string.Format( "{0} :: Passed validation, requesting v{1}", mod.Name, modHelperDef.minCCLVersion ), "ModHelperDef" );
-    						}
-    					}
-    				}
-    				else if( rVal == true )
-    				{
-    					// Doesn't exist, create a dummy for logging but only
-    					// create if we're not just checking for remaining errors
-    					modHelperDef = new ModHelperDef();
-    					modHelperDef.defName = mod.Name + "_ModHelperDef";
-    					modHelperDef.minCCLVersion = Version.Minimum.ToString();
-    					modHelperDef.ModName = mod.Name;
-    					modHelperDef.Verbosity = Verbosity.NonFatalErrors;
-    					modHelperDef.dummy = true;
-    				}
-    				if( rVal == true )
-    				{
-    					// No errors, def is valid or a dummy
-    					// Associate the def with the mod (the dictionary is to go the other way)
+                            }
+                        }
+                    }
+                    else if( rVal == true )
+                    {
+                        // Doesn't exist, create a dummy for logging but only
+                        // create if we're not just checking for remaining errors
+                        modHelperDef = new ModHelperDef();
+                        modHelperDef.defName = mod.Name + "_ModHelperDef";
+                        modHelperDef.minCCLVersion = Version.Minimum.ToString();
+                        modHelperDef.ModName = mod.Name;
+                        modHelperDef.Verbosity = Verbosity.NonFatalErrors;
+                        modHelperDef.dummy = true;
+                    }
+                    if( rVal == true )
+                    {
+                        // No errors, def is valid or a dummy
+                        // Associate the def with the mod (the dictionary is to go the other way)
                         var contentPack = Find_Extensions.ModByName( mod.Name, true );
                         modHelperDef.mod = contentPack;
-    					// Insert it into it's ordered place in the lists
+                        // Insert it into it's ordered place in the lists
                         Controller.Data.Mods.Insert( i, contentPack );
-    					Controller.Data.ModHelperDefs.Insert( i, modHelperDef );
-    					// Add a dictionary entry
+                        Controller.Data.ModHelperDefs.Insert( i, modHelperDef );
+                        // Add a dictionary entry
                         Controller.Data.DictModHelperDefs.Add( contentPack, modHelperDef );
-    				}
-    			}
-    			// Should now be a complete pair of lists in mod load order
-    			// as well as a dictionary of mods and their defs
+                    }
+                }
+                // Should now be a complete pair of lists in mod load order
+                // as well as a dictionary of mods and their defs
 
 #if DEVELOPER
                 //Dump ordered list of mods and their defs
@@ -193,51 +193,51 @@ namespace CommunityCoreLibrary.Controller
                 CCL_Log.Write( dump );
 #endif
 
-    			if( rVal )
-    			{
+                if( rVal )
+                {
                     ModContentPack CCL_Mod = Controller.Data.Mods[ CurentCCLModIndex ];
-    				ModHelperDef CCL_HelperDef = Find_Extensions.ModHelperDefForMod( CCL_Mod );
+                    ModHelperDef CCL_HelperDef = Find_Extensions.ModHelperDefForMod( CCL_Mod );
 
-    				// Validate xml version with assembly version
-    				var vc = Version.Compare( CCL_HelperDef.minCCLVersion );
-    				if( vc != Version.VersionCompare.ExactMatch )
-    				{
+                    // Validate xml version with assembly version
+                    var vc = Version.Compare( CCL_HelperDef.minCCLVersion );
+                    if( vc != Version.VersionCompare.ExactMatch )
+                    {
                         CCL_Log.Error( string.Format( "Version mismatch for {0}!", Controller.Data.UnityObjectName ), "ModHelperDef" );
-    					rVal = false;
-    				}
+                        rVal = false;
+                    }
 
-    				// CCL in the correct load order position and def version matches library
-    				Controller.Data.cclMod = CCL_Mod;
-    				Controller.Data.cclHelperDef = CCL_HelperDef;
+                    // CCL in the correct load order position and def version matches library
+                    Controller.Data.cclMod = CCL_Mod;
+                    Controller.Data.cclHelperDef = CCL_HelperDef;
 
-    			}
+                }
 
             }
 
-			// Should be all good or up until the first error encountered
+            // Should be all good or up until the first error encountered
             CCL_Log.CaptureEnd(
-				stringBuilder,
-				rVal ? "Validated" : "Errors during validation"
-			);
-			strReturn = stringBuilder.ToString();
+                stringBuilder,
+                rVal ? "Validated" : "Errors during validation"
+            );
+            strReturn = stringBuilder.ToString();
             // Return true if all mods OK, false if any failed validation
-			State = rVal ? SubControllerState.Validated : SubControllerState.ValidationError;
-			return rVal;
-		}
+            State = rVal ? SubControllerState.Validated : SubControllerState.ValidationError;
+            return rVal;
+        }
 
-		public override bool Initialize()
-		{
-			// Don't need to keep checking on this controller
+        public override bool Initialize()
+        {
+            // Don't need to keep checking on this controller
             if( !MCMHost.InitializeHosts( false ) )
             {
                 strReturn = "Errors initializing Mod Configuration Menus";
                 State = SubControllerState.InitializationError;
                 return false;
             }
-			strReturn = "Mod Configuration Menus initialized";
-			State = SubControllerState.Hybernating;
-			return true;
-		}
+            strReturn = "Mod Configuration Menus initialized";
+            State = SubControllerState.Hybernating;
+            return true;
+        }
 
         private static void ShowLoadOrderWindow()
         {
@@ -283,6 +283,6 @@ namespace CommunityCoreLibrary.Controller
             ModsConfig.Save();
         }
 
-	}
+    }
 
 }

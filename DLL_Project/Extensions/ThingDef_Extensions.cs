@@ -38,7 +38,7 @@ namespace CommunityCoreLibrary
 
             if(
                 ( !validateBills )||
-                ( Current.ProgramState != ProgramState.MapPlaying )
+                ( Current.ProgramState != ProgramState.Playing )
             )
             {
                 return;
@@ -48,7 +48,10 @@ namespace CommunityCoreLibrary
             var recipes = thingDef.AllRecipes;
 
             // Remove bill on any table of this def using invalid recipes
-            var buildings = Find.ListerBuildings.AllBuildingsColonistOfDef( thingDef );
+            var buildings = from map in Find.Maps
+                            from building in map.listerBuildings.AllBuildingsColonistOfDef( thingDef )
+                            select building;
+
             foreach( var building in buildings )
             {
                 var iBillGiver = building as IBillGiver;
@@ -129,7 +132,7 @@ namespace CommunityCoreLibrary
             {   // Invalid category
                 return false;
             }
-            if( thingDef.designationCategory == newCategory )
+            if( thingDef.designationCategory.defName == newCategory )
             {   // Already this category
                 return true;
             }
@@ -140,11 +143,11 @@ namespace CommunityCoreLibrary
             DesignationCategoryDef oldCategory = null;
             Designator_Build oldDesignator = null;
             if(
-                ( !thingDef.designationCategory.NullOrEmpty() )&&
-                ( thingDef.designationCategory != "None" )
+                ( !thingDef.designationCategory.defName.NullOrEmpty() )&&
+                ( thingDef.designationCategory.defName != "None" )
             )
             {
-                oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( thingDef.designationCategory );
+                oldCategory = DefDatabase<DesignationCategoryDef>.GetNamed( thingDef.designationCategory.defName );
                 oldDesignator = (Designator_Build) oldCategory.ResolvedDesignators().FirstOrDefault( d => (
                     ( d is Designator_Build )&&
                     ( ( d as Designator_Build ).PlacingDef == (BuildableDef) thingDef )
@@ -167,7 +170,7 @@ namespace CommunityCoreLibrary
                 }
                 newCategoryDef.ResolvedDesignators().Add( newDesignator );
             }
-            thingDef.designationCategory = newCategory;
+            thingDef.designationCategory.defName = newCategory;
             return true;
         }
 
@@ -359,9 +362,18 @@ namespace CommunityCoreLibrary
 
         #endregion
 
-        public static List<Thing>           ListOfThingsByDef( this ThingDef thingDef )
+        public static List<Thing>           ListOfThingsByDef( this ThingDef thingDef, Map map = null )
         {
-            var listsByDef = Find.ListerThings.ListsByDef();
+            if ( map == null )
+            {
+                return ( from m in Find.Maps
+                         from d in m.listerThings.ListsByDef()
+                         where d.Key == thingDef
+                         from thing in d.Value
+                         select thing ).ToList();
+            }
+
+            var listsByDef = map.listerThings.ListsByDef();
             return listsByDef[ thingDef ];
         }
 

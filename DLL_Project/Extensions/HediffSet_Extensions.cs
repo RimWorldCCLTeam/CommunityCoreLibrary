@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
 
         public static BodyPartRecord GetBodyPartRecord( this HediffSet hediffSet, BodyPartDef bodyPartDef )
         {
-            foreach( BodyPartRecord bodyPartRecord in hediffSet.GetNotMissingParts( new BodyPartHeight?(), new BodyPartDepth?() ) )
+            foreach( BodyPartRecord bodyPartRecord in hediffSet.GetNotMissingParts() )
             {
                 if( bodyPartRecord.def == bodyPartDef )
                 {
@@ -23,7 +23,7 @@ namespace CommunityCoreLibrary
 
         public static BodyPartRecord GetBodyPartRecord( this HediffSet hediffSet, string bodyPartDefName )
         {
-            foreach( BodyPartRecord bodyPartRecord in hediffSet.GetNotMissingParts( new BodyPartHeight?(), new BodyPartDepth?() ) )
+            foreach( BodyPartRecord bodyPartRecord in hediffSet.GetNotMissingParts() )
             {
                 if( bodyPartRecord.def.defName == bodyPartDefName )
                 {

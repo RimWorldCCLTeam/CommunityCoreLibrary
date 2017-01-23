@@ -57,6 +57,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
+        // TODO: we probably don't need this anymore; it matches the existing binary (NuOfBelthasar)
         [DetourMember]
         internal bool                       _UsingNutrientPasteDispenser
         {
@@ -72,20 +73,21 @@ namespace CommunityCoreLibrary.Detour
             var curJob = this.pawn.jobs.curJob;
             var foodSource = IngestibleSource;
             if( foodSource == null )
-			{
-				return this.ReportStringProcessed( this.CurJob.def.reportString );
-			}
+            {
+                return this.ReportStringProcessed( this.CurJob.def.reportString );
+            }
             var foodDef = FoodUtility.GetFinalIngestibleDef( foodSource );
             if(
                 ( foodDef == null )||
                 ( string.IsNullOrEmpty( foodDef.ingestible.ingestReportString ) )
             )
-			{
-				return this.ReportStringProcessed( this.CurJob.def.reportString );
-			}
+            {
+                return this.ReportStringProcessed( this.CurJob.def.reportString );
+            }
             return string.Format( foodDef.ingestible.ingestReportString, foodDef.label );
         }
 
+        // TODO: check for changes in A16; I can't figure out how to decompile an iterator (NuOfBelthasar)
         [DetourMember]
         internal IEnumerable<Toil>          _PrepareToIngestToils_Dispenser()
         {
@@ -94,9 +96,9 @@ namespace CommunityCoreLibrary.Detour
             yield return Toils_Reserve.Reserve( IngestibleInd, 1 );
             this.AddFinishAction( () =>
             {   // Release on early exit
-                if( Find.Reservations.ReservedBy( ingestibleSource, pawn ) )
+                if( pawn.Map.reservationManager.ReservedBy( ingestibleSource, pawn ) )
                 {
-                    Find.Reservations.Release( ingestibleSource, pawn );
+                    pawn.Map.reservationManager.Release( ingestibleSource, pawn );
                 }
             } );
 

@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary
         /// <param name="rot"></param>
         public override void                DrawGhost( ThingDef def, IntVec3 center, Rot4 rot )
         {
-            List<CompHopper> hoppers = CompHopperUser.FindHoppers( center, rot, def.Size );
+            List<CompHopper> hoppers = CompHopperUser.FindHoppers( center, rot, def.Size, Find.VisibleMap );
             foreach( var hopper in hoppers )
             {
                 GenDraw.DrawFieldEdges( hopper.parent.OccupiedRect().Cells.ToList() );

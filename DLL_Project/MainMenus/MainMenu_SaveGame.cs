@@ -5,8 +5,8 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_SaveGame : MainMenu
-	{
+    public class MainMenu_SaveGame : MainMenu
+    {
 
         public override Color               Color
         {
@@ -16,20 +16,20 @@ namespace CommunityCoreLibrary
             }
         }
 
-		public override bool RenderNow( bool anyMapFiles )
-		{
-			return (
-                ( Current.ProgramState == ProgramState.MapPlaying )&&
+        public override bool RenderNow( bool anyMapFiles )
+        {
+            return (
+                ( Current.ProgramState == ProgramState.Playing )&&
                 ( !Current.Game.Info.permadeathMode )
             );
-		}
+        }
 
-		public override void ClickAction()
-		{
+        public override void ClickAction()
+        {
             MainMenuDrawer_Extensions.CloseMainTab();
-			Find.WindowStack.Add( (Window)new Dialog_MapList_Save() );
-		}
+            Find.WindowStack.Add( (Window)new Dialog_SaveFileList_Save() );
+        }
 
-	}
+    }
 
 }

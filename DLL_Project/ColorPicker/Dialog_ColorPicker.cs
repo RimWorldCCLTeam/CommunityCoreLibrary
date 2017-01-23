@@ -706,7 +706,7 @@ namespace CommunityCoreLibrary.ColorPicker
             // share 'presets' across instances.
             private static List<Color>             _presets         = new List<Color>();
 
-            private float                          _minimumBoxSize  = 10f;
+            // private float                          _minimumBoxSize  = 10f;
             private Dialog_ColorPicker            _parent;
             private int                            _size            = 10;
 

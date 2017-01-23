@@ -221,8 +221,9 @@ namespace CommunityCoreLibrary
                 // Get list of things
                 var thingDefs =
                     DefDatabase< ThingDef >.AllDefsListForReading.Where( t => (
-                        ( t.designationCategory == designationCategoryDef.defName )
-                        && ( !t.IsLockedOut() )
+                        ( t.designationCategory != null )&&
+                        ( t.designationCategory.defName == designationCategoryDef.defName )&&
+                        ( !t.IsLockedOut() )
                     ) ).ToList();
 
                 if( !thingDefs.NullOrEmpty() )
@@ -247,8 +248,8 @@ namespace CommunityCoreLibrary
                     ( t.Minifiable )&&
                     (
                         (
-                            ( t.designationCategory.NullOrEmpty() )||
-                            ( t.designationCategory == "None" )
+                            ( t.designationCategory == null ) ||
+                            ( t.designationCategory.defName == "None" )
                         )
                     )&&
                     ( !t.IsLockedOut() )
@@ -279,22 +280,15 @@ namespace CommunityCoreLibrary
             // or is listed in biomes (natural terrain). This excludes terrains that are not normally visible (e.g. Underwall).
             string[] rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
 
-            List<TerrainDef> terrainDefs =
-                DefDatabase<TerrainDef>.AllDefsListForReading
-                                       .Where( 
-                                            // not buildable
-                                            t => String.IsNullOrEmpty( t.designationCategory )
-                                            && (
-                                                // is a type generated from rock
-                                                rockySuffixes.Any( s => t.defName.EndsWith( s ) )
+            List<TerrainDef> terrainDefs = ( from terrain in DefDatabase<TerrainDef>.AllDefsListForReading
+                                             where terrain != null
+                                             where terrain.designationCategory == null || terrain.designationCategory.defName.ToLower() == "none"
+                                             where rockySuffixes.Any( suffix => !terrain.defName.NullOrEmpty() && terrain.defName.EndsWith( suffix ) ) ||
+                                                   DefDatabase<BiomeDef>.AllDefsListForReading.Any( biome => biome.AllTerrainDefs().Contains( terrain ) )
+                                             select terrain
+                                           ).ToList();
 
-                                                // or is listed in any biome
-                                                || DefDatabase<BiomeDef>.AllDefsListForReading.Any(
-                                                    b => b.AllTerrainDefs().Contains( t ) )
-                                                ) )
-                                       .ToList();
-
-            if( !terrainDefs.NullOrEmpty() )
+            if ( !terrainDefs.NullOrEmpty() )
             {
                 // Get help category
                 var helpCategoryDef = HelpCategoryForKey( HelpCategoryDefOf.TerrainHelp, "AutoHelpSubCategoryTerrain".Translate(), "AutoHelpCategoryTerrain".Translate() );
@@ -306,8 +300,10 @@ namespace CommunityCoreLibrary
             // Get list of buildable floors per designation category
             foreach ( var categoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading )
             {
-                terrainDefs =
-                    DefDatabase<TerrainDef>.AllDefsListForReading.Where( t => t.designationCategory == categoryDef.defName ).ToList();
+                terrainDefs = ( from terrain in DefDatabase<TerrainDef>.AllDefsListForReading
+                                where terrain.designationCategory != null && terrain.designationCategory.defName == categoryDef.defName
+                                select terrain
+                              ).ToList();
 
                 if( !terrainDefs.NullOrEmpty() )
                 {
@@ -760,34 +756,28 @@ namespace CommunityCoreLibrary
                         ) ) )
                     )
                     {
-                        foreach( var comp in hediffDef.comps )
+                        var verbs = from comp in hediffDef.comps
+                                    where comp.compClass == typeof( HediffComp_VerbGiver )
+                                    where !( comp as HediffCompProperties_VerbGiver ).verbs.NullOrEmpty()
+                                    from verb in ( comp as HediffCompProperties_VerbGiver ).verbs
+                                    where verb.verbClass == typeof( Verb_MeleeAttack )
+                                    select verb;
+
+                        foreach ( var verb in verbs )
                         {
-                            if( comp.compClass == typeof( HediffComp_VerbGiver ) )
-                            {
-                                if( !comp.verbs.NullOrEmpty() )
-                                {
-                                    foreach( var verb in comp.verbs )
-                                    {
-                                        if( verb.verbClass == typeof( Verb_MeleeAttack ) )
-                                        {
-                                            statParts.Add( new HelpDetailSection(
-                                                    "MeleeAttack".Translate( verb.meleeDamageDef.label ),
-                                                    new[]
-                                                    {
-                                                        "MeleeWarmupTime".Translate(),
-                                                        "StatsReport_MeleeDamage".Translate()
-                                                    },
-                                                    null,
-                                                    new[]
-                                                    {
-                                                        verb.defaultCooldownTicks.ToString(),
-                                                        verb.meleeDamageBaseAmount.ToString()
-                                                    }
-                                                ) );
-                                        }
-                                    }
-                                }
-                            }
+                            statParts.Add( new HelpDetailSection(
+                                           "MeleeAttack".Translate(verb.meleeDamageDef.label),
+                                           new[]
+                                           {
+                                               "MeleeWarmupTime".Translate(),
+                                               "StatsReport_MeleeDamage".Translate()
+                                           },
+                                           null,
+                                           new[]
+                                           {
+                                               verb.defaultCooldownTime.ToString(),
+                                               verb.meleeDamageBaseAmount.ToString()
+                                           } ) );
                         }
                     }
 

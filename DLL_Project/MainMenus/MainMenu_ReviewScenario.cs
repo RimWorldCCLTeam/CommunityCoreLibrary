@@ -10,12 +10,12 @@ namespace CommunityCoreLibrary
 
         public override bool RenderNow( bool anyMapFiles )
         {
-            return( Current.ProgramState == ProgramState.MapPlaying );
+            return( Current.ProgramState == ProgramState.Playing );
         }
 
         public override void ClickAction()
         {
-            Find.WindowStack.Add( (Window)new Dialog_Message( Find.Scenario.GetFullInformationText(), Find.Scenario.name ) );
+            Find.WindowStack.Add( new Dialog_MessageBox( Find.Scenario.GetFullInformationText(), Find.Scenario.name ) );
         }
 
     }

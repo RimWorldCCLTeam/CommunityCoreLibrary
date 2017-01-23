@@ -7,8 +7,8 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_LearnToPlay : MainMenu
-	{
+    public class MainMenu_LearnToPlay : MainMenu
+    {
 
         static MethodInfo                   _MainMenuDrawer_InitLearnToPlay;
 
@@ -32,16 +32,16 @@ namespace CommunityCoreLibrary
             }
         }
 
-		public override bool                RenderNow( bool anyMapFiles )
-		{
-			return ( Current.ProgramState == ProgramState.Entry );
-		}
+        public override bool                RenderNow( bool anyMapFiles )
+        {
+            return ( Current.ProgramState == ProgramState.Entry );
+        }
 
-		public override void                ClickAction()
-		{
+        public override void                ClickAction()
+        {
             _MainMenuDrawer_InitLearnToPlay.Invoke( null, null );
-		}
+        }
 
-	}
+    }
 
 }

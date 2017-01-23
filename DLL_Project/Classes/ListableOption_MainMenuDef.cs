@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary
         {
             label = menuDef.Label;
             float height = Mathf.Max( minHeight, Text.CalcHeight( label, width ) );
-            GUI.color = menuDef.menuWorker.Color;
+            GUI.color = menuDef.menuWorker.Color;  // TODO: test that this works (I don't believe it does)
             if( Widgets.ButtonText( new Rect( pos.x, pos.y, width, height ), label, true, true ) )
             {
                 GUI.color = Color.white;
@@ -37,6 +37,15 @@ namespace CommunityCoreLibrary
                 this.action();
             }
             GUI.color = Color.white;
+
+            /* TODO: allow highlighting?  (NuOfBelthasar)
+            
+            if (this.uiHighlightTag != null)
+            {
+                UIHighlighter.HighlightOpportunity(rect, this.uiHighlightTag);
+            }
+
+            */
             return height;
         }
 

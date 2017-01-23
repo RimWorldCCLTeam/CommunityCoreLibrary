@@ -26,9 +26,9 @@ namespace CommunityCoreLibrary
                 takeFromSynthesizer.defaultCompleteMode = ToilCompleteMode.Delay;
                 takeFromSynthesizer.AddEndCondition( () =>
                 {
-                    if( Find.Reservations.ReservedBy( synthesizer, taker ) )
+                    if( taker.Map.reservationManager.ReservedBy( synthesizer, taker ) )
                     {
-                        Find.Reservations.Release( synthesizer, taker );
+                        taker.Map.reservationManager.Release( synthesizer, taker );
                     }
                     return JobCondition.Incompletable;
                 } );
@@ -48,8 +48,8 @@ namespace CommunityCoreLibrary
                     }
                     else
                     {
-                        taker.carrier.TryStartCarry( thingToTake );
-                        taker.jobs.curJob.SetTarget( ind, (TargetInfo) taker.carrier.CarriedThing );
+                        taker.carryTracker.TryStartCarry( thingToTake );
+                        taker.jobs.curJob.SetTarget( ind, taker.carryTracker.CarriedThing );
                     }
                 } );
             }

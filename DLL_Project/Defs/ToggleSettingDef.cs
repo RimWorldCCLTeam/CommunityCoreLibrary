@@ -14,6 +14,8 @@ namespace CommunityCoreLibrary
 
         public bool                 enableButton = true;
         public bool                 exposeValue = true;
+        public bool                 worldView = false;
+        public bool                 playingOnly = false;
 
         public string               labelKey;
         public string               saveKey;

@@ -17,6 +17,7 @@ namespace CommunityCoreLibrary.Detour
 
         internal static List<OutfitDef>     OutfitDefs = new List<OutfitDef>();
 
+        // TODO: A16 binaries use "SpecialThingFilterDefOf.AllowNonDeadmansApparel";  should we? (NuOfBelthasar)
         [DetourMember( typeof( OutfitDatabase ) )]
         internal static void                _GenerateStartingOutfits( this OutfitDatabase outfitDatabase )
         {
@@ -40,6 +41,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 outfitWorker.filter.SetAllow( apparelDef, true );
             }
+            // outfitWorker.filter.SetAllow(SpecialThingFilterDefOf.AllowNonDeadmansApparel, true);
 
             var outfitSoldier = outfitDatabase.MakeNewOutfit();
             outfitSoldier.label = OutfitLabelSoldier;
@@ -55,6 +57,7 @@ namespace CommunityCoreLibrary.Detour
             {
                 outfitSoldier.filter.SetAllow( apparelDef, true );
             }
+            // outfitSoldier.filter.SetAllow(SpecialThingFilterDefOf.AllowNonDeadmansApparel, true);
 
             var outfitNaked = outfitDatabase.MakeNewOutfit();
             outfitNaked.label = OutfitLabelNaked;
@@ -71,9 +74,10 @@ namespace CommunityCoreLibrary.Detour
             {
                 outfitNaked.filter.SetAllow(apparelDef, true);
             }
+            // outfitNaked.filter.SetAllow(SpecialThingFilterDefOf.AllowNonDeadmansApparel, true);
 
             // Add outfits to database
-            foreach( OutfitDef outfitDef in OutfitDefs )
+            foreach ( OutfitDef outfitDef in OutfitDefs )
             {
                 var newOutfit = outfitDatabase.MakeNewOutfit();
                 newOutfit.label = outfitDef.label;

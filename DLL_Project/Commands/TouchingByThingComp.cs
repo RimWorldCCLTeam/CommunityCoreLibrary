@@ -25,7 +25,7 @@ namespace CommunityCoreLibrary.Commands
 
                 if(
                     ( ClickLeft != null )&&
-                    ( parentThing.Position.IsInRoom() )
+                    ( parentThing.Position.IsInRoom( parentThing.Map ) )
                 )
                 {
                     stringBuilder.Append( "CommandGroupOfThingsLClick".Translate() );
@@ -87,7 +87,7 @@ namespace CommunityCoreLibrary.Commands
             if(
                 ( ClickLeft != null )&&
                 ( ev.button == 0 )&&
-                ( parentThing.Position.IsInRoom() )
+                ( parentThing.Position.IsInRoom( parentThing.Map ) )
             )
             {
                 ClickLeft.Invoke( parentThing.ListSameThingCompTouching( parentType, true ) );

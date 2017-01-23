@@ -9,8 +9,8 @@ using UnityEngine.SceneManagement;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_QuickStart : MainMenu
-	{
+    public class MainMenu_QuickStart : MainMenu
+    {
 
 #if DEBUG
         private static FieldInfo            _quickStarted;
@@ -57,27 +57,27 @@ namespace CommunityCoreLibrary
             }
         }
 
-		public override bool RenderNow( bool anyMapFiles )
-		{
+        public override bool RenderNow( bool anyMapFiles )
+        {
 #if DEBUG
             if( Prefs.DevMode == false )
             {
                 return false;
             }
-			return ( Current.ProgramState == ProgramState.Entry );
+            return ( Current.ProgramState == ProgramState.Entry );
 #else
             return false;
 #endif
-		}
+        }
 
-		public override void ClickAction()
-		{
+        public override void ClickAction()
+        {
 #if DEBUG
             QuickStarted = true;
-            SceneManager.LoadScene("Map");
+            SceneManager.LoadScene("Play");
 #endif
-		}
+        }
 
-	}
+    }
 
 }

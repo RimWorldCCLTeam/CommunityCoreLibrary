@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityCoreLibrary", "DLL_Project\CommunityCoreLibrary.csproj", "{A36BEEB2-7379-475B-B537-827E34571962}"
 EndProject
@@ -10,8 +10,8 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
 		Developer|Any CPU = Developer|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A36BEEB2-7379-475B-B537-827E34571962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -22,10 +22,13 @@ Global
 		{A36BEEB2-7379-475B-B537-827E34571962}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Developer|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Developer|Any CPU.Build.0 = Debug|Any CPU
+		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F8C3C2D-E04E-4475-A20A-FE69CB96FB29}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		BaseDirectory = DLL_Project
@@ -35,7 +38,7 @@ Global
 		$1.IncludeInNewFiles = True
 		$0.NameConventionPolicy = $2
 		$2.Rules = $3
-		$3.NamingRule = $4
+		$3.NamingRule = $23
 		$4.Name = Type Parameters
 		$4.AffectedEntity = TypeParameter
 		$4.VisibilityMask = VisibilityMask
@@ -46,14 +49,12 @@ Global
 		$31.String = T
 		$4.RequiredSuffixes = $32
 		$32.String = Exception
-		$3.NamingRule = $5
 		$5.Name = Types
 		$5.AffectedEntity = Class, Struct, Enum, Delegate
 		$5.VisibilityMask = Public
 		$5.NamingStyle = PascalCase
 		$5.IncludeInstanceMembers = True
 		$5.IncludeStaticEntities = True
-		$3.NamingRule = $6
 		$6.Name = Interfaces
 		$6.RequiredPrefixes = $7
 		$7.String = I
@@ -62,7 +63,6 @@ Global
 		$6.NamingStyle = PascalCase
 		$6.IncludeInstanceMembers = True
 		$6.IncludeStaticEntities = True
-		$3.NamingRule = $8
 		$8.Name = Attributes
 		$8.RequiredSuffixes = $9
 		$9.String = Attribute
@@ -71,7 +71,6 @@ Global
 		$8.NamingStyle = PascalCase
 		$8.IncludeInstanceMembers = True
 		$8.IncludeStaticEntities = True
-		$3.NamingRule = $10
 		$10.Name = Event Arguments
 		$10.RequiredSuffixes = $11
 		$11.String = EventArgs
@@ -80,7 +79,6 @@ Global
 		$10.NamingStyle = PascalCase
 		$10.IncludeInstanceMembers = True
 		$10.IncludeStaticEntities = True
-		$3.NamingRule = $12
 		$12.Name = Exceptions
 		$12.RequiredSuffixes = $13
 		$13.String = Exception
@@ -89,70 +87,60 @@ Global
 		$12.NamingStyle = PascalCase
 		$12.IncludeInstanceMembers = True
 		$12.IncludeStaticEntities = True
-		$3.NamingRule = $14
 		$14.Name = Methods
 		$14.AffectedEntity = Methods
 		$14.VisibilityMask = Protected, Public
 		$14.NamingStyle = PascalCase
 		$14.IncludeInstanceMembers = True
 		$14.IncludeStaticEntities = True
-		$3.NamingRule = $15
 		$15.Name = Static Readonly Fields
 		$15.AffectedEntity = ReadonlyField
 		$15.VisibilityMask = Protected, Public
 		$15.NamingStyle = PascalCase
 		$15.IncludeInstanceMembers = False
 		$15.IncludeStaticEntities = True
-		$3.NamingRule = $16
 		$16.Name = Fields
 		$16.AffectedEntity = Field
 		$16.VisibilityMask = Protected, Public
 		$16.NamingStyle = PascalCase
 		$16.IncludeInstanceMembers = True
 		$16.IncludeStaticEntities = True
-		$3.NamingRule = $17
 		$17.Name = ReadOnly Fields
 		$17.AffectedEntity = ReadonlyField
 		$17.VisibilityMask = Protected, Public
 		$17.NamingStyle = PascalCase
 		$17.IncludeInstanceMembers = True
 		$17.IncludeStaticEntities = False
-		$3.NamingRule = $18
 		$18.Name = Constant Fields
 		$18.AffectedEntity = ConstantField
 		$18.VisibilityMask = Protected, Public
 		$18.NamingStyle = PascalCase
 		$18.IncludeInstanceMembers = True
 		$18.IncludeStaticEntities = True
-		$3.NamingRule = $19
 		$19.Name = Properties
 		$19.AffectedEntity = Property
 		$19.VisibilityMask = Protected, Public
 		$19.NamingStyle = PascalCase
 		$19.IncludeInstanceMembers = True
 		$19.IncludeStaticEntities = True
-		$3.NamingRule = $20
 		$20.Name = Events
 		$20.AffectedEntity = Event
 		$20.VisibilityMask = Protected, Public
 		$20.NamingStyle = PascalCase
 		$20.IncludeInstanceMembers = True
 		$20.IncludeStaticEntities = True
-		$3.NamingRule = $21
 		$21.Name = Enum Members
 		$21.AffectedEntity = EnumMember
 		$21.VisibilityMask = VisibilityMask
 		$21.NamingStyle = PascalCase
 		$21.IncludeInstanceMembers = True
 		$21.IncludeStaticEntities = True
-		$3.NamingRule = $22
 		$22.Name = Parameters
 		$22.AffectedEntity = Parameter
 		$22.VisibilityMask = VisibilityMask
 		$22.NamingStyle = CamelCase
 		$22.IncludeInstanceMembers = True
 		$22.IncludeStaticEntities = True
-		$3.NamingRule = $23
 		$23.Name = Type Parameters
 		$23.RequiredPrefixes = $24
 		$24.String = T
@@ -169,7 +157,7 @@ Global
 		$0.DotNetNamingPolicy = $27
 		$27.DirectoryNamespaceAssociation = None
 		$27.ResourceNamePolicy = FileFormatDefault
-		$0.TextStylePolicy = $28
+		$0.TextStylePolicy = $30
 		$28.inheritsSet = VisualStudio
 		$28.scope = text/plain
 		$28.FileWidth = 120
@@ -260,7 +248,6 @@ Global
 		$29.SpaceWithinOtherParentheses = True
 		$29.SpaceBeforeOpenSquareBracket = False
 		$29.SpaceWithinSquareBrackets = True
-		$0.TextStylePolicy = $30
 		$30.FileWidth = 120
 		$30.NoTabsAfterNonTabs = True
 		$30.inheritsSet = VisualStudio
@@ -269,8 +256,5 @@ Global
 		description = RimWorld Alpha 15 Community Core Library
 		version = 0.15.0
 		outputpath = DLL_Project\bin
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

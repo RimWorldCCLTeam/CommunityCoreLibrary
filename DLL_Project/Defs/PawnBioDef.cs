@@ -60,7 +60,8 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            var childBackstory = BackstoryDatabase.GetWithKey( this.childhoodDef.UniqueSaveKey() );
+            Backstory childBackstory;
+            BackstoryDatabase.TryGetWithIdentifier( this.childhoodDef.UniqueSaveKey(), out childBackstory );
             if( childBackstory != null )
             {
                 CCL_Log.Trace(
@@ -71,7 +72,8 @@ namespace CommunityCoreLibrary
                 return;
             }
 
-            var adultBackstory = BackstoryDatabase.GetWithKey( this.adulthoodDef.UniqueSaveKey() );
+            Backstory adultBackstory;
+            BackstoryDatabase.TryGetWithIdentifier( this.adulthoodDef.UniqueSaveKey(), out adultBackstory );
             if( adultBackstory != null )
             {
                 CCL_Log.Trace(

@@ -67,7 +67,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override IEnumerable<Pawn> GetPawns()
         {
-            return Find.MapPawns.FreeColonists;
+            return Find.VisibleMap.mapPawns.FreeColonists;
         }
 
         public override float GetRadius( Pawn pawn )

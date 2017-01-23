@@ -22,7 +22,7 @@ namespace CommunityCoreLibrary.Commands
                 var stringBuilder = new StringBuilder();
 
                 if( ( ClickLeft != null )&&
-                    ( parentThing.Position.IsInRoom() ) )
+                    ( parentThing.Position.IsInRoom(  parentThing.Map ) ) )
                 {
                     stringBuilder.Append( "CommandGroupOfThingsLClick".Translate() );
                     addedToOutput = true;
@@ -81,7 +81,7 @@ namespace CommunityCoreLibrary.Commands
             // Left click (if assigned) all in room
             if( ( ClickLeft != null )&&
                 ( ev.button == 0 )&&
-                ( parentThing.Position.IsInRoom() ) )
+                ( parentThing.Position.IsInRoom( parentThing.Map ) ) )
             {
                 ClickLeft.Invoke( parentThing.ListSameThingDefTouching( true ) );
             }

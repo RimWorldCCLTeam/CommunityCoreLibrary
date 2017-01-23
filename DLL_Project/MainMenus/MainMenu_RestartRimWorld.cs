@@ -5,8 +5,8 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_RestartRimWorld : MainMenu
-	{
+    public class MainMenu_RestartRimWorld : MainMenu
+    {
 
         public override Color               Color
         {
@@ -27,11 +27,11 @@ namespace CommunityCoreLibrary
             return Controller.Data.RequireRestart;
         }
 
-		public override void ClickAction()
-		{
+        public override void ClickAction()
+        {
             Controller.RimWorld.Restart();
-		}
+        }
 
-	}
+    }
 
 }

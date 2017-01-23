@@ -25,7 +25,7 @@ namespace CommunityCoreLibrary.Detour
         private const string                MonitorForDef = "Synthesizer";
 #endif
 #endif
-
+        
         [DetourMember( typeof( ThingListGroupHelper ) )]
         internal static bool                _Includes( this ThingRequestGroup group, ThingDef def )
         {
@@ -65,31 +65,17 @@ namespace CommunityCoreLibrary.Detour
                 
             case ThingRequestGroup.HaulableAlways:
                 return def.alwaysHaulable;
-                
-            case ThingRequestGroup.CultivatedPlant:
-                if( def.category == ThingCategory.Plant )
-                {
-                    return (double) Find.Map.Biome.CommonalityOfPlant( def ) == 0.0;
-                }
-                return false;
+                    
+            case ThingRequestGroup.Plant:
+                return def.category == ThingCategory.Plant;
                 
             case ThingRequestGroup.FoodSource:
-                if( !def.IsNutritionGivingIngestible )
-                {
-                    return def.IsFoodDispenser;
-                }
-                return true;
+                return def.IsNutritionGivingIngestible || def.IsFoodDispenser;
                 
             case ThingRequestGroup.FoodSourceNotPlantOrTree:
-                if(
-                    ( !def.IsNutritionGivingIngestible )||
-                    ( ( def.ingestible.foodType & ~FoodTypeFlags.Plant & ~FoodTypeFlags.Tree ) == FoodTypeFlags.None )
-                )
-                {   // Modified behaviour to catch all Nutrient Paste Dispensers
-                    // and Automated Factories that are food dispensers
-                    return def.IsFoodDispenser;
-                }
-                return true;
+                return ( def.IsNutritionGivingIngestible &&
+                         ( def.ingestible.foodType & ~FoodTypeFlags.Plant & ~FoodTypeFlags.Tree ) == FoodTypeFlags.None ||
+                         def.IsFoodDispenser );
                 
             case ThingRequestGroup.Corpse:
                 return def.thingClass == typeof( Corpse );
@@ -98,30 +84,9 @@ namespace CommunityCoreLibrary.Detour
                 return def.IsBlueprint;
                 
             case ThingRequestGroup.BuildingArtificial:
-                if(
-                    ( def.category == ThingCategory.Building )||
-                    ( def.IsFrame )
-                )
-                {
-                    return
-                        (
-                            def.building == null
-                            ? 0
-                            :
-                            (
-                                def.building.isNaturalRock
-                                ? 1
-                                :
-                                (
-                                    def.building.isResourceRock
-                                    ?
-                                    1 :
-                                    0
-                                )
-                            )
-                        ) == 0;
-                }
-                return false;
+                return ( ( def.category == ThingCategory.Building || def.IsFrame )&&
+                         ( def.building == null || ( !def.building.isNaturalRock && !def.building.isResourceRock ) )
+                       );
                 
             case ThingRequestGroup.BuildingFrame:
                 return def.IsFrame;
@@ -148,12 +113,8 @@ namespace CommunityCoreLibrary.Detour
                 return def.HasComp( typeof( CompRefuelable ) );
                 
             case ThingRequestGroup.HaulableEverOrMinifiable:
-                if( !def.EverHaulable )
-                {
-                    return def.Minifiable;
-                }
-                return true;
-                
+                return def.EverHaulable || def.Minifiable;
+
             case ThingRequestGroup.Drug:
                 // Catch Automated Factories that can be drug synthesizers
                 if(
@@ -178,11 +139,7 @@ namespace CommunityCoreLibrary.Detour
                 return def.IsDrug;
                 
             case ThingRequestGroup.Construction:
-                if( !def.IsBlueprint )
-                {
-                    return def.IsFrame;
-                }
-                return true;
+                return def.IsBlueprint || def.IsFrame;
                 
             case ThingRequestGroup.HasGUIOverlay:
                 return def.drawGUIOverlay;
@@ -199,15 +156,14 @@ namespace CommunityCoreLibrary.Detour
             case ThingRequestGroup.Art:
                 return def.HasComp( typeof( CompArt ) );
                 
-            case ThingRequestGroup.Container:
-                return typeof( IThingContainerOwner ).IsAssignableFrom( def.thingClass );
-                
-            case ThingRequestGroup.DropPod:
-                if( !typeof( DropPod ).IsAssignableFrom( def.thingClass ) )
-                {
-                    return typeof( DropPodIncoming ).IsAssignableFrom( def.thingClass );
-                }
-                return true;
+            case ThingRequestGroup.ContainerEnclosure:
+                return typeof( IThingContainerOwner ).IsAssignableFrom( def.thingClass ) && !def.IsCorpse;
+
+            case ThingRequestGroup.ActiveDropPod:
+                return typeof( IActiveDropPod ).IsAssignableFrom( def.thingClass );
+
+            case ThingRequestGroup.Transporter:
+                return def.HasComp( typeof( CompTransporter ) );
 
             default:
                 throw new ArgumentException( "group" );

@@ -36,9 +36,9 @@ namespace CommunityCoreLibrary
             HideItemManager.RegisterBuilding( parent );
         }
 
-        public override void                PostDestroy( DestroyMode mode, bool wasSpawned )
+        public override void                PostDestroy( DestroyMode mode, Map map )
         {
-            base.PostDestroy( mode, wasSpawned );
+            base.PostDestroy( mode, map );
             if( knownItems.NullOrEmpty() )
             {
                 return;
@@ -66,7 +66,7 @@ namespace CommunityCoreLibrary
             var rect = parent.OccupiedRect();
             foreach( var cell in rect.Cells )
             {
-                foreach( var item in cell.GetThingList() )
+                foreach( var item in cell.GetThingList( parent.Map ) )
                 {
                     ReceivedThing( item );
                 }

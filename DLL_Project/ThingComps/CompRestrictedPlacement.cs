@@ -130,7 +130,7 @@ namespace CommunityCoreLibrary
             // Check for a roof
             if(
                 ( HasPlaceWorker( typeof( PlaceWorker_OnlyUnderRoof ) ) )&&
-                ( !Find.RoofGrid.Roofed( parent.Position ) )
+                ( !parent.Map.roofGrid.Roofed( parent.Position ) )
             )
             {
                 DestroyParent();
@@ -141,7 +141,7 @@ namespace CommunityCoreLibrary
             if( HasPlaceWorker( typeof( PlaceWorker_WallAttachment ) ) )
             {
                 IntVec3 c = parent.Position - parent.Rotation.FacingCell;
-                Building support = c.GetEdifice();
+                Building support = c.GetEdifice( parent.Map );
                 if(
                     ( support == null )||
                     ( ( support.def.graphicData.linkFlags & ( LinkFlags.Rock | LinkFlags.Wall ) ) == 0 )
@@ -156,7 +156,7 @@ namespace CommunityCoreLibrary
             if( HasPlaceWorker( typeof( PlaceWorker_OnlyOnSurface ) ) )
             {
                 bool foundThing = false;
-                foreach( Thing t in parent.Position.GetThingList() )
+                foreach( Thing t in parent.Position.GetThingList( parent.Map ) )
                 {
                     if( t.def.surfaceType != SurfaceType.None )
                     {
@@ -176,7 +176,7 @@ namespace CommunityCoreLibrary
             {
                 var Restrictions = this.RestrictedPlacement_Properties();
                 bool foundThing = false;
-                foreach( Thing t in parent.Position.GetThingList() )
+                foreach( Thing t in parent.Position.GetThingList( parent.Map ) )
                 {
                     if(
                         ( Restrictions.RestrictedThing.Find( r => r == t.def ) != null )&&

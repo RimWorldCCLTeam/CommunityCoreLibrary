@@ -20,6 +20,7 @@ namespace CommunityCoreLibrary.Detour
         internal const TargetIndex          DelivereeInd = TargetIndex.B;
         internal const float                FeedDurationMultiplier = 1.5f;
 
+        // TODO: check for changes in A16; I can't figure out how to decompile an iterator (NuOfBelthasar)
         [DetourMember]
         internal IEnumerable<Toil>          _MakeNewToils()
         {
@@ -46,9 +47,9 @@ namespace CommunityCoreLibrary.Detour
                 yield return Toils_Reserve.Reserve( FoodInd, 1 );
                 this.AddFinishAction( () =>
                 {
-                    if( Find.Reservations.ReservedBy( foodThing, pawn ) )
+                    if( pawn.Map.reservationManager.ReservedBy( foodThing, pawn ) )
                     {   // Release reservation if aborted early
-                        Find.Reservations.Release( foodThing, pawn );
+                        pawn.Map.reservationManager.Release( foodThing, pawn );
                     }
                 } );
                 yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.InteractionCell ).FailOnForbidden( FoodInd );
@@ -72,9 +73,9 @@ namespace CommunityCoreLibrary.Detour
                 yield return Toils_Reserve.Reserve( FoodInd, 1 );
                 this.AddFinishAction( () =>
                 {
-                    if( Find.Reservations.ReservedBy( foodThing, pawn ) )
+                    if( pawn.Map.reservationManager.ReservedBy( foodThing, pawn ) )
                     {   // Release reservation if aborted early
-                        Find.Reservations.Release( foodThing, pawn );
+                        pawn.Map.reservationManager.Release( foodThing, pawn );
                     }
                 } );
                 yield return Toils_Goto.GotoThing( FoodInd, PathEndMode.ClosestTouch ).FailOnForbidden( FoodInd );

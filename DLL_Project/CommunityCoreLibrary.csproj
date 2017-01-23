@@ -10,7 +10,7 @@
     <RootNamespace>CommunityCoreLibrary</RootNamespace>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.15.0</ReleaseVersion>
+    <ReleaseVersion>0.16.0</ReleaseVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AssemblyName>Community Core Library</AssemblyName>
   </PropertyGroup>
@@ -86,6 +86,10 @@
     <Compile Include="CompProperties\CompProperties_LowIdleDraw.cs" />
     <Compile Include="Defs\AdvancedResearchDef.cs" />
     <Compile Include="ThingComps\CompRangedGizmoGiver.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ShowEnvironment.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_LockNorthUp.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_UsePlanetDayNightSystem.cs" />
+    <Compile Include="ToggleSettings\ToggleSetting_ExpandingIcons.cs" />
     <Compile Include="Toils\Toils_Common.cs" />
     <Compile Include="ThingComps\CompRefrigerated.cs" />
     <Compile Include="CompProperties\CompProperties_ColoredLight.cs" />
@@ -126,7 +130,6 @@
     <Compile Include="Verbs\Verb_ShootExtended.cs" />
     <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
     <Compile Include="Extensions\RecipeDef_Extensions.cs" />
-    <Compile Include="Extensions\ReverseDesignatorDatabase_Extensions.cs" />
     <Compile Include="Alerts\Alert_BuildingNeedsHopper.cs" />
     <Compile Include="Alerts\Alert_HopperNeedsBuilding.cs" />
     <Compile Include="Buildings\Building_Hopper.cs" />
@@ -262,7 +265,7 @@
     <Compile Include="Detours\ThingListGroupHelper.cs" />
     <Compile Include="Detours\GenConstruct.cs" />
     <Compile Include="Detours\WorkGiver_Warden_DeliverFood.cs" />
-    <Compile Include="Detours\RootMap.cs" />
+    <Compile Include="Detours\Root_Play.cs" />
     <Compile Include="Detours\PageUtility.cs" />
     <Compile Include="SpecialInjectors\PostLoadInjectorTest.cs" />
     <Compile Include="Detours\ModLister.cs" />
@@ -278,10 +281,8 @@
     <Compile Include="Classes\Abstract\ToggleSetting.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_ShowZones.cs" />
     <Compile Include="Detours\PlaySettings.cs" />
-    <Compile Include="ToggleSettings\ToggleSetting_ShowBeauty.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_AutoHomeArea.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_ShowColonistBar.cs" />
-    <Compile Include="ToggleSettings\ToggleSetting_ShowRoomStats.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_UseWorkPriorities.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_ResourceReadoutCategorized.cs" />
     <Compile Include="ToggleSettings\ToggleSetting_ShowMiniMap.cs" />
@@ -359,8 +360,6 @@
     <None Include="PostBuild.bat" />
     <None Include="Controller\SubControllers\SubControllerOrderingReference.txt" />
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup />
   <ItemGroup>
     <Folder Include="Detours\Developer\" />
   </ItemGroup>

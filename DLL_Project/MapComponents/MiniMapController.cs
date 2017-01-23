@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -40,7 +40,12 @@ namespace CommunityCoreLibrary.MiniMap
             regEx = new Regex( regExPattern );
         }
 
-        public                          MiniMapController()
+        public MiniMapController() : base( null)  // Core cares about this apparently
+        {
+            Window_MiniMap.minimapRect = defaultWindowRect;
+        }
+
+        public                          MiniMapController( Map map ) : base( map )
         {
             Window_MiniMap.minimapRect = defaultWindowRect;
         }
@@ -60,6 +65,20 @@ namespace CommunityCoreLibrary.MiniMap
         #endregion Properties
 
         #region Base Overrides
+
+        public override void            MapComponentUpdate()
+        {
+            // No minimap
+            if (!visible || WorldRendererUtility.WorldRenderedNow )
+            {
+                // Close the window if needed
+                if (GetWindow != null)
+                {
+                    CloseWindow();
+                }
+                return;
+            }
+        }
 
         public override void            MapComponentOnGUI()
         {

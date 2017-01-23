@@ -10,23 +10,22 @@ namespace CommunityCoreLibrary
     
     public class Building_Hopper : Building, IStoreSettingsParent, ISlotGroupParent
     {
-
         #region Instance Data
 
-        public SlotGroup                    slotGroup;
-        public StorageSettings              settings;
+        public SlotGroup slotGroup;
+        public StorageSettings settings;
 
-        private IEnumerable<IntVec3>        cachedOccupiedCells;
+        private IEnumerable<IntVec3> cachedOccupiedCells;
 
         #endregion
 
         #region Properties
 
-        private CompHopper                  CompHopper
+        private CompHopper CompHopper
         {
             get
             {
-                //Log.Message( string.Format( "{0}.CompHopper", this.ThingID ) );
+                //Log.Message(string.Format("{0}.CompHopper", this.ThingID));
                 return GetComp<CompHopper>();
             }
         }
@@ -35,36 +34,36 @@ namespace CommunityCoreLibrary
 
         #region IStoreSettingsParent
 
-        public bool                         StorageTabVisible
+        public bool StorageTabVisible
         {
             get
             {
-                //Log.Message( string.Format( "{0}.StorageTabVisible", this.ThingID ) );
+                //Log.Message(string.Format("{0}.StorageTabVisible", this.ThingID));
                 return true;
             }
         }
 
-        public StorageSettings              GetStoreSettings()
+        public StorageSettings GetStoreSettings()
         {
-            //Log.Message( string.Format( "{0}.GetStoreSettings()", this.ThingID ) );
+            //Log.Message( string.Format("{0}.GetStoreSettings()", this.ThingID));
             return settings;
         }
 
-        public StorageSettings              GetParentStoreSettings()
+        public StorageSettings GetParentStoreSettings()
         {
-            //Log.Message( string.Format( "{0}.GetParentStoreSettings( {1} )", this.ThingID, Scribe.mode.ToString() ) );
-            if(
-                ( Scribe.mode != LoadSaveMode.Inactive )&&
-                ( Scribe.mode != LoadSaveMode.ResolvingCrossRefs )
-            )
+            //Log.Message(string.Format("{0}.GetParentStoreSettings({1})", this.ThingID, Scribe.mode.ToString()));
+            if (Scribe.mode != LoadSaveMode.Inactive &&
+                Scribe.mode != LoadSaveMode.ResolvingCrossRefs)
             {
                 return null;
             }
+
             var hopperUser = CompHopper.FindHopperUser();
-            if( hopperUser == null )
+            if (hopperUser == null)
             {
                 return null;
             }
+
             return hopperUser.ResourceSettings;
         }
 
@@ -114,32 +113,34 @@ namespace CommunityCoreLibrary
 
         #region Base Class Overrides
 
-        public override void                PostMake()
+        public override void PostMake()
         {
-            //Log.Message( string.Format( "{0}.PostName()", this.ThingID ) );
+            //Log.Message(string.Format("{0}.PostName()", this.ThingID));
             base.PostMake();
+
             settings = new StorageSettings((IStoreSettingsParent) this);
-            if( def.building.defaultStorageSettings != null )
+            if(def.building.defaultStorageSettings != null)
             {
-                settings.CopyFrom( def.building.defaultStorageSettings );
+                settings.CopyFrom(def.building.defaultStorageSettings);
             }
+
             //settings.filter.BlockDefaultAcceptanceFilters();
             settings.filter.ResolveReferences();
         }
 
-        public override void                SpawnSetup()
+        public override void SpawnSetup( Map map )
         {
             //Log.Message( string.Format( "{0}.SpawnSetup()", this.ThingID ) );
-            base.SpawnSetup();
+            base.SpawnSetup( map );
             cachedOccupiedCells = this.OccupiedRect().Cells;
-            slotGroup = new SlotGroup( (ISlotGroupParent) this );
+            slotGroup = new SlotGroup((ISlotGroupParent) this);
         }
 
-        public override void                ExposeData()
+        public override void ExposeData()
         {
             //Log.Message( string.Format( "Building_Hopper.ExposeData( {0} )", Scribe.mode.ToString() ) );
             base.ExposeData();
-            Scribe_Deep.LookDeep<StorageSettings>(ref settings, "settings", new Object[1]{ this } );
+            Scribe_Deep.LookDeep<StorageSettings>(ref settings, "settings", new Object[1] {this});
 
             /*
             if( Scribe.mode == LoadSaveMode.ResolvingCrossRefs )
@@ -161,33 +162,32 @@ namespace CommunityCoreLibrary
             //settings.filter.BlockDefaultAcceptanceFilters( GetParentStoreSettings() );
         }
 
-        public override void                DeSpawn()
+        public override void DeSpawn()
         {
             //Log.Message( string.Format( "{0}.DeSpawn()", this.ThingID ) );
-            if( slotGroup != null )
+            if(slotGroup != null)
             {
                 slotGroup.Notify_ParentDestroying();
                 slotGroup = null;
             }
+
             base.DeSpawn();
         }
 
-        public override IEnumerable<Gizmo>  GetGizmos()
+        public override IEnumerable<Gizmo> GetGizmos()
         {
-            //Log.Message( string.Format( "{0}.GetGizmos()", this.ThingID ) );
-            var copyPasteGizmos = StorageSettingsClipboard.CopyPasteGizmosFor( settings );
+            //Log.Message(string.Format("{0}.GetGizmos()", this.ThingID));
+            var copyPasteGizmos = StorageSettingsClipboard.CopyPasteGizmosFor(settings);
             foreach( var gizmo in copyPasteGizmos )
             {
                 yield return gizmo;
             }
-            foreach( var gizmo in base.GetGizmos() )
+            foreach(var gizmo in base.GetGizmos())
             {
                 yield return gizmo;
             }
         }
 
         #endregion
-
     }
-
 }

@@ -166,7 +166,7 @@ namespace CommunityCoreLibrary
             return stringBuilder.ToString();
         }
 
-        public override IEnumerable<Command> CompGetGizmosExtra()
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             if ( ColorProps.hideGizmos )
             {
@@ -180,7 +180,7 @@ namespace CommunityCoreLibrary
             }
 
             // In room
-            if( parent.Position.IsInRoom() )
+            if( parent.Position.IsInRoom( parent.Map ) )
             {
                 // In room by def or comp
                 if( parent.IsSameThingCompInRoom( GetType() ) )
@@ -326,7 +326,7 @@ namespace CommunityCoreLibrary
 
             // Update glow grid
             //glower.UpdateLit(); <-- Only works if the light changes state (on<->off)
-            Find.GlowGrid.MarkGlowGridDirty( parent.Position );
+            parent.Map.glowGrid.MarkGlowGridDirty( parent.Position );
         }
 
         #endregion

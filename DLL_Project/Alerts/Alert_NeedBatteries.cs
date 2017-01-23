@@ -11,7 +11,7 @@ namespace CommunityCoreLibrary
     public class Alert_NeedBatteries : RimWorld.Alert_NeedBatteries
     {
 
-        static bool                         CheckThing( Thing thing )
+        static bool CheckThing( Thing thing )
         {
             var p = thing.TryGetComp< CompPowerTrader >();
 
@@ -27,46 +27,50 @@ namespace CommunityCoreLibrary
 
         }
 
-        public override AlertReport         Report
+        public override AlertReport GetReport()
         {
-            get
-            {
-                if( Find.ListerBuildings.ColonistsHaveBuilding( (thing) =>
-                {
-                    if(
-                        ( thing is Building_Battery )&&
-                        ( thing.def.HasComp( typeof( CompPowerBattery ) ) )
-                    )
-                    {   // Building is a battery
-                        return true;
-                    }
-                    if(
-                        ( thing.def.HasComp( typeof( CompPowerPlant ) ) )||
-                        ( thing.def.HasComp( typeof( CompPowerPlantWind ) ) )||
-                        ( thing.def.HasComp( typeof( CompPowerPlantSolar ) ) )||
-                        ( thing.def.HasComp( typeof( CompPowerPlantSteam) ) )
-                    )
-                    {   // Building is a power plant
-                        return true;
-                    }
-                    return false;
-                } ) )
-                {
-                    return AlertReport.Inactive;
-                }
-                // Check for individual power trader which is low
-                var powerTraders = Find.ListerBuildings.allBuildingsColonist.FindAll( CheckThing );
-                if( ( powerTraders != null )&&
-                    ( powerTraders.Count > 0 ) )
-                {
-                    return AlertReport.CulpritIs( powerTraders.RandomElement() );
-                }
+            //TODO: the logic here isn't quite right - it should be doing this on a map by map basis
+            var lists = from map in Find.Maps
+                        where map.IsPlayerHome
+                        select map.listerBuildings;
 
-                // All power trader's good
+            if ( lists.Any( list => list.ColonistsHaveBuilding( thing =>
+                {
+                    if ( thing is Building_Battery && thing.def.HasComp( typeof( CompPowerBattery ) ) )
+                    {
+                        return true;
+                    }
+
+                    if (
+                        thing.def.HasComp( typeof( CompPowerPlant ) ) ||
+                        thing.def.HasComp( typeof( CompPowerPlantWind ) ) ||
+                        thing.def.HasComp( typeof( CompPowerPlantSolar ) ) ||
+                        thing.def.HasComp( typeof( CompPowerPlantSteam ) ) )
+                    {
+                        // Building is a power plant
+                        return true;
+                    }
+
+                    return false;
+                } ) ) )
+            {
                 return AlertReport.Inactive;
             }
+
+            // Check for individual power trader which is low
+            var powerTraders = from map in Find.Maps
+                               where map.IsPlayerHome
+                               from building in map.listerBuildings.allBuildingsColonist
+                               where CheckThing( building )
+                               select building;
+
+            if ( powerTraders.Count() > 0 )
+            {
+                return AlertReport.CulpritIs( powerTraders.RandomElement() );
+            }
+
+            // All power trader's good
+            return AlertReport.Inactive;
         }
-
     }
-
 }

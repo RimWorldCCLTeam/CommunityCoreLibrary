@@ -19,5 +19,5 @@ using System.Runtime.CompilerServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 // TODO:  Fix issue #30 so we can use proper assembly versioning
-[assembly: AssemblyVersion("0.14.0")]
-[assembly: AssemblyFileVersion("0.14.0")]
+[assembly: AssemblyVersion("0.16.0")]
+[assembly: AssemblyFileVersion("0.16.0")]

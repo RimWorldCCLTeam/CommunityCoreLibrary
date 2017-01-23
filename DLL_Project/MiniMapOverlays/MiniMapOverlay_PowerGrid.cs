@@ -78,7 +78,7 @@ namespace CommunityCoreLibrary.MiniMap
             ClearTexture();
 
             // get all powercomps attached to things of our colony
-            var powerComps = Find.ListerBuildings.allBuildingsColonist.SelectMany( building => building.AllComps ).OfType<CompPower>();
+            var powerComps = Find.VisibleMap.listerBuildings.allBuildingsColonist.SelectMany( building => building.AllComps ).OfType<CompPower>();
 
             // throw them all to the rendered
             foreach ( var comp in powerComps )

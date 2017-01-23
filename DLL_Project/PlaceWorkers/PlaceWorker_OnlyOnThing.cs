@@ -7,7 +7,7 @@ namespace CommunityCoreLibrary
     public class PlaceWorker_OnlyOnThing : PlaceWorker
     {
 
-        public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot )
+        public override AcceptanceReport    AllowsPlacing( BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Thing thingToIgnore = null )
         {
             var Restrictions = checkingDef.RestrictedPlacement_Properties();
 #if DEBUG
@@ -18,7 +18,7 @@ namespace CommunityCoreLibrary
             }
 #endif
 
-            foreach( Thing t in loc.GetThingList() )
+            foreach( Thing t in loc.GetThingList( this.Map ) )
             {
                 if( Restrictions.RestrictedThing.Contains( t.def ) )
                 {

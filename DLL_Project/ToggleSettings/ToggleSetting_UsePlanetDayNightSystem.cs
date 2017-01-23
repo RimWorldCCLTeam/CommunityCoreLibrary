@@ -6,18 +6,18 @@ using Verse;
 namespace CommunityCoreLibrary
 {
     
-    public class ToggleSetting_ShowBeauty : ToggleSetting
+    public class ToggleSetting_UsePlanetDayNightSystem : ToggleSetting
     {
 
         public override bool Value
         {
             get
             {
-                return Find.PlaySettings.showBeauty;
+                return Find.PlaySettings.usePlanetDayNightSystem;
             }
             set
             {
-                Find.PlaySettings.showBeauty = value;
+                Find.PlaySettings.usePlanetDayNightSystem = value;
             }
         }
 

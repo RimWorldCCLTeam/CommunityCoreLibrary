@@ -91,7 +91,7 @@ namespace CommunityCoreLibrary.Detour
         }
 
         [DetourMember]
-        internal float                      _AttractionTo( Pawn otherPawn )
+        internal float                      _SecondaryRomanceChanceFactor( Pawn otherPawn )
         {
             var pawn = this.GetPawn();
 
@@ -99,47 +99,57 @@ namespace CommunityCoreLibrary.Detour
             {
                 return 0f;
             }
+            Rand.PushSeed();
+            Rand.Seed = pawn.HashOffset();
+            bool ignoreOrientation = Rand.Value < 0.015f;
+            Rand.PopSeed();
             float num = 1f;
             float num2 = 1f;
             float ageBiologicalYearsFloat = pawn.ageTracker.AgeBiologicalYearsFloat;
             float ageBiologicalYearsFloat2 = otherPawn.ageTracker.AgeBiologicalYearsFloat;
             if( pawn.gender == Gender.Male )
             {
-                if(
-                    ( pawn.RaceProps.Humanlike )&&
-                    ( pawn.story.traits.HasTrait( TraitDefOf.Gay ) )
-                )
+                if( !ignoreOrientation )
                 {
-                    if( otherPawn.gender == Gender.Female )
+                    if(
+                        ( pawn.RaceProps.Humanlike )&&
+                        ( pawn.story.traits.HasTrait( TraitDefOf.Gay ) )
+                    )
+                    {
+                        if( otherPawn.gender == Gender.Female )
+                        {
+                            return 0f;
+                        }
+                    }
+                    else if( otherPawn.gender == Gender.Male )
                     {
                         return 0f;
                     }
                 }
-                else if( otherPawn.gender == Gender.Male )
-                {
-                    return 0f;
-                }
-                num2 = GenMath.FlatHill( 16f, 20f, ageBiologicalYearsFloat, ageBiologicalYearsFloat + 15f, ageBiologicalYearsFloat2 );
+                num2 = GenMath.FlatHill( 0f, 16f, 20f, ageBiologicalYearsFloat, ageBiologicalYearsFloat + 15f, 0.07f, ageBiologicalYearsFloat2 );
             }
             else if( pawn.gender == Gender.Female )
             {
-                if(
-                    ( pawn.RaceProps.Humanlike )&&
-                    ( pawn.story.traits.HasTrait( TraitDefOf.Gay ) )
-                )
+                if( !ignoreOrientation )
                 {
-                    if( otherPawn.gender == Gender.Male )
+                    if(
+                        ( pawn.RaceProps.Humanlike )&&
+                        ( pawn.story.traits.HasTrait( TraitDefOf.Gay ) )
+                    )
+                    {
+                        if( otherPawn.gender == Gender.Male )
+                        {
+                            return 0f;
+                        }
+                    }
+                    else if( otherPawn.gender == Gender.Female )
+                    {
+                        num = 0f;
+                    }
+                    if( ageBiologicalYearsFloat2 < ageBiologicalYearsFloat - 10f )
                     {
                         return 0f;
                     }
-                }
-                else if( otherPawn.gender == Gender.Female )
-                {
-                    num = 0.15f;
-                }
-                if( ageBiologicalYearsFloat2 < ageBiologicalYearsFloat - 10f )
-                {
-                    return 0f;
                 }
                 if( ageBiologicalYearsFloat2 < ageBiologicalYearsFloat - 3f )
                 {
@@ -147,7 +157,7 @@ namespace CommunityCoreLibrary.Detour
                 }
                 else
                 {
-                    num2 = GenMath.FlatHill( 0.2f, ageBiologicalYearsFloat - 3f, ageBiologicalYearsFloat, ageBiologicalYearsFloat + 10f, ageBiologicalYearsFloat + 40f, 0.1f, ageBiologicalYearsFloat2 );
+                    num2 = GenMath.FlatHill( 0.2f, ageBiologicalYearsFloat - 3f, ageBiologicalYearsFloat, ageBiologicalYearsFloat + 10f, ageBiologicalYearsFloat + 30f, 0.1f, ageBiologicalYearsFloat2 );
                 }
             }
             float num3 = 1f;

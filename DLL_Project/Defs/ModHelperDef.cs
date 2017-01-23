@@ -26,7 +26,7 @@ namespace CommunityCoreLibrary
         #endregion
 
         #region Sequenced Injectors
-
+        
         public List<SequencedInjectionSet>  SequencedInjectionSets;
 
         #endregion
@@ -66,7 +66,7 @@ namespace CommunityCoreLibrary
                 new SequencedInjector_Detours(),
                 new SequencedInjector_SpecialInjectors(),
                 new MHD_ThingComps(),
-                new MHD_ITabs(),
+                new MHD_InspectTabBases(),
                 new MHD_TickerSwitcher(),
                 new MHD_Facilities(),
                 new MHD_StockGenerators(),

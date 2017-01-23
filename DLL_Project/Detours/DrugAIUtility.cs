@@ -33,11 +33,11 @@ namespace CommunityCoreLibrary.Detour
             var job = new Job( JobDefOf.Ingest, drug );
             if( synthesizer != null )
             {
-                job.maxNumToCarry = 1;
+                job.count = 1;
             }
             else
             {
-                job.maxNumToCarry = Mathf.Min( new int[]
+                job.count = Mathf.Min( new int[]
                 {
                     drug.stackCount,
                     drug.def.ingestible.maxNumToIngestAtOnce,
@@ -46,7 +46,7 @@ namespace CommunityCoreLibrary.Detour
                 if(
                     ( drug.Spawned )&&
                     ( pawn.drugs != null )&&
-                    ( !pawn.inventory.container.Contains( drug.def ) )
+                    ( !pawn.inventory.innerContainer.Contains( drug.def ) )
                 )
                 {
                     var drugPolicy = pawn.drugs.CurrentPolicy[ drug.def ];

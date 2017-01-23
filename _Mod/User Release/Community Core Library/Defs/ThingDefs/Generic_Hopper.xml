@@ -37,7 +37,7 @@
         
         <!-- These two lines will hide the generic hoppers -->
         <menuHidden>true</menuHidden>
-        <designationCategory>None</designationCategory>
+        <designationCategory></designationCategory>
     </ThingDef>
 
     <ThingDef ParentName="HopperBase">

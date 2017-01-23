@@ -7,6 +7,7 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
+    // TODO: probably should switch to non-static members?
 
     [StaticConstructorOnStartup]
     public class HideItemManager : MapComponent
@@ -21,6 +22,9 @@ namespace CommunityCoreLibrary
 
         private static Dictionary<IntVec3,Thing> hiderBuildings;
 
+        public HideItemManager( Map map ) : base( map ) { }
+        public HideItemManager() : base( null ) { }  // Core cares about this apparently
+
         static HideItemManager()
         {
             itemHide = new List<Thing>();
@@ -28,11 +32,11 @@ namespace CommunityCoreLibrary
             hiderBuildings = new Dictionary<IntVec3, Thing>();
         }
 
-        private static List<Thing>          listHasGUIOverlay
+        private List<Thing>                 listHasGUIOverlay
         {
             get
             {
-                return ThingRequestGroup.HasGUIOverlay.ListOfThingsByGroup();
+                return ThingRequestGroup.HasGUIOverlay.ListOfThingsByGroup( map );
             }
         }
 
@@ -56,7 +60,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( var item in itemHide )
                 {
-                    Find.DynamicDrawManager.DeRegisterDrawable( item );
+                    map.dynamicDrawManager.DeRegisterDrawable( item );
                     if( ThingRequestGroup.HasGUIOverlay.Includes( item.def ) )
                     {
                         groupList.Remove( item );
@@ -69,7 +73,7 @@ namespace CommunityCoreLibrary
             {
                 foreach( var item in itemShow )
                 {
-                    Find.DynamicDrawManager.RegisterDrawable( item );
+                    map.dynamicDrawManager.RegisterDrawable( item );
                     if( ThingRequestGroup.HasGUIOverlay.Includes( item.def ) )
                     {
                         groupList.AddUnique( item );

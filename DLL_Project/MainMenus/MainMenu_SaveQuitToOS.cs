@@ -5,8 +5,8 @@ using UnityEngine;
 namespace CommunityCoreLibrary
 {
 
-	public class MainMenu_SaveQuitToOS : MainMenu
-	{
+    public class MainMenu_SaveQuitToOS : MainMenu
+    {
 
         public override Color               Color
         {
@@ -19,13 +19,13 @@ namespace CommunityCoreLibrary
         public override bool RenderNow( bool anyMapFiles )
         {
             return(
-                ( Current.ProgramState == ProgramState.MapPlaying )&&
+                ( Current.ProgramState == ProgramState.Playing )&&
                 ( Current.Game.Info.permadeathMode )
             );
         }
 
-		public override void ClickAction()
-		{
+        public override void ClickAction()
+        {
             LongEventHandler.QueueLongEvent(
                 () =>
                     {
@@ -36,8 +36,8 @@ namespace CommunityCoreLibrary
                 false,
                 null
             );
-		}
+        }
 
-	}
+    }
 
 }

@@ -26,6 +26,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Detoured Methods
 
+        // HARMONY CANDIDATE: postfix
         [DetourMember]
         internal bool                       _ShouldPushHeatNow
         {

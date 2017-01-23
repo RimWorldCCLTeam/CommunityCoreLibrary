@@ -1,78 +1,125 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <defs>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleShowZones</defName>
-        <labelKey>ZoneVisibilityToggleButton</labelKey>
-        <saveKey>showZones</saveKey>
-        <iconTexture>UI/Buttons/ShowZones</iconTexture>
-        <soundDef>MouseoverButtonToggle</soundDef>
-        <order>10</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowZones</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleLearningHelper</defName>
+    <labelKey>ShowLearningHelperWhenEmptyToggleButton</labelKey>
+    <saveKey>showLearningHelper</saveKey>
+    <iconTexture>UI/Buttons/ShowLearningHelper</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>10</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowLearningHelper</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleShowBeauty</defName>
-        <labelKey>ShowBeautyToggleButton</labelKey>
-        <saveKey>showBeauty</saveKey>
-        <iconTexture>UI/Buttons/ShowBeauty</iconTexture>
-        <soundDef>MouseoverButtonToggle</soundDef>
-        <order>20</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowBeauty</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleShowZones</defName>
+    <labelKey>ZoneVisibilityToggleButton</labelKey>
+    <saveKey>showZones</saveKey>
+    <iconTexture>UI/Buttons/ShowZones</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>20</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowZones</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleShowRoomStats</defName>
-        <labelKey>ShowRoomStatsToggleButton</labelKey>
-        <tutorTag>InspectRoomStats</tutorTag>
-        <saveKey>showRoomStats</saveKey>
-        <iconTexture>UI/Buttons/ShowRoomStats</iconTexture>
-        <soundDef>MouseoverButtonToggle</soundDef>
-        <order>30</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowRoomStats</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleShowEnvironment</defName>
+    <labelKey>ShowEnvironmentToggleButton</labelKey>
+    <saveKey>ShowEnvironment</saveKey>
+    <iconTexture>UI/Buttons/ShowEnvironment</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>30</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowEnvironment</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleShowColonistBar</defName>
-        <labelKey>ShowColonistBarToggleButton</labelKey>
-        <saveKey>showColonistBar</saveKey>
-        <iconTexture>UI/Buttons/ShowColonistBar</iconTexture>
-        <soundDef>MouseoverButtonToggle</soundDef>
-        <order>40</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowColonistBar</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleShowColonistBar</defName>
+    <labelKey>ShowColonistBarToggleButton</labelKey>
+    <saveKey>showColonistBar</saveKey>
+    <playingOnly>true</playingOnly>
+    <iconTexture>UI/Buttons/ShowColonistBar</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>50</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowColonistBar</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleAutoHomeArea</defName>
-        <labelKey>AutoHomeAreaToggleButton</labelKey>
-        <saveKey>autoHomeArea</saveKey>
-        <iconTexture>UI/Buttons/AutoHomeArea</iconTexture>
-        <soundDef>MouseoverButtonToggle</soundDef>
-        <order>50</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_AutoHomeArea</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleRoofOverlay</defName>
+    <labelKey>ShowRoofOverlayToggleButton</labelKey>
+    <saveKey>showRoofOverlay</saveKey>
+    <iconTexture>UI/Buttons/ShowRoofOverlay</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>60</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ShowRoofOverlay</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleUseWorkPriorities</defName>
-        <enableButton>false</enableButton>
-        <saveKey>useWorkPriorities</saveKey>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_UseWorkPriorities</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleAutoHomeArea</defName>
+    <labelKey>AutoHomeAreaToggleButton</labelKey>
+    <saveKey>autoHomeArea</saveKey>
+    <iconTexture>UI/Buttons/AutoHomeArea</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>70</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_AutoHomeArea</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <CommunityCoreLibrary.ToggleSettingDef>
-        <defName>ToggleResourceReadoutCategorized</defName>
-        <labelKey>CategorizedResourceReadoutToggleButton</labelKey>
-        <exposeValue>false</exposeValue>
-        <iconTexture>UI/Buttons/ResourceReadoutCategorized</iconTexture>
-        <soundDef>MouseoverButtonToggle</soundDef>
-        <order>60</order>
-        <toggleClass>CommunityCoreLibrary.ToggleSetting_ResourceReadoutCategorized</toggleClass>
-    </CommunityCoreLibrary.ToggleSettingDef>
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleUseWorkPriorities</defName>
+    <enableButton>false</enableButton>
+    <saveKey>useWorkPriorities</saveKey>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_UseWorkPriorities</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
 
-    <!--
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleResourceReadoutCategorized</defName>
+    <labelKey>CategorizedResourceReadoutToggleButton</labelKey>
+    <exposeValue>false</exposeValue>
+    <iconTexture>UI/Buttons/ResourceReadoutCategorized</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>80</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ResourceReadoutCategorized</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
+
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleLockNorthUp</defName>
+    <labelKey>LockNorthUpToggleButton</labelKey>
+    <saveKey>lockNorthUp</saveKey>
+    <worldView>true</worldView>
+    <iconTexture>UI/Buttons/LockNorthUp</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>90</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_LockNorthUp</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
+
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleUsePlanetDayNightSystem</defName>
+    <labelKey>UsePlanetDayNightSystemToggleButton</labelKey>
+    <saveKey>usePlanetDayNightSystem</saveKey>
+    <worldView>true</worldView>
+    <playingOnly>true</playingOnly>
+    <iconTexture>UI/Buttons/UsePlanetDayNightSystem</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>100</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_UsePlanetDayNightSystem</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
+
+  <CommunityCoreLibrary.ToggleSettingDef>
+    <defName>ToggleExpandingIcons</defName>
+    <labelKey>ExpandingIconsToggleButton</labelKey>
+    <saveKey>expandingIcons</saveKey>
+    <worldView>true</worldView>
+    <iconTexture>UI/Buttons/ExpandingIcons</iconTexture>
+    <soundDef>MouseoverButtonToggle</soundDef>
+    <order>110</order>
+    <toggleClass>CommunityCoreLibrary.ToggleSetting_ExpandingIcons</toggleClass>
+  </CommunityCoreLibrary.ToggleSettingDef>
+
+  <!--
     <CommunityCoreLibrary.ToggleSettingDef>
         <defName></defName>
         <labelKey></labelKey>
+        <exposeValue></exposeValue>
+        <worldView></worldView>
+        <playingOnly></playingOnly>
         <saveKey></saveKey>
         <iconTexture></iconTexture>
         <soundDef></soundDef>

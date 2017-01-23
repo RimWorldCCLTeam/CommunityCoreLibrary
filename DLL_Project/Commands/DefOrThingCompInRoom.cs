@@ -78,7 +78,7 @@ namespace CommunityCoreLibrary.Commands
             base.ProcessInput( ev );
 
             // Process a list of things by def or thingcomp in a room
-            if( !parentThing.Position.IsInRoom() )
+            if( !parentThing.Position.IsInRoom( parentThing.Map ) )
             {
                 return;
             }

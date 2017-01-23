@@ -103,7 +103,7 @@ namespace CommunityCoreLibrary
             }
             if( thingDef.inspectorTabsResolved.NullOrEmpty() )
             {
-                thingDef.inspectorTabsResolved = new List<ITab>();
+                thingDef.inspectorTabsResolved = new List<InspectTabBase>();
             }
             var injectTypeAt = replaceITab == null
                 ? thingDef.inspectorTabs.Count

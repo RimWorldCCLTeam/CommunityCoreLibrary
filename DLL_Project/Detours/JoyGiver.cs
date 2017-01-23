@@ -35,6 +35,9 @@ namespace CommunityCoreLibrary.Detour
             }
         }
 
+        /* TODO: This property no longer exists in JoyGiver, and its replacement is now virtual,
+         *       so do we still need this?
+         * 
         [DetourMember]
         internal List<Thing>                _SearchSet
         {
@@ -61,6 +64,7 @@ namespace CommunityCoreLibrary.Detour
                 return tmpCandidates;
             }
         }
+        */
 
         // This method must be implemented as the base class is abstract
         public override Job                 TryGiveJob( Pawn pawn )

@@ -31,7 +31,7 @@ namespace CommunityCoreLibrary.MiniMap
             ClearTexture();
 
             // get the planning designators
-            var planningDesignators = Find.DesignationManager.allDesignations
+            var planningDesignators = Find.VisibleMap.designationManager.allDesignations
                                           .Where( d => d.def == DesignationDefOf.Plan )
                                           .ToList();
 

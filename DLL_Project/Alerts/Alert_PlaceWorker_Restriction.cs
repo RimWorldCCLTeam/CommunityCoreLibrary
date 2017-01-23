@@ -5,46 +5,37 @@ using Verse;
 
 namespace CommunityCoreLibrary
 {
-
     public class Alert_PlaceWorker_Restriction : Alert_Critical
     {
-
-        public override AlertReport         Report
+        public override AlertReport GetReport()
         {
-            get
-            {
-                // Alert the player that something got destroyed
-                return !PlaceWorker_Restriction_Alert_Data.AlertPlayer
-                    ? AlertReport.Inactive
-                        : AlertReport.CulpritIs( PlaceWorker_Restriction_Alert_Data.DestroyedThings.RandomElement() );
-            }
+            return PlaceWorker_Restriction_Alert_Data.AlertPlayer ?
+                AlertReport.CulpritIs( PlaceWorker_Restriction_Alert_Data.DestroyedThings.RandomElement() ) :
+                AlertReport.Inactive;
         }
 
-        public override string              FullExplanation
+        public override string GetExplanation()
         {
-            get
+            var msg = new StringBuilder();
+            foreach ( var t in PlaceWorker_Restriction_Alert_Data.DestroyedThings )
             {
-                var msg = new StringBuilder();
-                foreach( var t in PlaceWorker_Restriction_Alert_Data.DestroyedThings )
-                {
-                    msg.AppendLine( "   " + t.def.defName );
-                }
-                return "AlertPlaceWorkerRestrictionSupportRemovedDesc".Translate(msg.ToString());
+                msg.AppendLine( "   " + t.def.defName );
             }
+            return "AlertPlaceWorkerRestrictionSupportRemovedDesc".Translate( msg.ToString() );
         }
 
-        public override void                AlertActiveUpdate()
+        public override void AlertActiveUpdate()
         {
-            if( PlaceWorker_Restriction_Alert_Data.AlertPlayer )
+            if ( PlaceWorker_Restriction_Alert_Data.AlertPlayer )
             {
                 base.AlertActiveUpdate();
                 PlaceWorker_Restriction_Alert_Data.Cooldown();
             }
         }
 
-        public                              Alert_PlaceWorker_Restriction()
+        public Alert_PlaceWorker_Restriction()
         {
-            baseLabel = "AlertPlaceWorkerRestrictionSupportRemovedLabel".Translate();
+            defaultLabel = "AlertPlaceWorkerRestrictionSupportRemovedLabel".Translate();
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using RimWorld;
 using Verse;
@@ -19,7 +20,7 @@ namespace CommunityCoreLibrary.Detour
             toggleSettingDefs = DefDatabase<ToggleSettingDef>.AllDefs.ToList();
             toggleSettingDefs.Sort( (x, y) => x.order > y.order ? 1 : -1 );
         }
-
+        
         [DetourMember( typeof( PlaySettings ) )]
         internal static void                _ExposeData( this PlaySettings _this )
         {
@@ -39,11 +40,15 @@ namespace CommunityCoreLibrary.Detour
         }
 
         [DetourMember( typeof( PlaySettings ) )]
-        internal static void                _DoPlaySettingsGlobalControls( this PlaySettings _this, WidgetRow row )
+        internal static void                _DoPlaySettingsGlobalControls( this PlaySettings _this, WidgetRow row, bool worldView )
         {
             foreach( var toggleSetting in toggleSettingDefs )
             {
-                if( toggleSetting.enableButton )
+                if(
+                    ( toggleSetting.enableButton )&&
+                    ( toggleSetting.worldView == worldView )&&
+                    ( !toggleSetting.playingOnly || Current.ProgramState == ProgramState.Playing )
+                )
                 {
                     bool value = toggleSetting.toggleWorker.Value;
 
@@ -52,6 +57,11 @@ namespace CommunityCoreLibrary.Detour
                     if( value == toggleSetting.toggleWorker.Value )
                     {
                         continue;
+                    }
+
+                    if( toggleSetting.labelKey == "ShowColonistBarToggleButton" )
+                    {
+                        Find.ColonistBar.MarkColonistsDirty();
                     }
 
                     toggleSetting.toggleWorker.Value = value;

@@ -12,8 +12,8 @@ namespace CommunityCoreLibrary.Controller
     /// <summary>
     /// This controller handles advanced research (validation, initialization, updates)
     /// </summary>
-	internal class ResearchSubController : SubController
-	{
+    internal class ResearchSubController : SubController
+    {
 
         private class OriginalDefData
         {
@@ -51,11 +51,11 @@ namespace CommunityCoreLibrary.Controller
         public override int                 GameLoadPriority        => 90;
 
         // Validate ...research...?
-		public override bool                Validate ()
-		{
-			// Hopefully...
+        public override bool                Validate ()
+        {
+            // Hopefully...
             var stringBuilder = new StringBuilder();
-			var rVal = true;
+            var rVal = true;
 
             CCL_Log.CaptureBegin( stringBuilder );
 
@@ -119,23 +119,23 @@ namespace CommunityCoreLibrary.Controller
             );
             strReturn = stringBuilder.ToString();
 
-			// Return true if all mods OK, false if any failed validation
+            // Return true if all mods OK, false if any failed validation
             State = rVal ? SubControllerState.Validated : SubControllerState.ValidationError;
-			return rVal;
-		}
+            return rVal;
+        }
 
         public override bool                Initialize ()
         {
-            if( Data.AdvancedResearchDefs.NullOrEmpty() )
+            // Create caches
+            InitializeCaches();
+
+            if ( Data.AdvancedResearchDefs.NullOrEmpty() )
             {
                 // No advanced research, hybernate
                 strReturn = "No advanced research defined, hybernating...";
                 State = Controller.SubControllerState.Hybernating;
                 return true;
             }
-
-            // Create caches
-            InitializeCaches();
 
             // Get the initial state
             GetInitialState();
@@ -471,6 +471,6 @@ namespace CommunityCoreLibrary.Controller
 
         #endregion
 
-	}
+    }
 
 }

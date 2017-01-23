@@ -156,6 +156,11 @@ namespace CommunityCoreLibrary.Detour
             for( int index = 0; index < giver.BillStack.Count; ++index )
             {
                 var billBase = giver.BillStack[ index ];
+                if ( billBase.recipe.requiredGiverWorkType != null && billBase.recipe.requiredGiverWorkType != this.def.workType )
+                {
+                    continue;
+                }
+
                 var advancedRecipe = billBase.recipe as AdvancedRecipeDef;
                 if(
                     (

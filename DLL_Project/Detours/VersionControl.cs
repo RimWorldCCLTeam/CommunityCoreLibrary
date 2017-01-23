@@ -37,7 +37,7 @@ namespace CommunityCoreLibrary.Detour
 
         #region Reflected Methods
 
-        internal static string              GetVersionStringShort()
+        internal static string              GetVersionString()
         {
             return (string)_versionString.GetValue( null );
         }
@@ -57,7 +57,7 @@ namespace CommunityCoreLibrary.Detour
                 // Only display it when in the main menu
                 return;
             }
-            var versionStringShort = GetVersionStringShort();
+            var versionStringShort = GetVersionString();
             var buildDate = GetBuildDate();
 
             Text.Font = GameFont.Small;

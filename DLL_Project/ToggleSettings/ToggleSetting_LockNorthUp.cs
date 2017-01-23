@@ -6,18 +6,18 @@ using Verse;
 namespace CommunityCoreLibrary
 {
     
-    public class ToggleSetting_ShowRoomStats : ToggleSetting
+    public class ToggleSetting_LockNorthUp : ToggleSetting
     {
 
         public override bool Value
         {
             get
             {
-                return Find.PlaySettings.showRoomStats;
+                return Find.PlaySettings.lockNorthUp;
             }
             set
             {
-                Find.PlaySettings.showRoomStats = value;
+                Find.PlaySettings.lockNorthUp = value;
             }
         }
 

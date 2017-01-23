@@ -33,9 +33,9 @@ namespace CommunityCoreLibrary
             }
         }
 
-        public override ThinkNode           DeepCopy()
+        public override ThinkNode           DeepCopy( bool resolve = true )
         {
-            var nodes = (ThinkNode_PrioritySorter_SubtreesByTag) base.DeepCopy();
+            var nodes = (ThinkNode_PrioritySorter_SubtreesByTag) base.DeepCopy( resolve );
             nodes.insertTag = this.insertTag;
             nodes.minPriority = this.minPriority;
             return (ThinkNode) nodes;

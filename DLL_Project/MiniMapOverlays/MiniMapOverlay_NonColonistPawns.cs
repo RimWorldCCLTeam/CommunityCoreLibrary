@@ -107,7 +107,7 @@ namespace CommunityCoreLibrary.MiniMap
 
         public override IEnumerable<Pawn> GetPawns()
         {
-            return Find.MapPawns.AllPawnsSpawned.Where( pawn => !pawn.RaceProps.Animal && pawn.Faction != Faction.OfPlayer );
+            return Find.VisibleMap.mapPawns.AllPawnsSpawned.Where( pawn => !pawn.RaceProps.Animal && pawn.Faction != Faction.OfPlayer );
         }
 
         public override float GetRadius( Pawn pawn )

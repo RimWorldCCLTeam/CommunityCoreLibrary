@@ -86,10 +86,10 @@ namespace CommunityCoreLibrary
             Scribe_Values.LookValue( ref wasProgrammed, "wasProgrammed", false );
         }
 
-        public override void                PostDeSpawn()
+        public override void                PostDeSpawn( Map map )
         {
             //Log.Message( string.Format( "{0}.CompHopper.PostDeSpawn()", this.parent.ThingID ) );
-            base.PostDeSpawn();
+            base.PostDeSpawn( map );
             DeprogramHopper();
             if( hopperUser != null )
             {
@@ -185,7 +185,7 @@ namespace CommunityCoreLibrary
         public List< Thing >                GetAllResources( ThingFilter acceptableResources )
         {
             //Log.Message( string.Format( "{0}.CompHopper.GetAllResources( ThingFilter )", this.parent.ThingID ) );
-            var things = parent.Position.GetThingList().Where( t => (
+            var things = parent.Position.GetThingList( parent.Map ).Where( t => (
                 ( acceptableResources.Allows( t.def ) )
             ) ).ToList();
             if( things.NullOrEmpty() )
@@ -202,7 +202,7 @@ namespace CommunityCoreLibrary
         public List< Thing >                GetAllResources( ThingDef resourceDef )
         {
             //Log.Message( string.Format( "{0}.CompHopper.GetAllResources( {1} )", this.parent.ThingID, resourceDef == null ? "null" : resourceDef.defName ) );
-            var things = parent.Position.GetThingList().Where( t => (
+            var things = parent.Position.GetThingList( parent.Map ).Where( t => (
                 ( resourceDef == t.def )
             ) ).ToList();
             if( things.NullOrEmpty() )
@@ -223,13 +223,13 @@ namespace CommunityCoreLibrary
         public CompHopperUser               FindHopperUser()
         {
             //Log.Message( string.Format( "{0}.CompHopper.FindHopperUser()", this.parent.ThingID ) );
-            return FindHopperUser( parent.Position + parent.Rotation.FacingCell );
+            return FindHopperUser( parent.Position + parent.Rotation.FacingCell, this.parent.Map );
         }
 
-        public static CompHopperUser        FindHopperUser( IntVec3 cell )
+        public static CompHopperUser        FindHopperUser( IntVec3 cell, Map map )
         {
             //var str = string.Format( "CompHopper.FindHopperUser( {0} )", cell.ToString() );
-            if( !cell.InBounds() )
+            if( !cell.InBounds( map ) )
             {
                 //Log.Message( str );
                 return null;
@@ -238,18 +238,18 @@ namespace CommunityCoreLibrary
             if( Scribe.mode != LoadSaveMode.Inactive )
             {   // Find hopper user in world matching cell
                 if(
-                    ( Find.ThingGrid == null )||
-                    ( Find.ThingGrid.ThingsAt( cell ).Count() == 0 )
+                    ( map.thingGrid == null )||
+                    ( map.thingGrid.ThingsAt( cell ).Count() == 0 )
                 )
                 {
                     //Log.Message( str );
                     return null;
                 }
-                thingList = Find.ThingGrid.ThingsAt( cell ).ToList();
+                thingList = map.thingGrid.ThingsAt( cell ).ToList();
             }
             else
             {   // Find hopper user in cell
-                thingList = cell.GetThingList();
+                thingList = cell.GetThingList( map );
             }
             if( !thingList.NullOrEmpty() )
             {

@@ -113,7 +113,7 @@ namespace CommunityCoreLibrary.MiniMap
                 var position = new Vector2( mouse.x, inRect.height - mouse.y );
 
                 // calculate scale
-                var scale = new Vector2( Find.Map.Size.x / inRect.width, Find.Map.Size.z / inRect.height );
+                var scale = new Vector2( Find.VisibleMap.Size.x / inRect.width, Find.VisibleMap.Size.z / inRect.height );
 
                 // jump map
                 Find.CameraDriver.JumpTo( new Vector3( position.x * scale.x, 0f, position.y * scale.y ) );
@@ -176,7 +176,7 @@ namespace CommunityCoreLibrary.MiniMap
             iconRect.y += iconSize + iconMargin;
 
             // scale icon
-            bool scaled = Mathf.Approximately( windowRect.width, Find.Map.Size.x ) && Mathf.Approximately( windowRect.height, Find.Map.Size.z );
+            bool scaled = Mathf.Approximately( windowRect.width, Find.VisibleMap.Size.x ) && Mathf.Approximately( windowRect.height, Find.VisibleMap.Size.z );
             TooltipHandler.TipRegion( iconRect, scaled ? "MiniMap.DefaultSize".Translate() : "MiniMap.OneToOneScale".Translate() );
             if ( Widgets.ButtonImage( iconRect, _scaleIcon ) )
             {
@@ -218,8 +218,8 @@ namespace CommunityCoreLibrary.MiniMap
                 }
                 else
                 {
-                    windowRect.width = Find.Map.Size.x;
-                    windowRect.height = Find.Map.Size.z;
+                    windowRect.width = Find.VisibleMap.Size.x;
+                    windowRect.height = Find.VisibleMap.Size.z;
                     ClampWindowToScreen();
                 }
 
